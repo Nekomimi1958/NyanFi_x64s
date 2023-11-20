@@ -1,0 +1,57 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# C++Builder
+*.~dsk
+*.dsk
+*.ilc
+*.ild
+*.ilf
+*.ils
+*.local
+*.map
+*.stat
+*.tds
+*.cgl
+
+Debug/
+Release/
+Win32/
+Win64/
+__*/
+temp/
+.history/
+
+.nyanfi*
+*.ini
+*.wav
