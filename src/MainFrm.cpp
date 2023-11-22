@@ -974,6 +974,8 @@ void __fastcall TNyanFiForm::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	if (Closing) return;
 
+	OutDebugStr("==> FormClose");
+
 	Closing = true;
 	Screen->OnActiveFormChange = NULL;
 
@@ -1217,14 +1219,19 @@ void __fastcall TNyanFiForm::FormClose(TObject *Sender, TCloseAction &Action)
 		else
 			msgbox_ERR(USTR_FaildProc);
 	}
+
+	OutDebugStr("<== FormClose");
 }
 
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::FormDestroy(TObject *Sender)
 {
+	OutDebugStr("==> FormDestroy");
+
 	::UnhookWindowsHookEx(hDlgHook);
 
 	EndGlobal();
+	OutDebugStr("<== EndGlobal");
 
 	delete LogRWLock;
 	delete IconRWLock;
@@ -1258,6 +1265,8 @@ void __fastcall TNyanFiForm::FormDestroy(TObject *Sender)
 
 	delete UserHighlight;
 	delete IniFile;
+
+	OutDebugStr("<== FormDestroy");
 }
 
 //---------------------------------------------------------------------------

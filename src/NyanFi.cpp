@@ -227,6 +227,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR lpCmdLine, int)
 		Application->CreateForm(__classid(TNetShareDlg), &NetShareDlg);
 		cursor_Default();
 		Application->Run();
+		OutDebugStr("<==Run");
 	}
 	catch (Exception &exception) {
 		Application->ShowException(&exception);
@@ -242,6 +243,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR lpCmdLine, int)
 
 	::CoUninitialize();
 	::CloseHandle(hMutex);
+	OutDebugStr("<== CloseHandle(hMutex)");
 
 	//再起動用バッチファイルを起動
 	if (!RstBatName.IsEmpty()) {

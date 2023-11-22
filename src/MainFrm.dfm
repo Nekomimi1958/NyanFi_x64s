@@ -1084,7 +1084,6 @@ object NyanFiForm: TNyanFiForm
                 end>
               SizeGrip = False
               UseSystemFont = False
-              StyleElements = []
               OnDrawPanel = StatusBarDrawPanel
             end
             object SideDockPanel: TPanel
@@ -4894,7 +4893,7 @@ object NyanFiForm: TNyanFiForm
   end
   object ViewPopupMenu: TPopupMenu
     OnPopup = ViewPopupMenuPopup
-    Left = 144
+    Left = 151
     Top = 246
     object ViewCopyItem: TMenuItem
       Action = TV_EditCopyAction
@@ -4989,7 +4988,7 @@ object NyanFiForm: TNyanFiForm
     OnModalBegin = ApplicationEvents1ModalBegin
     OnModalEnd = ApplicationEvents1ModalEnd
     OnShowHint = ApplicationEvents1ShowHint
-    Left = 148
+    Left = 151
     Top = 80
   end
   object LogPopupMenu: TPopupMenu
@@ -5029,7 +5028,7 @@ object NyanFiForm: TNyanFiForm
     Images = IconVImgListP
     OwnerDraw = True
     OnPopup = OdPopupMenuPopup
-    Left = 147
+    Left = 151
     Top = 137
   end
   object WatchDirTimer: TTimer
@@ -5043,7 +5042,7 @@ object NyanFiForm: TNyanFiForm
     Enabled = False
     Interval = 500
     OnTimer = MsgHintTimerTimer
-    Left = 372
+    Left = 376
     Top = 151
   end
   object KeyHintTimer: TTimer
@@ -5073,7 +5072,7 @@ object NyanFiForm: TNyanFiForm
   end
   object ImgPrvPopupMenu: TPopupMenu
     OnPopup = ImgPrvPopupMenuPopup
-    Left = 39
+    Left = 40
     Top = 300
     object CopyPrviewImgItem: TMenuItem
       Action = CopyPreImgOrgAction
@@ -5141,17 +5140,17 @@ object NyanFiForm: TNyanFiForm
   object DrivePopupMenu: TPopupMenu
     OwnerDraw = True
     OnPopup = OdPopupMenuPopup
-    Left = 42
+    Left = 40
     Top = 190
   end
   object SelItemPopupMenu: TPopupMenu
     OwnerDraw = True
     OnPopup = OdPopupMenuPopup
-    Left = 144
+    Left = 151
     Top = 192
   end
   object TxtPrvPopupMenu: TPopupMenu
-    Left = 143
+    Left = 151
     Top = 300
     object TxtEditCopyItem: TMenuItem
       Action = Txt_EditCopy
@@ -5403,49 +5402,49 @@ object NyanFiForm: TNyanFiForm
     AutoFill = True
     Images = <>
     ImageCollection = ImgCollectionF
-    Left = 372
+    Left = 376
     Top = 218
   end
   object ImgCollectionF: TImageCollection
     Images = <>
-    Left = 374
-    Top = 269
+    Left = 376
+    Top = 271
   end
   object IconVImgListV: TVirtualImageList
     AutoFill = True
     Images = <>
     ImageCollection = ImgCollectionV
-    Left = 466
-    Top = 219
+    Left = 470
+    Top = 218
   end
   object IconVImgListI: TVirtualImageList
     AutoFill = True
     Images = <>
     ImageCollection = ImgCollectionI
-    Left = 562
-    Top = 219
+    Left = 566
+    Top = 218
   end
   object ImgCollectionV: TImageCollection
     Images = <>
     Left = 470
-    Top = 269
+    Top = 271
   end
   object ImgCollectionI: TImageCollection
     Images = <>
     Left = 566
-    Top = 269
+    Top = 271
   end
   object IconVImgListP: TVirtualImageList
     AutoFill = True
     Images = <>
     ImageCollection = ImgCollectionP
     Left = 658
-    Top = 219
+    Top = 218
   end
   object ImgCollectionP: TImageCollection
     Images = <>
     Left = 658
-    Top = 269
+    Top = 271
   end
   object BtnVImgList: TVirtualImageList
     AutoFill = True
@@ -5489,7 +5488,7 @@ object NyanFiForm: TNyanFiForm
           end>
       end>
     Left = 616
-    Top = 8
+    Top = 7
   end
   object WaitTimer: TTimer
     Enabled = False
