@@ -15626,11 +15626,13 @@ UnicodeString get_GitDiffFile2(UnicodeString s)
 //---------------------------------------------------------------------------
 int extract_ver_no(UnicodeString fnam)
 {
-	UnicodeString s = get_base_name(fnam);
-	if (s.Pos("64s_")==0) s = EmptyStr;
-	int i = 1;
-	while (i<=s.Length()) if (!iswdigit(s[i])) s.Delete(1, i); else i++;
-	return s.ToIntDef(0);
+	int n = 0;
+	TRegExOptions opt; opt << roIgnoreCase;
+	TMatch mt = TRegEx::Match(fnam, "64s_(\\d{3,4})\\.zip", opt);
+	if (mt.Success && mt.Groups.Count>1 && mt.Groups.Item[1].Success) {
+		n = mt.Groups.Item[1].Value.ToIntDef(0);
+	}
+	return n;
 }
 
 //---------------------------------------------------------------------------
