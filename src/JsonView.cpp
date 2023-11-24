@@ -34,7 +34,7 @@ void __fastcall TJsonViewer::FormShow(TObject *Sender)
 	ValCheckBox->Checked  = IniFile->ReadBoolGen(_T("JsonViewFindVal"),		true);
 
 	JsonTreeView->Items->Clear();
-	JsonTreeView->Color = col_bgList;
+	JsonTreeView->Color = get_ListBgCol();
 
 	AssignScaledFont(JsonTreeView, ListFont);
 	AssignScaledFont(StatusBar1, SttBarFont);
@@ -249,7 +249,7 @@ void __fastcall TJsonViewer::JsonTreeViewCustomDrawItem(TCustomTreeView *Sender,
 	TTreeView *vp = JsonTreeView;
 	TCanvas *cv   = vp->Canvas;
 	TRect rc_s = Node->DisplayRect(false);
-	cv->Brush->Color = Node->Selected? col_selItem : col_bgList;
+	cv->Brush->Color = Node->Selected? col_selItem : get_ListBgCol();
 	cv->FillRect(rc_s);
 
 	//テキスト
@@ -262,7 +262,7 @@ void __fastcall TJsonViewer::JsonTreeViewCustomDrawItem(TCustomTreeView *Sender,
 	TCanvas *tmp_cv = tmp_bmp->Canvas;
 	TRect    tmp_rc	= Rect(0, 0, tmp_bmp->Width, tmp_bmp->Height);
 	tmp_cv->Font->Assign(vp->Font);
-	tmp_cv->Brush->Color = Node->Selected? col_selItem : col_bgList;
+	tmp_cv->Brush->Color = Node->Selected? col_selItem : get_ListBgCol();
 	tmp_cv->FillRect(tmp_rc);
 
 	bool is_selfg = (Node->Selected && col_fgSelItem!=col_None);

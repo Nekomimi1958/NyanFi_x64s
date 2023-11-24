@@ -61,18 +61,18 @@ void __fastcall TCmdFileListDlg::FormShow(TObject *Sender)
 	//プレビューの初期化
 	PreviewPanel->Visible	 = false;
 	PreviewSplitter->Visible = false;
-	PreviewSplitter->Color	 = col_Splitter;
-	ReferSplitter->Color	 = col_Splitter;
+	PreviewSplitter->Color	 = get_SplitterCol();
+	ReferSplitter->Color	 = get_SplitterCol();
 
 	set_ListBoxItemHi(PreviewListBox, TxtPrvFont);
 	set_UsrScrPanel(PrevScrPanel);
-	PreviewListBox->Color		= col_bgView;
-	PreviewListBox->Font->Color = col_fgView;
+	PreviewListBox->Color		= get_ViewBgCol();
+	PreviewListBox->Font->Color = get_ViewFgCol();
 
 	set_ListBoxItemHi(ReferListBox, FileInfFont);
 	set_UsrScrPanel(ReferScrPanel);
-	ReferListBox->Color		  = col_bgInf;
-	ReferListBox->Font->Color = col_fgInf;
+	ReferListBox->Color		  = get_InfBgCol();
+	ReferListBox->Font->Color = get_InfFgCol();
 
 	PreviewPanel->Height = IniFile->ReadScaledIntGen(_T("CmdFileListPrevHeight"), 200, this);
 	ReferPanel->Width	 = IniFile->ReadScaledIntGen(_T("CmdFileListReferWidth"), 200, this);
@@ -273,7 +273,7 @@ void __fastcall TCmdFileListDlg::CmdFileGridDrawCell(TObject *Sender, System::Lo
 	UnicodeString cellstr;
 	bool row_break = false;
 
-	cv->Brush->Color = is_AltLnBgCol(ARow)? col_bgList2 : col_bgList;
+	cv->Brush->Color = get_AltBgCol(ARow);
 	cv->FillRect(Rect);
 
 	if (ARow>=0 && ARow<GridItemList->Count) {
@@ -291,7 +291,7 @@ void __fastcall TCmdFileListDlg::CmdFileGridDrawCell(TObject *Sender, System::Lo
 			break;
 		case 1:	//説明
 			cellstr = fp->alias;
-			cv->Font->Color = col_fgList;
+			cv->Font->Color = get_ListFgCol();
 			break;
 		case 2:	//サイズ
 			cellstr = Trim(get_size_str_G(fp->f_size, 8, SizeDecDigits));
@@ -312,7 +312,7 @@ void __fastcall TCmdFileListDlg::CmdFileGridDrawCell(TObject *Sender, System::Lo
 				if (fp->l_name.IsEmpty()) fp->l_name = " ";
 			}
 			cellstr = fp->l_name;
-			cv->Font->Color = col_fgList;
+			cv->Font->Color = get_ListFgCol();
 			break;
 		case 6:	//実行回数
 			{
@@ -320,7 +320,7 @@ void __fastcall TCmdFileListDlg::CmdFileGridDrawCell(TObject *Sender, System::Lo
 				if (idx!=-1) {
 					cmdf_rec *cp = (cmdf_rec*)CmdFileList->Objects[idx];
 					cellstr.sprintf(_T("%u"), cp->exe_count);
-					cv->Font->Color = col_fgList;
+					cv->Font->Color = get_ListFgCol();
 				}
 			}
 			break;
@@ -606,11 +606,11 @@ void __fastcall TCmdFileListDlg::PreviewListBoxDrawItem(TWinControl *Control, in
 {
 	TListBox *lp = (TListBox*)Control;
 	TCanvas  *cv = lp->Canvas;
-	cv->Brush->Color = State.Contains(odSelected)? col_selItem : col_bgView;
+	cv->Brush->Color = State.Contains(odSelected)? col_selItem : get_ViewBgCol();
 	cv->FillRect(Rect);
 
 	PrvTextOut(lp, Index, cv, Rect,
-		is_SelFgCol(State)? col_fgSelItem : col_fgView,
+		is_SelFgCol(State)? col_fgSelItem : get_ViewFgCol(),
 		4, NULL, false, "*.nbt");
 }
 //---------------------------------------------------------------------------

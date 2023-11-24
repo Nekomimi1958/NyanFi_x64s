@@ -313,7 +313,7 @@ void __fastcall TFuncListDlg::FuncListBoxDrawItem(TWinControl *Control, int Inde
 	TListBox *lp = (TListBox*)Control;
 	TCanvas *cv = lp->Canvas;
 	cv->Font->Assign(lp->Font);
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	TRect rc = Rect;
 	cv->FillRect(rc);
 
@@ -341,8 +341,8 @@ void __fastcall TFuncListDlg::FuncListBoxDrawItem(TWinControl *Control, int Inde
 	xp = rc.Left + SCALED_THIS(4);
 
 	//“à—e
-	cv->Brush->Color = col_bgList;
-	cv->Font->Color = col_fgList;
+	cv->Brush->Color = get_ListBgCol();
+	cv->Font->Color  = get_ListFgCol();
 	if (ListMode==0) {
 		if (TxtViewer->isIniFmt) {
 			cv->Font->Color = col_Headline;

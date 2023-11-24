@@ -47,11 +47,11 @@ void __fastcall TTagManDlg::FormShow(TObject *Sender)
 	SwatchPanel->Left = ClientWidth  - SwatchPanel->Width;
 	SwatchPanel->Top  = ClientHeight - SwatchPanel->Height;
 
-	RevColCheckBox->Checked = RevTagCololr;
+	RevColCheckBox->Checked = RevTagColor;
 
 	TCheckListBox *lp = TagCheckListBox;
 	set_StdListBox(lp);
-	if (!IsFolderIcon && RevTagCololr) lp->ItemHeight = lp->ItemHeight + SCALED_THIS(2);
+	if (!IsFolderIcon && RevTagColor) lp->ItemHeight = lp->ItemHeight + SCALED_THIS(2);
 
 	if (IsFolderIcon) {
 		std::unique_ptr<TStringList> lst(new TStringList());
@@ -148,7 +148,7 @@ void __fastcall TTagManDlg::FormShow(TObject *Sender)
 
 	AssignScaledFont(TagEdit, ListFont);
 	TagEdit->Font->Color = get_TextColor();
-	InpPanel->Color   = col_bgList;
+	InpPanel->Color   = get_ListBgCol();
 	InpPanel->Visible = HidePanel->Visible && !HideCheckBox->Checked;
 
 	::PostMessage(Handle, WM_FORM_SHOWED, 0, 0);
@@ -394,7 +394,7 @@ void __fastcall TTagManDlg::TagCheckListBoxDrawItem(TWinControl *Control, int In
 	TCheckListBox *lp = (TCheckListBox*)Control;
 	TCanvas  *cv = lp->Canvas;
 	cv->Font->Assign(lp->Font);
-	cv->Brush->Color = lp->Checked[Index]? col_selItem : col_bgList;
+	cv->Brush->Color = lp->Checked[Index]? col_selItem : get_ListBgCol();
 	cv->FillRect(Rect);
 
 	int xp = Rect.Left + SCALED_THIS(4);
@@ -410,15 +410,15 @@ void __fastcall TTagManDlg::TagCheckListBoxDrawItem(TWinControl *Control, int In
 	}
 	//タグ
 	else {
-		if (RevTagCololr) yp += SCALED_THIS(2);
+		if (RevTagColor) yp += SCALED_THIS(2);
 		usr_TAG->DrawTags(lp->Items->Strings[Index], cv, xp, yp,
-			(RevTagCololr? col_bgList : col_None), UserModule->SpuitEnabled());
+			(RevTagColor? get_ListBgCol() : col_None), UserModule->SpuitEnabled());
 	}
 
 	//使用数
 	int n = (int)lp->Items->Objects[Index];
 	if (n>0) {
-		cv->Font->Color = col_fgList;
+		cv->Font->Color = get_ListFgCol();
 		UnicodeString lbuf = n;
 		xp += (MaxTagWidth + cv->TextWidth("99999999") - cv->TextWidth(lbuf));
 		cv->TextOut(xp, yp, lbuf);
@@ -706,7 +706,7 @@ void __fastcall TTagManDlg::RevColActionExecute(TObject *Sender)
 	TAction *ap = (TAction *)Sender;
 	ap->Checked = !ap->Checked;
 
-	RevTagCololr = ap->Checked;
+	RevTagColor = ap->Checked;
 	TagCheckListBox->Invalidate();
 }
 //---------------------------------------------------------------------------

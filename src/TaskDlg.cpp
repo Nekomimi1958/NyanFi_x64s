@@ -221,16 +221,16 @@ void __fastcall TTaskManDlg::TaskGridDrawCell(TObject *Sender, System::LongInt A
 	if (idx<maxn) {
 		TTaskThread *tp = TaskThread[idx];
 		if (tp)
-			fg = (ACol==4 && tp->PreCount>0)? clGreen : (ACol==4 && tp->TaskPause) ? clRed : col_fgList;
+			fg = (ACol==4 && tp->PreCount>0)? clGreen : (ACol==4 && tp->TaskPause) ? clRed : get_ListFgCol();
 		else
-			fg = AdjustColor(col_fgList, ADJCOL_FGLIST);
+			fg = AdjustColor(get_ListFgCol(), ADJCOL_FGLIST);
 	}
 	else {
-		fg = AdjustColor(col_fgList, ADJCOL_LIGHT);
+		fg = AdjustColor(get_ListFgCol(), ADJCOL_LIGHT);
 	}
 
 	cv->Font->Color  = is_SelFgCol(State)? col_fgSelItem : fg;
-	cv->Brush->Color = State.Contains(gdSelected)? col_selItem : col_bgList;
+	cv->Brush->Color = State.Contains(gdSelected)? col_selItem : get_ListBgCol();
 	cv->FillRect(Rect);
 
 	int xp = Rect.Left + SCALED_THIS(4);

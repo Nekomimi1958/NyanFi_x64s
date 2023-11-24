@@ -59,8 +59,8 @@ void __fastcall TExTxtViewer::FormShow(TObject *Sender)
 	IniFile->LoadPosInfo(this);
 	LastWidth = Width;
 
-	TxtViewPanel->Color   = col_bgView;
-	TxtScrollPanel->Color = col_bgView;
+	TxtViewPanel->Color   = get_ViewBgCol();
+	TxtScrollPanel->Color = get_ViewBgCol();
 
 	//î•ñƒwƒbƒ_
 	TxtSttHeader->Align = TxtSttIsBottom? alBottom : alTop;

@@ -100,8 +100,8 @@ void __fastcall TDistributionDlg::FormShow(TObject *Sender)
 	set_ListBoxItemHi(ListListBox);
 	set_ListBoxItemHi(PrvListBox);
 
-	PrvSplitter->Color	= col_Splitter;
-	ListSplitter->Color = col_Splitter;
+	PrvSplitter->Color	= get_SplitterCol();
+	ListSplitter->Color = get_SplitterCol();
 
 	SttPrgBar->BgColor  = col_bgPrgBar;
 	SttPrgBar->BarColor = col_fgPrgBar;

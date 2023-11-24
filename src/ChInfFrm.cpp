@@ -30,14 +30,14 @@ void __fastcall TCharInfoForm::FormShow(TObject *Sender)
 	SamplePanel->Height  = std::max(IniFile->ReadScaledIntGen(_T("CharInfoCharHeight"), 180, this), Splitter1->MinSize);
 
 	TListBox *lp = InfoListBox;
-	lp->Color = col_bgInf;
+	lp->Color = get_InfBgCol();
 	set_ListBoxItemHi(lp, FileInfFont);
 
 	SetInfoHeight();
 	ClientWidth  = get_CharWidth_Font(lp->Font, 41);	//***
 	SamplePanel->Constraints->MaxHeight = ClientWidth;
 
-	Splitter1->Color = col_Splitter;
+	Splitter1->Color = get_SplitterCol();
 
 	SetCharFont();
 }

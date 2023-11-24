@@ -57,8 +57,8 @@ void __fastcall TMemoForm::FormShow(TObject *Sender)
 	pf2.bLineSpacingRule = 5;	//dyLineSpacing/20 行単位
 	pf2.dyLineSpacing	 = 20 * ViewTxtInterLn / f_hi;
 	MemoBox->Perform(EM_SETPARAFORMAT, 0, (LPARAM)&pf2);
-	MemoBox->Font->Color = (col_fgEdBox!=col_None)? col_fgEdBox : col_fgView;
-	MemoBox->Color		 = (col_bgEdBox!=col_None)? col_bgEdBox : col_bgView;
+	MemoBox->Font->Color = (col_fgEdBox!=col_None)? col_fgEdBox : get_ViewFgCol();
+	MemoBox->Color		 = (col_bgEdBox!=col_None)? col_bgEdBox : get_ViewBgCol();
 
 	//下部パネル
 	OptPanel->Visible = IniFile->ReadBoolGen(_T("MemoFormShowOpt"), true);
@@ -216,8 +216,8 @@ void __fastcall TMemoForm::ColFgItemClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMemoForm::ColDefItemClick(TObject *Sender)
 {
-	MemoBox->Color		 = col_bgView;
-	MemoBox->Font->Color = col_fgView;
+	MemoBox->Color		 = get_ViewBgCol();
+	MemoBox->Font->Color = get_ViewFgCol();
 
 	col_bgEdBox = col_fgEdBox = col_None;
 	ColorList->Values["bgEdBox"] = IntToStr((int)col_bgEdBox);

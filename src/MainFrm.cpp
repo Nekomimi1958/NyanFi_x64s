@@ -1079,7 +1079,7 @@ void __fastcall TNyanFiForm::FormClose(TObject *Sender, TCloseAction &Action)
 		IniFile->WriteScaledIntGen(_T("GrepLL_Width"),		GrepM1Panel->Width);
 		IniFile->WriteScaledIntGen(_T("GrepFilterWidth"),	GrepFilterPanel->Width);
 		IniFile->WriteScaledIntGen(_T("ImgSidebarWidth"),	ImgSidePanel->Width);
-		IniFile->WriteBoolGen(_T("ShowThumbnail"),	ThumbnailGrid->Visible);
+		IniFile->WriteBoolGen(_T("ShowThumbnail"),			ThumbnailPanel->Visible);
 
 		IniFile->SaveFormPos(this);
 
@@ -1228,10 +1228,8 @@ void __fastcall TNyanFiForm::FormDestroy(TObject *Sender)
 {
 	OutDebugStr("==> FormDestroy");
 
-	::UnhookWindowsHookEx(hDlgHook);
-
 	EndGlobal();
-	OutDebugStr("<== EndGlobal");
+	OutDebugStr("  <= EndGlobal");
 
 	delete LogRWLock;
 	delete IconRWLock;
@@ -1265,6 +1263,11 @@ void __fastcall TNyanFiForm::FormDestroy(TObject *Sender)
 
 	delete UserHighlight;
 	delete IniFile;
+
+	if (!::UnhookWindowsHookEx(hDlgHook))
+		OutDebugStr(UnicodeString().sprintf(_T("! UnhookWindowsHookEx is falied : %d"), GetLastError()));
+	else
+		OutDebugStr("  <= UnhookWindowsHookEx");
 
 	OutDebugStr("<== FormDestroy");
 }
@@ -1972,8 +1975,8 @@ void __fastcall TNyanFiForm::WmNyanFiClpCopied(TMessage &msg)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::WmNyanFiThumbnail(TMessage &msg)
 {
-	TStringGrid *gp = ThumbnailGrid;
-	if (gp->Visible) {
+	if (ThumbnailPanel->Visible) {
+		TStringGrid *gp = ThumbnailGrid;
 		int idx = msg.LParam;
 		TRect rc = ThumbExtended? gp->CellRect(idx%gp->ColCount, idx/gp->ColCount) :
 				(ThumbnailPos<2)? gp->CellRect(idx, 0)
@@ -3362,7 +3365,7 @@ void __fastcall TNyanFiForm::SplitterBgPaint(TObject *Sender)
 		cv->Draw(0, 0, vp.get());
 	}
 	else {
-		cv->Brush->Color = col_Splitter;
+		cv->Brush->Color = get_SplitterCol();
 		cv->FillRect(sp->ClientRect);
 	}
 }
@@ -3478,7 +3481,7 @@ void __fastcall TNyanFiForm::DrawDrivePanel(TPanel *pp)
 			if (lst_stt->is_IncSea || lst_stt->is_Filter || pp->Tag==SHOW_WARN_TAG
 					|| (lst_stt->sel_d_cnt>0 || lst_stt->sel_f_cnt>0))
 			{
-				cv->Pen->Color = col_Splitter;
+				cv->Pen->Color = get_SplitterCol();
 				cv->MoveTo(rc.Left,  rc.Top);
 				cv->LineTo(rc.Right, rc.Top);
 			}
@@ -3636,8 +3639,10 @@ bool __fastcall TNyanFiForm::UpdateBgImage(
 		for (int i=0; i<2; i++) {
 			if ((BgImgMode==1 || BgImgMode==2) && !BgImgName[i].IsEmpty()) {
 				UnicodeString fnam = to_absolute_name(BgImgName[i]);
-				if		(!file_exists(fnam))												err_cnt++;
-				else if (!load_ImageFile(fnam, BgImgBuff[i], WICIMG_PREVIEW, col_bgList))	err_cnt++;
+				if (!file_exists(fnam))
+					err_cnt++;
+				else if (!load_ImageFile(fnam, BgImgBuff[i], WICIMG_PREVIEW, get_ListBgCol()))
+					err_cnt++;
 			}
 			else {
 				BgImgBuff[i]->Handle = NULL;
@@ -3682,7 +3687,7 @@ bool __fastcall TNyanFiForm::UpdateBgImage(
 					//背景色
 					bp->Canvas->Lock();
 					bp->Canvas->Brush->Style = bsSolid;
-					bp->Canvas->Brush->Color = col_bgList;
+					bp->Canvas->Brush->Color = get_ListBgCol();
 					bp->Canvas->FillRect(rc_l[i]);
 					bp->Canvas->Unlock();
 				}
@@ -3705,7 +3710,7 @@ bool __fastcall TNyanFiForm::UpdateBgImage(
 				bp2->Canvas->Lock();
 				{
 					bp2->Canvas->Brush->Style = bsSolid;
-					bp2->Canvas->Brush->Color = col_bgList;
+					bp2->Canvas->Brush->Color = get_ListBgCol();
 					bp2->Canvas->FillRect(rc_d);
 					int sub_mode = (BgImgTileIf && std::min(bp->Width, bp->Height)<=BgTileSize)? 1 : BgImgSubMode;
 					switch (sub_mode) {
@@ -4525,23 +4530,33 @@ void __fastcall TNyanFiForm::SetupFont()
 void __fastcall TNyanFiForm::SetupThumbnail(
 	int idx)	//インデックス	(default = -1)
 {
+	TPanel		*pp = ThumbnailPanel;
 	TStringGrid *gp = ThumbnailGrid;
+
 	if (ThumbExtended) {
 		gp->Align	   = alClient;
+		pp->Align	   = alClient;
 		gp->ScrollBars = ShowThumbScroll? ssVertical : ssNone;
-		gp->BevelKind  = bkNone;
 	}
 	else {
 		switch (ThumbnailPos) {
-		case 0: gp->Align = alTop;		break;
-		case 1: gp->Align = alBottom;	break;
+		case 0:
+			gp->Align = alTop;
+			pp->Align = alTop;
+			break;
+		case 1:
+			gp->Align = alBottom;
+			pp->Align = alBottom;
+			break;
 		case 2:
-			if (ImgSidePanel->Visible && ImgSidePanel->Align==alLeft) gp->Align = alRight;
+			if (ImgSidePanel->Visible && ImgSidePanel->Align==alLeft) pp->Align = alRight;
 			gp->Align = alLeft;
+			pp->Align = alLeft;
 			break;
 		case 3:
-			if (ImgSidePanel->Visible && ImgSidePanel->Align==alRight) gp->Align = alLeft;
+			if (ImgSidePanel->Visible && ImgSidePanel->Align==alRight) pp->Align = alLeft;
 			gp->Align = alRight;
+			pp->Align = alRight;
 			break;
 		}
 
@@ -4550,8 +4565,6 @@ void __fastcall TNyanFiForm::SetupThumbnail(
 			gp->ScrollBars = (ThumbnailPos<2)? Stdctrls::ssHorizontal : Stdctrls::ssVertical;
 		else
 			gp->ScrollBars = ssNone;
-
-		gp->BevelKind = bkFlat;
 	}
 
 	int s_16 = SCALED_THIS(16);
@@ -4559,6 +4572,7 @@ void __fastcall TNyanFiForm::SetupThumbnail(
 	gp->DefaultColWidth  = ThumbnailSize + 4;
 	gp->DefaultRowHeight = ThumbnailSize + (ShowThumbName? SCALED_THIS(20) : 4) + (ShowThumbExif? s_16 : 0) + (ShowThumbTags? s_16 : 0);
 	gp->GridLineWidth	 = ThumbBdrWidth;
+	pp->BorderWidth		 = ThumbBdrWidth;
 
 	//全面表示
 	if (ThumbExtended) {
@@ -4591,10 +4605,10 @@ void __fastcall TNyanFiForm::ResetIndColor(int tag)
 	for (int i=0; i<MAX_FILELIST; i++) {
 		if (tag==-1 || tag==i) {
 			flist_stt *lst_stt = &ListStt[i];
-			lst_stt->color_bgDirInf = col_bgDirInf;
-			lst_stt->color_fgDirInf = col_fgDirInf;
-			lst_stt->color_bgDrvInf = col_bgDrvInf;
-			lst_stt->color_fgDrvInf = col_fgDrvInf;
+			lst_stt->color_bgDirInf = get_DirInfBgCol();
+			lst_stt->color_fgDirInf = get_DirInfFgCol();
+			lst_stt->color_bgDrvInf = get_DrvInfBgCol();
+			lst_stt->color_fgDrvInf = get_DrvInfFgCol();
 			lst_stt->color_Cursor	= col_Cursor;
 			lst_stt->color_selItem  = col_selItem;
 		}
@@ -4615,7 +4629,7 @@ void __fastcall TNyanFiForm::SetupDesign(
 	for (int i=2; i<MAX_BGIMAGE; i++) {
 		UnicodeString fnam = to_absolute_name(BgImgName[i]);
 		if (file_exists(fnam)) {
-			TColor bgcol = (i==BGIMGID_KNOB_V || i==BGIMGID_KNOB_H)? col_bgScrKnob : col_Splitter;
+			TColor bgcol = (i==BGIMGID_KNOB_V || i==BGIMGID_KNOB_H)? col_bgScrKnob : get_SplitterCol();
 			load_ImageFile(fnam, BgImgBuff[i], WICIMG_THUMBNAIL, bgcol);
 			if (i==BGIMGID_KNOB_H) {
 				WIC_rotate_image(BgImgBuff[i], 1);
@@ -4628,22 +4642,23 @@ void __fastcall TNyanFiForm::SetupDesign(
 	}
 
 	//カラー
-	SubPanel->Color           = col_bgList;
+	SubPanel->Color           = get_ListBgCol();
 	PreviewPanel->Color       = col_bgImage;
 	PrvInnerPanel->Color      = col_bgImage;
-	InfListBox->Color         = col_bgInf;
-	TxtPrvListBox->Color      = col_bgTxtPrv;
-	TxtTailListBox->Color     = col_bgTxtPrv;
-	LockTxtPanel->Color       = col_bgTxtPrv;
+	InfListBox->Color         = get_InfBgCol();
+	TxtPrvListBox->Color      = get_TxtPrvBgCol();
+	TxtTailListBox->Color     = get_TxtPrvBgCol();
+	LockTxtPanel->Color       = get_TxtPrvBgCol();
 	LockTxtPanel->Font->Color = col_Error;
-	ImgInfListBox->Color      = col_bgInf;
-	LogListBox->Color         = col_bgLog;
-	LogSplitPanel->Color      = SelectWorB(col_bgLog, 0.3);
-	TxtViewPanel->Color       = col_bgView;
-	TxtScrollPanel->Color     = col_bgView;
+	ImgInfListBox->Color      = get_InfBgCol();
+	LogListBox->Color         = get_LogBgCol();
+	LogSplitPanel->Color      = SelectWorB(get_LogBgCol(), 0.3);
+	TxtViewPanel->Color       = get_ViewBgCol();
+	TxtScrollPanel->Color     = get_ViewBgCol();
 	ImgViewPanel->Color       = col_bgImage;
 	ImgScrollBox->Color       = col_bgImage;
 	ThumbnailGrid->Color      = col_bgImage;
+	ThumbnailPanel->Color	  = col_bdrThumb;
 	SideDockPanel->Color      = col_bgImage;
 	LoupeDockPanel->Color     = col_bgImage;
 	HistDockPanel->Color      = col_bgImage;
@@ -4653,13 +4668,13 @@ void __fastcall TNyanFiForm::SetupDesign(
 	SttPrgBar->BgColor  = col_bgPrgBar;
 	SttPrgBar->BarColor = col_fgPrgBar;
 
-	LRSplitter->Color       = col_Splitter;
-	ListSubSplitter->Color  = col_Splitter;
-	ImgInfSplitter->Color   = col_Splitter;
-	TxtPrvSplitter->Color   = col_Splitter;
-	ImgSideSplitter->Color  = col_Splitter;
-	SideDockSplitter->Color = col_Splitter;
-	InfLogSplitter->Color   = col_Splitter;
+	LRSplitter->Color       = get_SplitterCol();
+	ListSubSplitter->Color  = get_SplitterCol();
+	ImgInfSplitter->Color   = get_SplitterCol();
+	TxtPrvSplitter->Color   = get_SplitterCol();
+	ImgSideSplitter->Color  = get_SplitterCol();
+	SideDockSplitter->Color = get_SplitterCol();
+	InfLogSplitter->Color   = get_SplitterCol();
 
 	ErrMarkList->MarkColor  = col_Error;
 
@@ -4669,7 +4684,7 @@ void __fastcall TNyanFiForm::SetupDesign(
 	if (!initial) ResetIndColor(-1);
 
 	//タブバー
-	TabPanel->Color 	   = col_bgTabBar;
+	TabPanel->Color 	   = get_TabBarBgCol();
 	TabControl1->Style	   = (FlTabStyle==2)? tsButtons : (FlTabStyle==3)? tsFlatButtons : tsTabs;
 	int tab_h = get_FontHeightMgnS(TabControl1->Font, 8, 8) + ((TabControl1->Style==tsTabs)? 0 : SCALED_THIS(4));
 	TabControl1->Height	   = std::max(tab_h, SCALED_THIS(18));
@@ -4684,17 +4699,17 @@ void __fastcall TNyanFiForm::SetupDesign(
 	TabPanel->ClientHeight = TabControl1->Height + TabControl1->Top;
 	TabPanel->Visible	   = ShowTabBar;
 	TabBottomPaintBox->Height  = 1;
-	TabBottomPaintBox->Visible = (col_frmTab!=col_None && (FlTabStyle==0 || FlTabStyle==1));
+	TabBottomPaintBox->Visible = (FlTabStyle==0 || FlTabStyle==1);
 	UpdateTabBar(TabControl1->TabIndex);
 
 	//ボタンマーク
-	TColor col_mk = SelectWorB(col_bgDirInf);
+	TColor col_mk = SelectWorB(get_DirInfBgCol());
 	TColor col_bg = TStyleManager::ActiveStyle->GetSystemColor(clBtnFace);
 	set_ButtonMark(L_SelDrvBtn,  UBMK_DOWN, col_mk, col_bg);
 	set_ButtonMark(L_SelDrvBtn2, UBMK_DOWN, col_mk, col_bg);
 	set_ButtonMark(R_SelDrvBtn,  UBMK_DOWN, col_mk, col_bg);
 	set_ButtonMark(R_SelDrvBtn2, UBMK_DOWN, col_mk, col_bg);
-	set_ButtonMark(PopTabBtn,    UBMK_DOWN, SelectWorB(col_bgTabBar), col_bg);
+	set_ButtonMark(PopTabBtn,    UBMK_DOWN, SelectWorB(get_TabBarBgCol()), col_bg);
 
 	set_BtnMarkStyle(SeekLBtn, UBMK_HTOP);
 	set_BtnMarkStyle(SeekRBtn, UBMK_HEND);
@@ -4725,11 +4740,11 @@ void __fastcall TNyanFiForm::SetupDesign(
 	std::unique_ptr<TFont> s_font(new TFont());
 	//ディレクトリ表示部
 	AssignScaledFont(s_font.get(), DirInfFont, this);
-	s_font->Color = col_fgDirInf;
+	s_font->Color = get_DirInfFgCol();
 	for (int i=0; i<3; i++) {
 		TPanel *pp = (i==1)? L_HdrPanel : (i==2)? R_HdrPanel : HdrPanel;
 		pp->Height = get_FontHeightMgnS(s_font.get(), SCALED_THIS(8), SCALED_THIS(8));
-		pp->Color  = col_bgDirInf;
+		pp->Color  = get_DirInfBgCol();
 	}
 	L_DirPanel->Font->Assign(s_font.get());
 	R_DirPanel->Font->Assign(s_font.get());
@@ -4741,15 +4756,15 @@ void __fastcall TNyanFiForm::SetupDesign(
 	//ピンマークの幅を取得
 	TabPinWidth = get_WidthInPanel(TabPinMark, L_DirPanel, true) + SCALED_THIS(4);
 
-	L_TopPanel->Color = col_bgDirInf;
-	R_TopPanel->Color = col_bgDirInf;
-	L_HdrPanel->Color = col_bgDirInf;
-	R_HdrPanel->Color = col_bgDirInf;
+	L_TopPanel->Color = get_DirInfBgCol();
+	R_TopPanel->Color = get_DirInfBgCol();
+	L_HdrPanel->Color = get_DirInfBgCol();
+	R_HdrPanel->Color = get_DirInfBgCol();
 
 	RelPanel->ClientWidth  = HdrPanel->ClientHeight * 2 + 8;
 	RelPanel2->ClientWidth = RelPanel->ClientWidth;
-	RelPanel->Color 	   = col_bgDirRel;
-	RelPanel2->Color 	   = col_bgDirRel;
+	RelPanel->Color 	   = get_DirRelBgCol();
+	RelPanel2->Color 	   = get_DirRelBgCol();
 
 	//ドライブ表示
 	AssignScaledFont(s_font.get(), DrvInfFont, this);
@@ -4757,14 +4772,14 @@ void __fastcall TNyanFiForm::SetupDesign(
 		TPanel *pp = (i==0)? L_StatPanel : R_StatPanel;
 		pp->Font->Assign(s_font.get());
 		pp->ClientHeight = get_FontHeightMgnS(s_font.get(), 4) + SCALED_THIS(2);
-		pp->Color		 = col_bgDrvInf;
-		pp->Font->Color  = col_fgDrvInf;
+		pp->Color		 = get_DrvInfBgCol();
+		pp->Font->Color  = get_DrvInfFgCol();
 	}
 	FilterComboBox->Font->Assign(s_font.get());
 
 	//情報ヘッダ
 	AssignScaledFont(s_font.get(), ViewHdrFont, this);
-	int hdr_hi = get_FontHeightMgnS(s_font.get(), 4, 4);
+	int hdr_hi = get_FontHeightMgnS(s_font.get(), 6, 6);
 	ImgSttHeader->Align = ImgSttIsBottom? alBottom : alTop;
 	ImgSttHeader->ClientHeight = hdr_hi;
 	ImgSttHeader->Font->Assign(s_font.get());
@@ -4792,7 +4807,7 @@ void __fastcall TNyanFiForm::SetupDesign(
 
 	//タスク表示部
 	TPaintBox *pp = TaskPaintBox;
-	pp->Color = col_bgTask;
+	pp->Color = get_TaskBgCol();
 	AssignScaledFont(s_font.get(), LogFont, this);
 	pp->Font->Assign(s_font.get());
 	pp->Canvas->Font->Assign(pp->Font);
@@ -5004,7 +5019,7 @@ void __fastcall TNyanFiForm::SetupDesign(
 	SetupThumbnail();
 
 	if (initial) {
-		ThumbnailGrid->Visible = IniFile->ReadBoolGen(_T("ShowThumbnail"),	true);
+		ThumbnailPanel->Visible = IniFile->ReadBoolGen(_T("ShowThumbnail"),	true);
 		//※テキストビュアーを一旦表示状態にしないと幅が初期化されない
 		TxtViewPanel->Visible	= true;
 		TxtScrollPanel->Visible = true;
@@ -5886,8 +5901,8 @@ int __fastcall TNyanFiForm::SetCurFrecPtr(file_rec *fp)
 int __fastcall TNyanFiForm::GetCurIndex()
 {
 	return (ScrMode==SCMD_FLIST)? FileListBox[CurListTag]->ItemIndex :
-		   (ScrMode==SCMD_IVIEW)? (ThumbnailGrid->Visible ? get_GridIndex(ThumbnailGrid, ViewFileList->Count)
-														  : ViewFileList->IndexOf(ViewFileName))
+		   (ScrMode==SCMD_IVIEW)? (ThumbnailPanel->Visible ? get_GridIndex(ThumbnailGrid, ViewFileList->Count)
+														   : ViewFileList->IndexOf(ViewFileName))
 								: -1;
 }
 
@@ -7149,8 +7164,8 @@ void __fastcall TNyanFiForm::SetDrivePanel(int tag, UnicodeString msg)
 	if (lst_stt->is_IncSea || lst_stt->is_Filter) {
 		BlinkTimer->Tag = 1;
 		pp->Alignment	= taLeftJustify;
-		pp->Color		= col_bgList;
-		pp->Font->Color = col_fgList;
+		pp->Color		= get_ListBgCol();
+		pp->Font->Color = get_ListFgCol();
 		pp->Caption 	= EmptyStr;
 	}
 	else {
@@ -7161,7 +7176,7 @@ void __fastcall TNyanFiForm::SetDrivePanel(int tag, UnicodeString msg)
 		}
 		else if (lst_stt->sel_d_cnt>0 || lst_stt->sel_f_cnt>0) {
 			pp->Color		= lst_stt->color_selItem;
-			pp->Font->Color = (col_fgSelItem!=col_None)? col_fgSelItem : col_fgList;
+			pp->Font->Color = (col_fgSelItem!=col_None)? col_fgSelItem : get_ListFgCol();
 		}
 		else {
 			pp->Color		= lst_stt->color_bgDrvInf;
@@ -10221,7 +10236,7 @@ void __fastcall TNyanFiForm::FileListDrawItem(TWinControl *Control, int Index, T
 					per_str.sprintf(_T("%4.1f"), r_dir * 100.0);
 				else
 					per_str = "100.";
-				tmp_cv->Font->Color = col_fgList;
+				tmp_cv->Font->Color = get_ListFgCol();
 				int w_p4 = get_CharWidth(tmp_cv, 4, 2);
 				int x_grph = lst_stt->lxp_time + w_p4;
 				int w_per  = tmp_cv->TextWidth(per_str);
@@ -10240,7 +10255,7 @@ void __fastcall TNyanFiForm::FileListDrawItem(TWinControl *Control, int Index, T
 				int xp;
 				if (TimeStampFmt.Length()>10) {
 					xp = lst_stt->lxp_time + lst_stt->lwd_time*4/7 - w_cnt;
-					tmp_cv->Font->Color = col_fgList;
+					tmp_cv->Font->Color = get_ListFgCol();
 					tmp_cv->TextOut(xp, yp, cnt_str);
 					//ディレクトリ数
 					cnt_str = fp->d_count;
@@ -10248,7 +10263,7 @@ void __fastcall TNyanFiForm::FileListDrawItem(TWinControl *Control, int Index, T
 					tmp_cv->Font->Color = col_Folder;
 				}
 				else {
-					tmp_cv->Font->Color = col_fgList;
+					tmp_cv->Font->Color = get_ListFgCol();
 				}
 
 				xp = lst_stt->lxp_time + lst_stt->lwd_time - w_cnt;
@@ -10402,7 +10417,7 @@ void __fastcall TNyanFiForm::FileListDrawItem(TWinControl *Control, int Index, T
 			int xp = lst_stt->lxp_path;
 			//タグ
 			if (lst_stt->find_TAG && FindTagsColumn) {
-				usr_TAG->DrawTags(fp->tags, tmp_cv, xp, yp, RevTagCololr? col_bgFind : col_None);
+				usr_TAG->DrawTags(fp->tags, tmp_cv, xp, yp, RevTagColor? col_bgFind : col_None);
 			}
 			//場所
 			else {
@@ -10964,7 +10979,7 @@ void __fastcall TNyanFiForm::TxtPrvListBoxDrawItem(TWinControl *Control, int Ind
 
 	//テキスト
 	bool is_sel = State.Contains(odSelected) && lp->Focused();
-	cv->Brush->Color = is_sel? col_selItem : col_bgTxtPrv;
+	cv->Brush->Color = is_sel? col_selItem : get_TxtPrvBgCol();
 	cv->FillRect(rc);
 
 	if (is_cnt) {
@@ -10972,7 +10987,7 @@ void __fastcall TNyanFiForm::TxtPrvListBoxDrawItem(TWinControl *Control, int Ind
 	}
 	else {
 		PrvTextOut(lp, Index, cv, rc,
-			((is_sel && col_fgSelItem!=col_None)? col_fgSelItem : col_fgTxtPrv),
+			((is_sel && col_fgSelItem!=col_None)? col_fgSelItem : get_TxtPrvFgCol()),
 			lp->TabWidth, NULL, false, TxtPrvFile);
 	}
 
@@ -11023,11 +11038,11 @@ void __fastcall TNyanFiForm::TxtTailListBoxDrawItem(TWinControl *Control, int In
 	}
 
 	bool is_sel = State.Contains(odSelected) && lp->Focused();
-	cv->Brush->Color = is_sel? col_selItem : col_bgTxtPrv;
+	cv->Brush->Color = is_sel? col_selItem : get_TxtPrvBgCol();
 	cv->FillRect(rc);
 
 	PrvTextOut(lp, Index, cv, rc,
-		((is_sel && col_fgSelItem!=col_None)? col_fgSelItem : col_fgTxtPrv),
+		((is_sel && col_fgSelItem!=col_None)? col_fgSelItem : get_TxtPrvFgCol()),
 		lp->TabWidth, NULL, false, TxtPrvFile);
 
 	//カーソル
@@ -11085,11 +11100,11 @@ void __fastcall TNyanFiForm::LogListBoxDrawItem(TWinControl *Control, int Index,
 {
 	TListBox *lp = (TListBox*)Control;
 	TCanvas *cv = lp->Canvas;
-	cv->Brush->Color = (State.Contains(odSelected) && lp->Focused())? col_selItem : col_bgLog;
+	cv->Brush->Color = (State.Contains(odSelected) && lp->Focused())? col_selItem : get_LogBgCol();
 	cv->FillRect(Rect);
 
 	cv->Font->Assign(lp->Font);
-	cv->Font->Color = (lp->Focused() && is_SelFgCol(State))? col_fgSelItem : col_fgLog;
+	cv->Font->Color = (lp->Focused() && is_SelFgCol(State))? col_fgSelItem : get_LogFgCol();
 	int xp = Rect.Left + SCALED_THIS(2);
 	int yp = Rect.Top  + SCALED_THIS(1);
 
@@ -11102,7 +11117,7 @@ void __fastcall TNyanFiForm::LogListBoxDrawItem(TWinControl *Control, int Index,
 			out_TextEx(cv, xp, yp, lbuf.SubString(1, 11), col_None, col_None, 0);
 			lbuf.Delete(1, 11);
 			if (SameText(cmd, "LOAD") && EndsStr("  NOT USED", lbuf)) {
-				cv->Font->Color = AdjustColor(col_fgLog, ADJCOL_FGLIST);
+				cv->Font->Color = AdjustColor(get_LogFgCol(), ADJCOL_FGLIST);
 			}
 			else {
 				UnicodeString fnam;
@@ -11113,7 +11128,7 @@ void __fastcall TNyanFiForm::LogListBoxDrawItem(TWinControl *Control, int Index,
 				else {
 					fnam = split_tkn(lbuf, ' ');
 				}
-				out_TextEx(cv, xp, yp, fnam, get_ExtColor(get_extension(fnam), col_fgLog), col_None, 0);
+				out_TextEx(cv, xp, yp, fnam, get_ExtColor(get_extension(fnam), get_LogFgCol()), col_None, 0);
 				if (!lbuf.IsEmpty()) lbuf.Insert(" ", 1);
 			}
 		}
@@ -11219,10 +11234,10 @@ void __fastcall TNyanFiForm::RelPaintBoxPaint(TObject *Sender)
 	TCanvas *cv = pp->Canvas;
 	TRect    rc = pp->ClientRect;
 
-	cv->Brush->Color = col_bgDirRel;
+	cv->Brush->Color = get_DirRelBgCol();
 	cv->FillRect(rc);
 	cv->Font->Assign(pp->Font);
-	cv->Font->Color = col_fgDirRel;
+	cv->Font->Color = get_DirRelFgCol();
 	cv->Font->Style = cv->Font->Style >> fsItalic;
 
 	//関係記号
@@ -11238,7 +11253,7 @@ void __fastcall TNyanFiForm::RelPaintBoxPaint(TObject *Sender)
 	//横線表示
 	cv->Pen->Width = SCALED_THIS(1);
 	cv->Pen->Style = psSolid;
-	cv->Pen->Color = AdjustColor(col_fgDirRel, ADJCOL_LIGHT);
+	cv->Pen->Color = AdjustColor(get_DirRelFgCol(), ADJCOL_LIGHT);
 
 	//左右同ドライブ
 	if (((IsCurFList() && IsOppFList()) || IsDiffList())
@@ -11283,14 +11298,14 @@ void __fastcall TNyanFiForm::TaskPaintBoxPaint(TObject *Sender)
 	TPaintBox *pp = (TPaintBox*)Sender;
 	TCanvas *cv = pp->Canvas;
 	cv->Font->Assign(pp->Font);
-	cv->Brush->Color = col_bgTask;
+	cv->Brush->Color = get_TaskBgCol();
 	cv->FillRect(pp->ClientRect);
 
 	int h  = MulDiv(get_FontHeightMgnS(cv->Font), 5, 4) + SCALED_THIS(4);
 	int xp = SCALED_THIS(4);
 	int yp = SCALED_THIS(2);
 
-	cv->Font->Color = col_fgLog;
+	cv->Font->Color = get_LogFgCol();
 	int fsz = cv->Font->Size;
 	cv->Font->Size = MulDiv(fsz, 9, 10);
 	out_Text(cv, xp, yp, _T("タスク"));
@@ -11300,11 +11315,11 @@ void __fastcall TNyanFiForm::TaskPaintBoxPaint(TObject *Sender)
 	UnicodeString tmp;
 	int maxn = get_MaxTaskCount();
 	for (int i=0; i<maxn; i++) {
-		cv->Brush->Color = col_bgTask;
+		cv->Brush->Color = get_TaskBgCol();
 
 		TTaskThread *tp = TaskThread[i];
 		if (tp) {
-			cv->Font->Color = (tp->PreCount>0)? clGreen : tp->TaskPause? clRed : col_fgLog;
+			cv->Font->Color = (tp->PreCount>0)? clGreen : tp->TaskPause? clRed : get_LogFgCol();
 			cv->TextOut(xp, yp, tmp.sprintf(_T("%u:%5u"), i + 1, tp->Config->TaskList->Count));
 			yp += h;
 			int n = (tp->PreCount>0)? tp->PreCount : (tp->SubCount>0)? tp->SubCount : 0;
@@ -11329,15 +11344,15 @@ void __fastcall TNyanFiForm::TaskPaintBoxPaint(TObject *Sender)
 			yp += h;
 		}
 		else {
-			cv->Font->Color = AdjustColor(col_fgLog, ADJCOL_FGLIST);
+			cv->Font->Color = AdjustColor(get_LogFgCol(), ADJCOL_FGLIST);
 			cv->TextOut(xp, yp, tmp.sprintf(_T("%u:_____"), i + 1));
 			yp += h * 2;
 		}
 	}
 
 	//予約タスク状態表示
-	cv->Brush->Color = col_bgTask;
-	cv->Font->Color  = col_fgLog;
+	cv->Brush->Color = get_TaskBgCol();
+	cv->Font->Color  = get_LogFgCol();
 	yp += h/2;
 	if (TaskReserveList->Count>0) {
 		out_Text(cv, xp, yp, RsvSuspended? _T("保留中") : _T("待機中"));
@@ -11558,7 +11573,7 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 
 		//ファイル名、Exif情報の背景を描画
 		if (ShowThumbName || ShowThumbExif || ShowThumbTags) {
-			cv->Brush->Color = is_marked? col_bgMark : vfp->selected? col_selItem : col_bgList;
+			cv->Brush->Color = is_marked? col_bgMark : vfp->selected? col_selItem : get_ListBgCol();
 			TRect rc = Rect;
 			rc.Top = rc.Bottom;
 			if (ShowThumbName) rc.Top -= s_16;
@@ -11600,7 +11615,7 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 			if (vfp->tags.IsEmpty()) vfp->tags = usr_TAG->GetTags(vfnam);
 			if (!vfp->tags.IsEmpty())
 				usr_TAG->DrawTags(vfp->tags, cv, Rect.Left + 4, Rect.Bottom - s_14,
-					RevTagCololr? cv->Brush->Color : col_None);
+					RevTagColor? cv->Brush->Color : col_None);
 		}
 
 		//サムネイル表示
@@ -11613,7 +11628,7 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 				//拡張子強調表示
 				if (ShowThumbFExt) {
 					cv->Brush->Color = col_ext;
-					cv->Font->Color  = col_bgList;
+					cv->Font->Color  = get_ListBgCol();
 					cv->Font->Style  = (cv->Font->Style << fsBold);
 					fext.Delete(1, 1);
 					cv->TextOut(Rect.Left + SCALED_THIS(3), Rect.Top + s_2, fext.UpperCase());
@@ -11632,7 +11647,7 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 		}
 	}
 	catch (EAbort &e) {
-		cv->Brush->Color = col_bgList;
+		cv->Brush->Color = get_ListBgCol();
 		cv->FillRect(Rect);
 	}
 
@@ -11974,7 +11989,7 @@ void __fastcall TNyanFiForm::FileListIncSearch(
 				stt_pp->Caption = " サーチ: " + ReplaceStr(CurStt->incsea_Word, "&", "&&");
 				stt_pp->Color = col_bgWarn;  stt_pp->Repaint();
 				beep_Warn();  Sleep(250);
-				stt_pp->Color = col_bgList;
+				stt_pp->Color = get_ListBgCol();
 				delete_end(CurStt->incsea_Word);
 				set_IncSeaStt();
 			}
@@ -21456,7 +21471,7 @@ void __fastcall TNyanFiForm::MarkActionExecute(TObject *Sender)
 		case SCMD_IVIEW:
 			if (GetCurIndex()!=-1) {
 				if (!is_nd) NextFileAction->Execute();
-				if (ThumbnailGrid->Visible) ThumbnailGrid->Repaint();
+				if (ThumbnailPanel->Visible) ThumbnailGrid->Repaint();
 			}
 			break;
 		}
@@ -21579,7 +21594,7 @@ void __fastcall TNyanFiForm::MaskFindActionExecute(TObject *Sender)
 void __fastcall TNyanFiForm::MaskSelectActionExecute(TObject *Sender)
 {
 	try {
-		if (ScrMode==SCMD_IVIEW && !ThumbnailGrid->Visible) Abort();
+		if (ScrMode==SCMD_IVIEW && !ThumbnailPanel->Visible) Abort();
 
 		if (!MaskSelectDlg) MaskSelectDlg = new TMaskSelectDlg(this);	//初回に動的作成
 		UnicodeString mask;
@@ -21606,7 +21621,7 @@ void __fastcall TNyanFiForm::MaskSelectActionExecute(TObject *Sender)
 void __fastcall TNyanFiForm::MatchSelectActionExecute(TObject *Sender)
 {
 	try {
-		if (ScrMode==SCMD_IVIEW && !ThumbnailGrid->Visible) Abort();
+		if (ScrMode==SCMD_IVIEW && !ThumbnailPanel->Visible) Abort();
 
 		UnicodeString ptn;
 		if (!ActionParam.IsEmpty()) {
@@ -22841,7 +22856,7 @@ void __fastcall TNyanFiForm::OptionDlgActionExecute(TObject *Sender)
 			UnicodeString msg;
 			msg.sprintf(_T("スタイルが変更されています。\r\n<%s> → <%s>\r\nすぐに再起動しますか?"),
 				TStyleManager::ActiveStyle->Name.c_str(), VclStyle.c_str());
-			if (msgbox_Y_N_C(msg)==mrYes) ExeCommandAction("Restart");
+			if (msgbox_Y_N(msg)) ExeCommandAction("Restart", IniFile->FileName);
 		}
 	}
 }
@@ -24376,7 +24391,7 @@ void __fastcall TNyanFiForm::ScrollUpTextActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::SelAllFileActionExecute(TObject *Sender)
 {
-	if (ScrMode==SCMD_IVIEW && !ThumbnailGrid->Visible) {
+	if (ScrMode==SCMD_IVIEW && !ThumbnailPanel->Visible) {
 		SetActionAbort();
 	}
 	else {
@@ -24574,7 +24589,7 @@ void __fastcall TNyanFiForm::SelectActionExecute(TObject *Sender)
 					vfp->selected = !vfp->selected;
 				}
 				if (!TEST_ActParam("ND")) NextFileAction->Execute();
-				if (ThumbnailGrid->Visible) ThumbnailGrid->Repaint();
+				if (ThumbnailPanel->Visible) ThumbnailGrid->Repaint();
 			}
 			else SetActionAbort();
 		}
@@ -24800,7 +24815,7 @@ void __fastcall TNyanFiForm::SelOnlyCurActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::SelReverseActionExecute(TObject *Sender)
 {
-	if (ScrMode==SCMD_IVIEW && !ThumbnailGrid->Visible) {
+	if (ScrMode==SCMD_IVIEW && !ThumbnailPanel->Visible) {
 		SetActionAbort(); return;
 	}
 
@@ -24882,7 +24897,7 @@ void __fastcall TNyanFiForm::SelSameDirActionExecute(TObject *Sender)
 void __fastcall TNyanFiForm::SelSameExtActionExecute(TObject *Sender)
 {
 	try {
-		if (ScrMode==SCMD_IVIEW && !ThumbnailGrid->Visible) Abort();
+		if (ScrMode==SCMD_IVIEW && !ThumbnailPanel->Visible) Abort();
 		file_rec *cfp = GetCurFrecPtr();
 		if (!cfp || cfp->is_dir) Abort();
 
@@ -24922,7 +24937,7 @@ void __fastcall TNyanFiForm::SelSameExtActionExecute(TObject *Sender)
 void __fastcall TNyanFiForm::SelSameNameActionExecute(TObject *Sender)
 {
 	try {
-		if (ScrMode==SCMD_IVIEW && !ThumbnailGrid->Visible) Abort();
+		if (ScrMode==SCMD_IVIEW && !ThumbnailPanel->Visible) Abort();
 		file_rec *cfp = GetCurFrecPtr();
 		if (!cfp || cfp->is_dir) Abort();
 		int s_cnt = SelectMask(GetCurList(), UnicodeString().sprintf(_T("%s.*;%s"), cfp->b_name.c_str(), cfp->b_name.c_str()));
@@ -24939,7 +24954,7 @@ void __fastcall TNyanFiForm::SelSameNameActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::SelWorkItemActionExecute(TObject *Sender)
 {
-	if (ScrMode==SCMD_IVIEW && !ThumbnailGrid->Visible) { SetActionAbort(); return; }
+	if (ScrMode==SCMD_IVIEW && !ThumbnailPanel->Visible) { SetActionAbort(); return; }
 
 	int s_idx = -1;
 	TStringList *lst = GetCurList();
@@ -25339,7 +25354,7 @@ void __fastcall TNyanFiForm::SetTags(
 			int idx = ViewFileList->IndexOf(ViewFileName);
 			if (idx!=-1) SetImgInfListBox((file_rec*)ViewFileList->Objects[idx]);
 		}
-		if (ThumbnailGrid->Visible) ThumbnailGrid->Repaint();
+		if (ThumbnailPanel->Visible) ThumbnailGrid->Repaint();
 	}
 	else {
 		if (!sw_add && CurStt->is_Find && CurStt->find_TAG) {
@@ -29844,7 +29859,7 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 
 	TCanvas *tmp_cv = tmp_bmp->Canvas;
 	tmp_cv->Font->Assign(lp->Font);
-	tmp_cv->Brush->Color = col_bgList;
+	tmp_cv->Brush->Color = get_ListBgCol();
 	tmp_cv->FillRect(tmp_rc);
 
 	int yp	 = tmp_rc.Top;
@@ -29860,7 +29875,7 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 			if ((int)lp->Items->Objects[Index] == idx0) idx = 0;
 		}
 		LineNoOut(tmp_cv, tmp_rc, idx);
-		tmp_cv->Brush->Color = col_bgList;
+		tmp_cv->Brush->Color = get_ListBgCol();
 		dx = tmp_rc.Left;
 	}
 	//ディレクトリ名
@@ -29897,7 +29912,7 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 	}
 	//通常表示
 	else {
-		tmp_cv->Font->Color = col_fgList;
+		tmp_cv->Font->Color = get_ListFgCol();
 		int xp = xp_L + dx;
 		//検索
 		if (GrepPageControl->ActivePage == FindSheet) {
@@ -29960,12 +29975,12 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 				s1.Insert("\n", 1);
 				if (GrepTrimTop) s1 = TRegEx::Replace(s1, "\\n[\\s\\t]+", "\n");
 				TabCrTextOut(s1, tmp_cv, xp, yp,
-					GrepAdjNextLn? AdjustColor(col_fgList, ADJCOL_FGLIST) : col_fgList);
+					GrepAdjNextLn? AdjustColor(get_ListFgCol(), ADJCOL_FGLIST) : get_ListFgCol());
 			}
 		}
 		//置換
 		else {
-			TabCrTextOut(ln_str, tmp_cv, xp, yp, col_fgList);
+			TabCrTextOut(ln_str, tmp_cv, xp, yp, get_ListFgCol());
 		}
 	}
 
@@ -33350,7 +33365,7 @@ void __fastcall TNyanFiForm::WaitForImgReady(
 //---------------------------------------------------------------------------
 bool __fastcall TNyanFiForm::OpenImgViewer(file_rec *fp, bool fitted, int zoom)
 {
-	bool to_draw = (!ThumbnailGrid->Visible || !ThumbExtended);
+	bool to_draw = (!ThumbnailPanel->Visible || !ThumbExtended);
 
 	isViewClip = isViewFTP	= false;
 	isViewIcon = isViewAGif = false;
@@ -33384,8 +33399,8 @@ bool __fastcall TNyanFiForm::OpenImgViewer(file_rec *fp, bool fitted, int zoom)
 	}
 
 	if (isViewFTP) {
-		rqThumbnail = ThumbnailGrid->Visible;
-		ThumbnailGrid->Visible = false;
+		rqThumbnail = ThumbnailPanel->Visible;
+		ThumbnailPanel->Visible = false;
 	}
 
 	if (ShowHistogram && !HistForm->Visible)  HistForm->Show();
@@ -33409,7 +33424,7 @@ bool __fastcall TNyanFiForm::OpenImgViewer(file_rec *fp, bool fitted, int zoom)
 	if (is_ExtractIcon(fp)) {
 		isViewIcon = true;
 
-		if (ThumbnailGrid->Visible) ThumbnailGrid->Invalidate();
+		if (ThumbnailPanel->Visible) ThumbnailGrid->Invalidate();
 
 		std::unique_ptr<Graphics::TBitmap> bg_bmp(new Graphics::TBitmap());
 		TCanvas *cv = bg_bmp->Canvas;
@@ -33500,7 +33515,7 @@ bool __fastcall TNyanFiForm::OpenImgViewer(file_rec *fp, bool fitted, int zoom)
 		isViewAGif = true;
 		ImgBuff->Handle = NULL;
 
-		if (ThumbnailGrid->Visible) ThumbnailGrid->Invalidate();
+		if (ThumbnailPanel->Visible) ThumbnailGrid->Invalidate();
 
 		int i_wd = 0, i_hi = 0;
 		try {
@@ -33652,6 +33667,7 @@ bool __fastcall TNyanFiForm::OpenImgViewer(int idx)
 
 	handling = true;
 	set_GridIndex(ThumbnailGrid, idx, ViewFileList->Count);
+
 	SetCurFrecPtr(GetFrecPtrFromViewList(idx));
 	file_rec *vfp = (file_rec*)ViewFileList->Objects[idx];
 	if (OpenImgViewer(vfp) && NotThumbIfArc) {
@@ -33696,9 +33712,9 @@ bool __fastcall TNyanFiForm::ViewClipImage(bool fitted, int zoom)
 		SetScrMode(SCMD_IVIEW);
 		//イベント: イメージビュアーを開いた直後
 		ExeEventCommand(OnIvOpened);
-		rqThumbnail = ThumbnailGrid->Visible;
+		rqThumbnail = ThumbnailPanel->Visible;
 	}
-	ThumbnailGrid->Visible = false;
+	ThumbnailPanel->Visible = false;
 
 	if (ShowHistogram && !HistForm->Visible)  HistForm->Show();
 	if (ShowLoupe     && !LoupeForm->Visible) LoupeForm->Show();
@@ -33915,7 +33931,7 @@ bool __fastcall TNyanFiForm::ExeCommandI(UnicodeString cmd, UnicodeString prm)
 void __fastcall TNyanFiForm::CloseIActionExecute(TObject *Sender)
 {
 	ThumbnailThread->ReqClear = true;
-	if (rqThumbnail) ThumbnailGrid->Visible = true;
+	if (rqThumbnail) ThumbnailPanel->Visible = true;
 
 	//マーク
 	if (!isViewClip && !isViewFTP && MarkImgClose) {
@@ -34219,7 +34235,14 @@ void __fastcall TNyanFiForm::EndFileActionExecute(TObject *Sender)
 	for (int i=ViewFileList->Count-1; i>=0; i--) {
 		if (!((file_rec*)ViewFileList->Objects[i])->failed) { new_idx = i; break; }
 	}
-	if (!OpenImgViewer(new_idx)) SetActionAbort();
+	if (OpenImgViewer(new_idx)) {
+		InhSeekBar++;
+		SeekBar->Position = (SeekBar->Min<0)? -new_idx : new_idx;
+		InhSeekBar--;
+	}
+	else {
+		SetActionAbort();
+	}	
 }
 
 //---------------------------------------------------------------------------
@@ -34508,7 +34531,7 @@ void __fastcall TNyanFiForm::PageIxActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;
 	ap->Visible = ScrMode==SCMD_IVIEW;
-	ap->Enabled = ap->Visible && ThumbnailGrid->Visible && ThumbExtended && ViewFileList->Count>0;
+	ap->Enabled = ap->Visible && ThumbnailPanel->Visible && ThumbExtended && ViewFileList->Count>0;
 }
 
 //---------------------------------------------------------------------------
@@ -34540,7 +34563,7 @@ void __fastcall TNyanFiForm::PageIActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;
 	ap->Visible = ScrMode==SCMD_IVIEW;
-	ap->Enabled = ap->Visible && ThumbnailGrid->Visible && ViewFileList->Count>0;
+	ap->Enabled = ap->Visible && ThumbnailPanel->Visible && ViewFileList->Count>0;
 }
 
 //---------------------------------------------------------------------------
@@ -34630,9 +34653,9 @@ void __fastcall TNyanFiForm::SetFullScreen(
 		BoundsRect	= Application->MainForm->Monitor->BoundsRect;
 		Screen->Cursor = HideCsrInFull? crNone : crDefault;
 
-		nrmThumbnail = ThumbnailGrid->Visible;
+		nrmThumbnail = ThumbnailPanel->Visible;
 		if (HideThumbInFull)
-			ThumbnailGrid->Visible = false;
+			ThumbnailPanel->Visible = false;
 		else
 			SetupThumbnail(idx);
 
@@ -34656,7 +34679,7 @@ void __fastcall TNyanFiForm::SetFullScreen(
 		StatusBar1->Visible    = ShowSttBar;
 		Screen->Cursor		   = crDefault;
 
-		ThumbnailGrid->Visible = nrmThumbnail;
+		ThumbnailPanel->Visible = nrmThumbnail;
 		SetupThumbnail(idx);
 
 		//イベント: イメージビュアーで通常表示に戻った時
@@ -35046,7 +35069,7 @@ void __fastcall TNyanFiForm::ThumbnailActionUpdate(TObject *Sender)
 	TAction *ap = (TAction*)Sender;
 	ap->Visible = ScrMode==SCMD_IVIEW;
 	ap->Enabled = ap->Visible && !isViewClip && !isViewFTP;
-	ap->Checked = ThumbnailGrid->Visible;
+	ap->Checked = ThumbnailPanel->Visible;
 }
 //---------------------------------------------------------------------------
 //サムネイルの全面表示
@@ -35074,7 +35097,7 @@ void __fastcall TNyanFiForm::ThumbnailExActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;
 	ap->Visible = ScrMode==SCMD_IVIEW;
-	ap->Enabled = ap->Visible && ThumbnailGrid->Visible;
+	ap->Enabled = ap->Visible && ThumbnailPanel->Visible;
 	ap->Checked = ThumbExtended;
 }
 
@@ -35087,7 +35110,14 @@ void __fastcall TNyanFiForm::TopFileActionExecute(TObject *Sender)
 	for (int i=0; i<ViewFileList->Count; i++) {
 		if (!((file_rec*)ViewFileList->Objects[i])->failed) { new_idx = i; break; }
 	}
-	if (!OpenImgViewer(new_idx)) SetActionAbort();
+	if (OpenImgViewer(new_idx)) {
+		InhSeekBar++;
+		SeekBar->Position = (SeekBar->Min<0)? -new_idx : new_idx;
+		InhSeekBar--;
+	}
+	else {
+		SetActionAbort();
+	}	
 }
 
 //---------------------------------------------------------------------------
@@ -35451,7 +35481,7 @@ void __fastcall TNyanFiForm::IV_ThumbPosActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;
 	ap->Visible = ScrMode==SCMD_IVIEW;
-	ap->Enabled = ap->Visible && ThumbnailGrid->Visible;
+	ap->Enabled = ap->Visible && ThumbnailPanel->Visible;
 }
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::ThumbPosItemClick(TObject *Sender)
@@ -35928,7 +35958,7 @@ void __fastcall TNyanFiForm::TabCtrlWindowProc(TMessage &msg)
 			cv->Font->Assign(tp->Font);
 
 			if (TabControl1->Style==tsTabs) {
-				cv->Brush->Color = col_bgTabBar;
+				cv->Brush->Color = get_TabBarBgCol();
 				cv->FillRect(tp->ClientRect);
 			}
 
@@ -35951,22 +35981,22 @@ void __fastcall TNyanFiForm::TabCtrlWindowProc(TMessage &msg)
 				TRect rc = ((tab_info*)TabList->Objects[idx])->rc;
 				int xp = rc.Left + SCALED_THIS(4);
 
-				TColor col = (HotTabIndex==idx && HotTabIndex!=DragTabIndex)? SelectWorB(col_bgInAcTab, 0.33) :
-																	  is_act? col_bgActTab : col_bgInAcTab;
+				TColor col = (HotTabIndex==idx && HotTabIndex!=DragTabIndex)? SelectWorB(get_InAcTabBgCol(), 0.33) :
+																	  is_act? get_ActTabBgCol() : get_InAcTabBgCol();
 				switch (FlTabStyle) {
 				case 0:	//タブ
 					rc.Right += SCALED_THIS(is_act? 2 : 4);
 					rc.Bottom = y1;
 					cv->Brush->Color = col;
 					cv->FillRect(rc);
+/*
 					if (col_frmTab==col_None) {
 						::DrawEdge(cv->Handle, &rc, edge, BF_LEFT|BF_TOP|BF_RIGHT);
 					}
-					else {
-						cv->Brush->Color = col_frmTab;
-						cv->FrameRect(rc);
-						cv->Brush->Color = col;
-					}
+*/
+					cv->Brush->Color = get_TabFrmCol();
+					cv->FrameRect(rc);
+					cv->Brush->Color = col;
 					break;
 
 				case 1:	//タブ(斜め右辺)
@@ -35975,16 +36005,18 @@ void __fastcall TNyanFiForm::TabCtrlWindowProc(TMessage &msg)
 						int x0 = rc.Right - h/2;
 						int x1 = x0 + h;
 						TPoint shape[4] = {Point(rc.Left, y1), Point(rc.Left, y0), Point(x0, y0), Point(x1, y1)};
-						cv->Pen->Color	 = col_frmTab;
-						cv->Pen->Style	 = (col_frmTab==col_None)? psClear : psSolid;
+						cv->Pen->Color	 = get_TabFrmCol();
+						cv->Pen->Style	 = psSolid;
 						cv->Brush->Color = col;
 						cv->Polygon(shape, 3);
+						/*
 						if (col_frmTab==col_None) {
 							TRect rc1 = Rect(rc.Left, y0, rc.Right - h/2, y1);
 							TRect rc2 = Rect(x0, y0, x1, y1);
 							::DrawEdge(cv->Handle, &rc1, edge, BF_LEFT|BF_TOP);
 							::DrawEdge(cv->Handle, &rc2, edge, BF_DIAGONAL_ENDBOTTOMRIGHT);
 						}
+						*/
 					}
 					break;
 
@@ -35996,7 +36028,7 @@ void __fastcall TNyanFiForm::TabCtrlWindowProc(TMessage &msg)
 				case 3:	//フラットボタン
 					if (!is_act) {
 						InflateRect(rc, SCALED_THIS(4), SCALED_THIS(4));
-						cv->Brush->Color = col_bgTabBar;
+						cv->Brush->Color = get_TabBarBgCol();
 						cv->FillRect(rc);
 						InflateRect(rc, SCALED_THIS(-4), SCALED_THIS(-4));
 					}
@@ -36053,7 +36085,7 @@ void __fastcall TNyanFiForm::TabCtrlWindowProc(TMessage &msg)
 				std::unique_ptr<TDirect2DCanvas> dcv(new TDirect2DCanvas(cv, tp->ClientRect));
 				dcv->BeginDraw();
 				dcv->Font->Assign(tp->Font);
-				dcv->Font->Color  = col_fgTab;
+				dcv->Font->Color  = get_TabFgCol();
 				dcv->Brush->Style = bsClear;
 				for (int i=0; i<slst->Count; i++) {
 					DWORD p = (DWORD)slst->Objects[i];
@@ -36062,7 +36094,7 @@ void __fastcall TNyanFiForm::TabCtrlWindowProc(TMessage &msg)
 				dcv->EndDraw();
 			}
 			else {
-				cv->Font->Color  = col_fgTab;
+				cv->Font->Color  = get_TabFgCol();
 				cv->Brush->Style = bsClear;
 				for (int i=0; i<slst->Count; i++) {
 					DWORD p = (DWORD)slst->Objects[i];
@@ -36087,12 +36119,13 @@ void __fastcall TNyanFiForm::TabCtrlWindowProc(TMessage &msg)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::TabBottomPaintBoxPaint(TObject *Sender)
 {
-	if (col_frmTab!=col_None && (FlTabStyle==0 || FlTabStyle==1)) {
+//	if (col_frmTab!=col_None && (FlTabStyle==0 || FlTabStyle==1)) {
+	if (FlTabStyle==0 || FlTabStyle==1) {
 		TPaintBox *pp = (TPaintBox*)Sender;
 		TCanvas *cv = pp->Canvas;
 		cv->Pen->Width = pp->Height;
 		cv->Pen->Style = psSolid;
-		cv->Pen->Color = col_frmTab;
+		cv->Pen->Color = get_TabFrmCol();
 		cv->MoveTo(0, 0);
 		cv->LineTo(pp->ClientWidth, 0);
 
@@ -36104,7 +36137,7 @@ void __fastcall TNyanFiForm::TabBottomPaintBoxPaint(TObject *Sender)
 			int h  = TabPanel->ClientHeight - 2;
 			int x0 = rc.Left + 1;
 			int x1 = (FlTabStyle==1)? (rc.Right - h/2 + h - 1) : (rc.Right + 1);
-			cv->Pen->Color = col_bgActTab;
+			cv->Pen->Color = get_ActTabBgCol();
 			cv->MoveTo(x0, 0);
 			cv->LineTo(x1, 0);
 		}

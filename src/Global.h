@@ -392,7 +392,7 @@ extern bool TimColEnabled;
 extern bool PriorFExtCol;
 extern bool ColorOnlyFExt;
 extern bool SymColorToName;
-extern bool RevTagCololr;
+extern bool RevTagColor;
 extern bool ShowMainMenu;
 extern bool ShowImgPreview;
 extern bool ShowProperty;
@@ -1536,11 +1536,137 @@ inline void InvalidateFileList(int tag = CurListTag)
 	FileListBox[tag]->Invalidate();
 }
 
-inline bool is_AltLnBgCol(int idx)
+//---------------------------------------------------------------------------
+//”zF‚ÌŽæ“¾
+//---------------------------------------------------------------------------
+inline TColor get_ListBgCol()
 {
-	return (col_bgList2!=col_None && idx%2==1);
+	return (col_bgList==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindow) : col_bgList;
+}
+inline TColor get_ListFgCol()
+{
+	return (col_fgList==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindowText) : col_fgList;
+}
+inline TColor get_AltBgCol(int idx)
+{
+	return (col_bgList2!=col_None && idx%2==1)? col_bgList2 : get_ListBgCol();
+}
+//---------------------------------------------------------------------------
+inline TColor get_ViewBgCol()
+{
+	return (col_bgView==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindow) : col_bgView;
+}
+inline TColor get_ViewFgCol()
+{
+	return (col_bgView==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindowText) : col_fgView;
+}
+//---------------------------------------------------------------------------
+inline TColor get_TxtPrvBgCol()
+{
+	return (col_bgTxtPrv==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindow) : col_bgTxtPrv;
+}
+inline TColor get_TxtPrvFgCol()
+{
+	return (col_fgTxtPrv==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindowText) : col_fgTxtPrv;
+}
+//---------------------------------------------------------------------------
+inline TColor get_InfBgCol()
+{
+	return (col_bgInf==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindow) : col_bgInf;
+}
+inline TColor get_InfFgCol()
+{
+	return (col_fgInf==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindowText) : col_fgInf;
+}
+//---------------------------------------------------------------------------
+inline TColor get_LogBgCol()
+{
+	return (col_bgLog==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindow) : col_bgLog;
+}
+inline TColor get_LogFgCol()
+{
+	return (col_fgLog==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindowText) : col_fgLog;
+}
+inline TColor get_TaskBgCol()
+{
+	return (col_bgTask==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clWindow) : col_bgTask;
+}
+//---------------------------------------------------------------------------
+inline TColor get_ActTabBgCol()
+{
+	return (col_bgActTab==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnFace) : col_bgActTab;
+}
+inline TColor get_InAcTabBgCol()
+{
+	return (col_bgInAcTab==col_None)?
+		AdjustColor(TStyleManager::ActiveStyle->GetSystemColor(clBtnFace), ADJCOL_BGBIT) : col_bgInAcTab;
+}
+inline TColor get_TabFgCol()
+{
+	return (col_fgTab==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnText) : col_fgTab;
+}
+inline TColor get_TabFrmCol()
+{
+	return (col_frmTab==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnShadow): col_frmTab;
+}
+inline TColor get_TabBarBgCol()
+{
+	return (col_bgTabBar==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnFace) : col_bgTabBar;
+}
+//---------------------------------------------------------------------------
+inline TColor get_ListHdrBgCol()
+{
+	return (col_bgListHdr==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnFace) : col_bgListHdr;
+}
+inline TColor get_ListHdrFgCol()
+{
+	return (col_fgListHdr==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnText) : col_fgListHdr;
+}
+//---------------------------------------------------------------------------
+inline TColor get_InfHdrBgCol()
+{
+	return (col_bgInfHdr==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnFace) : col_bgInfHdr;
+}
+inline TColor get_InfHdrFgCol()
+{
+	return (col_fgInfHdr==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnText) : col_fgInfHdr;
+}
+//---------------------------------------------------------------------------
+inline TColor get_DirInfBgCol()
+{
+	return ((col_bgDirInf==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnFace) : col_bgDirInf);
+}
+inline TColor get_DirInfFgCol()
+{
+	return ((col_fgDirInf==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnText) : col_fgDirInf);
+}
+//---------------------------------------------------------------------------
+inline TColor get_DirRelBgCol()
+{
+	return ((col_bgDirRel==col_None)?
+				AdjustColor(TStyleManager::ActiveStyle->GetSystemColor(clBtnFace), ADJCOL_BGBIT) : col_bgDirRel);
+}
+inline TColor get_DirRelFgCol()
+{
+	return ((col_fgDirRel==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnText) : col_fgDirRel);
+}
+//---------------------------------------------------------------------------
+inline TColor get_DrvInfBgCol()
+{
+	return ((col_bgDrvInf==col_None)?
+				AdjustColor(TStyleManager::ActiveStyle->GetSystemColor(clBtnFace), ADJCOL_BGBIT) : col_bgDrvInf);
+}
+inline TColor get_DrvInfFgCol()
+{
+	return ((col_fgDrvInf==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnText) : col_fgDrvInf);
+}
+//---------------------------------------------------------------------------
+inline TColor get_SplitterCol()
+{
+	return (col_Splitter==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnFace) : col_Splitter;
 }
 
+//---------------------------------------------------------------------------
 inline bool is_SelFgCol(TOwnerDrawState stt)
 {
 	return (stt.Contains(odSelected) && col_fgSelItem!=col_None);
@@ -1553,7 +1679,7 @@ inline bool is_SelFgCol(bool sel)
 {
 	return (sel && col_fgSelItem!=col_None);
 }
-
+//---------------------------------------------------------------------------
 inline UnicodeString get_FExtMaxStr(int n = 0)
 {
 	return ("." + StringOfChar(_T('W'), (n>0)? n : FExtMaxWidth));

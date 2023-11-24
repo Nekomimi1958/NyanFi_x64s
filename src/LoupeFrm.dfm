@@ -57,9 +57,9 @@ object LoupeForm: TLoupeForm
     Height = 185
     Align = alClient
     BevelOuter = bvNone
+    ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 186
-    ExplicitHeight = 173
+    StyleElements = [seFont, seBorder]
     object ImgPanel: TPanel
       Left = 0
       Top = 0
@@ -70,8 +70,7 @@ object LoupeForm: TLoupeForm
       Color = clBlack
       ParentBackground = False
       TabOrder = 0
-      ExplicitWidth = 186
-      ExplicitHeight = 154
+      StyleElements = [seFont, seBorder]
       object LoupeImage: TImage
         Left = 0
         Top = 0
@@ -94,9 +93,6 @@ object LoupeForm: TLoupeForm
       BevelOuter = bvNone
       TabOrder = 1
       OnMouseMove = LoupeImageMouseMove
-      ExplicitTop = 154
-      ExplicitWidth = 186
-      ExplicitHeight = 19
       object MagToolBar: TToolBar
         Left = 0
         Top = 0
@@ -112,7 +108,6 @@ object LoupeForm: TLoupeForm
         ShowCaptions = True
         TabOrder = 0
         StyleElements = []
-        ExplicitWidth = 186
         object ToolButton1: TToolButton
           Tag = 1
           Left = 0

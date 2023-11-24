@@ -41,7 +41,7 @@ void __fastcall TDirHistoryDlg::FormShow(TObject *Sender)
 	HintPanel->Visible = false;
 
 	setup_Panel(InpPanel, ListFont);
-	InpPanel->Color   = col_bgList;
+	InpPanel->Color   = get_ListBgCol();
 	InpPanel->Visible = IsFindDirHist;
 	if (IsFindDirHist) UserModule->SetBlinkTimer(InpPaintBox);
 
@@ -177,7 +177,7 @@ void __fastcall TDirHistoryDlg::DirHistListBoxDrawItem(TWinControl *Control, int
 	TListBox *lp = (TListBox*)Control;
 	TCanvas *cv = lp->Canvas;
 	cv->Font->Assign(lp->Font);
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(Rect);
 
 	int xp = Rect.Left + SCALED_THIS(4);
@@ -185,7 +185,7 @@ void __fastcall TDirHistoryDlg::DirHistListBoxDrawItem(TWinControl *Control, int
 
 	if (!IsFindDirHist) {
 		if (Index<10) {
-			cv->Font->Color = col_fgList;
+			cv->Font->Color = get_ListFgCol();
 			cv->Font->Style = cv->Font->Style << fsUnderline;
 			cv->TextOut(xp, yp, UnicodeString().sprintf(_T("%u"), (Index + 1)%10));
 		}

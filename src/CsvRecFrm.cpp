@@ -103,11 +103,11 @@ void __fastcall TCsvRecForm::RecordGridDrawCell(TObject *Sender, System::LongInt
 	TStringGrid *gp = (TStringGrid*)Sender;
 	TCanvas *cv = gp->Canvas;
 	cv->Font->Assign(gp->Font);
-	cv->Brush->Color = State.Contains(gdSelected)? col_selItem : col_bgList;
+	cv->Brush->Color = State.Contains(gdSelected)? col_selItem : get_ListBgCol();
 	cv->FillRect(Rect);
 
 	UnicodeString cellstr = minimize_str(gp->Cells[ACol][ARow], gp->Canvas, gp->ColWidths[ACol] - 8, true);
-	cv->Font->Color = is_SelFgCol(State)? col_fgSelItem : (ACol==0)? col_Headline : col_fgList;
+	cv->Font->Color = is_SelFgCol(State)? col_fgSelItem : (ACol==0)? col_Headline : get_ListFgCol();
 	cv->TextOut(Rect.Left + SCALED_THIS(4), Rect.Top + get_TopMargin2(cv), cellstr);
 
 	//‹æØ‚èü

@@ -152,7 +152,7 @@ void __fastcall TAppListDlg::FormShow(TObject *Sender)
 		ShowCmdParamAction->Checked = IniFile->ReadBoolGen(_T("AppListShowCmdParam"));
 		ViewPanel->Height	= IniFile->ReadScaledIntGen(_T("AppListThumbHi"), 100, this);
 		ViewPanel->Color	= col_bgImage;
-		ViewSplitter->Color = col_Splitter;
+		ViewSplitter->Color = get_SplitterCol();
 		if (OnlyAppList) {
 			LRSplitter->Visible  = false;
 			LaunchPanel->Visible = false;
@@ -162,7 +162,7 @@ void __fastcall TAppListDlg::FormShow(TObject *Sender)
 			LaunchPanel->Visible = true;
 			set_PanelAlign(LaunchPanel, LRSplitter, IniFile->ReadIntGen(_T("AppListLaunchPos"), 1), 5);
 			LaunchPanel->Width = IniFile->ReadScaledIntGen(_T("AppListLaunchWd"), 120, this);
-			LRSplitter->Color  = col_Splitter;
+			LRSplitter->Color  = get_SplitterCol();
 		}
 	}
 
@@ -358,10 +358,10 @@ void __fastcall TAppListDlg::SetIncSeaMode(bool sw)
 	UserModule->SetBlinkTimer(NULL);
 
 	setup_Panel(DirPanel, DirInfFont);
-	DirPanel->Color 	  = col_bgDirInf;
-	DirPanel->Font->Color = col_fgDirInf;
+	DirPanel->Color 	  = get_DirInfBgCol();
+	DirPanel->Font->Color = get_DirInfFgCol();
 	setup_Panel(InpPanel, ListFont);
-	InpPanel->Color 	  = col_bgList;
+	InpPanel->Color 	  = get_ListBgCol();
 	InpPanel->BevelOuter  = bvLowered;
 
 	//インクリメンタルサーチモード
@@ -1024,9 +1024,8 @@ void __fastcall TAppListDlg::AppListBoxDrawItem(TWinControl *Control, int Index,
 	bool show_mon_no = (Screen->MonitorCount>1 && ShowMonNoAction->Checked);
 
 	//背景
-	cv->Brush->Color = ap->toClose ? clMaroon
-								   : State.Contains(odSelected) ? (lp->Focused()? col_selItem : SelectWorB(col_bgList, 0.15))
-																: col_bgList;
+	cv->Brush->Color = ap->toClose ? clMaroon: 
+		State.Contains(odSelected) ? (lp->Focused()? col_selItem : SelectWorB(get_ListBgCol(), 0.15)) : get_ListBgCol();
 	cv->FillRect(Rect);
 
 	int xp = Rect.Left + SCALED_THIS(4);
@@ -1072,7 +1071,7 @@ void __fastcall TAppListDlg::AppListBoxDrawItem(TWinControl *Control, int Index,
 	//数字
 	int yp = Rect.Top + (Rect.Height() - cv->TextHeight("I"))/2;
 	if (Index<10) {
-		cv->Font->Color = use_fgsel? col_fgSelItem : col_fgList;
+		cv->Font->Color = use_fgsel? col_fgSelItem : get_ListFgCol();
 		cv->Font->Style = cv->Font->Style << fsUnderline;
 		cv->TextOut(xp, yp, UnicodeString().sprintf(_T("%u"), (Index + 1)%10));
 	}
@@ -1088,7 +1087,7 @@ void __fastcall TAppListDlg::AppListBoxDrawItem(TWinControl *Control, int Index,
 		}
 		else {
 			if (ap->mon_no>=0) {
-				cv->Font->Color = use_fgsel? col_fgSelItem : AdjustColor(col_fgList, ADJCOL_LIGHT);
+				cv->Font->Color = use_fgsel? col_fgSelItem : AdjustColor(get_ListFgCol(), ADJCOL_LIGHT);
 				cv->TextOut(xp, yp, UnicodeString().sprintf(_T("%u"), ap->mon_no + 1));
 			}
 			else {
@@ -1116,12 +1115,12 @@ void __fastcall TAppListDlg::AppListBoxDrawItem(TWinControl *Control, int Index,
 
 	//テキスト
 	UnicodeString s = yen_to_delimiter(ap->WinText);
-	cv->Font->Color = (lp->Focused() && use_fgsel)? col_fgSelItem : col_fgList;
+	cv->Font->Color = (lp->Focused() && use_fgsel)? col_fgSelItem : get_ListFgCol();
 	cv->TextOut(xp, yp, s);
 
 	//コマンドラインパラメータ
 	if (ShowCmdParamAction->Checked && !ap->CmdParam.IsEmpty()) {
-		cv->Font->Color = (lp->Focused() && use_fgsel)? col_fgSelItem : AdjustColor(col_fgList, ADJCOL_LIGHT);
+		cv->Font->Color = (lp->Focused() && use_fgsel)? col_fgSelItem : AdjustColor(get_ListFgCol(), ADJCOL_LIGHT);
 		xp += (cv->TextWidth(s) + get_CharWidth(cv, 2));
 		int w = Rect.Right - xp - cv->TextWidth("… ");
 		if (w>0) cv->TextOut(xp, yp, minimize_str(yen_to_delimiter(ap->CmdParam), cv, w, true));
@@ -1629,7 +1628,7 @@ void __fastcall TAppListDlg::LaunchListBoxDrawItem(TWinControl *Control, int Ind
 	TListBox *lp = (TListBox*)Control;
 	TCanvas  *cv = lp->Canvas;
 	cv->Font->Assign(lp->Font);
-	cv->Brush->Color = (lp->Focused() && State.Contains(odSelected))? col_selItem : col_bgList;
+	cv->Brush->Color = (lp->Focused() && State.Contains(odSelected))? col_selItem : get_ListBgCol();
 	cv->FillRect(Rect);
 
 	int xp = Rect.Left + SCALED_THIS(4);

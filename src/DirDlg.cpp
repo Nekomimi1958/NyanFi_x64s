@@ -455,7 +455,7 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 	cv->Font->Assign(lp->Font);
 	TColor adj_col = AdjustColor(col_Folder, ADJCOL_LIGHT);
 
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(Rect);
 
 	TRect rc = Rect;
@@ -501,7 +501,7 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 						xp += SCALED_THIS(20);
 					}
 					//–¼‘O
-					cv->Font->Color = col_fgList;
+					cv->Font->Color = get_ListFgCol();
 					UnicodeString inam = itm_buf[1];
 					bool brk = remove_top_s(inam, '|');
 					cv->TextOut(xp, yp, inam);
@@ -539,7 +539,7 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 			//€–Ú
 			else {
 				//ƒL[
-				cv->Font->Color = col_fgList;
+				cv->Font->Color = get_ListFgCol();
 				cv->Font->Style = cv->Font->Style << fsBold;
 				int s_wd = cv->TextWidth(itm_buf[0]);
 				int c_wd = sp->Items[0]->Width - 4;
@@ -558,7 +558,7 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 				UnicodeString dnam = itm_buf[2];
 				if (StartsStr("#:", dnam)) {
 					cv->Font->Color = adj_col;
-					usr_TAG->DrawTags(dnam, cv, xp, yp, RevTagCololr? col_bgList : col_None);
+					usr_TAG->DrawTags(dnam, cv, xp, yp, RevTagColor? get_ListBgCol() : col_None);
 				}
 				else {
 					if (remove_top_s(dnam, '%')) {
@@ -571,7 +571,7 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 					PathNameOut(dnam, cv, xp, yp, rc.Right - xp - SCALED_THIS(4));
 					if (!itm_buf[3].IsEmpty()) {
 						out_TextEx(cv, xp, yp, " : ", adj_col);
-						cv->Font->Color = col_fgList;
+						cv->Font->Color = get_ListFgCol();
 						cv->TextOut(xp, yp, itm_buf[3]);
 					}
 				}

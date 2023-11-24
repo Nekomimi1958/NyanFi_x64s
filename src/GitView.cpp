@@ -66,11 +66,11 @@ void __fastcall TGitViewer::FormShow(TObject *Sender)
 	ShowRemoteAction->Checked   = IniFile->ReadBoolGen(_T("GitViewShowRemote"));
 	ShowAuthorAction->Checked   = IniFile->ReadBoolGen(_T("GitViewShowAuthor"));
 
-	CommitSplitter->Color = col_Splitter;
-	DiffSplitter->Color   = col_Splitter;
-	BranchListBox->Color  = col_bgList;
-	CommitListBox->Color  = col_bgList;
-	DiffListBox->Color	  = col_bgList;
+	CommitSplitter->Color = get_SplitterCol();
+	DiffSplitter->Color   = get_SplitterCol();
+	BranchListBox->Color  = get_ListBgCol();
+	CommitListBox->Color  = get_ListBgCol();
+	DiffListBox->Color	  = get_ListBgCol();
 
 	set_EditColor(FindCommitEdit, true);
 
@@ -695,7 +695,7 @@ void __fastcall TGitViewer::BranchListBoxDrawItem(TWinControl *Control, int Inde
 
 	TCanvas *cv = lp->Canvas;
 	cv->Brush->Color = State.Contains(odSelected)? (State.Contains(odFocused)? col_selItem : col_oppItem) :
-						  (flag & GIT_FLAG_HDRLN)? col_bgListHdr : lp->Color;
+						  (flag & GIT_FLAG_HDRLN)? get_ListHdrBgCol() : lp->Color;
 	cv->FillRect(Rect);
 	if (flag & GIT_FLAG_BLANK) return;
 
@@ -704,7 +704,7 @@ void __fastcall TGitViewer::BranchListBoxDrawItem(TWinControl *Control, int Inde
 	UnicodeString lbuf = lp->Items->Strings[Index];
 	//ヘッダ
 	if (flag & GIT_FLAG_HDRLN) {
-		out_TextEx(cv, xp, yp, lbuf, col_fgListHdr, col_bgListHdr);
+		out_TextEx(cv, xp, yp, lbuf, get_ListHdrFgCol(), get_ListHdrBgCol());
 	}
 	//項目
 	else {
@@ -715,7 +715,7 @@ void __fastcall TGitViewer::BranchListBoxDrawItem(TWinControl *Control, int Inde
 		}
 		xp += cv->TextWidth(HEAD_Mark);
 		//ブランチ/タグ
-		cv->Font->Color = is_SelFgCol(State)? col_fgSelItem : (flag & GIT_FLAG_INVAL)? col_InvItem : col_fgList;
+		cv->Font->Color = is_SelFgCol(State)? col_fgSelItem : (flag & GIT_FLAG_INVAL)? col_InvItem : get_ListFgCol();
 		cv->TextOut(xp, yp, lbuf);
 	}
 }
@@ -847,7 +847,7 @@ void __fastcall TGitViewer::CommitListBoxDrawItem(TWinControl *Control, int Inde
 		UnicodeString s = gp->msg;
 		out_TextEx(cv, xp, yp, split_tkn(s, ": "), col_GitBra, col_None, s_8);
 		if (TRegEx::IsMatch(s, "^[0-9a-f]{7}\\s")) out_TextEx(cv, xp, yp, split_tkn(s, ' '), col_GitHash, col_None, s_8);
-		out_TextEx(cv, xp, yp, s, col_fgList, col_None);
+		out_TextEx(cv, xp, yp, s, get_ListFgCol(), col_None);
 	}
 	if (gp->is_work || gp->is_index) {
 		UnicodeString s1 = "作業ツリー ";
@@ -855,7 +855,7 @@ void __fastcall TGitViewer::CommitListBoxDrawItem(TWinControl *Control, int Inde
 		UnicodeString s  = gp->is_work? s1 : s2;
 		xp += (std::max(cv->TextWidth(s1), cv->TextWidth(s2)) - cv->TextWidth(s));
 		out_TextEx(cv, xp, yp, s, col_Folder, col_None, 0);
-		out_TextEx(cv, xp, yp, gp->msg, col_fgList);
+		out_TextEx(cv, xp, yp, gp->msg, get_ListFgCol());
 	}
 	else if (!gp->hash.IsEmpty()) {
 		//ハッシュ
@@ -869,13 +869,13 @@ void __fastcall TGitViewer::CommitListBoxDrawItem(TWinControl *Control, int Inde
 
 		//Author
 		if (ShowAuthorAction->Checked) {
-			cv->Font->Color = col_fgList;
+			cv->Font->Color = get_ListFgCol();
 			cv->TextOut(xp, yp, gp->author);
 			xp += (MaxAnWidth + s_8);
 		}
 
 		//日時
-		out_TextEx(cv, xp, yp, get_TimeStampStr(gp->f_time), get_TimeColor(gp->f_time, col_fgList), 
+		out_TextEx(cv, xp, yp, get_TimeStampStr(gp->f_time), get_TimeColor(gp->f_time, get_ListFgCol()), 
 			col_None, max_h_wd);
 
 		//タグ
@@ -892,16 +892,16 @@ void __fastcall TGitViewer::CommitListBoxDrawItem(TWinControl *Control, int Inde
 				UnicodeString ss = b_buf[i];
 				if (remove_top_s(ss, "HEAD -> ") || SameStr(ss, "HEAD"))
 					out_TextEx(cv, xp, yp, HEAD_Mark, col_GitHEAD, col_None, 0);
-				out_TextEx(cv, xp, yp, ss, col_bgList, col_GitBra, s_4);
+				out_TextEx(cv, xp, yp, ss, get_ListBgCol(), col_GitBra, s_4);
 				xp += s_4;
 			}
 		}
 		if (ShowRemoteAction->Checked && !gp->branch_r.IsEmpty()) {
-			out_TextEx(cv, xp, yp, gp->branch_r, col_bgList, col_GitBraR, s_8);
+			out_TextEx(cv, xp, yp, gp->branch_r, get_ListBgCol(), col_GitBraR, s_8);
 		}
 
 		//メッセージ
-		out_TextEx(cv, xp, yp, gp->msg, col_fgList);
+		out_TextEx(cv, xp, yp, gp->msg, get_ListFgCol());
 	}
 
 	draw_ListCursor2(lp, Rect, Index, State);
@@ -978,7 +978,7 @@ void __fastcall TGitViewer::DiffListBoxDrawItem(TWinControl *Control, int Index,
 			if (dnam.Pos(" => ")) {
 				UnicodeString s1 = split_tkn(dnam, " => ");
 				out_TextEx(cv, xp, yp, s1, col_Folder, col_None, 0);
-				out_TextEx(cv, xp, yp, " → ", col_fgList, col_None, 0);
+				out_TextEx(cv, xp, yp, " → ", get_ListFgCol(), col_None, 0);
 			}
 			out_TextEx(cv, xp, yp, dnam, col_Folder, col_None, 0);
 		}
@@ -986,27 +986,27 @@ void __fastcall TGitViewer::DiffListBoxDrawItem(TWinControl *Control, int Index,
 		//ファイル名
 		if (s.Pos(" => ")) {
 			UnicodeString s1 = split_tkn(s, " => ");
-			out_TextEx(cv, xp, yp, s1, get_ExtColor(get_extension(s1), col_fgList), col_None, 0);
-			out_TextEx(cv, xp, yp, " → ", col_fgList);
+			out_TextEx(cv, xp, yp, s1, get_ExtColor(get_extension(s1), get_ListFgCol()), col_None, 0);
+			out_TextEx(cv, xp, yp, " → ", get_ListFgCol());
 		}
-		out_TextEx(cv, xp, yp, s, get_ExtColor(get_extension(Trim(s)), col_fgList));
+		out_TextEx(cv, xp, yp, s, get_ExtColor(get_extension(Trim(s)), get_ListFgCol()));
 
 		//罫線
 		TRect rc = Rect; rc.Left = xp = MaxDfWidth;
-		RuledLnTextOut("│", cv, rc, col_fgList);
+		RuledLnTextOut("│", cv, rc, get_ListFgCol());
 		xp = rc.Left;
 		//統計
 		s = split_tkn_spc(lbuf) + " ";
 		if (StartsText("Bin", Trim(s))) {
-			out_TextEx(cv, xp, yp, s, AdjustColor(col_fgList, ADJCOL_FGLIST));
+			out_TextEx(cv, xp, yp, s, AdjustColor(get_ListFgCol(), ADJCOL_FGLIST));
 			lbuf = ReplaceStr(lbuf, "->", "→");
-			out_TextEx(cv, xp, yp, lbuf, col_fgList);
+			out_TextEx(cv, xp, yp, lbuf, get_ListFgCol());
 		}
 		else {
 			//変更数
 			UnicodeString tmp = ReplaceStr(s, " ", "0");
 			xp += (cv->TextWidth(tmp) - cv->TextWidth(s));
-			out_TextEx(cv, xp, yp, s, col_fgList);
+			out_TextEx(cv, xp, yp, s, get_ListFgCol());
 			//グラフ
 			int g_w = rc.Height() / 3;
 			TRect g_rc = rc;
@@ -1032,7 +1032,7 @@ void __fastcall TGitViewer::DiffListBoxDrawItem(TWinControl *Control, int Index,
 	//? ファイル
 	else if (SameStr(lbuf.SubString(2, 1), "?")) {
 		lbuf.Delete(1, 2);
-		out_TextEx(cv, xp, yp, lbuf, get_ExtColor(get_extension(Trim(lbuf)), col_fgList));
+		out_TextEx(cv, xp, yp, lbuf, get_ExtColor(get_extension(Trim(lbuf)), get_ListFgCol()));
 	}
 	//計
 	else {
@@ -1040,9 +1040,9 @@ void __fastcall TGitViewer::DiffListBoxDrawItem(TWinControl *Control, int Index,
 		if (t_buf.Length==3) {
 			for (int i=0; i<3; i++) {
 				UnicodeString s = t_buf[i];
-				if (i>0) out_TextEx(cv, xp, yp, ",", col_fgList);
+				if (i>0) out_TextEx(cv, xp, yp, ",", get_ListFgCol());
 				out_TextEx(cv, xp, yp, s,
-					remove_end_text(s, "(-)")? col_GitDel : remove_end_text(s, "(+)")? col_GitIns : col_fgList,
+					remove_end_text(s, "(-)")? col_GitDel : remove_end_text(s, "(+)")? col_GitIns : get_ListFgCol(),
 					col_None, 0);
 			}
 			draw_separateLine(cv, Rect);

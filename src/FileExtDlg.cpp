@@ -149,7 +149,7 @@ void __fastcall TFileExtensionDlg::FormShow(TObject *Sender)
 	AssignScaledFont(FileInfBar, SttBarFont);
 	FileInfBar->Panels->Items[0]->Text = EmptyStr;
 
-	ListSplitter->Color = col_Splitter;
+	ListSplitter->Color = get_SplitterCol();
 
 	FextMask  = EmptyStr;
 	ErrMesage = EmptyStr;
@@ -542,7 +542,7 @@ void __fastcall TFileExtensionDlg::InfoListBoxDrawItem(TWinControl *Control, int
 	TCanvas  *cv = lp->Canvas;
 	cv->Font->Assign(lp->Font);
 
-	TColor bgcol = is_AltLnBgCol(Index)? col_bgList2 : col_bgList;
+	TColor bgcol = get_AltBgCol(Index);
 	cv->Brush->Color = bgcol;
 	cv->FillRect(Rect);
 
@@ -564,7 +564,7 @@ void __fastcall TFileExtensionDlg::InfoListBoxDrawItem(TWinControl *Control, int
 
 	//ファイル数
 	UnicodeString lbuf = get_size_str_B(ip->f_count, 7);
-	cv->Font->Color = col_fgList;
+	cv->Font->Color = get_ListFgCol();
 	cv->TextOut(xp + FCntSctWd - cv->TextWidth(lbuf), yp, lbuf);
 	xp += FCntSctWd;
 
@@ -572,9 +572,9 @@ void __fastcall TFileExtensionDlg::InfoListBoxDrawItem(TWinControl *Control, int
 	lbuf = get_size_str_G(ip->f_size, ((SizeFormatMode>0)? 7 : 10), SizeDecDigits, SizeFormatMode);
 
 	float r = (TotalSize>0)? (1.0 * ip->f_size/TotalSize) : 0.0;
-	cv->Font->Color = get_SizeColor(ip->f_size, col_fgList);
+	cv->Font->Color = get_SizeColor(ip->f_size, get_ListFgCol());
 	cv->TextOut(xp + SizeSctWd - cv->TextWidth(lbuf), yp, lbuf);
-	cv->Font->Color = col_fgList;
+	cv->Font->Color = get_ListFgCol();
 	lbuf.sprintf(_T(" %4.1f%%"), r * 100.0);
 	cv->TextOut(xp + SizeSctWd + PercSctWd - cv->TextWidth(lbuf), yp, lbuf);
 	xp += SizeSctWd + PercSctWd + 8;
@@ -589,7 +589,7 @@ void __fastcall TFileExtensionDlg::InfoListBoxDrawItem(TWinControl *Control, int
 	//平均サイズ
 	lbuf = get_size_str_G(ip->av_size, 10, SizeDecDigits);
 	cv->Brush->Color = bgcol;
-	cv->Font->Color  = get_SizeColor(ip->av_size, col_fgList);
+	cv->Font->Color  = get_SizeColor(ip->av_size, get_ListFgCol());
 	cv->TextOut(xp + SizeSctWd - cv->TextWidth(lbuf), yp, lbuf);
 
 	//カーソル
@@ -669,7 +669,7 @@ void __fastcall TFileExtensionDlg::FileListBoxDrawItem(TWinControl *Control, int
 	TCanvas  *cv = lp->Canvas;
 	cv->Font->Assign(lp->Font);
 
-	cv->Brush->Color = is_AltLnBgCol(Index)? col_bgList2 : col_bgList;
+	cv->Brush->Color = get_AltBgCol(Index);
 	cv->FillRect(Rect);
 
 	int xp = Rect.Left + SCALED_THIS(4);
@@ -691,7 +691,7 @@ void __fastcall TFileExtensionDlg::FileListBoxDrawItem(TWinControl *Control, int
 			cv->FillRect(mrc);
 		}
 
-		cv->Font->Color = col_fgList;
+		cv->Font->Color = get_ListFgCol();
 
 		//拡張子非分離
 		if (NoSpaceFExt) {

@@ -21,8 +21,7 @@ TColor SelectWorB(TColor col, float rt = 1.0);
 #define ADJCOL_LIGHT	72
 #define ADJCOL_FGLIST	96
 #define ADJCOL_BGINV	32
-#define ADJCOL_BGLTL	24
-#define ADJCOL_BGBIT	12
+#define ADJCOL_BGBIT	16
 TColor AdjustColor(TColor col, int adj);
 
 TColor Mix2Colors(TColor col1, TColor col2);

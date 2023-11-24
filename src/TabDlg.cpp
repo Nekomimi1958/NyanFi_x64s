@@ -75,7 +75,7 @@ void __fastcall TTabSetDlg::RefIconBtnClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TTabSetDlg::IconEditChange(TObject *Sender)
 {
-	usr_SH->draw_SmallIcon(to_absolute_name(IconEdit->Text), IcoImage, col_bgActTab, this);
+	usr_SH->draw_SmallIcon(to_absolute_name(IconEdit->Text), IcoImage, get_ActTabBgCol(), this);
 }
 //---------------------------------------------------------------------------
 //ƒz[ƒ€‚ğQÆ

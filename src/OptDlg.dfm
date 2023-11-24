@@ -493,7 +493,7 @@ object OptionDlg: TOptionDlg
       object MigemoDirEdit: TLabeledEdit
         Left = 120
         Top = 41
-        Width = 269
+        Width = 273
         Height = 23
         EditLabel.Width = 102
         EditLabel.Height = 23
@@ -575,7 +575,7 @@ object OptionDlg: TOptionDlg
         end
       end
       object RefMigemoBtn: TButton
-        Left = 392
+        Left = 397
         Top = 41
         Width = 36
         Height = 22
@@ -585,8 +585,8 @@ object OptionDlg: TOptionDlg
         OnClick = RefMigemoBtnClick
       end
       object RefTmpDirBtn: TButton
-        Left = 392
-        Top = 12
+        Left = 397
+        Top = 13
         Width = 36
         Height = 22
         Anchors = [akTop, akRight]
@@ -621,7 +621,7 @@ object OptionDlg: TOptionDlg
       object TempDirEdit: TLabeledEdit
         Left = 120
         Top = 12
-        Width = 269
+        Width = 273
         Height = 23
         EditLabel.Width = 80
         EditLabel.Height = 23
@@ -3104,7 +3104,6 @@ object OptionDlg: TOptionDlg
           Anchors = [akLeft, akTop, akBottom]
           TabOrder = 0
           OnDrawItem = OptColListBoxDrawItem
-          ExplicitHeight = 186
         end
         object RefColBtn: TButton
           Left = 388
@@ -3168,7 +3167,6 @@ object OptionDlg: TOptionDlg
           Text = ''
           OnChange = FindColEditChange
           OnKeyDown = FindColEditKeyDown
-          ExplicitTop = 210
         end
         object FindUpColBtn: TButton
           Left = 392
@@ -3178,7 +3176,6 @@ object OptionDlg: TOptionDlg
           Action = FindColUpAction
           Anchors = [akLeft, akBottom]
           TabOrder = 6
-          ExplicitTop = 209
         end
         object FindDownColBtn: TButton
           Left = 364
@@ -3188,7 +3185,6 @@ object OptionDlg: TOptionDlg
           Action = FindColDownAction
           Anchors = [akLeft, akBottom]
           TabOrder = 5
-          ExplicitTop = 209
         end
       end
       object TagColGroupBox: TGroupBox
@@ -3292,7 +3288,6 @@ object OptionDlg: TOptionDlg
           Anchors = [akLeft, akTop, akBottom]
           TabOrder = 0
           OnDrawItem = OptColListBoxDrawItem
-          ExplicitHeight = 152
         end
         object RefTimColBtn: TButton
           Tag = 1

@@ -135,7 +135,7 @@ void __fastcall TGeneralInfoDlg::FormShow(TObject *Sender)
 				| (isTree? LBTAG_OPT_TREE : 0);
 
 	set_ListBoxItemHi(lp, GenListFont);
-	lp->Color = isLog? col_bgLog : col_bgList;
+	lp->Color = isLog? get_LogBgCol() : get_ListBgCol();
 	ListPanel->Color = lp->Color;
 	lp->TabWidth = get_ViewTabWidth(get_extension(FileName));	//タブ幅(描画のために流用)
 	set_UsrScrPanel(ListScrPanel);
@@ -697,8 +697,9 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 
 	//背景色
 	cv->Brush->Color = State.Contains(odSelected)? (lp->Focused()? col_selItem : col_oppItem) :
-											isLog? col_bgLog :
-			 (isPlayList && is_AltLnBgCol(Index))? col_bgList2 : col_bgList;
+											isLog? get_LogBgCol() :
+									   isPlayList? get_AltBgCol(Index) : get_ListBgCol();
+
 	cv->FillRect(rc);
 
 	rc.Left += 4;
@@ -721,7 +722,7 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 			RuledLnTextOut(namstr, cv, rc, use_fgsel? col_fgSelItem : col_fgInfNam, tw, wlist.get(), case_sns);
 			rc.Left = xp + MaxNameWidth;
 			lw = MaxNameWidth + get_TabTextWidth(lbuf, cv, tw);
-			RuledLnTextOut(lbuf, cv, rc, use_fgsel? col_fgSelItem : col_fgList, tw, wlist.get(), case_sns);
+			RuledLnTextOut(lbuf, cv, rc, use_fgsel? col_fgSelItem : get_ListFgCol(), tw, wlist.get(), case_sns);
 		}
 		else {
 			RuledLnTextOut(lbuf, cv, rc, use_fgsel? col_fgSelItem : col_Headline, tw, wlist.get(), case_sns);
@@ -743,16 +744,16 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 				is_brk = (MilliSecondsBetween(idx_t, lst_t) > (30*1000));
 			}
 		}
-		TColor fg = use_fgsel? col_fgSelItem : AdjustColor(col_fgList, ADJCOL_FGLIST);
+		TColor fg = use_fgsel? col_fgSelItem : AdjustColor(get_ListFgCol(), ADJCOL_FGLIST);
 		out_TextEx(cv, xp, yp, s, fg, col_None, mgn);
 		//ID
 		UnicodeString id = split_tkn(cmd_inf, ' ');
-		fg = use_fgsel? col_fgSelItem : col_fgList;
+		fg = use_fgsel? col_fgSelItem : get_ListFgCol();
 		out_TextEx(cv, xp, yp, ReplaceStr(id, "-", " "), fg, col_None, mgn);
 		//L/R
 		s = split_tkn(cmd_inf, ' ');
 		for (int i=1; i<=s.Length(); i++) {
-			fg = use_fgsel? col_fgSelItem : (s[i]=='_')? AdjustColor(col_fgList, ADJCOL_FGLIST) : col_fgList;
+			fg = use_fgsel? col_fgSelItem : (s[i]=='_')? AdjustColor(get_ListFgCol(), ADJCOL_FGLIST) : get_ListFgCol();
 			out_TextEx(cv, xp, yp, s[i], fg, col_None, 0);
 		}
 		xp += (mgn * 2);
@@ -776,7 +777,7 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 				fg = use_fgsel? col_fgSelItem : col_Symbol;
 				out_TextEx(cv, xp, yp, "_", fg, col_None, 0);
 				rc.Left = xp;
-				RuledLnTextOut(prm, cv, rc, use_fgsel? col_fgSelItem : col_fgList, tw, wlist.get(), case_sns);
+				RuledLnTextOut(prm, cv, rc, use_fgsel? col_fgSelItem : get_ListFgCol(), tw, wlist.get(), case_sns);
 				xp = rc.Left + mgn * 2;
 			}
 			//カレントパス/ファイル名
@@ -786,7 +787,7 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 				if (xp<cmd_w) xp = cmd_w; else xp += (tab_w - xp%tab_w);
 				if (StartsStr('<', lbuf)) {
 					out_TextEx(cv, xp, yp, split_tkn(lbuf, '>') + ">",
-						use_fgsel? col_fgSelItem : col_fgList, col_None, 0);
+						use_fgsel? col_fgSelItem : get_ListFgCol(), col_None, 0);
 				}
 				if (ends_PathDlmtr(lbuf)) {
 					cv->Font->Color = use_fgsel? col_fgSelItem : col_Folder;
@@ -824,10 +825,10 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 			else {
 				FileNameOut(cv, rc, fnam, use_fgsel, true, wlist.get(), case_sns);
 			}
-			RuledLnTextOut(lbuf, cv, rc, use_fgsel? col_fgSelItem : col_fgList, tw, wlist.get(), case_sns);
+			RuledLnTextOut(lbuf, cv, rc, use_fgsel? col_fgSelItem : get_ListFgCol(), tw, wlist.get(), case_sns);
 		}
 		else {
-			cv->Font->Color = use_fgsel? col_fgSelItem : col_fgList;
+			cv->Font->Color = use_fgsel? col_fgSelItem : get_ListFgCol();
 			PathNameOut(lbuf, wlist.get(), case_sns, cv, xp, yp);
 		}
 	}
@@ -873,7 +874,7 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 			use_fgsel? col_fgSelItem :
 			TRegEx::IsMatch(lbuf, "^([^ :.]{2,}\\.(exe|dll|spi)|\\.|WIC)")? col_Headline :
 			StartsStr("         エラー:", lbuf)? col_Error :
-			StartsStr('[', lbuf)? col_Comment : col_fgList;
+			StartsStr('[', lbuf)? col_Comment : get_ListFgCol();
 
 		if (EndsStr('\\', lbuf) && lbuf.Pos(':')>1) {
 			cv->Font->Color = fg;
@@ -887,7 +888,7 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 	else if (isGit) {
 		TColor fg = use_fgsel? col_fgSelItem :
 			 		(StartsStr("$ git ", lbuf) || StartsStr("@@ ", lbuf))? col_Headline :
-		 	 		StartsStr("-", lbuf)? col_GitDel : StartsStr("+", lbuf)? col_GitIns : col_fgList;
+		 	 		StartsStr("-", lbuf)? col_GitDel : StartsStr("+", lbuf)? col_GitIns : get_ListFgCol();
 		UnicodeString s = split_GitGraphStr(lbuf);
 		if (!s.IsEmpty()) {
 			UnicodeString s1 = (Index>1)? get_GitGraphStr(lp->Items->Strings[Index - 1]) : EmptyStr;
@@ -903,7 +904,7 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 	}
 	//コメント or 通常行
 	else {
-		TColor fg = use_fgsel? col_fgSelItem : col_fgList;
+		TColor fg = use_fgsel? col_fgSelItem : get_ListFgCol();
 		PrvTextOut(lp, Index, cv, rc, fg, tw, wlist.get(), case_sns, FileName, (SortMode==0 && !isFiltered));
 	}
 

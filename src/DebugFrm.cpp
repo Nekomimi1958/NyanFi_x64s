@@ -35,19 +35,19 @@ void __fastcall TDebugForm::FormShow(TObject *Sender)
 
 	SetToolWinBorder(this);
 
-	ReferSplitter->Color = col_Splitter;
+	ReferSplitter->Color = get_SplitterCol();
 
 	set_ListBoxItemHi(PreviewListBox, TxtPrvFont);
 	set_UsrScrPanel(PrevScrPanel);
-	PreviewListBox->Color		= col_bgView;
-	PreviewListBox->Font->Color = col_fgView;
+	PreviewListBox->Color		= get_ViewBgCol();
+	PreviewListBox->Font->Color = get_ViewFgCol();
 	PreviewListBox->Tag 		= LBTAG_OPT_LNNO;
 	PreviewListBox->TabWidth	= 4;
 
 	set_ListBoxItemHi(ReferListBox, FileInfFont);
 	set_UsrScrPanel(ReferScrPanel);
-	ReferListBox->Color		    = col_bgInf;
-	ReferListBox->Font->Color   = col_fgInf;
+	ReferListBox->Color		    = get_InfBgCol();
+	ReferListBox->Font->Color   = get_InfFgCol();
 
 	ReferPanel->Height = IniFile->ReadScaledIntGen(_T("DebugReferHeight"), 200, this);
 
@@ -147,10 +147,10 @@ void __fastcall TDebugForm::PreviewListBoxDrawItem(TWinControl *Control, int Ind
 	LineNoOut(cv, rc, Index);
 
 	//テキスト
-	cv->Brush->Color = State.Contains(odSelected)? col_selItem : col_bgView;
+	cv->Brush->Color = State.Contains(odSelected)? col_selItem : get_ViewBgCol();
 	cv->FillRect(rc);
 	PrvTextOut(lp, Index, cv, rc,
-		is_SelFgCol(State)? col_fgSelItem : col_fgView,
+		is_SelFgCol(State)? col_fgSelItem : get_ViewFgCol(),
 		4, NULL, false, "*.nbt");
 
 	//カーソル

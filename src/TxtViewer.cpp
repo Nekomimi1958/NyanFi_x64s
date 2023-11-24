@@ -333,8 +333,8 @@ void __fastcall TTxtViewer::SetColor(TStringList *lst)
 	color_fgSelItem = read_ColorList(_T("fgSelItem"),	col_fgSelItem,	lst);
 	color_Folder	= read_ColorList(_T("Folder"),		col_Folder,		lst);
 	color_Error		= read_ColorList(_T("Error"),		col_Error,		lst);
-	color_bgView	= read_ColorList(_T("bgView"),		col_bgView,		lst);
-	color_fgView	= read_ColorList(_T("fgView"),		col_fgView,		lst);
+	color_bgView	= read_ColorList(_T("bgView"),		get_ViewBgCol(),	lst);
+	color_fgView	= read_ColorList(_T("fgView"),		get_ViewFgCol(),	lst);
 	color_Margin	= read_ColorList(_T("Margin"),		col_Margin,		lst);
 	color_bgRuler	= read_ColorList(_T("bgRuler"),		col_bgRuler,	lst);
 	color_fgRuler	= read_ColorList(_T("fgRuler"),		col_fgRuler,	lst);
@@ -2746,7 +2746,7 @@ void __fastcall TTxtViewer::SttHeaderDrawPanel(TStatusBar *StatusBar, TStatusPan
 	bool sel_flag = (Panel->Index==0 && isSelected);
 	bool inc_flag = (Panel->Index==0 && isIncSea);
 
-	cv->Brush->Color = inc_flag? ((StatusBar->Tag==SHOW_WARN_TAG)? col_bgWarn : col_bgView) :
+	cv->Brush->Color = inc_flag? ((StatusBar->Tag==SHOW_WARN_TAG)? col_bgWarn : get_ViewBgCol()) :
 					   sel_flag? col_selItem : get_InfHdrBgCol();
 	cv->FillRect(Rect);
 
@@ -2757,7 +2757,7 @@ void __fastcall TTxtViewer::SttHeaderDrawPanel(TStatusBar *StatusBar, TStatusPan
 		UnicodeString s = Panel->Text;
 		out_TextEx(cv, xp, yp, split_pre_tab(s), color_fgEmp, color_bgEmp);
 		xp += ScaledInt(4, OwnerForm);
-		out_TextEx(cv, xp, yp, split_pre_tab(s), col_fgView);
+		out_TextEx(cv, xp, yp, split_pre_tab(s), get_ViewFgCol());
 
 		//‹^Ž—ƒLƒƒƒŒƒbƒg
 		if (UserModule->BlinkTimer->Tag>0) draw_Caret(cv, xp, yp + ScaledInt(2, OwnerForm));
@@ -2773,7 +2773,7 @@ void __fastcall TTxtViewer::SttHeaderDrawPanel(TStatusBar *StatusBar, TStatusPan
 		}
 	}
 	else {
-		cv->Font->Color = sel_flag? ((col_fgSelItem!=col_None)? col_fgSelItem : col_fgList) : get_InfHdrFgCol();
+		cv->Font->Color = sel_flag? ((col_fgSelItem!=col_None)? col_fgSelItem : get_ListFgCol()) : get_InfHdrFgCol();
 		cv->TextOut(xp + 2, yp, Panel->Text);
 	}
 

@@ -53,7 +53,7 @@ void __fastcall TFileInfoDlg::FormShow(TObject *Sender)
 
 	set_ListBoxItemHi(InfListBox, FileInfFont);
 	set_UsrScrPanel(ListScrPanel);
-	InfListBox->Color = col_bgInf;
+	InfListBox->Color = get_InfBgCol();
 
 	if (!UpdateInfo()) ::PostMessage(Handle, WM_CLOSE, 0, 0);
 
@@ -411,7 +411,7 @@ void __fastcall TFileInfoDlg::InfListBoxDrawItem(TWinControl *Control, int Index
 		TCanvas *cv = lp->Canvas;
 		cv->Font->Assign(lp->Font);
 
-		cv->Brush->Color = (State.Contains(odSelected) && lp->Focused())? col_selItem : col_bgInf;
+		cv->Brush->Color = (State.Contains(odSelected) && lp->Focused())? col_selItem : get_InfBgCol();
 		cv->FillRect(Rect);
 
 		int xp = Rect.Left + SCALED_THIS(8);
@@ -425,7 +425,7 @@ void __fastcall TFileInfoDlg::InfListBoxDrawItem(TWinControl *Control, int Index
 		}
 		else if (itm_buf.Length==3) {
 			//ŠK‹‰
-			cv->Font->Color = use_fgsel? col_fgSelItem : col_fgInf;
+			cv->Font->Color = use_fgsel? col_fgSelItem : get_InfFgCol();
 			cv->TextOut(xp + MaxColWd0 - cv->TextWidth(itm_buf[0]), yp, itm_buf[0]);
 			xp += MaxColWd0 + SCALED_THIS(8);
 			//‹æØ‚èü

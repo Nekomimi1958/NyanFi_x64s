@@ -216,7 +216,7 @@ void __fastcall TSelDriveDlg::DriveGridDrawCell(TObject *Sender, System::LongInt
 	TCanvas *cv = gp->Canvas;
 	cv->Font->Assign(gp->Font);
 
-	cv->Brush->Color = State.Contains(gdSelected)? col_selItem : col_bgList;
+	cv->Brush->Color = State.Contains(gdSelected)? col_selItem : get_ListBgCol();
 	cv->FillRect(rc);
 
 	if (ACol==0 || gp->ColWidths[ACol]>=COL_WD_HIDE) {
@@ -240,7 +240,7 @@ void __fastcall TSelDriveDlg::DriveGridDrawCell(TObject *Sender, System::LongInt
 		}
 
 		cv->Font->Style = (ACol==0)? (cv->Font->Style << fsBold) : (cv->Font->Style >> fsBold);
-		TColor fcol = gp->Cells[3][ARow].IsEmpty()? AdjustColor(col_fgList, ADJCOL_FGLIST) :
+		TColor fcol = gp->Cells[3][ARow].IsEmpty()? AdjustColor(get_ListFgCol(), ADJCOL_FGLIST) :
 								is_SelFgCol(State)? col_fgSelItem : col_None;
 
 		//ボリューム/パス
@@ -262,7 +262,7 @@ void __fastcall TSelDriveDlg::DriveGridDrawCell(TObject *Sender, System::LongInt
 				UnicodeString pnam = (dp->drv_type==DRIVE_REMOTE)? dp->unc : dp->mnt_dir;
 				//ボリューム
 				if (pnam.IsEmpty() || (cv->TextWidth(vnam + pnam.SubString(1, pnam.Length()/2)) + SCALED_THIS(16) < c_wd)) {
-					cv->Font->Color = (fcol==col_None)? col_fgList : fcol;
+					cv->Font->Color = (fcol==col_None)? get_ListFgCol() : fcol;
 					cv->TextRect(rc, xp, yp, vnam);
 					xp += cv->TextWidth(vnam) + SCALED_THIS(16);
 					rc.Left = xp;
@@ -332,7 +332,7 @@ void __fastcall TSelDriveDlg::DriveGridDrawCell(TObject *Sender, System::LongInt
 				break;
 			}
 
-			cv->Font->Color = (fcol==col_None)? col_fgList : fcol;
+			cv->Font->Color = (fcol==col_None)? get_ListFgCol() : fcol;
 			cv->TextRect(rc, xp, yp, cellstr);
 
 			//使用率グラフ

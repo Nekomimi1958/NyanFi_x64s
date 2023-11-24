@@ -659,7 +659,7 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	PriFExtColCheckBox->Tag 	= (NativeInt)&PriorFExtCol;
 	ColOnlyFExtCheckBox->Tag	= (NativeInt)&ColorOnlyFExt;
 	SymColToCheckBox->Tag		= (NativeInt)&SymColorToName;
-	RevTagColCheckBox->Tag		= (NativeInt)&RevTagCololr;
+	RevTagColCheckBox->Tag		= (NativeInt)&RevTagColor;
 	ShowDirTypeCheckBox->Tag	= (NativeInt)&ShowDirType;
 	ShowSpaceCheckBox->Tag		= (NativeInt)&ShowSpace;
 	ShowByteSizeCheckBox->Tag	= (NativeInt)&ShowByteSize;
@@ -1726,8 +1726,10 @@ void __fastcall TOptionDlg::DisableColActionUpdate(TObject *Sender)
 
 	((TAction*)Sender)->Enabled
 		= contained_wd_i(
-			"bgList2|fgSelItem|Protect|Compress|frScrKnob|bgActKnob|lnScrHit|lnScrSel|frmTab|"
-			"bdrLine|bdrFold|bdrFixed|TlBorder|bgTlBar1|bgTlBar2|fgTlBar|bgInfHdr|fgInfHdr",
+			"bgList|bgList2|fgList|Splitter|fgSelItem|Protect|Compress|frScrKnob|bgActKnob|lnScrHit|lnScrSel|"
+			"bgTabBar|bgListHdr|fgListHdr|bgDirInf|fgDirInf|bgDirRel|bgDirRel|fgDirRel|fgDirRel|bgDrvInf|fgDrvInf|"
+			"bgInf|fgInf|bgTxtPrv|fgTxtPrv|bgLog|fgLog|bgTask|"
+			"frmTab|bgView|fgView|bdrLine|bdrFold|bdrFixed|TlBorder|bgTlBar1|bgTlBar2|fgTlBar|bgInfHdr|fgInfHdr",
 			col_id);
 }
 //---------------------------------------------------------------------------
@@ -1849,7 +1851,7 @@ void __fastcall TOptionDlg::ExtColListBoxDrawItem(TWinControl *Control, int Inde
 	cv->Font->Color = (TColor)split_tkn(lbuf, ',').ToIntDef(col_None);
 	bool is_dot = SameStr(lbuf, ".");
 	UnicodeString ext = ReplaceStr(lbuf, ".", " .");
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 
 	UnicodeString smpl_str;
 	smpl_str.sprintf(_T("%s"), is_dot? _T("\u2588 dot") : _T("\u2588.xxx"));
@@ -2000,7 +2002,7 @@ void __fastcall TOptionDlg::TagColListBoxDrawItem(TWinControl *Control, int Inde
 	UnicodeString blk = _T("\u2588 ");
 	int blk_wd = cv->TextWidth(blk);
 	rc.Right = rc.Left + blk_wd + MaxWd_Tag;
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(rc);
 
 	int xp = rc.Left + 4;
@@ -2011,7 +2013,7 @@ void __fastcall TOptionDlg::TagColListBoxDrawItem(TWinControl *Control, int Inde
 
 	if (RevTagColCheckBox->Checked) {
 		cv->Brush->Color = col;
-		cv->Font->Color  = col_bgList;
+		cv->Font->Color  = get_ListBgCol();
 	}
 	else {
 		cv->Font->Color = col;
@@ -3962,7 +3964,7 @@ void __fastcall TOptionDlg::ExpColBtnClick(TObject *Sender)
 		//ƒ^ƒO•ÊF
 		exp_lst->Assign(TagColListBox->Items);
 		exp_file->AssignSection("TagColList", exp_lst.get());
-		exp_file->WriteBool(SCT_Option, "RevTagCololr",	RevTagCololr);
+		exp_file->WriteBool(SCT_Option, "RevTagColor",	RevTagColor);
 
 		//•Û‘¶
 		if (!exp_file->UpdateFile(true)) msgbox_ERR(USTR_FaildSave);

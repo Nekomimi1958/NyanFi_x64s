@@ -130,7 +130,7 @@ void __fastcall TDriveGraph::PaintBox1Paint(TObject *Sender)
 {
 	TCanvas *cv = PaintBox1->Canvas;
 
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(PaintBox1->ClientRect);
 
 	if (DataList->Count>0) {
@@ -161,7 +161,7 @@ void __fastcall TDriveGraph::PaintBox1Paint(TObject *Sender)
 			UnicodeString lbuf = DataList->Strings[idx];
 			//“ú•t
 			if (yp>=yt) {
-				cv->Font->Color = col_fgList;
+				cv->Font->Color = get_ListFgCol();
 				cv->TextOut(SCALED_THIS(4), yp, get_csv_item(lbuf, 0));
 				yt = yp + ym;
 			}

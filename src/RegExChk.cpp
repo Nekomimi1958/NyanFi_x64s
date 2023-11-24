@@ -67,7 +67,7 @@ void __fastcall TRegExChecker::FormShow(TObject *Sender)
 	std::unique_ptr<TFont> ttFont(new TFont());
 	ttFont->Assign(ViewerFont);
 	ttFont->Size  = Font->Size;
-	ttFont->Color = col_fgList;
+	ttFont->Color = get_ListFgCol();
 	AssignScaledFont(ObjMemo, 		ttFont.get());
 	set_ListBoxItemHi(ResListBox,	ttFont.get());
 	set_ListBoxItemHi(ReferListBox, ttFont.get());
@@ -112,9 +112,9 @@ void __fastcall TRegExChecker::FormShow(TObject *Sender)
 
 	Shape1->Pen->Color	= TStyleManager::ActiveStyle->GetSystemColor(clBtnShadow);
 	Shape2->Pen->Color	= TStyleManager::ActiveStyle->GetSystemColor(clBtnHighlight);
-	ObjMemo->Color		= col_bgView;
-	ResListBox->Color	= col_bgView;
-	ReferListBox->Color = col_bgList;
+	ObjMemo->Color		= get_ViewBgCol();
+	ResListBox->Color	= get_ViewBgCol();
+	ReferListBox->Color = get_ListBgCol();
 }
 //---------------------------------------------------------------------------
 void __fastcall TRegExChecker::FormClose(TObject *Sender, TCloseAction &Action)
@@ -381,7 +381,7 @@ void __fastcall TRegExChecker::ResListBoxDrawItem(TWinControl *Control, int Inde
 	TCanvas *cv  = lp->Canvas;
 	cv->Font->Assign(lp->Font);
 
-	cv->Brush->Color = col_bgView;
+	cv->Brush->Color = get_ViewBgCol();
 	TRect rc = Rect;
 	cv->FillRect(rc);
 

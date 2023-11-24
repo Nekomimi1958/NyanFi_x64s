@@ -746,23 +746,23 @@ void __fastcall TEditHistoryDlg::EditHistGridDrawCell(TObject *Sender, System::L
 
 		//背景
 		cv->Brush->Color = fp->is_virtual? col_bgArc :
-				(!isMark && (ACol==1 ||(isRecent && ACol==2)) && IniFile->IsMarked(fp->f_name))? col_bgMark :
-				is_AltLnBgCol(ARow)? col_bgList2 : col_bgList;
+				(!isMark && (ACol==1 ||(isRecent && ACol==2)) && IniFile->IsMarked(fp->f_name))? col_bgMark
+																							   : get_AltBgCol(ARow);
 		cv->FillRect(Rect);
 
 		UnicodeString lbuf = gp->Cells[ACol][ARow];
-		TColor col_fg = col_fgList;
+		TColor col_fg = get_ListFgCol();
 
 		//最近使ったファイル一覧/栞マーク一覧
 		if (isRecent || isMark) {
 			switch (ACol) {
-			case 0: cv->Font->Style = cv->Font->Style << fsUnderline;	break;
-			case 2: col_fg = get_ExtColor(fp->f_ext);					break;
-			case 3: col_fg = get_TimeColor(fp->f_time, col_fgList);		break;
-			case 4: col_fg = col_Folder;								break;
+			case 0: cv->Font->Style = cv->Font->Style << fsUnderline;		break;
+			case 2: col_fg = get_ExtColor(fp->f_ext);						break;
+			case 3: col_fg = get_TimeColor(fp->f_time, get_ListFgCol());	break;
+			case 4: col_fg = col_Folder;									break;
 			case 6: {
 					TDateTime dt;
-					if (ToDateTime(lbuf, &dt)) col_fg = get_TimeColor(dt, col_fgList);
+					if (ToDateTime(lbuf, &dt)) col_fg = get_TimeColor(dt, get_ListFgCol());
 				}
 				break;
 			}
@@ -770,9 +770,9 @@ void __fastcall TEditHistoryDlg::EditHistGridDrawCell(TObject *Sender, System::L
 		//その他の一覧
 		else {
 			switch (ACol) {
-			case 0: cv->Font->Style = cv->Font->Style << fsUnderline;	break;
-			case 2: col_fg = get_TimeColor(fp->f_time, col_fgList);		break;
-			case 3: col_fg = col_Folder;								break;
+			case 0: cv->Font->Style = cv->Font->Style << fsUnderline;		break;
+			case 2: col_fg = get_TimeColor(fp->f_time, get_ListFgCol());	break;
+			case 3: col_fg = col_Folder;									break;
 			case 5: if (isRepo && SameText(lbuf, "Clean")) col_fg = AdjustColor(col_fg, ADJCOL_FGLIST);	break;
 			}
 		}
@@ -849,7 +849,7 @@ void __fastcall TEditHistoryDlg::EditHistGridDrawCell(TObject *Sender, System::L
 						}
 						else {
 							if (remove_top_text(ss, HEAD_Mark)) out_TextEx(cv, xp, yp, HEAD_Mark, col_GitHEAD);
-							out_TextEx(cv, xp, yp, ss, col_bgList, col_GitBra, SCALED_THIS(8));
+							out_TextEx(cv, xp, yp, ss, get_ListBgCol(), col_GitBra, SCALED_THIS(8));
 						}
 					}
 				}
@@ -899,7 +899,7 @@ void __fastcall TEditHistoryDlg::EditHistGridDrawCell(TObject *Sender, System::L
 		}
 	}
 	else {
-		cv->Brush->Color = col_bgList;
+		cv->Brush->Color = get_ListBgCol();
 		cv->FillRect(Rect);
 	}
 

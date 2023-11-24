@@ -29,7 +29,7 @@ void __fastcall TAskRepDlg::FormShow(TObject *Sender)
 
 	set_ListBoxItemHi(RepListBox, GrepResFont);
 	set_UsrScrPanel(ListScrPanel);
-	RepListBox->Color = col_bgList;
+	RepListBox->Color = get_ListBgCol();
 	ListScrPanel->UpdateKnob();
 
 	AssignScaledFont(StatusBar1, ViewHdrFont);
@@ -83,7 +83,7 @@ void __fastcall TAskRepDlg::RepListBoxDrawItem(TWinControl *Control,
 	TCanvas  *cv = lp->Canvas;
 	cv->Font->Assign(lp->Font);
 
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(Rect);
 
 	UnicodeString itmstr = lp->Items->Strings[Index];
@@ -93,12 +93,12 @@ void __fastcall TAskRepDlg::RepListBoxDrawItem(TWinControl *Control,
 	//行番号
 	TRect rc = Rect;
 	LineNoOut(cv, rc, FoundLine - CurIndex + Index);
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	xp = rc.Left + 4;
 
 	//マッチ行
 	if (Index==CurIndex) {
-		cv->Font->Color = col_fgList;
+		cv->Font->Color = get_ListFgCol();
 		if (FoundPos>0) {
 			//マッチ語前
 			UnicodeString s0 = itmstr.SubString(1, FoundPos - 1);
@@ -118,13 +118,13 @@ void __fastcall TAskRepDlg::RepListBoxDrawItem(TWinControl *Control,
 					break;
 				}
 			}
-			TabCrTextOut(s0, cv, xp, yp, col_fgList, Rect.Right);
+			TabCrTextOut(s0, cv, xp, yp, get_ListFgCol(), Rect.Right);
 			itmstr.Delete(1, FoundPos - 1);
 			//マッチ語強調表示
 			EmphasisTextOut(itmstr, KeyWord, cv, xp, yp, false, true);
 		}
 		else {
-			TabCrTextOut(itmstr, cv, xp, yp, col_fgList, Rect.Right);
+			TabCrTextOut(itmstr, cv, xp, yp, get_ListFgCol(), Rect.Right);
 		}
 
 		//カーソル線
@@ -134,7 +134,7 @@ void __fastcall TAskRepDlg::RepListBoxDrawItem(TWinControl *Control,
 	}
 	//前後行
 	else {
-		TabCrTextOut(itmstr, cv, xp, yp, col_fgList, Rect.Right);
+		TabCrTextOut(itmstr, cv, xp, yp, get_ListFgCol(), Rect.Right);
 	}
 }
 //---------------------------------------------------------------------------

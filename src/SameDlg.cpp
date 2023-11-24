@@ -35,7 +35,7 @@ void __fastcall TSameNameDlg::FormShow(TObject *Sender)
 	IniFile->LoadPosInfo(this, DialogCenter);
 
 	set_ListBoxItemHi(InfoListBox);
-	InfoListBox->Color = col_bgList;
+	InfoListBox->Color = get_ListBgCol();
 
 	UnicodeString tmp;
 	InhAllChk = true;
@@ -155,7 +155,7 @@ void __fastcall TSameNameDlg::InfoListBoxDrawItem(TWinControl *Control, int Inde
 {
 	TListBox *lp = (TListBox*)Control;
 	TCanvas  *cv = lp->Canvas;
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(Rect);
 	int xp = Rect.Left + SCALED_THIS(4);
 	int yp = Rect.Top  + get_TopMargin(cv);
@@ -163,19 +163,19 @@ void __fastcall TSameNameDlg::InfoListBoxDrawItem(TWinControl *Control, int Inde
 	if (Index==2 || Index==4) {
 		//サイズ
 		UnicodeString lbuf = "    " + get_FileSizeStr((Index==2)? CurSrcSize : CurDstSize) + " ";
-		cv->Font->Color = col_fgList;
+		cv->Font->Color = get_ListFgCol();
 		cv->TextOut(xp, yp, lbuf);
 		xp += cv->TextWidth(lbuf);
 		//タイム
 		TDateTime dt = (Index==2)? CurSrcTime : CurDstTime;
-		cv->Font->Color = get_TimeColor(dt, col_fgList);
+		cv->Font->Color = get_TimeColor(dt, get_ListFgCol());
 		cv->TextOut(xp, yp, format_DateTime(dt));
 	}
 	else {
 		UnicodeString lbuf = lp->Items->Strings[Index];
 
 		cv->Font->Color = (Index==0)? get_ExtColor(ExtractFileExt(lbuf)) :
-			  (Index==1 || Index==3)? col_Folder : col_fgList;
+			  (Index==1 || Index==3)? col_Folder : get_ListFgCol();
 
 		if (Index==0 || Index==1 || Index==3)
 			lbuf = minimize_str(lbuf, cv, Rect.Width() - 8, OmitEndOfName);

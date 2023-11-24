@@ -56,6 +56,440 @@ object NyanFiForm: TNyanFiForm
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    object ImgViewPanel: TPanel
+      Left = 0
+      Top = 0
+      Width = 720
+      Height = 498
+      HelpContext = 7
+      Align = alClient
+      BevelOuter = bvNone
+      Color = clBlack
+      DoubleBuffered = True
+      ParentBackground = False
+      ParentDoubleBuffered = False
+      ShowCaption = False
+      TabOrder = 3
+      Visible = False
+      object ToolBarI: TToolBar
+        Left = 0
+        Top = 0
+        Width = 720
+        Height = 19
+        AutoSize = True
+        ButtonWidth = 70
+        DrawingStyle = dsGradient
+        Images = IconVImgListI
+        List = True
+        ShowCaptions = True
+        AllowTextButtons = True
+        TabOrder = 0
+        StyleElements = []
+        OnDblClick = ToolBarDblClick
+      end
+      object SeekPanel: TPanel
+        Left = 0
+        Top = 464
+        Width = 720
+        Height = 34
+        Align = alBottom
+        BevelOuter = bvLowered
+        ParentBackground = False
+        TabOrder = 2
+        object SeekSttPanel: TPanel
+          Left = 1
+          Top = 1
+          Width = 72
+          Height = 32
+          Align = alLeft
+          Alignment = taRightJustify
+          BevelOuter = bvNone
+          TabOrder = 0
+        end
+        object SeekBar: TTrackBar
+          Left = 111
+          Top = 1
+          Width = 550
+          Height = 32
+          Align = alClient
+          ShowSelRange = False
+          TabOrder = 2
+          TabStop = False
+          TickMarks = tmTopLeft
+          OnChange = SeekBarChange
+        end
+        object SeekTopPanel: TPanel
+          Left = 73
+          Top = 1
+          Width = 38
+          Height = 32
+          Align = alLeft
+          BevelOuter = bvNone
+          TabOrder = 1
+          DesignSize = (
+            38
+            32)
+          object SeekLBtn: TSpeedButton
+            Left = 10
+            Top = 6
+            Width = 24
+            Height = 22
+            Action = TopFileAction
+            Anchors = [akTop, akRight]
+            Flat = True
+            ExplicitLeft = 12
+          end
+        end
+        object SeekEndPanel: TPanel
+          Left = 661
+          Top = 1
+          Width = 58
+          Height = 32
+          Align = alRight
+          BevelOuter = bvNone
+          TabOrder = 3
+          DesignSize = (
+            58
+            32)
+          object SeekRBtn: TSpeedButton
+            Left = 2
+            Top = 6
+            Width = 23
+            Height = 22
+            Action = EndFileAction
+            Flat = True
+          end
+          object HideSeekBtn: TSpeedButton
+            Left = 30
+            Top = 6
+            Width = 23
+            Height = 22
+            Action = ShowSeekBarAction
+            Anchors = [akTop, akRight]
+            Flat = True
+          end
+        end
+      end
+      object ImgMainPanel: TPanel
+        Left = 0
+        Top = 19
+        Width = 720
+        Height = 445
+        Align = alClient
+        BevelOuter = bvNone
+        DoubleBuffered = True
+        ParentDoubleBuffered = False
+        TabOrder = 1
+        object ImgSideSplitter: TSplitter
+          Left = 185
+          Top = 22
+          Width = 4
+          Height = 423
+          Color = clBtnFace
+          ParentColor = False
+          OnPaint = SplitterBgPaint
+          ExplicitHeight = 404
+        end
+        object ImgSttHeader: TStatusBar
+          Left = 0
+          Top = 0
+          Width = 720
+          Height = 22
+          Align = alTop
+          DoubleBuffered = True
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBtnText
+          Font.Height = -12
+          Font.Name = 'MS UI Gothic'
+          Font.Pitch = fpVariable
+          Font.Style = []
+          Panels = <
+            item
+              Style = psOwnerDraw
+              Width = 200
+            end
+            item
+              Style = psOwnerDraw
+              Width = 200
+            end
+            item
+              Style = psOwnerDraw
+              Width = 100
+            end
+            item
+              Style = psOwnerDraw
+              Width = 100
+            end
+            item
+              Style = psOwnerDraw
+              Width = 50
+            end>
+          ParentDoubleBuffered = False
+          UseSystemFont = False
+          OnDrawPanel = ImgSttHeaderDrawPanel
+        end
+        object ImgScrollPanel: TPanel
+          Left = 189
+          Top = 22
+          Width = 382
+          Height = 423
+          Align = alClient
+          BevelOuter = bvNone
+          Color = clBlack
+          ParentBackground = False
+          TabOrder = 2
+          ExplicitWidth = 390
+          object ImgScrollBox: TScrollBox
+            Left = 0
+            Top = 0
+            Width = 382
+            Height = 423
+            HorzScrollBar.Smooth = True
+            HorzScrollBar.Tracking = True
+            VertScrollBar.Smooth = True
+            VertScrollBar.Tracking = True
+            Align = alClient
+            BorderStyle = bsNone
+            TabOrder = 0
+            StyleElements = [seFont, seBorder]
+            ExplicitWidth = 390
+            object ViewerImage: TImage
+              Left = 0
+              Top = 0
+              Width = 382
+              Height = 423
+              Align = alClient
+              Center = True
+              Proportional = True
+              OnDblClick = ViewerImageDblClick
+              OnMouseDown = ViewerImageMouseDown
+              OnMouseLeave = ViewerImageMouseLeave
+              OnMouseMove = ViewerImageMouseMove
+              OnMouseUp = ViewerImageMouseUp
+              ExplicitWidth = 394
+              ExplicitHeight = 404
+            end
+          end
+        end
+        object ImgSidePanel: TPanel
+          Left = 0
+          Top = 22
+          Width = 185
+          Height = 423
+          Align = alLeft
+          BevelOuter = bvNone
+          DockSite = True
+          ParentBackground = False
+          TabOrder = 1
+          OnDockDrop = ImgSidePanelDockDrop
+          object ToolBarI2: TToolBar
+            Left = 0
+            Top = 0
+            Width = 185
+            Height = 22
+            AutoSize = True
+            ButtonWidth = 85
+            DrawingStyle = dsGradient
+            Images = IconVImgListI
+            List = True
+            ShowCaptions = True
+            AllowTextButtons = True
+            TabOrder = 0
+            StyleElements = []
+            OnDblClick = ToolBarDblClick
+          end
+          object SideMainPanel: TPanel
+            Left = 0
+            Top = 22
+            Width = 185
+            Height = 401
+            Align = alClient
+            BevelOuter = bvNone
+            TabOrder = 1
+            object SideDockSplitter: TSplitter
+              Tag = 1
+              Left = 0
+              Top = 2
+              Width = 185
+              Height = 4
+              Cursor = crVSplit
+              Align = alTop
+              Color = clBtnFace
+              ParentColor = False
+              OnPaint = SplitterBgPaint
+            end
+            object ClockBarI: TStatusBar
+              Left = 0
+              Top = 382
+              Width = 185
+              Height = 19
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clBtnText
+              Font.Height = -13
+              Font.Name = 'Meiryo UI'
+              Font.Pitch = fpVariable
+              Font.Style = []
+              Panels = <
+                item
+                  Bevel = pbNone
+                  Style = psOwnerDraw
+                  Width = 200
+                end>
+              SizeGrip = False
+              UseSystemFont = False
+              OnDrawPanel = StatusBarDrawPanel
+            end
+            object SideDockPanel: TPanel
+              Left = 0
+              Top = 0
+              Width = 185
+              Height = 2
+              Align = alTop
+              BevelOuter = bvNone
+              Color = clBlack
+              ParentBackground = False
+              TabOrder = 0
+              StyleElements = []
+              object LoupeDockPanel: TPanel
+                Left = 0
+                Top = 0
+                Width = 185
+                Height = 1
+                Align = alClient
+                BevelOuter = bvNone
+                Color = clBlack
+                Constraints.MinHeight = 1
+                DoubleBuffered = False
+                ParentBackground = False
+                ParentDoubleBuffered = False
+                TabOrder = 0
+                StyleElements = []
+                OnDockDrop = SidePanelDockDrop
+                OnDockOver = SideDockPanelDockOver
+                OnUnDock = SidePanelUnDock
+              end
+              object HistDockPanel: TPanel
+                Left = 0
+                Top = 1
+                Width = 185
+                Height = 1
+                Align = alBottom
+                BevelOuter = bvNone
+                Color = clBlack
+                Constraints.MinHeight = 1
+                DoubleBuffered = False
+                ParentBackground = False
+                ParentDoubleBuffered = False
+                TabOrder = 1
+                StyleElements = []
+                OnDockDrop = SidePanelDockDrop
+                OnDockOver = SideDockPanelDockOver
+                OnUnDock = SidePanelUnDock
+              end
+            end
+            object SideInfPanel: TPanel
+              Left = 0
+              Top = 6
+              Width = 185
+              Height = 376
+              Align = alClient
+              BevelOuter = bvNone
+              TabOrder = 1
+              object ImgInfListBox: TListBox
+                Left = 0
+                Top = 22
+                Width = 185
+                Height = 354
+                Style = lbOwnerDrawFixed
+                Align = alLeft
+                Anchors = [akLeft, akTop, akRight, akBottom]
+                BorderStyle = bsNone
+                DoubleBuffered = False
+                ItemHeight = 13
+                MultiSelect = True
+                ParentDoubleBuffered = False
+                PopupMenu = InfPopupMenu
+                TabOrder = 1
+                StyleElements = [seBorder]
+                OnDrawItem = InfListBoxDrawItem
+              end
+              object ImgInfBar: TStatusBar
+                Left = 0
+                Top = 0
+                Width = 185
+                Height = 22
+                Align = alTop
+                DoubleBuffered = True
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clBtnText
+                Font.Height = -13
+                Font.Name = 'Meiryo UI'
+                Font.Pitch = fpVariable
+                Font.Style = []
+                Panels = <
+                  item
+                    Style = psOwnerDraw
+                    Width = 50
+                  end
+                  item
+                    Style = psOwnerDraw
+                    Width = 50
+                  end>
+                ParentDoubleBuffered = False
+                UseSystemFont = False
+                OnDrawPanel = ImgSttHeaderDrawPanel
+              end
+            end
+          end
+        end
+        object ThumbnailPanel: TPanel
+          Left = 571
+          Top = 22
+          Width = 149
+          Height = 423
+          Align = alRight
+          AutoSize = True
+          BevelOuter = bvNone
+          BorderWidth = 4
+          ParentBackground = False
+          TabOrder = 3
+          StyleElements = [seFont, seBorder]
+          object ThumbnailGrid: TStringGrid
+            Left = 4
+            Top = 4
+            Width = 141
+            Height = 415
+            Align = alRight
+            BevelInner = bvNone
+            BorderStyle = bsNone
+            ColCount = 1
+            DefaultColWidth = 120
+            DefaultRowHeight = 120
+            DefaultDrawing = False
+            FixedCols = 0
+            RowCount = 1
+            FixedRows = 0
+            GridLineWidth = 3
+            Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking]
+            ParentColor = True
+            ScrollBars = ssVertical
+            TabOrder = 0
+            StyleElements = [seBorder]
+            OnClick = ThumbnailGridClick
+            OnDrawCell = ThumbnailGridDrawCell
+            OnKeyDown = ThumbnailGridKeyDown
+            OnMouseDown = ThumbnailGridMouseDown
+            OnMouseMove = ThumbnailGridMouseMove
+            OnMouseUp = ThumbnailGridMouseUp
+            OnSelectCell = ThumbnailGridSelectCell
+            ColWidths = (
+              120)
+            RowHeights = (
+              120)
+          end
+        end
+      end
+    end
     object GrepPanel: TPanel
       Left = 0
       Top = 0
@@ -803,425 +1237,6 @@ object NyanFiForm: TNyanFiForm
             Visible = False
             StyleElements = [seBorder]
           end
-        end
-      end
-    end
-    object ImgViewPanel: TPanel
-      Left = 0
-      Top = 0
-      Width = 720
-      Height = 498
-      HelpContext = 7
-      Align = alClient
-      BevelOuter = bvNone
-      Color = clBlack
-      DoubleBuffered = True
-      ParentBackground = False
-      ParentDoubleBuffered = False
-      ShowCaption = False
-      TabOrder = 3
-      Visible = False
-      StyleElements = [seBorder]
-      object ToolBarI: TToolBar
-        Left = 0
-        Top = 0
-        Width = 720
-        Height = 19
-        AutoSize = True
-        ButtonWidth = 70
-        DrawingStyle = dsGradient
-        Images = IconVImgListI
-        List = True
-        ShowCaptions = True
-        AllowTextButtons = True
-        TabOrder = 0
-        StyleElements = []
-        OnDblClick = ToolBarDblClick
-      end
-      object SeekPanel: TPanel
-        Left = 0
-        Top = 464
-        Width = 720
-        Height = 34
-        Align = alBottom
-        BevelOuter = bvLowered
-        ParentBackground = False
-        TabOrder = 2
-        object SeekSttPanel: TPanel
-          Left = 1
-          Top = 1
-          Width = 80
-          Height = 32
-          Align = alLeft
-          Alignment = taRightJustify
-          BevelOuter = bvNone
-          BorderWidth = 4
-          TabOrder = 0
-        end
-        object SeekBar: TTrackBar
-          Left = 109
-          Top = 1
-          Width = 552
-          Height = 32
-          Align = alClient
-          ShowSelRange = False
-          TabOrder = 2
-          TabStop = False
-          TickMarks = tmTopLeft
-          OnChange = SeekBarChange
-        end
-        object SeekTopPanel: TPanel
-          Left = 81
-          Top = 1
-          Width = 28
-          Height = 32
-          Align = alLeft
-          BevelOuter = bvNone
-          TabOrder = 1
-          object SeekLBtn: TSpeedButton
-            Left = 2
-            Top = 6
-            Width = 24
-            Height = 22
-            Action = TopFileAction
-            Flat = True
-          end
-        end
-        object SeekEndPanel: TPanel
-          Left = 661
-          Top = 1
-          Width = 58
-          Height = 32
-          Align = alRight
-          BevelOuter = bvNone
-          TabOrder = 3
-          DesignSize = (
-            58
-            32)
-          object SeekRBtn: TSpeedButton
-            Left = 2
-            Top = 6
-            Width = 23
-            Height = 22
-            Action = EndFileAction
-            Flat = True
-          end
-          object HideSeekBtn: TSpeedButton
-            Left = 30
-            Top = 6
-            Width = 23
-            Height = 22
-            Action = ShowSeekBarAction
-            Anchors = [akTop, akRight]
-            Flat = True
-          end
-        end
-      end
-      object ImgMainPanel: TPanel
-        Left = 0
-        Top = 19
-        Width = 720
-        Height = 445
-        Align = alClient
-        BevelOuter = bvNone
-        DoubleBuffered = True
-        ParentDoubleBuffered = False
-        TabOrder = 1
-        object ImgSideSplitter: TSplitter
-          Left = 185
-          Top = 22
-          Width = 4
-          Height = 423
-          Color = clBtnFace
-          ParentColor = False
-          OnPaint = SplitterBgPaint
-          ExplicitHeight = 404
-        end
-        object ImgSttHeader: TStatusBar
-          Left = 0
-          Top = 0
-          Width = 720
-          Height = 22
-          Align = alTop
-          DoubleBuffered = True
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBtnText
-          Font.Height = -12
-          Font.Name = 'MS UI Gothic'
-          Font.Pitch = fpVariable
-          Font.Style = []
-          Panels = <
-            item
-              Style = psOwnerDraw
-              Width = 200
-            end
-            item
-              Style = psOwnerDraw
-              Width = 200
-            end
-            item
-              Style = psOwnerDraw
-              Width = 100
-            end
-            item
-              Style = psOwnerDraw
-              Width = 100
-            end
-            item
-              Style = psOwnerDraw
-              Width = 50
-            end>
-          ParentDoubleBuffered = False
-          UseSystemFont = False
-          StyleElements = []
-          OnDrawPanel = ImgSttHeaderDrawPanel
-        end
-        object ImgScrollPanel: TPanel
-          Left = 189
-          Top = 22
-          Width = 390
-          Height = 423
-          Align = alClient
-          BevelOuter = bvNone
-          Color = clBlack
-          ParentBackground = False
-          TabOrder = 2
-          StyleElements = []
-          object ImgScrollBox: TScrollBox
-            Left = 0
-            Top = 0
-            Width = 390
-            Height = 423
-            HorzScrollBar.Smooth = True
-            HorzScrollBar.Tracking = True
-            VertScrollBar.Smooth = True
-            VertScrollBar.Tracking = True
-            Align = alClient
-            BorderStyle = bsNone
-            TabOrder = 0
-            StyleElements = []
-            object ViewerImage: TImage
-              Left = 0
-              Top = 0
-              Width = 390
-              Height = 423
-              Align = alClient
-              Center = True
-              Proportional = True
-              OnDblClick = ViewerImageDblClick
-              OnMouseDown = ViewerImageMouseDown
-              OnMouseLeave = ViewerImageMouseLeave
-              OnMouseMove = ViewerImageMouseMove
-              OnMouseUp = ViewerImageMouseUp
-              ExplicitWidth = 394
-              ExplicitHeight = 404
-            end
-          end
-        end
-        object ImgSidePanel: TPanel
-          Left = 0
-          Top = 22
-          Width = 185
-          Height = 423
-          Align = alLeft
-          BevelOuter = bvNone
-          DockSite = True
-          ParentBackground = False
-          TabOrder = 1
-          OnDockDrop = ImgSidePanelDockDrop
-          object ToolBarI2: TToolBar
-            Left = 0
-            Top = 0
-            Width = 185
-            Height = 22
-            AutoSize = True
-            ButtonWidth = 85
-            DrawingStyle = dsGradient
-            Images = IconVImgListI
-            List = True
-            ShowCaptions = True
-            AllowTextButtons = True
-            TabOrder = 0
-            StyleElements = []
-            OnDblClick = ToolBarDblClick
-          end
-          object SideMainPanel: TPanel
-            Left = 0
-            Top = 22
-            Width = 185
-            Height = 401
-            Align = alClient
-            BevelOuter = bvNone
-            TabOrder = 1
-            object SideDockSplitter: TSplitter
-              Tag = 1
-              Left = 0
-              Top = 2
-              Width = 185
-              Height = 4
-              Cursor = crVSplit
-              Align = alTop
-              Color = clBtnFace
-              ParentColor = False
-              OnPaint = SplitterBgPaint
-            end
-            object ClockBarI: TStatusBar
-              Left = 0
-              Top = 382
-              Width = 185
-              Height = 19
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clBtnText
-              Font.Height = -13
-              Font.Name = 'Meiryo UI'
-              Font.Pitch = fpVariable
-              Font.Style = []
-              Panels = <
-                item
-                  Bevel = pbNone
-                  Style = psOwnerDraw
-                  Width = 200
-                end>
-              SizeGrip = False
-              UseSystemFont = False
-              OnDrawPanel = StatusBarDrawPanel
-            end
-            object SideDockPanel: TPanel
-              Left = 0
-              Top = 0
-              Width = 185
-              Height = 2
-              Align = alTop
-              BevelOuter = bvNone
-              Color = clBlack
-              ParentBackground = False
-              TabOrder = 0
-              StyleElements = []
-              object LoupeDockPanel: TPanel
-                Left = 0
-                Top = 0
-                Width = 185
-                Height = 1
-                Align = alClient
-                BevelOuter = bvNone
-                Color = clBlack
-                Constraints.MinHeight = 1
-                DoubleBuffered = False
-                ParentBackground = False
-                ParentDoubleBuffered = False
-                TabOrder = 0
-                StyleElements = []
-                OnDockDrop = SidePanelDockDrop
-                OnDockOver = SideDockPanelDockOver
-                OnUnDock = SidePanelUnDock
-              end
-              object HistDockPanel: TPanel
-                Left = 0
-                Top = 1
-                Width = 185
-                Height = 1
-                Align = alBottom
-                BevelOuter = bvNone
-                Color = clBlack
-                Constraints.MinHeight = 1
-                DoubleBuffered = False
-                ParentBackground = False
-                ParentDoubleBuffered = False
-                TabOrder = 1
-                StyleElements = []
-                OnDockDrop = SidePanelDockDrop
-                OnDockOver = SideDockPanelDockOver
-                OnUnDock = SidePanelUnDock
-              end
-            end
-            object SideInfPanel: TPanel
-              Left = 0
-              Top = 6
-              Width = 185
-              Height = 376
-              Align = alClient
-              BevelOuter = bvNone
-              TabOrder = 1
-              object ImgInfListBox: TListBox
-                Left = 0
-                Top = 22
-                Width = 185
-                Height = 354
-                Style = lbOwnerDrawFixed
-                Align = alLeft
-                Anchors = [akLeft, akTop, akRight, akBottom]
-                BorderStyle = bsNone
-                DoubleBuffered = False
-                ItemHeight = 13
-                MultiSelect = True
-                ParentDoubleBuffered = False
-                PopupMenu = InfPopupMenu
-                TabOrder = 1
-                StyleElements = []
-                OnDrawItem = InfListBoxDrawItem
-              end
-              object ImgInfBar: TStatusBar
-                Left = 0
-                Top = 0
-                Width = 185
-                Height = 22
-                Align = alTop
-                DoubleBuffered = True
-                Font.Charset = DEFAULT_CHARSET
-                Font.Color = clBtnText
-                Font.Height = -13
-                Font.Name = 'Meiryo UI'
-                Font.Pitch = fpVariable
-                Font.Style = []
-                Panels = <
-                  item
-                    Style = psOwnerDraw
-                    Width = 50
-                  end
-                  item
-                    Style = psOwnerDraw
-                    Width = 50
-                  end>
-                ParentDoubleBuffered = False
-                UseSystemFont = False
-                OnDrawPanel = ImgSttHeaderDrawPanel
-              end
-            end
-          end
-        end
-        object ThumbnailGrid: TStringGrid
-          Left = 579
-          Top = 22
-          Width = 141
-          Height = 423
-          Align = alRight
-          BevelInner = bvNone
-          BevelKind = bkFlat
-          BorderStyle = bsNone
-          Color = clBlack
-          ColCount = 1
-          DefaultColWidth = 120
-          DefaultRowHeight = 120
-          DefaultDrawing = False
-          FixedCols = 0
-          RowCount = 1
-          FixedRows = 0
-          GridLineWidth = 3
-          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking]
-          ScrollBars = ssVertical
-          TabOrder = 3
-          StyleElements = [seBorder]
-          OnClick = ThumbnailGridClick
-          OnDrawCell = ThumbnailGridDrawCell
-          OnKeyDown = ThumbnailGridKeyDown
-          OnMouseDown = ThumbnailGridMouseDown
-          OnMouseMove = ThumbnailGridMouseMove
-          OnMouseUp = ThumbnailGridMouseUp
-          OnSelectCell = ThumbnailGridSelectCell
-          ColWidths = (
-            120)
-          RowHeights = (
-            120)
         end
       end
     end

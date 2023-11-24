@@ -31,6 +31,8 @@ void __fastcall TLoupeForm::FormShow(TObject *Sender)
 
 	setup_ToolBar(MagToolBar);
 
+	ImgPanel->Color = col_bgImage;
+
 	int n = IniFile->ReadIntGen(_T("LoupeMag"),	1);
 	for (int i=0; i<MagToolBar->ButtonCount; i++)
 		MagToolBar->Buttons[i]->Down = (MagToolBar->Buttons[i]->Tag==n);

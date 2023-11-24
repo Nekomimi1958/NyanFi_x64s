@@ -117,13 +117,13 @@ void __fastcall TPathMaskDlg::PathMaskListBoxDrawItem(TWinControl *Control, int 
 	TListBox *lp = (TListBox*)Control;
 	TCanvas  *cv = lp->Canvas;
 	cv->Font->Assign(ListFont);
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(Rect);
 
 	if (Index<lp->Count) {
 		TStringDynArray itm_buf = get_csv_array(lp->Items->Strings[Index], 3, true);
 		THeaderSections *sp = PathMaskHeader->Sections;
-		cv->Font->Color  = col_fgList;
+		cv->Font->Color  = get_ListFgCol();
 		cv->Font->Style  = cv->Font->Style << fsBold;
 		int s_wd = cv->TextWidth(itm_buf[0]);
 		int c_wd = sp->Items[0]->Width - 4;

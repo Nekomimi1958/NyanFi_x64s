@@ -1111,6 +1111,7 @@ __published:	// IDE で管理されるコンポーネント
 	TVirtualImageList *IconVImgListV;
 	TLabeledEdit *SubDirNEdit;
 	TUpDown *SubDirNUpDown;
+	TPanel *ThumbnailPanel;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

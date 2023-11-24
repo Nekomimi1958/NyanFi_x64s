@@ -204,7 +204,7 @@ bool TimColEnabled;				//タイムスタンプの配色を有効
 bool PriorFExtCol;				//拡張子部分は属性色より優先
 bool ColorOnlyFExt;				//拡張子別配色は拡張子部分のみに適用
 bool SymColorToName;			//ファイル名主部にシンボリックリンク色を適用
-bool RevTagCololr;				//タグ色の反転表示
+bool RevTagColor;				//タグ色の反転表示
 bool ShowMainMenu;				//メインメニューを表示
 bool ShowImgPreview;			//イメージプレビューを表示
 bool ShowProperty;				//ファイル情報を表示
@@ -1200,6 +1200,7 @@ void InitializeGlobal()
 	mute_Volume("GET");	//ミュート状態を取得
 
 	//廃止セクション、キーの削除、修正
+	IniFile->ReplaceKey(SCT_Option,  "RevTagCololr", "RevTagColor");	//v16.01
 	IniFile->ReplaceKey(SCT_General, "FintTagInfHi", "FindTagInfHi");	//v15.56
 	IniFile->DeleteKey( SCT_Option,  "TabFocusSubWin");					//v15.20
 	IniFile->DeleteKey( SCT_Option,  "RestoreComboBox");				//v15.10
@@ -1744,7 +1745,7 @@ void InitializeGlobal()
 		{_T("PriorFExtCol=false"),			(TObject*)&PriorFExtCol},
 		{_T("ColorOnlyFExt=false"),			(TObject*)&ColorOnlyFExt},
 		{_T("SymColorToName=false"),		(TObject*)&SymColorToName},
-		{_T("RevTagCololr=false"),			(TObject*)&RevTagCololr},
+		{_T("RevTagColor=false"),			(TObject*)&RevTagColor},
 		{_T("ShowMainMenu=true"),			(TObject*)&ShowMainMenu},
 		{_T("ShowImgPreview=true"),			(TObject*)&ShowImgPreview},
 		{_T("ShowProperty=true"),			(TObject*)&ShowProperty},
@@ -1758,7 +1759,7 @@ void InitializeGlobal()
 		{_T("ToolBarISide=false"),			(TObject*)&ToolBarISide},
 		{_T("ShowTabBar=true"),				(TObject*)&ShowTabBar},
 		{_T("ShowFKeyBar=false"),			(TObject*)&ShowFKeyBar},
-		{_T("ShowClsTabBtn=true"),			(TObject*)&ShowClsTabBtn},
+		{_T("ShowClsTabBtn=false"),			(TObject*)&ShowClsTabBtn},
 		{_T("ShowPopTabBtn=false"),			(TObject*)&ShowPopTabBtn},
 		{_T("ShowPopDirBtn=true"),			(TObject*)&ShowPopDirBtn},
 		{_T("HideScrBar=false"),			(TObject*)&HideScrBar},
@@ -2711,7 +2712,7 @@ void InitializeListGrid(TStringGrid *gp,
 {
 	AssignScaledFont(gp, font? font : ListFont);
 	gp->DefaultRowHeight = get_FontHeightMgnS(gp->Font, ListInterLn);
-	gp->Color = col_bgList;
+	gp->Color = get_ListBgCol();
 }
 //---------------------------------------------------------------------------
 //一覧用ヘッダの初期化
@@ -4488,12 +4489,13 @@ TStringList* GetOppList()
 //---------------------------------------------------------------------------
 TColor get_FlBgColor(flist_stt *lst_stt, int idx)
 {
-	return lst_stt->is_Find? 	col_bgFind :
+	return lst_stt->is_Find?	col_bgFind :
 		   (lst_stt->is_Arc)?	col_bgArc :
 		   lst_stt->is_Work?	col_bgWork :
 		   lst_stt->is_FTP?		col_bgFTP :
 		   lst_stt->is_ADS?		col_bgADS :
-		   is_AltLnBgCol(idx)?	col_bgList2 : col_bgList;
+		   (col_bgList2!=col_None && idx%2==1)? col_bgList2
+		   									  : get_ListBgCol();
 }
 
 //---------------------------------------------------------------------------
@@ -5966,7 +5968,7 @@ void set_StdListBox(
 	bool with_ico)	//アイコンを表示	(default = false)
 {
 	if (tag!=0) lp->Tag = tag;
-	lp->Color = col_bgList;
+	lp->Color = get_ListBgCol();
 
 	AssignScaledFont(lp, font? font : ListFont);
 	lp->Canvas->Font->Assign(lp->Font);
@@ -5980,7 +5982,7 @@ void set_StdListBox(
 	bool with_ico)	//アイコンを表示	(default = false)
 {
 	if (tag!=0) lp->Tag = tag;
-	lp->Color = col_bgList;
+	lp->Color = get_ListBgCol();
 
 	AssignScaledFont(lp, font? font : ListFont);
 	lp->Canvas->Font->Assign(lp->Font);
@@ -7677,7 +7679,7 @@ TColor get_FileColor(file_rec *fp, TColor col_x)
 									return col_Folder;
 	}
 
-	return (ColorOnlyFExt? col_fgList : col_x);
+	return (ColorOnlyFExt? get_ListFgCol() : col_x);
 }
 
 //---------------------------------------------------------------------------
@@ -7687,15 +7689,17 @@ TColor get_ExtColor(
 	UnicodeString fext,	//拡張子
 	TColor col)			//デフォルト文字色	(default = col_fgList)
 {
+	if (col==col_None) col = get_ListFgCol();
+
 	if (fext.Pos("<DIR>")) return col_Folder;
 
-	TColor col_f = col_fgList;
+	TColor col_f = get_ListFgCol();
 	if (SameStr(fext, ".")) fext = EmptyStr;
 	if (!fext.IsEmpty()) {
 		for (int i=0; i<ExtColList->Count; i++) {
 			UnicodeString ibuf = ExtColList->Strings[i];
 			if (test_FileExt(fext, get_tkn_r(ibuf, ','))) {
-				col_f = (TColor)get_tkn(ibuf, ',').ToIntDef(col_fgList);  break;
+				col_f = (TColor)get_tkn(ibuf, ',').ToIntDef(get_ListFgCol());  break;
 			}
 		}
 	}
@@ -7704,7 +7708,7 @@ TColor get_ExtColor(
 		for (int i=0; i<ExtColList->Count; i++) {
 			UnicodeString ibuf = ExtColList->Strings[i];
 			if (SameStr(get_tkn_r(ibuf, ','), ".")) {
-				col_f = (TColor)get_tkn(ibuf, ',').ToIntDef(col_fgList);  break;
+				col_f = (TColor)get_tkn(ibuf, ',').ToIntDef(get_ListFgCol());  break;
 			}
 		}
 	}
@@ -7774,22 +7778,9 @@ TColor get_LogColor(UnicodeString s)
 	return (					 		  is_err? col_Error :
 		 (has_tm && contains_wd_i(s, "開始|>>"))? col_Headline :
 						 StartsText("$ git ", s)? col_Headline :
-								(s.Pos('!')==10)? AdjustColor(col_fgLog, ADJCOL_FGLIST)
-												: col_fgLog
+								(s.Pos('!')==10)? AdjustColor(get_LogFgCol(), ADJCOL_FGLIST)
+												: get_LogFgCol()
 		);
-}
-
-//---------------------------------------------------------------------------
-//情報ヘッダの色を取得
-//---------------------------------------------------------------------------
-TColor get_InfHdrBgCol()
-{
-	return (col_bgInfHdr==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnFace) : col_bgInfHdr;
-}
-//---------------------------------------------------------------------------
-TColor get_InfHdrFgCol()
-{
-	return (col_fgInfHdr==col_None)? TStyleManager::ActiveStyle->GetSystemColor(clBtnText) : col_fgInfHdr;
 }
 
 //---------------------------------------------------------------------------
@@ -8375,7 +8366,7 @@ void draw_InfListBox(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 	TCanvas *cv = lp->Canvas;
 	cv->Font->Assign(lp->Font);
 
-	cv->Brush->Color = (State.Contains(odSelected) && lp->Focused())? col_selItem : col_bgInf;
+	cv->Brush->Color = (State.Contains(odSelected) && lp->Focused())? col_selItem : get_InfBgCol();
 	cv->FillRect(Rect);
 
 	int xp = Rect.Left + ScaledInt(2, lp);
@@ -8388,7 +8379,7 @@ void draw_InfListBox(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 		draw_separateLine(cv, Rect, 1); return;
 	}
 
-	cv->Font->Color = use_fgsel? col_fgSelItem : col_fgInf;
+	cv->Font->Color = use_fgsel? col_fgSelItem : get_InfFgCol();
 
 	//基本情報/リンク先基本情報
 	int flag = (int)lp->Items->Objects[Index];
@@ -8419,8 +8410,8 @@ void draw_InfListBox(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 	//項目値
 	cv->Font->Color = use_fgsel? col_fgSelItem :
 					  test_word_i(inam, EmpInfItems)? col_fgInfEmp :
-									  inam.IsEmpty()? AdjustColor(col_fgInf, ADJCOL_FGLIST) :
-							 (flag & LBFLG_GIT_HASH)? col_GitHash : col_fgInf;
+									  inam.IsEmpty()? AdjustColor(get_InfFgCol(), ADJCOL_FGLIST) :
+							 (flag & LBFLG_GIT_HASH)? col_GitHash : get_InfFgCol();
 
 	if (flag & LBFLG_PATH_FIF) {
 		if (SameStr(inam, "プログラム")) lbuf = ExtractFileName(lbuf) + "  " + ExtractFileDir(lbuf);
@@ -8430,7 +8421,7 @@ void draw_InfListBox(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 		Emphasis_RLO_info(lbuf, cv, xp, yp);
 	}
 	else if (flag & LBFLG_TAGS_FIF) {
-		usr_TAG->DrawTags(lbuf, cv, xp, yp, RevTagCololr? col_bgInf : col_None);
+		usr_TAG->DrawTags(lbuf, cv, xp, yp, RevTagColor? get_InfBgCol() : col_None);
 	}
 	else if (flag & LBFLG_FEXT_FIF) {
 		xp = xp + (lbuf.Length() * cv->TextWidth("0")) - cv->TextWidth(lbuf);
@@ -8439,7 +8430,7 @@ void draw_InfListBox(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 	else if (flag & LBFLG_TIME_FIF) {
 		if (!use_fgsel) {
 			try {
-				cv->Font->Color = get_TimeColor(str_to_DateTime(lbuf), col_fgInf);
+				cv->Font->Color = get_TimeColor(str_to_DateTime(lbuf), get_InfFgCol());
 			}
 			catch (EConvertError &e) {
 				;
@@ -8513,12 +8504,12 @@ void draw_InputPaintBox(TPaintBox *pp, UnicodeString s)
 {
 	TCanvas *cv = pp->Canvas;
 	cv->Font->Assign(pp->Font);
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(pp->ClientRect);
 
 	int xp = ScaledInt(2);
 	int yp = get_TopMargin(cv);
-	cv->Font->Color = col_fgList;
+	cv->Font->Color = get_ListFgCol();
 	cv->TextOut(xp, yp, s);
 	xp += cv->TextWidth(s);
 
@@ -8609,7 +8600,7 @@ bool get_FileInfList(
 {
 	if (!fp) return false;
 
-	OutDebugStr("=> get_FileInfList: " + fp->n_name);
+	OutDebugStr("  => get_FileInfList: " + fp->n_name);
 
 	try {
 		lst->Clear();
@@ -9049,7 +9040,7 @@ bool get_FileInfList(
 			del_file_rec(fp);
 		}
 
-		OutDebugStr("<= get_FileInfList");
+		OutDebugStr("  <= get_FileInfList");
 		return true;
 	}
 	catch (...) {
@@ -10329,7 +10320,7 @@ void set_col_from_ColorList()
 		{&col_bgList,	_T("bgList"),		clBlack},
 		{&col_bgList2,	_T("bgList2"),		col_None},
 		{&col_fgList,	_T("fgList"),		clWhite},
-		{&col_Splitter,	_T("Splitter"),		clBtnFace},
+		{&col_Splitter,	_T("Splitter"),		col_None},
 		{&col_bgArc,	_T("bgArc"),		clNavy},
 		{&col_bgFind,	_T("bgFind"),		clNavy},
 		{&col_bgWork,	_T("bgWork"),		clNavy},
@@ -10359,19 +10350,19 @@ void set_col_from_ColorList()
 		{&col_fgSpace,	_T("fgSpace"),		clMaroon},
 		{&col_fgTagNam,	_T("fgTagNam"),		clLime},
 		{&col_InvItem,	_T("InvItem"),		clGray},
-		{&col_bgTabBar,	_T("bgTabBar"),		clBtnFace},
-		{&col_bgActTab,	_T("bgActTab"),		clWindow},
-		{&col_bgInAcTab,_T("bgInAcTab"),	clBtnFace},
-		{&col_frmTab,	_T("frmTab"),		TStyleManager::ActiveStyle->GetSystemColor(clWindowFrame)},
-		{&col_fgTab,	_T("fgTab"),		clBtnText},
-		{&col_bgListHdr,_T("bgListHdr"),	clBtnFace},
-		{&col_fgListHdr,_T("fgListHdr"),	clBtnText},
-		{&col_bgDirInf,	_T("bgDirInf"),		AdjustColor(clBtnFace, ADJCOL_BGBIT)},
-		{&col_fgDirInf,	_T("fgDirInf"),		clBtnText},
-		{&col_bgDirRel,	_T("bgDirRel"),		AdjustColor(clBtnFace, ADJCOL_BGLTL)},
-		{&col_fgDirRel,	_T("fgDirRel"),		clBtnText},
-		{&col_bgDrvInf,	_T("bgDrvInf"),		AdjustColor(clBtnFace, ADJCOL_BGBIT)},
-		{&col_fgDrvInf,	_T("fgDrvInf"),		clBtnText},
+		{&col_bgTabBar,	_T("bgTabBar"),		col_None},
+		{&col_bgActTab,	_T("bgActTab"),		col_None},
+		{&col_bgInAcTab,_T("bgInAcTab"),	col_None},
+		{&col_frmTab,	_T("frmTab"),		col_None},
+		{&col_fgTab,	_T("fgTab"),		col_None},
+		{&col_bgListHdr,_T("bgListHdr"),	col_None},
+		{&col_fgListHdr,_T("fgListHdr"),	col_None},
+		{&col_bgDirInf,	_T("bgDirInf"),		col_None},
+		{&col_fgDirInf,	_T("fgDirInf"),		col_None},
+		{&col_bgDirRel,	_T("bgDirRel"),		col_None},
+		{&col_fgDirRel,	_T("fgDirRel"),		col_None},
+		{&col_bgDrvInf,	_T("bgDrvInf"),		col_None},
+		{&col_fgDrvInf,	_T("fgDrvInf"),		col_None},
 		{&col_bgInf,	_T("bgInf"),		clBlack},
 		{&col_fgInf,	_T("fgInf"),		clWhite},
 		{&col_fgInfNam,	_T("fgInfNam"),		clWhite},
@@ -11125,9 +11116,11 @@ void TabCrTextOut(
 	TCanvas *cv,
 	int &x,				//[i/o] 表示X位置
 	int y,				//[i]	表示Y位置
-	TColor fg,			//文字色
-	int max_x)			//制限位置 (default = 0 : 無視)
+	TColor fg,			//文字色	(default = col_fgList)
+	int max_x)			//制限位置	(default = 0 : 無視)
 {
+	if (fg==col_None) fg = get_ListFgCol();
+
 	if (max_x>0 && x>=max_x) return;
 
 	s = ReplaceStr(s, "\r", "");
@@ -11702,8 +11695,8 @@ void draw_SortHeader(
 	int xp = rc.Left + 4;
 	int yp = rc.Top + get_TopMargin(cv) + 1;
 
-	cv->Brush->Color = use_syscol? TStyleManager::ActiveStyle->GetSystemColor(clBtnFace) : col_bgListHdr;
-	cv->Font->Color  = use_syscol? TStyleManager::ActiveStyle->GetSystemColor(clBtnText) : col_fgListHdr;
+	cv->Brush->Color = use_syscol? TStyleManager::ActiveStyle->GetSystemColor(clBtnFace) : get_ListHdrBgCol();
+	cv->Font->Color  = use_syscol? TStyleManager::ActiveStyle->GetSystemColor(clBtnText) : get_ListHdrFgCol();
 
 	//背景
 	cv->FillRect(rc);
@@ -12648,6 +12641,8 @@ bool Execute_ex(
 	TStringList *o_lst)		//  o_lst: コンソール出力	(default = NULL)
 {
 	if (cmd.IsEmpty()) return false;
+
+	OutDebugStr("=> Execute_ex : " + cmd + " : " + prm);
 
 	try {
 		cmd = exclude_quot(cmd);

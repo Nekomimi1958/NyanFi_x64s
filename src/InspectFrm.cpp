@@ -56,7 +56,7 @@ void __fastcall TInspectForm::FormShow(TObject *Sender)
 	gp->RowCount = get_line_count(CodePageList);
 	CodeScrPanel->UpdateKnob();
 
-	GridSplitter->Color = col_Splitter;
+	GridSplitter->Color = get_SplitterCol();
 
 	OptCheckBoxClick(NULL);
 }
@@ -291,16 +291,17 @@ void __fastcall TInspectForm::InspectGridDrawCell(TObject *Sender, System::LongI
 
 	//’l‰ğÍ
 	if (gp->Tag==0) {
-		cv->Brush->Color = col_bgList;
+		cv->Brush->Color = get_ListBgCol();
 		cv->FillRect(Rect);
-		cv->Font->Color = col_fgList;
+		cv->Font->Color = get_ListFgCol();
 		//COLORREF
 		if (ACol==1 && ARow==7 && !cellstr.IsEmpty()) {
 			TRect rc = Rect;
 			rc.Right = rc.Left + 40;  InflateRect(rc, -2, -4);
 			cv->Brush->Color = ColorRef;	cv->FillRect(rc);
 			cv->Brush->Color = clLtGray;	cv->FrameRect(rc);
-			cv->Brush->Color = col_bgList;	cv->TextOut(xp + 40, yp, cellstr);
+			cv->Brush->Color = get_ListBgCol();
+			cv->TextOut(xp + 40, yp, cellstr);
 		}
 		else {
 			cv->TextRect(Rect, xp, yp, split_pre_tab(cellstr));
@@ -312,9 +313,9 @@ void __fastcall TInspectForm::InspectGridDrawCell(TObject *Sender, System::LongI
 	}
 	//•¶š‰ğÍ
 	else {
-		cv->Brush->Color = State.Contains(gdSelected)? col_selItem : col_bgList;
+		cv->Brush->Color = State.Contains(gdSelected)? col_selItem : get_ListBgCol();
 		cv->FillRect(Rect);
-		TabCrTextOut(cellstr, cv, xp, yp, is_SelFgCol(State)? col_fgSelItem : col_fgList);
+		TabCrTextOut(cellstr, cv, xp, yp, is_SelFgCol(State)? col_fgSelItem : get_ListFgCol());
 	}
 
 	//‹æØ‚èü

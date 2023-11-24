@@ -243,14 +243,16 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR lpCmdLine, int)
 
 	::CoUninitialize();
 	::CloseHandle(hMutex);
-	OutDebugStr("<== CloseHandle(hMutex)");
+	OutDebugStr("  <= CloseHandle(hMutex)");
 
 	//再起動用バッチファイルを起動
 	if (!RstBatName.IsEmpty()) {
-		if (!Execute_ex(RstBatName, EmptyStr, ExtractFilePath(Application->ExeName), "H"))
+		if (!Execute_ex(RstBatName, EmptyStr, ExtractFilePath(Application->ExeName), "H")) {
 			msgbox_ERR("バッチファイルの起動に失敗しました。");
+		}
 	}
 
+	OutDebugStr("<== _tWinMain");
 	return 0;
 }
 //---------------------------------------------------------------------------

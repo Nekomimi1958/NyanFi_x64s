@@ -258,9 +258,9 @@ void __fastcall TKeyListDlg::KeyListGridDrawCell(TObject *Sender, System::LongIn
 	UnicodeString cellstr = gp->Cells[ACol][ARow];
 	bool use_fgsel = is_SelFgCol(State);
 
-	cv->Brush->Color = State.Contains(gdSelected)? (gp->Focused()? col_selItem : col_oppItem) : col_bgList;
+	cv->Brush->Color = State.Contains(gdSelected)? (gp->Focused()? col_selItem : col_oppItem) : get_ListBgCol();
 	cv->FillRect(Rect);
-	cv->Font->Color = use_fgsel? col_fgSelItem : col_fgList;
+	cv->Font->Color = use_fgsel? col_fgSelItem : get_ListFgCol();
 
 	//ÉLÅ[
 	if (ACol==0) {

@@ -305,19 +305,19 @@ void __fastcall TNetShareDlg::ShareListBoxDrawItem(TWinControl *Control, int Ind
 	TListBox *lp = (TListBox*)Control;
 	TCanvas *cv = lp->Canvas;
 	cv->Font->Assign(ListFont);
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(Rect);
 
 	UnicodeString lbuf = lp->Items->Strings[Index];
 	if (SameStr(lbuf, "-")) {
-		draw_Separator(cv, Rect, col_bgList);
+		draw_Separator(cv, Rect, get_ListBgCol());
 	}
 	else {
 		int xp = Rect.Left + SCALED_THIS(2);
 		int yp = Rect.Top  + get_TopMargin2(cv);
 
 		//アクセスキー
-		cv->Font->Color = col_fgList;
+		cv->Font->Color = get_ListFgCol();
 		cv->Font->Style = cv->Font->Style << fsUnderline;
 		if (isPC) {
 			if (Index<LibIdxBase) {
@@ -355,7 +355,7 @@ void __fastcall TNetShareDlg::ShareListBoxDrawItem(TWinControl *Control, int Ind
 				}
 				xp += SCALED_THIS(20);
 				lbuf = get_tkn_r(lbuf, ' ');
-				cv->Font->Color = col_fgList;
+				cv->Font->Color = get_ListFgCol();
 			}
 			//ディレクトリ
 			else {

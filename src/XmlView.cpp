@@ -37,7 +37,7 @@ void __fastcall TXmlViewer::FormShow(TObject *Sender)
 	ValCheckBox->Checked  = IniFile->ReadBoolGen(_T("XmlViewFindVal"),	true);
 
 	XmlTreeView->Items->Clear();
-	XmlTreeView->Color = col_bgList;
+	XmlTreeView->Color = get_ListBgCol();
 
 	AssignScaledFont(XmlTreeView, ListFont);
 	AssignScaledFont(StatusBar1, SttBarFont);
@@ -291,7 +291,7 @@ void __fastcall TXmlViewer::XmlTreeViewCustomDrawItem(TCustomTreeView *Sender, T
 	TTreeView *vp = XmlTreeView;
 	TCanvas *cv   = vp->Canvas;
 	TRect rc_s = Node->DisplayRect(false);
-	cv->Brush->Color = Node->Selected? col_selItem : col_bgList;
+	cv->Brush->Color = Node->Selected? col_selItem : get_ListBgCol();
 	cv->FillRect(rc_s);
 
 	//テキスト
@@ -304,7 +304,7 @@ void __fastcall TXmlViewer::XmlTreeViewCustomDrawItem(TCustomTreeView *Sender, T
 	TCanvas *tmp_cv = tmp_bmp->Canvas;
 	TRect    tmp_rc	= Rect(0, 0, tmp_bmp->Width, tmp_bmp->Height);
 	tmp_cv->Font->Assign(vp->Font);
-	tmp_cv->Brush->Color = Node->Selected? col_selItem : col_bgList;
+	tmp_cv->Brush->Color = Node->Selected? col_selItem : get_ListBgCol();
 	tmp_cv->FillRect(tmp_rc);
 
 	bool is_selfg = (Node->Selected && col_fgSelItem!=col_None);
@@ -391,7 +391,7 @@ void __fastcall TXmlViewer::XmlTreeViewCustomDrawItem(TCustomTreeView *Sender, T
 	//値
 	else if (ntyp==0) {
 		tmp_cv->Font->Color = is_selfg? col_fgSelItem :
-					(StartsStr("http", lbuf) && TRegEx::Match(lbuf, URL_MATCH_PTN).Success)? col_URL : col_fgList;
+					(StartsStr("http", lbuf) && TRegEx::Match(lbuf, URL_MATCH_PTN).Success)? col_URL : get_ListFgCol();
 		tmp_cv->TextOut(0, 0, lbuf);
 	}
 	//エラー

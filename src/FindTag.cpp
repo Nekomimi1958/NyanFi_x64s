@@ -39,7 +39,7 @@ void __fastcall TFindTagForm::FormShow(TObject *Sender)
 	set_StdListBox(InfoListBox);
 	set_UsrScrPanel(InfoScrPanel);
 
-	ListSplitter->Color = col_Splitter;
+	ListSplitter->Color = get_SplitterCol();
 
 	UnicodeString tit = "ƒ^ƒO–¼ŒŸõ";
 	if (!FileName.IsEmpty()) tit.cat_sprintf(_T(" - %s"), ExtractFileName(FileName).c_str());
@@ -49,7 +49,7 @@ void __fastcall TFindTagForm::FormShow(TObject *Sender)
 
 	IncSeaWord = EmptyStr;
 	setup_Panel(InpPanel, ListFont);
-	InpPanel->Color = col_bgList;
+	InpPanel->Color = get_ListBgCol();
 	UserModule->SetBlinkTimer(InpPaintBox);
 
 	ClearTagList();
@@ -164,12 +164,12 @@ void __fastcall TFindTagForm::TagsListBoxDrawItem(TWinControl *Control, int Inde
 	TCanvas  *cv = lp->Canvas;
 
 	cv->Font->Assign(lp->Font);
-	cv->Brush->Color = State.Contains(odSelected)? col_selItem : col_bgList;
+	cv->Brush->Color = State.Contains(odSelected)? col_selItem : get_ListBgCol();
 	cv->FillRect(Rect);
 
 	int xp = Rect.Left + SCALED_THIS(4);
 	int yp = Rect.Top  + get_TopMargin2(cv);
-	cv->Font->Color = (State.Contains(odSelected) && col_fgSelItem!=col_None)? col_fgSelItem : col_fgList;
+	cv->Font->Color = (State.Contains(odSelected) && col_fgSelItem!=col_None)? col_fgSelItem : get_ListFgCol();
 
 	UnicodeString lbuf = lp->Items->Strings[Index];
 	if (!IncSeaWord.IsEmpty()) {
@@ -296,7 +296,7 @@ void __fastcall TFindTagForm::InfoListBoxDrawItem(TWinControl *Control, int Inde
 	int xp = Rect.Left + SCALED_THIS(4);
 	int yp = Rect.Top  + get_TopMargin(cv);
 
-	cv->Brush->Color = col_bgList;
+	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(Rect);
 
 	UnicodeString fnam = get_pre_tab(get_post_tab(lp->Items->Strings[Index]));
