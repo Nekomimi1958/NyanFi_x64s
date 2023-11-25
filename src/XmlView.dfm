@@ -82,7 +82,7 @@ object XmlViewer: TXmlViewer
       RowSelect = True
       ShowHint = False
       TabOrder = 0
-      StyleElements = []
+      StyleElements = [seBorder]
       OnChange = XmlTreeViewChange
       OnCustomDrawItem = XmlTreeViewCustomDrawItem
       OnHint = XmlTreeViewHint

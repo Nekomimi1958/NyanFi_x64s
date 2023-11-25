@@ -15,7 +15,6 @@ object NyanFiForm: TNyanFiForm
   Menu = MainMenu1
   Position = poDesigned
   ShowHint = True
-  OnActivate = FormActivate
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -238,7 +237,6 @@ object NyanFiForm: TNyanFiForm
           Color = clBlack
           ParentBackground = False
           TabOrder = 2
-          ExplicitWidth = 390
           object ImgScrollBox: TScrollBox
             Left = 0
             Top = 0
@@ -252,7 +250,6 @@ object NyanFiForm: TNyanFiForm
             BorderStyle = bsNone
             TabOrder = 0
             StyleElements = [seFont, seBorder]
-            ExplicitWidth = 390
             object ViewerImage: TImage
               Left = 0
               Top = 0

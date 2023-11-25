@@ -81,7 +81,7 @@ object JsonViewer: TJsonViewer
       RowSelect = True
       ShowHint = False
       TabOrder = 0
-      StyleElements = []
+      StyleElements = [seBorder]
       OnChange = JsonTreeViewChange
       OnCustomDrawItem = JsonTreeViewCustomDrawItem
       OnDeletion = JsonTreeViewDeletion

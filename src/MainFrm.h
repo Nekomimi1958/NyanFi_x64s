@@ -1118,7 +1118,6 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall FormDestroy(TObject *Sender);
-	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormResize(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall DropMenuItemClick(TObject *Sender);
@@ -1150,6 +1149,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall RepT1PanelResize(TObject *Sender);
 	void __fastcall GrepT11PanelResize(TObject *Sender);
 	void __fastcall TaskSttTimerTimer(TObject *Sender);
+	void __fastcall WaitTimerTimer(TObject *Sender);
 	void __fastcall UpdLogTimerTimer(TObject *Sender);
 	void __fastcall WatchDirTimerTimer(TObject *Sender);
 	void __fastcall WatchTailTimerTimer(TObject *Sender);
@@ -1940,7 +1940,6 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall IS_LoopActionUpdate(TObject *Sender);
 	void __fastcall IS_Match1ActionExecute(TObject *Sender);
 	void __fastcall IS_Match1ActionUpdate(TObject *Sender);
-	void __fastcall WaitTimerTimer(TObject *Sender);
 
 private:	// ユーザー宣言
 	TIdFTP *IdFTP1;
@@ -2142,6 +2141,18 @@ private:	// ユーザー宣言
 	{
 		if (msg.Msg==WM_ERASEBKGND) { msg.Result = 1; return; }
 		org_TabPanelWndProc(msg);
+	}
+
+	void RepaintActiveArea()
+	{
+		if (InactiveGray) {
+			TabControl1->Repaint();
+			TabBottomPaintBox->Repaint();
+			L_DirPanel->Repaint();
+			R_DirPanel->Repaint();
+			RelPaintBox->Repaint();
+			RelPaintBox2->Repaint();
+		}
 	}
 
 	int __fastcall get_TopTabIndex();
@@ -2370,6 +2381,7 @@ private:	// ユーザー宣言
 	bool __fastcall ViewClipImage(bool fitted = false, int zoom = 0);
 	void __fastcall SetImgInfListBox(file_rec *fp);
 	void __fastcall ClearViewImage();
+	void __fastcall SetSeekStat(int idx);
 	void __fastcall SetViewFileIdx();
 	int  __fastcall FindFileCore(bool dir_sw = false, int tag = -1);
 	void __fastcall FindFileDlgExecute(bool both = false, UnicodeString lst_name = EmptyStr);

@@ -92,7 +92,7 @@ object AppListDlg: TAppListDlg
         ParentDoubleBuffered = False
         PopupMenu = PopupMenu2
         TabOrder = 1
-        StyleElements = []
+        StyleElements = [seBorder]
         OnClick = LaunchListBoxClick
         OnData = LaunchListBoxData
         OnDblClick = LaunchListBoxDblClick
@@ -170,7 +170,7 @@ object AppListDlg: TAppListDlg
           ParentDoubleBuffered = False
           PopupMenu = PopupMenu1
           TabOrder = 0
-          StyleElements = []
+          StyleElements = [seBorder]
           OnClick = AppListBoxClick
           OnData = AppListBoxData
           OnDblClick = AppListBoxDblClick

@@ -393,6 +393,7 @@ extern bool PriorFExtCol;
 extern bool ColorOnlyFExt;
 extern bool SymColorToName;
 extern bool RevTagColor;
+extern bool InactiveGray;
 extern bool ShowMainMenu;
 extern bool ShowImgPreview;
 extern bool ShowProperty;
@@ -662,6 +663,8 @@ extern UnicodeString NoRepoListPath;
 extern UnicodeString DirDelimiter;
 
 extern bool NoCheckUncRPT;
+
+extern int  InactiveAdjust;
 
 extern int CurTabIndex;
 
@@ -1679,6 +1682,14 @@ inline bool is_SelFgCol(bool sel)
 {
 	return (sel && col_fgSelItem!=col_None);
 }
+
+//---------------------------------------------------------------------------
+inline TColor GetActiveCol(TColor col)
+{
+	return ((InactiveGray && (!Application->Active || !Application->MainForm->Active))?
+											AdjustColor(GrayCol(col), InactiveAdjust) : col);
+}
+
 //---------------------------------------------------------------------------
 inline UnicodeString get_FExtMaxStr(int n = 0)
 {

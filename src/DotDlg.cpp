@@ -235,6 +235,7 @@ void __fastcall TDotNyanDlg::ColorComboBoxDrawItem(TWinControl *Control, int Ind
 	else {
 		cv->Brush->Color = get_PanelColor();
 		cv->FillRect(rc);
+		cv->Brush->Style = bsClear;
 		out_Text(cv, rc.Left + SCALED_THIS(2), yp, _T("–³Œø"), get_LabelColor());
 	}
 }

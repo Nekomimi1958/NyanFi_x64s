@@ -205,6 +205,7 @@ bool PriorFExtCol;				//拡張子部分は属性色より優先
 bool ColorOnlyFExt;				//拡張子別配色は拡張子部分のみに適用
 bool SymColorToName;			//ファイル名主部にシンボリックリンク色を適用
 bool RevTagColor;				//タグ色の反転表示
+bool InactiveGray;				//非アクティブなメイン画面の一部をグレー化
 bool ShowMainMenu;				//メインメニューを表示
 bool ShowImgPreview;			//イメージプレビューを表示
 bool ShowProperty;				//ファイル情報を表示
@@ -482,6 +483,7 @@ UnicodeString DirDelimiter;		//ディレクトリ区切りの表示文字
 
 //---------------------------------------------------------------------------
 bool NoCheckUncRPT;				//UNCパスのリパースポイント情報をチェックしない
+int  InactiveAdjust;			//非アクティブ時グレー化の最の加減値
 
 //---------------------------------------------------------------------------
 UnicodeString FTPTextModeFExt;	//テキストモードで転送する拡張子
@@ -1620,6 +1622,8 @@ void InitializeGlobal()
 		{_T("FindTagsWidth=150"),			(TObject*)&FindTagsWidth},
 		{_T("KeyboardMode=0"),				(TObject*)&KeyboardMode},
 
+		{_T("InactiveAdjust=32"),			(TObject*)&InactiveAdjust},		//隠し設定
+
 		//Bool (デフォルト値を true または false で指定)
 		{_T("LastMigemoMode=false"),		(TObject*)&LastMigemoMode},
 		{_T("LastMigemoModeF=false"),		(TObject*)&LastMigemoModeF},
@@ -1746,6 +1750,7 @@ void InitializeGlobal()
 		{_T("ColorOnlyFExt=false"),			(TObject*)&ColorOnlyFExt},
 		{_T("SymColorToName=false"),		(TObject*)&SymColorToName},
 		{_T("RevTagColor=false"),			(TObject*)&RevTagColor},
+		{_T("InactiveGray=false"),			(TObject*)&InactiveGray},
 		{_T("ShowMainMenu=true"),			(TObject*)&ShowMainMenu},
 		{_T("ShowImgPreview=true"),			(TObject*)&ShowImgPreview},
 		{_T("ShowProperty=true"),			(TObject*)&ShowProperty},
@@ -1761,7 +1766,7 @@ void InitializeGlobal()
 		{_T("ShowFKeyBar=false"),			(TObject*)&ShowFKeyBar},
 		{_T("ShowClsTabBtn=false"),			(TObject*)&ShowClsTabBtn},
 		{_T("ShowPopTabBtn=false"),			(TObject*)&ShowPopTabBtn},
-		{_T("ShowPopDirBtn=true"),			(TObject*)&ShowPopDirBtn},
+		{_T("ShowPopDirBtn=false"),			(TObject*)&ShowPopDirBtn},
 		{_T("HideScrBar=false"),			(TObject*)&HideScrBar},
 		{_T("ShowByteSize=false"),			(TObject*)&ShowByteSize},
 		{_T("ShowTargetInf=false"),			(TObject*)&ShowTargetInf},

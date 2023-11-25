@@ -2867,7 +2867,7 @@ object OptionDlg: TOptionDlg
         Width = 80
         Height = 24
         Caption = #36969#29992
-        TabOrder = 8
+        TabOrder = 9
         OnClick = AppColorBtnClick
       end
       object ExpColBtn: TButton
@@ -2876,7 +2876,7 @@ object OptionDlg: TOptionDlg
         Width = 90
         Height = 24
         Caption = #12456#12463#12473#12509#12540#12488'...'
-        TabOrder = 7
+        TabOrder = 8
         OnClick = ExpColBtnClick
       end
       object ExtColGroupBox: TGroupBox
@@ -3082,7 +3082,7 @@ object OptionDlg: TOptionDlg
         Width = 90
         Height = 24
         Caption = #12452#12531#12509#12540#12488'...'
-        TabOrder = 6
+        TabOrder = 7
         OnClick = InpColBtnClick
       end
       object OptColGroupBox: TGroupBox
@@ -3191,23 +3191,24 @@ object OptionDlg: TOptionDlg
         Left = 460
         Top = 324
         Width = 434
-        Height = 205
+        Height = 172
         Caption = #12479#12464#21029#37197#33394
         TabOrder = 5
         DesignSize = (
           434
-          205)
+          172)
         object TagColListBox: TListBox
           Left = 10
           Top = 18
           Width = 348
-          Height = 177
+          Height = 144
           Style = lbOwnerDrawFixed
           Anchors = [akLeft, akTop, akBottom]
           DoubleBuffered = False
           ParentDoubleBuffered = False
           TabOrder = 0
           OnDrawItem = TagColListBoxDrawItem
+          ExplicitHeight = 177
         end
         object RefTagColBtn: TButton
           Tag = 3
@@ -3356,6 +3357,14 @@ object OptionDlg: TOptionDlg
           DropDownCount = 20
           TabOrder = 0
         end
+      end
+      object InactGrayCheckBox: TCheckBox
+        Left = 470
+        Top = 510
+        Width = 265
+        Height = 17
+        Caption = #38750#12450#12463#12486#12451#12502#12394#12513#12452#12531#30011#38754#12398#19968#37096#12434#12464#12524#12540#21270
+        TabOrder = 6
       end
     end
     object TxtViewerSheet: TTabSheet

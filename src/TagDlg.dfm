@@ -45,7 +45,7 @@ object TagManDlg: TTagManDlg
       ItemHeight = 13
       ParentDoubleBuffered = False
       Style = lbOwnerDrawFixed
-      StyleElements = [seFont, seBorder]
+      StyleElements = [seBorder]
       TabOrder = 0
       OnClick = TagCheckListBoxClick
       OnClickCheck = TagCheckListBoxClickCheck

@@ -36,8 +36,6 @@ object FindTagForm: TFindTagForm
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 260
-    ExplicitHeight = 176
     object InpPanel: TPanel
       Left = 0
       Top = 0
@@ -48,7 +46,6 @@ object FindTagForm: TFindTagForm
       BevelOuter = bvLowered
       TabOrder = 0
       StyleElements = [seBorder]
-      ExplicitWidth = 260
       object InpPaintBox: TPaintBox
         Left = 1
         Top = 1
@@ -73,7 +70,7 @@ object FindTagForm: TFindTagForm
       ParentDoubleBuffered = False
       PopupMenu = PopupMenu1
       TabOrder = 1
-      StyleElements = []
+      StyleElements = [seBorder]
       OnClick = TagsListBoxClick
       OnData = TagsListBoxData
       OnDataObject = TagsListBoxDataObject
@@ -81,8 +78,6 @@ object FindTagForm: TFindTagForm
       OnDrawItem = TagsListBoxDrawItem
       OnKeyDown = TagsListBoxKeyDown
       OnKeyPress = TagsListBoxKeyPress
-      ExplicitWidth = 256
-      ExplicitHeight = 154
     end
   end
   object InfoPanel: TPanel
@@ -93,8 +88,6 @@ object FindTagForm: TFindTagForm
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 180
-    ExplicitWidth = 260
     object InfoListBox: TListBox
       Left = 0
       Top = 0
@@ -110,11 +103,10 @@ object FindTagForm: TFindTagForm
       ParentDoubleBuffered = False
       PopupMenu = PopupMenu1
       TabOrder = 0
-      StyleElements = []
+      StyleElements = [seBorder]
       OnDblClick = InfoListBoxDblClick
       OnDrawItem = InfoListBoxDrawItem
       OnKeyDown = InfoListBoxKeyDown
-      ExplicitWidth = 256
     end
   end
   object PopupMenu1: TPopupMenu

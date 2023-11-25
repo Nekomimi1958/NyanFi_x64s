@@ -124,7 +124,7 @@ object CsvRecForm: TCsvRecForm
         Options = [goFixedVertLine, goFixedHorzLine, goRangeSelect, goColSizing, goThumbTracking]
         PopupMenu = PopupMenu1
         TabOrder = 0
-        StyleElements = []
+        StyleElements = [seBorder]
         OnClick = RecordGridClick
         OnDrawCell = RecordGridDrawCell
         ColWidths = (
