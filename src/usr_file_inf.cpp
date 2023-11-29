@@ -2,6 +2,8 @@
 // 各種フォーマットのファイル情報取得									//
 //																		//
 //----------------------------------------------------------------------//
+#include <ks.h>
+#include <ksmedia.h>
 #include <mmreg.h>
 #include <imagehlp.h>
 #include <RestartManager.h>
@@ -328,23 +330,23 @@ void get_WavInf(
 		if (!SameStr(get_chunk_hdr(fs.get()), "RIFF") || !fsRead_check_char(fs.get(), "WAVE")) UserAbort(USTR_IllegalFormat);
 		if (!sea_chunk(fs.get(),  "fmt "))	UserAbort(USTR_IllegalFormat);
 
-		DWORD dwBuf;
-		fs->ReadBuffer(&dwBuf, 4);
-		int p_data = fs->Seek(0, soFromCurrent) + dwBuf;
+		DWORD fmt_len;
+		fs->ReadBuffer(&fmt_len, 4);
+		int p_data = fs->Seek(0, soFromCurrent) + fmt_len;
 
 		//フォーマット情報を取得
-		PCMWAVEFORMAT pwf;
-		fs->ReadBuffer(&pwf, sizeof(PCMWAVEFORMAT));
-		if (pwf.wf.wFormatTag==WAVE_FORMAT_PCM || pwf.wf.wFormatTag==WAVE_FORMAT_EXTENSIBLE) {
-			if (pwf.wf.nChannels==0) TextAbort(_T("不正なチャンネル数です。"));
-			int chn    = pwf.wf.nChannels;
-			int s_rate = pwf.wf.nSamplesPerSec;
-			int s_byte = pwf.wf.nBlockAlign/chn;
+		WAVEFORMATEXTENSIBLE wfx;
+		fs->ReadBuffer(&wfx, fmt_len);
+		if (wfx.Format.wFormatTag==WAVE_FORMAT_PCM || wfx.Format.wFormatTag==WAVE_FORMAT_EXTENSIBLE) {
+			if (wfx.Format.nChannels==0) TextAbort(_T("不正なチャンネル数です。"));
+			int chn    = wfx.Format.nChannels;
+			int s_rate = wfx.Format.nSamplesPerSec;
+			int s_byte = wfx.Format.nBlockAlign/chn;
 			int s_bit  = s_byte * 8;
 
-			fs->Seek(p_data, soFromBeginning);
 			if (!sea_chunk(fs.get(), "data")) TextAbort(_T("dataチャンクが見つかりません。"));
 
+			DWORD dwBuf;
 			fs->ReadBuffer(&dwBuf, 4);
 			int length = (int)(dwBuf/(s_byte*chn)/(s_rate/1000.0));
 
@@ -355,12 +357,31 @@ void get_WavInf(
 				lbuf.cat_sprintf(_T("%uch"), chn);
 			lst->Add(lbuf);
 			add_PropLine(_T("長さ"), mSecToTStr(length), lst);
+
+			//チャンネルマスク
+			if (wfx.Format.wFormatTag==WAVE_FORMAT_EXTENSIBLE) {
+				UnicodeString cm;
+				cm.sprintf(_T("0x%08X"), wfx.dwChannelMask);
+				switch(wfx.dwChannelMask) {
+				case KSAUDIO_SPEAKER_MONO:		cm += " (Mono)";		break;
+				case KSAUDIO_SPEAKER_STEREO:	cm += " (Stereo)";		break;
+				case KSAUDIO_SPEAKER_QUAD:		cm += " (Quad)";		break;
+				case KSAUDIO_SPEAKER_SURROUND:	cm += " (Surround)";	break;
+				case KSAUDIO_SPEAKER_5POINT1:	cm += " (5.1)";			break;
+				case KSAUDIO_SPEAKER_7POINT1:	cm += " (7.1)";			break;
+				case KSAUDIO_SPEAKER_7POINT1_SURROUND:
+												cm += " (7.1 Surround)"; break;
+				case KSAUDIO_SPEAKER_DIRECTOUT:	cm += " (DirectOut)";	break;
+				default:						cm += " (Others)";
+				}
+				add_PropLine(_T("チャネルマスク"), cm, lst);
+			}
 		}
-		else if (pwf.wf.wFormatTag==WAVE_FORMAT_MPEGLAYER3) {
+		else if (wfx.Format.wFormatTag==WAVE_FORMAT_MPEGLAYER3) {
 			add_PropLine(_T("形式"), "MPEG 3 Layer 1", lst);
 		}
 		else {
-			lst->Add(get_PropTitle(_T("形式")).cat_sprintf(_T("その他(0x%04X)"), pwf.wf.wFormatTag));
+			lst->Add(get_PropTitle(_T("形式")).cat_sprintf(_T("その他(0x%04X)"), wfx.Format.wFormatTag));
 		}
 	}
 	catch (EAbort &e) {

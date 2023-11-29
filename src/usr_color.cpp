@@ -43,6 +43,19 @@ TColor GrayCol(TColor col)
 }
 
 //---------------------------------------------------------------------------
+//補色を取得
+//---------------------------------------------------------------------------
+TColor ComplementaryCol(TColor col)
+{
+	int c = ColorToRGB(col);
+	int r = GetRValue(c);
+	int g = GetGValue(c);
+	int b = GetBValue(c);
+	int m = std::max(std::max(r, g), b) + std::min(std::min(r, g), b);
+	return TColor(RGB(m - r, m - g, m - b));
+}
+
+//---------------------------------------------------------------------------
 //RGB→HSL 変換
 //---------------------------------------------------------------------------
 void RgbToHsl(TColor col, int *h, int *s, int *l)
@@ -114,6 +127,61 @@ void RgbToHsv(TColor col, int *h, int *s, int *v)
 {
 	int cref = ColorToRGB(col);
 	RgbToHsv(GetRValue(cref), GetGValue(cref), GetBValue(cref), h, s, v);
+}
+
+//---------------------------------------------------------------------------
+//HSL→RGB 変換
+//---------------------------------------------------------------------------
+TColor HslToCol(int h, int s, int l)
+{
+	float maxv, minv;
+	if (l<50) {
+		maxv = 2.55 * (l + l * (s/100.0));
+		minv = 2.55 * (l - l * (s/100.0));
+	}
+	else {
+		maxv = 2.55 * (l + (100 - l) * (s/100.0));
+		minv = 2.55 * (l - (100 - l) * (s/100.0));
+	}
+	
+	float fR, fG, fB;
+	switch (h/60) {
+	case 0: 
+		fR = maxv;
+		fG = minv + (h/60.0) * (maxv - minv);
+		fB = minv;
+		break;
+	case 1:
+		fR = minv + ((120 - h) / 60.0) * (maxv - minv);
+		fG = maxv;
+		fB = minv;
+		break;
+	case 2:
+		fR = minv;
+		fG = maxv;
+		fB = minv + ((h - 120) / 60.0) * (maxv - minv);
+		break;
+	case 3:
+		fR = minv;
+		fG = minv + ((240 - h) / 60.0) * (maxv - minv);
+		fB = maxv;
+		break;
+	case 4:
+		fR = minv + ((h - 240) / 60.0) * (maxv - minv);
+		fG = minv;
+		fB = maxv;
+		break;
+	case 5:
+		fR = maxv;
+		fG = minv;
+		fB = minv + ((360 - h) / 60.0) * (maxv - minv);
+		break;
+	}
+
+	int r = (int)(fR + 0.5);
+	int g = (int)(fG + 0.5);
+	int b = (int)(fB + 0.5);
+	return TColor(RGB(r, g, b));
 }
 
 //---------------------------------------------------------------------------

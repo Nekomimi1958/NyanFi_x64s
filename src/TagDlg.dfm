@@ -25,19 +25,20 @@ object TagManDlg: TTagManDlg
     Left = 0
     Top = 23
     Width = 310
-    Height = 158
+    Height = 156
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
     OnResize = ListPanelResize
+    ExplicitHeight = 158
     DesignSize = (
       310
-      158)
+      156)
     object TagCheckListBox: TCheckListBox
       Left = 0
       Top = 0
       Width = 306
-      Height = 158
+      Height = 156
       Align = alLeft
       Anchors = [akLeft, akTop, akRight, akBottom]
       BorderStyle = bsNone
@@ -53,10 +54,11 @@ object TagManDlg: TTagManDlg
       OnDrawItem = TagCheckListBoxDrawItem
       OnKeyDown = TagCheckListBoxKeyDown
       OnKeyPress = TagCheckListBoxKeyPress
+      ExplicitHeight = 158
     end
     object BlankPanel: TPanel
       Left = 290
-      Top = 142
+      Top = 140
       Width = 14
       Height = 14
       Anchors = [akRight, akBottom]
@@ -67,6 +69,7 @@ object TagManDlg: TTagManDlg
       TabOrder = 1
       Visible = False
       StyleElements = [seBorder]
+      ExplicitTop = 142
       object ShowOptBtn: TSpeedButton
         Left = 0
         Top = 0
@@ -235,13 +238,24 @@ object TagManDlg: TTagManDlg
   end
   object SetColPanel: TPanel
     Left = 0
-    Top = 181
+    Top = 179
     Width = 310
-    Height = 34
+    Height = 36
     Hint = #12479#12464#21029#37197#33394
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
+    object Bevel1: TBevel
+      Left = 0
+      Top = 32
+      Width = 310
+      Height = 4
+      Align = alBottom
+      Shape = bsBottomLine
+      ExplicitLeft = 240
+      ExplicitTop = 16
+      ExplicitWidth = 50
+    end
     object RefTagColBtn: TButton
       Tag = 3
       Left = 36
@@ -300,34 +314,6 @@ object TagManDlg: TTagManDlg
       Action = RevColAction
       Caption = #21453#36578
       TabOrder = 3
-    end
-    object BevelPanel1: TPanel
-      Left = 0
-      Top = 32
-      Width = 310
-      Height = 2
-      Align = alBottom
-      AutoSize = True
-      BevelOuter = bvNone
-      TabOrder = 4
-      object Shape1: TShape
-        Left = 0
-        Top = 0
-        Width = 310
-        Height = 1
-        Align = alTop
-        Brush.Style = bsClear
-        Pen.Color = clBtnShadow
-      end
-      object Shape2: TShape
-        Left = 0
-        Top = 1
-        Width = 310
-        Height = 1
-        Align = alTop
-        Brush.Style = bsClear
-        Pen.Color = clBtnHighlight
-      end
     end
   end
   object TagPopupMenu: TPopupMenu

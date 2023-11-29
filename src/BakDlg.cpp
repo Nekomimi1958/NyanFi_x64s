@@ -66,9 +66,6 @@ void __fastcall TBackupDlg::FormShow(TObject *Sender)
 		s += "‚È‚µ";
 	s += ")";
 	SyncLabel->Caption = s;
-
-	Shape1->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnShadow);
-	Shape2->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnHighlight);
 }
 //---------------------------------------------------------------------------
 void __fastcall TBackupDlg::FormClose(TObject *Sender, TCloseAction &Action)

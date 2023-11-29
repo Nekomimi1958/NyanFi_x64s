@@ -62,6 +62,7 @@ void AssignScaledFont(TWinControl *cp, TFont *font)
 	else if (cp->ClassNameIs("TTabControl"))	((TTabControl *)cp)->Font->Assign(s_font.get());
 	else if (cp->ClassNameIs("TTreeView"))		((TTreeView *)cp)->Font->Assign(s_font.get());
 	else if (cp->ClassNameIs("TEdit"))			((TEdit *)cp)->Font->Assign(s_font.get());
+	else if (cp->ClassNameIs("TLabeledEdit"))	((TLabeledEdit *)cp)->Font->Assign(s_font.get());
 	else if (cp->ClassNameIs("TRichEdit"))		((TRichEdit *)cp)->Font->Assign(s_font.get());
 	else if (cp->ClassNameIs("TMemo"))			((TMemo *)cp)->Font->Assign(s_font.get());
 	else if (cp->ClassNameIs("TComboBox"))		((TComboBox *)cp)->Font->Assign(s_font.get());

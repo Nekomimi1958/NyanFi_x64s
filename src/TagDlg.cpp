@@ -138,9 +138,6 @@ void __fastcall TTagManDlg::FormShow(TObject *Sender)
 	SetColPanel->Visible = !IsFolderIcon && OptPanel->Visible;
 	BlankPanel->Visible  = !OptPanel->Visible;
 
-	Shape1->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnShadow);
-	Shape2->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnHighlight);
-
 	TagCheckListBox->PopupMenu	= IsFolderIcon? NULL : TagPopupMenu;
 	ShowTagCountAction->Checked = IniFile->ReadBoolGen(_T("TagDlgShowCount"));
 

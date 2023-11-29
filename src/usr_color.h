@@ -13,13 +13,17 @@ extern const TColor col_Teal;
 double GetLuminance(TColor col);
 TColor RatioCol(TColor col, float rt);
 TColor GrayCol(TColor col);
+TColor ComplementaryCol(TColor col);
+
 void RgbToHsl(TColor col, int *h, int *s, int *l);
 void RgbToHsv(TColor col, int *h, int *s, int *v);
 void RgbToHsv(BYTE r, BYTE g, BYTE b, int *h, int *s, int *v);
+TColor HslToCol(int h, int s, int l);
 TColor SelectWorB(TColor col, float rt = 1.0);
 
 #define ADJCOL_LIGHT	72
 #define ADJCOL_FGLIST	96
+#define ADJCOL_BGMID	64
 #define ADJCOL_BGINV	32
 #define ADJCOL_BGBIT	16
 TColor AdjustColor(TColor col, int adj);

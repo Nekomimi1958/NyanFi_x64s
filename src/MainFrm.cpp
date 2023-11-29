@@ -1228,6 +1228,7 @@ void __fastcall TNyanFiForm::FormDestroy(TObject *Sender)
 {
 	OutDebugStr("==> FormDestroy");
 
+	OutDebugStr("  => EndGlobal");
 	EndGlobal();
 	OutDebugStr("  <= EndGlobal");
 

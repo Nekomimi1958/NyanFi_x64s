@@ -132,11 +132,6 @@ void __fastcall TDistributionDlg::FormShow(TObject *Sender)
 
 	SkipCount = 0;
 
-	Shape1->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnShadow);
-	Shape3->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnShadow);
-	Shape2->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnHighlight);
-	Shape4->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnHighlight);
-
 	::PostMessage(Handle, WM_FORM_SHOWED, 0, 0);
 }
 //---------------------------------------------------------------------------

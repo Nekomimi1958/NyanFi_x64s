@@ -67,7 +67,6 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *ShowCountItem;
 	TMenuItem *TrimDataItem;
 	TPanel *AndPanel;
-	TPanel *BevelPanel1;
 	TPanel *BlankPanel;
 	TPanel *FindOptPanel;
 	TPanel *HidePanel;
@@ -80,10 +79,9 @@ __published:	// IDE で管理されるコンポーネント
 	TPanel *SetColPanel;
 	TPanel *SpuitPanel;
 	TPopupMenu *TagPopupMenu;
-	TShape *Shape1;
-	TShape *Shape2;
 	TSpeedButton *HideOptBtn;
 	TSpeedButton *ShowOptBtn;
+	TBevel *Bevel1;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

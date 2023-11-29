@@ -71,8 +71,6 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *Sep_1;
 	TMenuItem *Sep_2;
 	TMenuItem *Sep_3;
-	TPanel *BevelPanel1;
-	TPanel *BevelPanel2;
 	TPanel *ExePanel;
 	TPanel *ListPanel;
 	TPanel *MainPanel;
@@ -80,13 +78,10 @@ __published:	// IDE で管理されるコンポーネント
 	TPanel *RegPanel;
 	TPopupMenu *PopupMenu1;
 	TPopupMenu *PopupMenu2;
-	TShape *Shape1;
-	TShape *Shape2;
-	TShape *Shape3;
-	TShape *Shape4;
 	TSplitter *ListSplitter;
 	TSplitter *PrvSplitter;
 	TStatusBar *StatusBar1;
+	TBevel *Bevel1;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

@@ -43,15 +43,15 @@ __published:	// IDE で管理されるコンポーネント
 	TListBox *ReferListBox;
 	TListBox *ResListBox;
 	TMemo *ObjMemo;
-	TPanel *BevelPanel1;
 	TPanel *MainPanel;
 	TPanel *OpePanel;
 	TPanel *ReferPanel;
 	TPanel *ResPanel;
-	TShape *Shape1;
-	TShape *Shape2;
 	TSplitter *Splitter1;
 	TSplitter *Splitter2;
+	TPaintBox *StxPaintBox;
+	TBevel *Bevel1;
+	TCheckBox *DetailCheckBox;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -69,14 +69,20 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall ReferListBoxDblClick(TObject *Sender);
 	void __fastcall RefFileBtnClick(TObject *Sender);
 	void __fastcall ResListBoxDrawItem(TWinControl *Control, int Index, TRect &Rect, TOwnerDrawState State);
+	void __fastcall StxPaintBoxPaint(TObject *Sender);
+	void __fastcall PtnComboBoxChange(TObject *Sender);
+	void __fastcall DetailCheckBoxClick(TObject *Sender);
 
 private:	// ユーザー宣言
 	int PtnSelStart;
 	int PtnSelLength;
 	bool with_Slash;
 
-	TStringList *MatchWdList;
+	TStringList *ResultList;
+	TStringList *DetailList;
+
 	int MatchCount;
+	int MatchLines;
 
 public:		// ユーザー宣言
 	TComboBox   *ObjComboBox;

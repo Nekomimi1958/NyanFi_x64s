@@ -2156,6 +2156,7 @@ void InitializeGlobal()
 void EndGlobal()
 {
 	::mciSendString(_T("close all"), NULL, 0, NULL);
+	OutDebugStr("  <= mciSendString - close all");
 
 	for (int i=0; i<GeneralList->Count; i++) {
 		TStringList *lst = (TStringList*)GeneralList->Objects[i];
@@ -2194,6 +2195,7 @@ void EndGlobal()
 		delete lst;
 	}
 	delete GeneralList;
+	OutDebugStr("  < delete GeneralList");
 
 	delete FolderIconFile;
 	if (hLinkIcon) ::DestroyIcon(hLinkIcon);
@@ -2206,10 +2208,15 @@ void EndGlobal()
 	delete usr_SH;
 
 	delete TaskReserveList;
+	OutDebugStr("  < delete TaskReserveList");
 
 	delete ErrMarkList;
+	OutDebugStr("  < delete ErrMarkList");
 
-	if (hGdi32) ::FreeLibrary(hGdi32);
+	if (hGdi32) {
+		::FreeLibrary(hGdi32);
+		OutDebugStr("  <= FreeLibrary - hGdi32");
+	}
 }
 
 //---------------------------------------------------------------------------

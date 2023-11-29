@@ -22,12 +22,13 @@ object FindFileDlg: TFindFileDlg
   OnShow = FormShow
   TextHeight = 15
   object Bevel2: TBevel
-    Left = 402
+    Left = 400
     Top = 0
     Width = 4
     Height = 1371
     Align = alLeft
-    Shape = bsSpacer
+    Shape = bsLeftLine
+    ExplicitLeft = 402
   end
   object BasicPanel: TPanel
     Left = 0
@@ -513,13 +514,14 @@ object FindFileDlg: TFindFileDlg
     end
   end
   object ExtPanel: TPanel
-    Left = 406
+    Left = 404
     Top = 0
     Width = 360
     Height = 1371
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitLeft = 406
     object PanelSpacer: TBevel
       Left = 0
       Top = 1132
@@ -1433,34 +1435,6 @@ object FindFileDlg: TFindFileDlg
           OnClick = CondChangeUpdate
         end
       end
-    end
-  end
-  object BevelPanel: TPanel
-    Left = 400
-    Top = 0
-    Width = 2
-    Height = 1371
-    Align = alLeft
-    AutoSize = True
-    BevelOuter = bvNone
-    TabOrder = 2
-    object Shape1: TShape
-      Left = 0
-      Top = 0
-      Width = 1
-      Height = 1371
-      Align = alLeft
-      Brush.Style = bsClear
-      Pen.Color = clBtnShadow
-    end
-    object Shape2: TShape
-      Left = 1
-      Top = 0
-      Width = 1
-      Height = 1371
-      Align = alLeft
-      Brush.Style = bsClear
-      Pen.Color = clBtnHighlight
     end
   end
   object ActionList1: TActionList

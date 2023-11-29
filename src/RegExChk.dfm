@@ -40,31 +40,29 @@ object RegExChecker: TRegExChecker
     BorderWidth = 4
     Constraints.MinWidth = 376
     TabOrder = 0
-    ExplicitWidth = 376
-    ExplicitHeight = 399
     object Splitter2: TSplitter
       Left = 4
-      Top = 248
+      Top = 254
       Width = 372
       Height = 5
       Cursor = crVSplit
       Align = alTop
       AutoSnap = False
       MinSize = 60
+      ExplicitTop = 248
     end
     object OpePanel: TPanel
       Left = 4
       Top = 4
       Width = 372
-      Height = 244
+      Height = 250
       Align = alTop
       BevelOuter = bvNone
       Constraints.MinHeight = 220
       TabOrder = 0
-      ExplicitWidth = 368
       DesignSize = (
         372
-        244)
+        250)
       object TLabel
         Left = 35
         Top = 7
@@ -75,18 +73,35 @@ object RegExChecker: TRegExChecker
       end
       object TLabel
         Left = 4
-        Top = 134
+        Top = 138
         Width = 52
         Height = 15
         Caption = #26908#32034#23550#35937
       end
+      object StxPaintBox: TPaintBox
+        Left = 83
+        Top = 26
+        Width = 201
+        Height = 22
+        Anchors = [akLeft, akTop, akRight]
+        OnPaint = StxPaintBoxPaint
+      end
+      object Bevel1: TBevel
+        Left = 0
+        Top = 121
+        Width = 372
+        Height = 4
+        Anchors = [akLeft, akTop, akRight]
+        Shape = bsBottomLine
+      end
       object CaseCheckBox: TCheckBox
-        Left = 80
-        Top = 64
-        Width = 135
+        Left = 290
+        Top = 33
+        Width = 80
         Height = 17
-        Caption = #22823#23567#25991#23383#12434#21306#21029
-        TabOrder = 4
+        Anchors = [akTop, akRight]
+        Caption = #22823#23567#21306#21029
+        TabOrder = 2
       end
       object CCopyBtn: TButton
         Tag = 1
@@ -98,7 +113,6 @@ object RegExChecker: TRegExChecker
         Anchors = [akTop, akRight]
         Caption = #12467#12500#12540'(C'#25991#23383#21015')'
         TabOrder = 5
-        ExplicitLeft = 82
       end
       object MatchBtn: TButton
         Left = 288
@@ -109,7 +123,6 @@ object RegExChecker: TRegExChecker
         Anchors = [akTop, akRight]
         Default = True
         TabOrder = 1
-        ExplicitLeft = 284
       end
       object PtnComboBox: TComboBox
         Left = 80
@@ -119,21 +132,21 @@ object RegExChecker: TRegExChecker
         Anchors = [akLeft, akTop, akRight]
         DropDownCount = 20
         TabOrder = 0
-        ExplicitWidth = 200
+        StyleElements = [seClient, seBorder]
+        OnChange = PtnComboBoxChange
       end
       object ReplaceBtn: TButton
         Left = 288
-        Top = 34
+        Top = 60
         Width = 80
         Height = 24
         Action = ReplaceAction
         Anchors = [akTop, akRight]
-        TabOrder = 3
-        ExplicitLeft = 284
+        TabOrder = 4
       end
       object ReplaceEdit: TLabeledEdit
         Left = 80
-        Top = 35
+        Top = 60
         Width = 204
         Height = 23
         Anchors = [akLeft, akTop, akRight]
@@ -142,9 +155,9 @@ object RegExChecker: TRegExChecker
         EditLabel.Caption = #32622#25563#25991#23383#21015
         LabelPosition = lpLeft
         PopupMenu = UserModule.EditPopupMenuE
-        TabOrder = 2
+        TabOrder = 3
         Text = ''
-        ExplicitWidth = 200
+        StyleElements = [seClient, seBorder]
       end
       object CopyBtn: TButton
         Left = 204
@@ -154,7 +167,6 @@ object RegExChecker: TRegExChecker
         Action = CopyAction
         Anchors = [akTop, akRight]
         TabOrder = 6
-        ExplicitLeft = 200
       end
       object PasteBtn: TButton
         Left = 288
@@ -165,11 +177,10 @@ object RegExChecker: TRegExChecker
         Anchors = [akTop, akRight]
         ModalResult = 1
         TabOrder = 7
-        ExplicitLeft = 284
       end
       object ObjMemo: TMemo
         Left = 0
-        Top = 156
+        Top = 162
         Width = 372
         Height = 88
         Align = alBottom
@@ -177,12 +188,12 @@ object RegExChecker: TRegExChecker
         Lines.Strings = (
           '')
         ScrollBars = ssVertical
-        TabOrder = 10
-        ExplicitWidth = 368
+        TabOrder = 11
+        StyleElements = [seFont, seBorder]
       end
       object FileEdit: TLabeledEdit
         Left = 120
-        Top = 129
+        Top = 133
         Width = 124
         Height = 23
         Anchors = [akLeft, akTop, akRight]
@@ -192,95 +203,64 @@ object RegExChecker: TRegExChecker
         LabelPosition = lpLeft
         TabOrder = 8
         Text = ''
-        ExplicitWidth = 120
       end
       object RefFileBtn: TButton
         Left = 248
-        Top = 128
+        Top = 134
         Width = 36
         Height = 22
         Anchors = [akTop, akRight]
         Caption = '...'
         TabOrder = 9
         OnClick = RefFileBtnClick
-        ExplicitLeft = 244
       end
       object UpdtCheckBox: TCheckBox
         Left = 290
-        Top = 131
+        Top = 136
         Width = 78
         Height = 17
         Anchors = [akTop, akRight]
         Caption = #22793#26356#21453#26144
-        TabOrder = 11
-        ExplicitLeft = 286
-      end
-      object BevelPanel1: TPanel
-        Left = 0
-        Top = 122
-        Width = 419
-        Height = 2
-        Anchors = [akLeft, akTop, akRight]
-        BevelOuter = bvNone
-        TabOrder = 12
-        ExplicitWidth = 415
-        DesignSize = (
-          419
-          2)
-        object Shape1: TShape
-          Left = 0
-          Top = 0
-          Width = 419
-          Height = 1
-          Anchors = [akLeft, akTop, akRight]
-          Brush.Style = bsClear
-          Pen.Color = clBtnShadow
-          ExplicitWidth = 423
-        end
-        object Shape2: TShape
-          Left = 0
-          Top = 1
-          Width = 419
-          Height = 1
-          Anchors = [akLeft, akTop, akRight]
-          Brush.Style = bsClear
-          Pen.Color = clBtnHighlight
-          ExplicitWidth = 423
-        end
+        TabOrder = 10
       end
     end
     object ResPanel: TPanel
       Left = 4
-      Top = 253
+      Top = 259
       Width = 372
-      Height = 143
+      Height = 137
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 368
-      ExplicitHeight = 142
       object ResultLabel: TLabel
         Left = 4
-        Top = 4
+        Top = 6
         Width = 26
         Height = 15
         Caption = #32080#26524
-        StyleElements = [seClient, seBorder]
       end
       object ResListBox: TListBox
         Left = 0
-        Top = 23
+        Top = 26
         Width = 372
-        Height = 120
+        Height = 111
         Style = lbOwnerDrawFixed
         Align = alBottom
         Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
-        TabOrder = 0
+        TabOrder = 1
         TabWidth = 40
+        StyleElements = [seFont, seBorder]
         OnDrawItem = ResListBoxDrawItem
-        ExplicitWidth = 368
-        ExplicitHeight = 119
+      end
+      object DetailCheckBox: TCheckBox
+        Left = 204
+        Top = 4
+        Width = 65
+        Height = 17
+        Caption = #35443#32048
+        TabOrder = 0
+        OnClick = DetailCheckBoxClick
       end
     end
   end
@@ -293,8 +273,6 @@ object RegExChecker: TRegExChecker
     BevelOuter = bvLowered
     BorderWidth = 4
     TabOrder = 1
-    ExplicitLeft = 381
-    ExplicitHeight = 399
     object ReferListBox: TListBox
       Left = 5
       Top = 5
@@ -306,7 +284,6 @@ object RegExChecker: TRegExChecker
       TabOrder = 0
       TabWidth = 36
       OnDblClick = ReferListBoxDblClick
-      ExplicitHeight = 389
     end
     object HiddenCanBtn: TButton
       Left = 5
@@ -318,7 +295,6 @@ object RegExChecker: TRegExChecker
       ModalResult = 2
       TabOrder = 1
       TabStop = False
-      ExplicitTop = 394
     end
   end
   object ActionList1: TActionList

@@ -204,9 +204,6 @@ void __fastcall TFindFileDlg::FormShow(TObject *Sender)
 	AttrHCheckBox->Enabled	  = ShowHideAtr;
 	AttrSCheckBox->Enabled	  = ShowSystemAtr;
 
-	Shape1->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnShadow);
-	Shape2->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnHighlight);
-
 	ExtraCheckBoxClick(NULL);
 	ArcCheckBoxClick(NULL);
 

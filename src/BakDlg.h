@@ -42,11 +42,9 @@ __published:	// IDE で管理されるコンポーネント
 	TLabeledEdit *DstDirEdit;
 	TLabeledEdit *SrcDirEdit;
 	TMenuItem *DelSetupItem;
-	TPanel *BevelPanel1;
 	TPanel *BottomPanel;
 	TPopupMenu *SetupPopupMenu;
-	TShape *Shape1;
-	TShape *Shape2;
+	TBevel *Bevel1;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

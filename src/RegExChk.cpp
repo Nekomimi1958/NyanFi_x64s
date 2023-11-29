@@ -22,7 +22,8 @@ void __fastcall TRegExChecker::FormCreate(TObject *Sender)
 {
 	UserModule->SetUsrPopupMenu(this);
 
-	MatchWdList = new TStringList();
+	ResultList = new TStringList();
+	DetailList = new TStringList();
 
 	//正規表現の説明を設定
 	TStringList *lst = UserModule->RefRegExList;
@@ -57,20 +58,30 @@ void __fastcall TRegExChecker::FormShow(TObject *Sender)
 	IniFile->LoadPosInfo(this, DialogCenter);
 
 	int mp_wd = IniFile->ReadScaledIntGen( _T("RegExMainWidth"), 380, this);
-	ReferPanel->Width     = ClientWidth - mp_wd - Splitter1->Width;
-	OpePanel->Height      = IniFile->ReadScaledIntGen( _T("RegExOpeHeight"), 240, this);
-	ReplaceEdit->Text     = IniFile->ReadStrGen( _T("RegExChkRepStr"));
-	CaseCheckBox->Checked = IniFile->ReadBoolGen(_T("RegExChkCase"),	false);
-	UpdtCheckBox->Checked = IniFile->ReadBoolGen(_T("RegExChkUpdate"),	false);
+	ReferPanel->Width       = ClientWidth - mp_wd - Splitter1->Width;
+	OpePanel->Height        = IniFile->ReadScaledIntGen( _T("RegExOpeHeight"), 240, this);
+	ReplaceEdit->Text       = IniFile->ReadStrGen( _T("RegExChkRepStr"));
+	CaseCheckBox->Checked   = IniFile->ReadBoolGen(_T("RegExChkCase"),		false);
+	UpdtCheckBox->Checked   = IniFile->ReadBoolGen(_T("RegExChkUpdate"),	false);
+	DetailCheckBox->Checked = IniFile->ReadBoolGen(_T("RegExChkDetail"),	false);
 
 	//フォントの設定
 	std::unique_ptr<TFont> ttFont(new TFont());
 	ttFont->Assign(ViewerFont);
 	ttFont->Size  = Font->Size;
-	ttFont->Color = get_ListFgCol();
+	ttFont->Color = get_TextColor();
+	AssignScaledFont(PtnComboBox, ttFont.get());
+	AssignScaledFont(ReplaceEdit, ttFont.get());
+
+	ttFont->Color = get_ViewFgCol();
 	AssignScaledFont(ObjMemo, 		ttFont.get());
 	set_ListBoxItemHi(ResListBox,	ttFont.get());
 	set_ListBoxItemHi(ReferListBox, ttFont.get());
+	ObjMemo->Color      = get_ViewBgCol();
+	ResListBox->Color   = get_ViewBgCol();
+	ReferListBox->Color = get_ViewBgCol();
+
+	StxPaintBox->Top = PtnComboBox->Top + PtnComboBox->Height;
 
 	//検索対象の設定
 	ObjMemo->Clear();
@@ -107,14 +118,9 @@ void __fastcall TRegExChecker::FormShow(TObject *Sender)
 
 	ResultLabel->Caption = "結果";
 	ResListBox->Clear();
-	MatchWdList->Clear();
-	MatchCount = 0;
-
-	Shape1->Pen->Color	= TStyleManager::ActiveStyle->GetSystemColor(clBtnShadow);
-	Shape2->Pen->Color	= TStyleManager::ActiveStyle->GetSystemColor(clBtnHighlight);
-	ObjMemo->Color		= get_ViewBgCol();
-	ResListBox->Color	= get_ViewBgCol();
-	ReferListBox->Color = get_ListBgCol();
+	ResultList->Clear();
+	DetailList->Clear();
+	MatchCount = MatchLines = 0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TRegExChecker::FormClose(TObject *Sender, TCloseAction &Action)
@@ -144,13 +150,15 @@ void __fastcall TRegExChecker::FormClose(TObject *Sender, TCloseAction &Action)
 	IniFile->WriteStrGen( _T("RegExChkRepStr"),	ReplaceEdit->Text);
 	IniFile->WriteBoolGen(_T("RegExChkCase"),	CaseCheckBox->Checked);
 	IniFile->WriteBoolGen(_T("RegExChkUpdate"),	UpdtCheckBox->Checked);
+	IniFile->WriteBoolGen(_T("RegExChkDetail"),	DetailCheckBox->Checked);
 
 	IniFile->SaveComboBoxItems(PtnComboBox, _T("RegExChkHistory"));
 }
 //---------------------------------------------------------------------------
 void __fastcall TRegExChecker::FormDestroy(TObject *Sender)
 {
-	delete MatchWdList;
+	delete ResultList;
+	delete DetailList;
 }
 //---------------------------------------------------------------------------
 void __fastcall TRegExChecker::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -166,8 +174,9 @@ void __fastcall TRegExChecker::TestActionExecute(TObject *Sender)
 	try {
 		cursor_HourGlass();
 		ResListBox->Clear();
-		MatchWdList->Clear();
-		MatchCount = 0;
+		ResultList->Clear();
+		DetailList->Clear();
+		MatchCount = MatchLines = 0;
 
 		UnicodeString ptnstr = PtnComboBox->Text;
 		TRegExOptions opt;
@@ -179,6 +188,7 @@ void __fastcall TRegExChecker::TestActionExecute(TObject *Sender)
 			UnicodeString lbuf = slst->Strings[i];
 			TMatchCollection mts = TRegEx::Matches(lbuf, ptnstr, opt);
 			if (mts.Count>0) {
+				MatchLines++;
 				UnicodeString mbuf;
 				for (int j=0; j<mts.Count; j++) {
 					if (mts.Item[j].Success) {
@@ -187,18 +197,34 @@ void __fastcall TRegExChecker::TestActionExecute(TObject *Sender)
 						MatchCount++;
 					}
 				}
-				MatchWdList->Add(mbuf);
-				ResListBox->Items->Add(lbuf);
 				max_wd = std::max(max_wd, get_TabTextWidth(lbuf, ResListBox->Canvas, 8));
+				lbuf += ("\f" + mbuf);
+				ResultList->AddObject(lbuf, (TObject*)0);
+				DetailList->AddObject(lbuf, (TObject*)0);
+				//詳細
+				for (int j=0; j<mts.Count; j++) {
+					if (mts.Item[j].Success) {
+						//Match
+						DetailList->AddObject("Match " + IntToStr(j + 1) + ":\t" + mts.Item[j].Value, (TObject*)1);
+						//Group
+						if (mts.Item[j].Groups.Count>1) {
+							for (int k=1; k<mts.Item[j].Groups.Count; k++) {
+								DetailList->AddObject("Group " + IntToStr(k) + ":\t" + mts.Item[j].Groups.Item[k].Value, (TObject*)2);
+							}
+						}
+					}
+				}
+				DetailList->AddObject("-", (TObject*)9);
 			}
 		}
+		ResListBox->Items->Assign(DetailCheckBox->Checked? DetailList : ResultList);
 		ResListBox->ScrollWidth = max_wd + ResListBox->Font->Size * 2;
 		cursor_Default();
 
 		//結果
 		if (ResListBox->Count>0) {
 			add_ComboBox_history(PtnComboBox);
-			ResultLabel->Caption = UnicodeString().sprintf(_T("%u箇所でマッチしました"), MatchCount);
+			ResultLabel->Caption = UnicodeString().sprintf(_T("%u行、%u箇所でマッチしました"), MatchLines, MatchCount);
 			ResultLabel->Font->Color = get_TextColor();
 		}
 		else {
@@ -235,8 +261,9 @@ void __fastcall TRegExChecker::ReplaceActionExecute(TObject *Sender)
 	try {
 		cursor_HourGlass();
 		ResListBox->Clear();
-		MatchWdList->Clear();
-		MatchCount = 0;
+		ResultList->Clear();
+		DetailList->Clear();
+		MatchCount = MatchLines = 0;
 
 		UnicodeString ptnstr = PtnComboBox->Text;
 		TRegExOptions opt;
@@ -248,6 +275,7 @@ void __fastcall TRegExChecker::ReplaceActionExecute(TObject *Sender)
 			UnicodeString lbuf = slst->Strings[i];
 			TMatchCollection mts = TRegEx::Matches(lbuf, ptnstr, opt);
 			if (mts.Count>0) {
+				MatchLines++;
 				UnicodeString rbuf = replace_regex_2(lbuf, ptnstr, ReplaceEdit->Text, opt);
 				UnicodeString mbuf;
 				int ofs = 0;
@@ -262,17 +290,35 @@ void __fastcall TRegExChecker::ReplaceActionExecute(TObject *Sender)
 						MatchCount++;
 					}
 				}
-				MatchWdList->Add(mbuf);
-				ResListBox->Items->Add(rbuf);
 				max_wd = std::max(max_wd, get_TabTextWidth(rbuf, ResListBox->Canvas, 8));
+				rbuf += ("\f" + mbuf);
+				ResultList->AddObject(rbuf, (TObject*)0);
+				DetailList->AddObject(rbuf, (TObject*)0);
+				//詳細
+				for (int j=0; j<mts.Count; j++) {
+					if (mts.Item[j].Success) {
+						//Replace
+						DetailList->AddObject("Replace " + IntToStr(j + 1) + ":\t" + mts.Item[j].Value, (TObject*)1);
+						UnicodeString rwd = TRegEx::Replace(mts.Item[j].Value, ptnstr, ReplaceEdit->Text, opt);
+						DetailList->AddObject("→\t" + TRegEx::Replace(mts.Item[j].Value, ptnstr, ReplaceEdit->Text, opt), (TObject*)2);
+						//Group
+						if (mts.Item[j].Groups.Count>1) {
+							for (int k=1; k<mts.Item[j].Groups.Count; k++) {
+								DetailList->AddObject("Group " + IntToStr(k) + ":\t" + mts.Item[j].Groups.Item[k].Value, (TObject*)2);
+							}
+						}
+					}
+				}
+				DetailList->AddObject("-", (TObject*)9);
 			}
 		}
+		ResListBox->Items->Assign(DetailCheckBox->Checked? DetailList : ResultList);
 		ResListBox->ScrollWidth = max_wd + ResListBox->Font->Size * 2;
 		cursor_Default();
 
 		//結果
 		if (ResListBox->Count>0) {
-			ResultLabel->Caption	 = UnicodeString().sprintf(_T("%u箇所を置換しました"), MatchCount);
+			ResultLabel->Caption	 = UnicodeString().sprintf(_T("%u行、%u箇所を置換しました"), MatchLines, MatchCount);
 			ResultLabel->Font->Color = get_TextColor();
 		}
 		else {
@@ -385,62 +431,226 @@ void __fastcall TRegExChecker::ResListBoxDrawItem(TWinControl *Control, int Inde
 	TRect rc = Rect;
 	cv->FillRect(rc);
 
-	UnicodeString lbuf = lp->Items->Strings[Index];
+	UnicodeString   lbuf = lp->Items->Strings[Index];
+	TStringDynArray mbuf = split_strings_tab(get_tkn_r(lbuf, "\f"));
+				    lbuf = get_tkn(lbuf, "\f");
+	int flag  = (int)lp->Items->Objects[Index];
 	int l_len = lbuf.Length();
 
-	//強調表示の設定
-	std::unique_ptr<TColor[]> FgCol(new TColor[l_len + 1]);
-	std::unique_ptr<TColor[]> BgCol(new TColor[l_len + 1]);
-	for (int i=0; i<=l_len; i++) {
-		FgCol[i] = cv->Font->Color;
-		BgCol[i] = cv->Brush->Color;
+	//セパレータ
+	if (flag==9) {
+		draw_Separator(cv, Rect);
+		return;
 	}
-	//背景色を交互に変えるため補色を取得
-	int cref = ColorToRGB(clHighlight);
-	int r = GetRValue(cref);
-	int g = GetGValue(cref);
-	int b = GetBValue(cref);
-	int x = std::max(r, std::max(g, b)) + std::min(r, std::min(g, b));
-	r = x - r;  g = x - g;  b = x - b;
-	TColor c2 = TColor(RGB(r, g, b));
 
-	TStringDynArray mbuf = split_strings_tab(MatchWdList->Strings[Index]);
-	for (int i=0; i<mbuf.Length; i++) {
-		UnicodeString ibuf = mbuf[i];
-		int p = split_tkn(ibuf, ',').ToIntDef(0);
-		int n = ibuf.ToIntDef(0);
-		if (p>0 && n>0) {
-			for (int j=0; j<n; j++) {
-				FgCol[p + j] = clHighlightText;
-				BgCol[p + j] = (i%2==0)? clHighlight : c2;
+	//マッチ行
+	if (flag==0) {
+		std::unique_ptr<TColor[]> FgCol(new TColor[l_len + 1]);
+		std::unique_ptr<TColor[]> BgCol(new TColor[l_len + 1]);
+		for (int i=0; i<=l_len; i++) {
+			FgCol[i] = get_ViewFgCol();
+			BgCol[i] = get_ViewBgCol();
+		}
+
+		for (int i=0; i<mbuf.Length; i++) {
+			UnicodeString ibuf = mbuf[i];
+			int p = split_tkn(ibuf, ',').ToIntDef(0);
+			int n = ibuf.ToIntDef(0);
+			if (p>0 && n>0) {
+				for (int j=0; j<n; j++) {
+					FgCol[p + j] = clHighlightText;
+					BgCol[p + j] = (i%2==0)? clHighlight : ComplementaryCol(clHighlight);
+				}
 			}
 		}
-	}
 
-	//描画
-	cv->Font->Color  = FgCol[1];
-	cv->Brush->Color = BgCol[1];
-	rc.Left += 4;
-	rc.Top  += 1; rc.Bottom -= 1;
-	int cp = 0;
-	for (int i=1; i<=l_len; i++) {
-		UnicodeString sbuf;
-		if (lbuf[i]=='\t') {
-			int n = 8 - cp%8;
-			sbuf = StringOfChar(_T(' '), n);
-			cp += n;
+		//描画
+		cv->Font->Color  = FgCol[1];
+		cv->Brush->Color = BgCol[1];
+		rc.Left += SCALED_THIS(4);
+		rc.Top  += 1; rc.Bottom -= 1;
+		int cp = 0;
+		for (int i=1; i<=l_len; i++) {
+			UnicodeString sbuf;
+			if (lbuf[i]=='\t') {
+				int n = 8 - cp%8;
+				sbuf = StringOfChar(_T(' '), n);
+				cp += n;
+			}
+			else {
+				sbuf = lbuf[i];
+				cp += str_len_half(sbuf);
+			}
+
+			int w = cv->TextWidth(sbuf);
+			rc.Right = rc.Left + w;
+			cv->Font->Color  = FgCol[i];
+			cv->Brush->Color = BgCol[i];
+			cv->TextRect(rc, rc.Left, rc.Top, sbuf);
+			rc.Left += w;
+		}
+	}
+	else {
+		//詳細
+		TStringDynArray itms = split_strings_tab(lbuf);
+		if (itms.Length==2) {
+			rc.Left += SCALED_THIS(8);
+			int wd = cv->TextWidth("WWWWWWWWWW");
+			cv->Font->Color = (flag==1)? col_Headline : col_Reserved;
+			cv->TextRect(rc, rc.Left + wd - cv->TextWidth(itms[0]), rc.Top, itms[0]);
+			rc.Left += (wd + SCALED_THIS(8));
+			cv->Font->Color = col_Symbol;
+			cv->TextRect(rc, rc.Left, rc.Top, "\"");
+			rc.Left += cv->TextWidth("\"");
+			cv->Font->Color = col_Strings;
+			cv->TextRect(rc, rc.Left, rc.Top, itms[1]);
+			rc.Left += cv->TextWidth(itms[1]);
+			cv->Font->Color = col_Symbol;
+			cv->TextRect(rc, rc.Left, rc.Top, "\"");
+		}
+		//その他
+		else {
+			cv->Font->Color = get_ViewFgCol();
+			cv->TextRect(rc, rc.Left, rc.Top, lbuf);
+		}
+	}
+}
+
+//---------------------------------------------------------------------------
+//構文カラーバーの描画
+//---------------------------------------------------------------------------
+void __fastcall TRegExChecker::PtnComboBoxChange(TObject *Sender)
+{
+	StxPaintBox->Invalidate();
+}
+//---------------------------------------------------------------------------
+void __fastcall TRegExChecker::StxPaintBoxPaint(TObject *Sender)
+{
+	TPaintBox *pp = (TPaintBox*)Sender;
+	TRect rc = pp->ClientRect;
+	TCanvas *cv  = pp->Canvas;
+	cv->Brush->Color = get_ViewBgCol();
+	cv->FillRect(rc);
+
+	UnicodeString ptn = PtnComboBox->Text;
+	cv->Font->Assign(PtnComboBox->Font);
+
+	bool is_cls = false;
+	bool is_brk = false;
+
+	int grp_n = 0, grp_l = 0;
+	UnicodeString grp_s;
+
+	TColor grp_col[10];
+	for (int i=0; i<10; i++) grp_col[i] = HslToCol(36 * i, 100, 70);
+
+	int xp = 0, wd = 0;
+	int cp = 1;
+	while (cp<=ptn.Length()) {
+		WideChar c = ptn[cp++];
+		UnicodeString s, cc;
+		TColor col = col_None;
+		bool grp_f = false;
+		wd = cv->TextWidth(c);
+		if (c=='\\') {
+			cc = ptn.SubString(cp, 1);
+			col = is_cls? col_Strings :
+					(cc=="r" || cc=="n")? col_CR : (cc=="t")? col_TAB :
+					UnicodeString("wWsSdDbB").Pos(cc)? col_Reserved : get_ViewFgCol();
+			wd += cv->TextWidth(cc);
+			cp++;
+		}
+		else if (!is_cls && c=='[') {
+			is_cls = true;
+			col = col_Strings;
+		}
+		else if (is_cls && c==']') {
+			is_cls = false;
+			col = col_Strings;
+		}
+		else if (!is_cls && c=='(') {
+			grp_l++;
+			grp_f = true;
+			if (ptn.SubString(cp, 2)=="?:") {
+				grp_s += " ";
+				wd += cv->TextWidth("?:");
+				col = grp_col[0];
+				cp+=2;
+			}
+			else {
+				grp_n++;
+				if (grp_n<10) {
+					s.sprintf(_T("%1d"), grp_n);
+					grp_s += s;
+					col = grp_col[grp_n];
+				}
+				else {
+					grp_s += " ";
+					col = grp_col[0];
+				}
+			}
+		}
+		else if (!is_cls && c==')') {
+			grp_f = true;
+			if (grp_s.Length()>=1) {
+				s = grp_s.SubString(grp_s.Length(), 1);
+				grp_s.Delete(grp_s.Length(), 1);
+				col = grp_col[s.ToIntDef(0)%10];
+			}
+			else {
+				col = col_Error;
+			}
+			grp_l--;
+		}
+		else if (!is_cls && (c=='{' || c=='}')) {
+			is_brk = (c=='{');
+			col = col_Numeric;
+		}
+		else if (!is_cls && (c=='*' || c=='+' || c=='?')) {
+			col = col_Numeric;
+		}
+		else if (!is_cls && (c=='^' || c=='$' || c=='|')) {
+			col = col_Symbol;
 		}
 		else {
-			sbuf = lbuf[i];
-			cp += str_len_half(sbuf);
+			col = (col!=col_None)? col :
+							is_cls? col_Strings :
+							is_brk? col_Numeric : get_ViewFgCol();
 		}
 
-		int w = cv->TextWidth(sbuf);
-		rc.Right = rc.Left + w;
-		cv->Font->Color  = FgCol[i];
-		cv->Brush->Color = BgCol[i];
-		cv->TextRect(rc, rc.Left, rc.Top, sbuf);
-		rc.Left += w;
+		rc.Left  = xp;
+		rc.Right = xp + wd;
+		if (!grp_f) col  = AdjustColor(col, ADJCOL_BGMID);
+		cv->Brush->Color = col;
+		cv->Brush->Style = bsSolid;
+		cv->FillRect(rc);
+
+		if (grp_l>0) {
+			int yp = rc.Bottom;
+			for (int i=1; i<=grp_s.Length(); i++) {
+				int n = UnicodeString(grp_s[i]).ToIntDef(0);
+				int h = SCALED_THIS((i<5)? 2 : 1);
+				TRect b_rc = rc;
+				b_rc.Bottom = yp;
+				b_rc.Top = yp - h;
+				cv->Brush->Color = grp_col[n];
+				cv->FillRect(b_rc);
+				yp -= h;
+			}
+		}
+
+		if (!s.IsEmpty()) {
+			cv->Brush->Style = bsClear;
+			cv->Font->Color  = SelectWorB(cv->Brush->Color);
+			cv->TextOut(xp, 0, s);
+		}
+
+		xp += wd;
 	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TRegExChecker::DetailCheckBoxClick(TObject *Sender)
+{
+	ResListBox->Items->Assign(DetailCheckBox->Checked? DetailList : ResultList);
 }
 //---------------------------------------------------------------------------

@@ -4,7 +4,7 @@ object BackupDlg: TBackupDlg
   HelpContext = 71
   BorderIcons = [biSystemMenu]
   Caption = #12496#12483#12463#12450#12483#12503
-  ClientHeight = 362
+  ClientHeight = 365
   ClientWidth = 492
   Color = clBtnFace
   Constraints.MaxHeight = 400
@@ -24,7 +24,7 @@ object BackupDlg: TBackupDlg
   OnShow = FormShow
   DesignSize = (
     492
-    362)
+    365)
   TextHeight = 15
   object Label1: TLabel
     Left = 13
@@ -76,7 +76,6 @@ object BackupDlg: TBackupDlg
     Anchors = [akLeft, akTop, akRight]
     DropDownCount = 20
     TabOrder = 2
-    ExplicitWidth = 372
   end
   object BakSkipDirEdit: TLabeledEdit
     Left = 88
@@ -91,7 +90,6 @@ object BackupDlg: TBackupDlg
     LabelPosition = lpLeft
     TabOrder = 5
     Text = ''
-    ExplicitWidth = 372
   end
   object SrcDirEdit: TLabeledEdit
     Left = 88
@@ -108,7 +106,6 @@ object BackupDlg: TBackupDlg
     ReadOnly = True
     TabOrder = 0
     Text = ''
-    ExplicitWidth = 372
   end
   object DstDirEdit: TLabeledEdit
     Left = 88
@@ -125,7 +122,6 @@ object BackupDlg: TBackupDlg
     ReadOnly = True
     TabOrder = 1
     Text = ''
-    ExplicitWidth = 372
   end
   object BakExcMaskComboBox: TComboBox
     Left = 88
@@ -135,7 +131,6 @@ object BackupDlg: TBackupDlg
     Anchors = [akLeft, akTop, akRight]
     DropDownCount = 20
     TabOrder = 3
-    ExplicitWidth = 372
   end
   object SyncCheckBox: TCheckBox
     Left = 171
@@ -160,14 +155,12 @@ object BackupDlg: TBackupDlg
   end
   object BottomPanel: TPanel
     Left = 0
-    Top = 262
+    Top = 265
     Width = 492
     Height = 100
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 9
-    ExplicitTop = 261
-    ExplicitWidth = 488
     DesignSize = (
       492
       100)
@@ -179,6 +172,14 @@ object BackupDlg: TBackupDlg
       Alignment = taRightJustify
       Caption = #35373#23450
     end
+    object Bevel1: TBevel
+      Left = 8
+      Top = 2
+      Width = 476
+      Height = 4
+      Anchors = [akLeft, akTop, akRight]
+      Shape = bsTopLine
+    end
     object OkButton: TButton
       Left = 292
       Top = 66
@@ -189,7 +190,6 @@ object BackupDlg: TBackupDlg
       Default = True
       TabOrder = 4
       OnClick = OkButtonClick
-      ExplicitLeft = 288
     end
     object CanButton: TButton
       Left = 384
@@ -201,7 +201,6 @@ object BackupDlg: TBackupDlg
       Caption = #12461#12515#12531#12475#12523
       ModalResult = 2
       TabOrder = 5
-      ExplicitLeft = 380
     end
     object SureCheckBox: TCheckBox
       Left = 183
@@ -211,7 +210,6 @@ object BackupDlg: TBackupDlg
       Anchors = [akRight, akBottom]
       Caption = #38283#22987#30906#35469
       TabOrder = 3
-      ExplicitLeft = 179
     end
     object SetupComboBox: TComboBox
       Left = 58
@@ -237,36 +235,6 @@ object BackupDlg: TBackupDlg
       Height = 24
       Action = SaveSetupAction
       TabOrder = 1
-    end
-    object BevelPanel1: TPanel
-      Left = 8
-      Top = 4
-      Width = 464
-      Height = 2
-      Anchors = [akLeft, akTop, akRight]
-      BevelOuter = bvNone
-      TabOrder = 6
-      ExplicitWidth = 460
-      object Shape1: TShape
-        Left = 0
-        Top = 0
-        Width = 464
-        Height = 1
-        Align = alTop
-        Brush.Style = bsClear
-        Pen.Color = clBtnShadow
-        ExplicitWidth = 476
-      end
-      object Shape2: TShape
-        Left = 0
-        Top = 1
-        Width = 464
-        Height = 1
-        Align = alTop
-        Brush.Style = bsClear
-        Pen.Color = clBtnHighlight
-        ExplicitWidth = 476
-      end
     end
   end
   object ActionList1: TActionList
