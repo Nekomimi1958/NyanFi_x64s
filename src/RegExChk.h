@@ -16,6 +16,7 @@
 #include <Vcl.AppEvnts.hpp>
 #include <Vcl.ActnList.hpp>
 #include <Vcl.Mask.hpp>
+#include <Vcl.Menus.hpp>
 
 //---------------------------------------------------------------------------
 class TRegExChecker : public TForm
@@ -23,10 +24,13 @@ class TRegExChecker : public TForm
 __published:	// IDE で管理されるコンポーネント
 	TAction *CopyAction;
 	TAction *CopyCAction;
+	TAction *EditSampleAction;
+	TAction *LoadSamplAction;
 	TAction *PasteAction;
 	TAction *ReplaceAction;
 	TAction *TestAction;
 	TActionList *ActionList1;
+	TBevel *Bevel1;
 	TButton *CCopyBtn;
 	TButton *CopyBtn;
 	TButton *HiddenCanBtn;
@@ -35,6 +39,7 @@ __published:	// IDE で管理されるコンポーネント
 	TButton *RefFileBtn;
 	TButton *ReplaceBtn;
 	TCheckBox *CaseCheckBox;
+	TCheckBox *DetailCheckBox;
 	TCheckBox *UpdtCheckBox;
 	TComboBox *PtnComboBox;
 	TLabel *ResultLabel;
@@ -42,16 +47,19 @@ __published:	// IDE で管理されるコンポーネント
 	TLabeledEdit *ReplaceEdit;
 	TListBox *ReferListBox;
 	TListBox *ResListBox;
+	TListBox *SampleListBox;
 	TMemo *ObjMemo;
+	TMenuItem *EditSampleItem;
+	TMenuItem *LoadSampleItem;
+	TPaintBox *StxPaintBox;
 	TPanel *MainPanel;
 	TPanel *OpePanel;
 	TPanel *ReferPanel;
 	TPanel *ResPanel;
+	TPopupMenu *PopupMenu1;
 	TSplitter *Splitter1;
 	TSplitter *Splitter2;
-	TPaintBox *StxPaintBox;
-	TBevel *Bevel1;
-	TCheckBox *DetailCheckBox;
+	TSplitter *Splitter3;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -72,6 +80,9 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall StxPaintBoxPaint(TObject *Sender);
 	void __fastcall PtnComboBoxChange(TObject *Sender);
 	void __fastcall DetailCheckBoxClick(TObject *Sender);
+	void __fastcall LoadSamplActionExecute(TObject *Sender);
+	void __fastcall EditSampleActionExecute(TObject *Sender);
+	void __fastcall EditSampleActionUpdate(TObject *Sender);
 
 private:	// ユーザー宣言
 	int PtnSelStart;
@@ -84,6 +95,9 @@ private:	// ユーザー宣言
 	int MatchCount;
 	int MatchLines;
 
+	UnicodeString SampleFile;
+	TDateTime SampleTime;
+
 public:		// ユーザー宣言
 	TComboBox   *ObjComboBox;
 	TCustomEdit *ObjCustomEdit;
@@ -91,6 +105,9 @@ public:		// ユーザー宣言
 	UnicodeString PatternStr;
 
 	__fastcall TRegExChecker(TComponent* Owner);
+
+	void __fastcall AssignSample(TStringList *lst);
+	void __fastcall ReloadSample();
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TRegExChecker *RegExChecker;

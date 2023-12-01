@@ -21,12 +21,7 @@
 
 //---------------------------------------------------------------------------
 //拡張子
-#if defined(_WIN64)
-#define FEXT_ARCHIVE	FEXT_ZIP FEXT_7Z FEXT_TAR FEXT_RAR
-#else
-#define FEXT_ARCHIVE	FEXT_ZIP FEXT_7Z FEXT_LHA FEXT_CAB FEXT_TAR FEXT_RAR FEXT_ISO
-#endif																			//アーカイブ
-
+#define FEXT_ARCHIVE	FEXT_ZIP FEXT_7Z FEXT_TAR FEXT_RAR						//アーカイブ
 #define FEXT_EXECUTE	_T(".exe.com.bat.cmd.msi.msu.lnk.scr")					//実行可能
 #define FEXT_JPEG		_T(".jpg.jpeg.jpe.jif.jfif")							//Jpeg
 #define FEXT_META		_T(".wmf.emf")											//メタファイル
@@ -38,7 +33,7 @@
 #define FEXT_IMAGE		FEXT_WICSTD FEXT_RAW FEXT_META _T(".heic.webp")			//画像
 #define FEXT_WEBIMG		FEXT_JPEG _T(".gif.png.webp.ico")						//Webで用いられる画像
 #define FEXT_FONT		_T(".ttf.ttc.fon.otf")									//フォント
-#define FEXT_MCISND		_T(".wav.wma.mp3.mid")									//MCI対応サウンド
+#define FEXT_MCISND		_T(".wav.wma.mp3.mid.rmi")								//MCI対応サウンド
 #define FEXT_VIDEO		_T(".avi.asf.flv.mkv.mov.mp4.mpg.mts.ogm.ts.m2ts.vob.webm.wmv")
 																				//動画
 
@@ -106,6 +101,8 @@ UnicodeString get_top_line(UnicodeString fnam, int code_page = 0);
 UnicodeString get_id_str4(TFileStream *fs);
 bool sea_chunk(TFileStream *fs, const char *s);
 UnicodeString get_chunk_hdr(TFileStream *fs, unsigned int *size = NULL);
+UnicodeString get_chunk_list(TFileStream *fs, __int64 p = 12);
+UnicodeString get_chunk_list(UnicodeString fnam, __int64 p = 12);
 
 //---------------------------------------------------------------------------
 void get_WavInf(UnicodeString fnam, TStringList *lst);

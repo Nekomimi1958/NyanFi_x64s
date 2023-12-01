@@ -349,4 +349,3 @@ void __fastcall TToolBtnDlg::ChgBtnActionUpdate(TObject *Sender)
 		= (!CaptionEdit->Text.IsEmpty() || !IconEdit->Text.IsEmpty()) && BtnListBox->ItemIndex!=-1;
 }
 //---------------------------------------------------------------------------
-

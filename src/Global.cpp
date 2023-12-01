@@ -1463,12 +1463,8 @@ void InitializeGlobal()
 		{_T("MarkImgFExt=\".jpg\""),				(TObject*)&MarkImgFExt},
 		{_T("MarkImgMemo=\"しおり\""),				(TObject*)&MarkImgMemo},
 
-#if defined(_WIN64)
 		{_T("FExt7zDll=\".lzh.cab.iso.arj.chm.msi.wim\""),
 													(TObject*)&FExt7zDll},
-#else
-		{_T("FExt7zDll=\".arj.chm.msi.wim\""),		(TObject*)&FExt7zDll},
-#endif
 
 		{_T("SttBarFmt=\"$F\""),					(TObject*)&SttBarFmt},
 		{_T("SttClockFmt=\"\""),					(TObject*)&SttClockFmt},
@@ -1991,16 +1987,9 @@ void InitializeGlobal()
 		if (ContainsText(elst[i], "\\Git\\")) plst->Add(elst[i]);
 	}
 
-#if defined(_WIN64)
 	plst->Add(IncludeTrailingPathDelimiter(cv_env_var("%PROGRAMFILES%")) + "Git");
 	plst->Add(IncludeTrailingPathDelimiter(cv_env_var("%PROGRAMFILES%")) + "Git\\bin");
 	plst->Add(IncludeTrailingPathDelimiter(cv_env_var("%PROGRAMFILES%")) + "Git\\cmd");
-#else
-	plst->Add(IncludeTrailingPathDelimiter(cv_env_var("%PROGRAMW6432%")) + "Git");
-	plst->Add(IncludeTrailingPathDelimiter(cv_env_var("%PROGRAMW6432%")) + "Git\\bin");
-	plst->Add(IncludeTrailingPathDelimiter(cv_env_var("%PROGRAMW6432%")) + "Git\\cmd");
-#endif
-
 	plst->Add(IncludeTrailingPathDelimiter(cv_env_var("%PROGRAMFILES(X86)%")) + "Git\\bin");
 	plst->Add(IncludeTrailingPathDelimiter(cv_env_var("%PROGRAMFILES(X86)%")) + "Git\\cmd");
 	if (CmdGitExe.IsEmpty()) {
@@ -3706,11 +3695,7 @@ UnicodeString make_ResponseFile(TStringList *lst,
 
 	//統合アーカイバ以外
 	if (arc_t==0) {
-#if defined(_WIN64)
 		return RESPONSE_ERR;
-#else
-		for (int i=0; i<lst->Count; i++) r_lst->Add(add_quot_if_spc(lst->Strings[i]));
-#endif
 	}
 	//統合アーカイバ
 	else {
@@ -7994,8 +7979,6 @@ void GetFileInfList(
 {
 	if (!fp) return;
 
-	OutDebugStr("#GetFileInfList: " + fp->n_name);
-
 	flist_stt *lst_stt = (fp->tag!=-1)? &ListStt[fp->tag] : NULL;
 	bool is_ads = lst_stt && lst_stt->is_ADS;
 	bool is_all = is_FindAll(lst_stt);
@@ -8613,7 +8596,6 @@ bool get_FileInfList(
 	if (!fp) return false;
 
 	OutDebugStr("  => get_FileInfList: " + fp->n_name);
-
 	try {
 		lst->Clear();
 
@@ -8734,7 +8716,6 @@ bool get_FileInfList(
 		int lst_cnt = lst->Count;
 		//アプリケーション情報
 		if (test_AppInfExt(fext)) {
-			OutDebugStr("==> get_AppInf: " + ExtractFileName(fnam));
 			get_AppInf(fnam, lst);
 		}
 		//アイコン/カーソル
@@ -8809,7 +8790,7 @@ bool get_FileInfList(
 			add_PropLine(_T("URL"), url_file->ReadString("InternetShortcut", "URL"), lst);
 			add_PropLine_if(_T("IconFile"), url_file->ReadString("InternetShortcut", "IconFile"), lst);
 		}
-		//PDFバージョン
+		//PDF
 		else if (test_FileExt(fext, ".pdf")) {
 			get_PdfVer(fnam, lst);
 		}
@@ -8858,7 +8839,12 @@ bool get_FileInfList(
 		else {
 			//動画
 			if (SameStr(usr_SH->get_PropInf(fnam, lst), "ビデオ")) {
+				if (test_FileExt(fext, ".avi")) add_PropLine(_T("チャンク"), get_chunk_list(fnam), lst);
 				fp->is_video = true;
+			}
+			//RMI
+			else if (test_FileExt(fext, ".rmi")) {
+				add_PropLine(_T("チャンク"), get_chunk_list(fnam), lst);
 			}
 			//実行可能ファイル(チェック)
 			else {
@@ -8867,7 +8853,7 @@ bool get_FileInfList(
 		}
 
 		//アーカイブ情報
-		if (is_AvailableArc(fnam)) {
+		if (test_ArcExt(fext)) {
 			if (lst->Count>lst_cnt) lst->Add(EmptyStr);
 
 			add_PropLine_if(_T("形式"), usr_ARC->GetSubTypeStr(fnam), lst);
@@ -14423,13 +14409,7 @@ BOOL CALLBACK EnumNyanWndProc(HWND hWnd, LPARAM lst)
 		int p = pos_r(" - ", tbuf);
 		UnicodeString lbuf = (p>0)? tbuf.SubString(p + 3, 16) : tbuf;
 		if (lbuf.Pos('-')) lbuf = get_tkn_r(lbuf, '-'); else lbuf = "1";
-
-#if defined(_WIN64)
 		lbuf.cat_sprintf(_T(",%llu,%s"), hWnd, tbuf.c_str());
-#else
-		lbuf.cat_sprintf(_T(",%u,%s"), hWnd, tbuf.c_str());
-#endif
-
 		((TStringList*)lst)->Add(lbuf);
 	}
 	return TRUE;

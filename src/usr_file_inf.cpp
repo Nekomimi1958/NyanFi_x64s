@@ -17,11 +17,7 @@
 #include "usr_msg.h"
 #include "htmconv.h"
 
-#if defined(_WIN64)
 #pragma link "win64\\release\\psdk\\Rstrtmgr.a"
-#else
-#pragma link "win32\\release\\psdk\\Rstrtmgr.lib"
-#endif
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -212,7 +208,7 @@ UnicodeString get_top_line(UnicodeString fnam,
 		int  ch_sz = (code_page==1200 || code_page==1201)? 2 : 1;
 		BYTE cbuf[2]; cbuf[1] = 0;
 
-		int top_p = has_bom? ((code_page==1200 || code_page==1201)? 2 : (code_page==CP_UTF8)? 3 : 0) : 0;
+		__int64 top_p = has_bom? ((code_page==1200 || code_page==1201)? 2 : (code_page==CP_UTF8)? 3 : 0) : 0;
 		int size  = 0;
 		ms->Seek(top_p,  soFromBeginning);
 		while (ms->Position < ms->Size) {
@@ -282,7 +278,7 @@ bool sea_chunk(TFileStream *fs, const char *s)
 			DWORD dwLen;
 			fs->ReadBuffer(&dwLen, 4);
 			if (dwLen<2) Abort();
-			int p = fs->Seek(0, soFromCurrent) + dwLen;
+			__int64 p = fs->Seek(0, soFromCurrent) + dwLen;
 			fs->Seek(p, soFromBeginning);
 		}
 		return true;
@@ -317,6 +313,61 @@ UnicodeString get_chunk_hdr(
 }
 
 //---------------------------------------------------------------------------
+//RIFFのチャンクを列挙
+//---------------------------------------------------------------------------
+UnicodeString get_chunk_list(TFileStream *fs,
+	__int64 p)		//開始位置	(default = 12);
+{
+	UnicodeString ret_str;
+	fs->Seek(p, soBeginning);
+	std::unique_ptr<BYTE []> buf(new BYTE[4]);
+	int anmf_cnt = 0;
+	UnicodeString l_nam;
+	for (;;) {
+		if (fs->Read(buf.get(), 4)!=4) break;
+		UnicodeString cnam;
+		bool ok = true;
+		for (int i=0; i<4; i++) {
+			ok = isprint(buf[i]);  if (!ok) break;
+			cnam.cat_sprintf(_T("%c"), buf[i]);
+		}
+		if (!ok) break;
+		if (!ret_str.IsEmpty()) ret_str += ",";
+		ret_str += cnam;
+		if (SameStr(cnam, "ANMF")) {
+			if (l_nam==cnam) anmf_cnt++; else anmf_cnt = 1;
+		}
+		l_nam = cnam;
+		DWORD dwLen;
+		if (fs->Read(&dwLen, 4)<4) break;
+		if (dwLen<2) break;
+		__int64 p = fs->Seek(0, soFromCurrent) + dwLen;
+		fs->Seek(p, soFromBeginning);
+	}
+
+	//ANMF の連続をまとめる
+	if (anmf_cnt>1) {
+		TMatch mt = TRegEx::Match(ret_str, "(,ANMF){2,}");
+		if (mt.Success) {
+			ret_str = ReplaceStr(ret_str, mt.Value, mt.Groups.Item[1].Value + "×" + IntToStr(anmf_cnt));
+		}
+	}
+	return ret_str;
+}
+//---------------------------------------------------------------------------
+UnicodeString get_chunk_list(UnicodeString fnam,
+	__int64 p)		//開始位置	(default = 12);
+{
+	try {
+		std::unique_ptr<TFileStream> fs(new TFileStream(fnam, fmOpenRead | fmShareDenyNone));
+		return get_chunk_list(fs.get(), p);
+	}
+	catch (...) {
+		return EmptyStr;
+	}
+}
+
+//---------------------------------------------------------------------------
 //WAVファイルの情報を取得
 //---------------------------------------------------------------------------
 void get_WavInf(
@@ -330,11 +381,9 @@ void get_WavInf(
 		if (!SameStr(get_chunk_hdr(fs.get()), "RIFF") || !fsRead_check_char(fs.get(), "WAVE")) UserAbort(USTR_IllegalFormat);
 		if (!sea_chunk(fs.get(),  "fmt "))	UserAbort(USTR_IllegalFormat);
 
+		//フォーマット情報を取得
 		DWORD fmt_len;
 		fs->ReadBuffer(&fmt_len, 4);
-		int p_data = fs->Seek(0, soFromCurrent) + fmt_len;
-
-		//フォーマット情報を取得
 		WAVEFORMATEXTENSIBLE wfx;
 		fs->ReadBuffer(&wfx, fmt_len);
 		if (wfx.Format.wFormatTag==WAVE_FORMAT_PCM || wfx.Format.wFormatTag==WAVE_FORMAT_EXTENSIBLE) {
@@ -344,37 +393,40 @@ void get_WavInf(
 			int s_byte = wfx.Format.nBlockAlign/chn;
 			int s_bit  = s_byte * 8;
 
-			if (!sea_chunk(fs.get(), "data")) TextAbort(_T("dataチャンクが見つかりません。"));
+			if (sea_chunk(fs.get(), "data")) {
+				DWORD dwBuf;
+				fs->ReadBuffer(&dwBuf, 4);
+				int length = (int)(dwBuf/(s_byte*chn)/(s_rate/1000.0));
 
-			DWORD dwBuf;
-			fs->ReadBuffer(&dwBuf, 4);
-			int length = (int)(dwBuf/(s_byte*chn)/(s_rate/1000.0));
+				UnicodeString lbuf = get_PropTitle(_T("形式")).cat_sprintf(_T("%uHz %ubit "), s_rate, s_bit);
+				if (chn<=2)
+					lbuf.cat_sprintf(_T("%s"), (chn==2)? _T("ステレオ") : _T("モノ"));
+				else
+					lbuf.cat_sprintf(_T("%uch"), chn);
+				lst->Add(lbuf);
+				add_PropLine(_T("長さ"), mSecToTStr(length), lst);
 
-			UnicodeString lbuf = get_PropTitle(_T("形式")).cat_sprintf(_T("%uHz %ubit "), s_rate, s_bit);
-			if (chn<=2)
-				lbuf.cat_sprintf(_T("%s"), (chn==2)? _T("ステレオ") : _T("モノ"));
-			else
-				lbuf.cat_sprintf(_T("%uch"), chn);
-			lst->Add(lbuf);
-			add_PropLine(_T("長さ"), mSecToTStr(length), lst);
-
-			//チャンネルマスク
-			if (wfx.Format.wFormatTag==WAVE_FORMAT_EXTENSIBLE) {
-				UnicodeString cm;
-				cm.sprintf(_T("0x%08X"), wfx.dwChannelMask);
-				switch(wfx.dwChannelMask) {
-				case KSAUDIO_SPEAKER_MONO:		cm += " (Mono)";		break;
-				case KSAUDIO_SPEAKER_STEREO:	cm += " (Stereo)";		break;
-				case KSAUDIO_SPEAKER_QUAD:		cm += " (Quad)";		break;
-				case KSAUDIO_SPEAKER_SURROUND:	cm += " (Surround)";	break;
-				case KSAUDIO_SPEAKER_5POINT1:	cm += " (5.1)";			break;
-				case KSAUDIO_SPEAKER_7POINT1:	cm += " (7.1)";			break;
-				case KSAUDIO_SPEAKER_7POINT1_SURROUND:
-												cm += " (7.1 Surround)"; break;
-				case KSAUDIO_SPEAKER_DIRECTOUT:	cm += " (DirectOut)";	break;
-				default:						cm += " (Others)";
+				//チャンネルマスク
+				if (wfx.Format.wFormatTag==WAVE_FORMAT_EXTENSIBLE) {
+					UnicodeString cm;
+					cm.sprintf(_T("0x%08X"), wfx.dwChannelMask);
+					switch(wfx.dwChannelMask) {
+					case KSAUDIO_SPEAKER_MONO:		cm += " (Mono)";		break;
+					case KSAUDIO_SPEAKER_STEREO:	cm += " (Stereo)";		break;
+					case KSAUDIO_SPEAKER_QUAD:		cm += " (Quad)";		break;
+					case KSAUDIO_SPEAKER_SURROUND:	cm += " (Surround)";	break;
+					case KSAUDIO_SPEAKER_5POINT1:	cm += " (5.1)";			break;
+					case KSAUDIO_SPEAKER_7POINT1:	cm += " (7.1)";			break;
+					case KSAUDIO_SPEAKER_7POINT1_SURROUND:
+													cm += " (7.1 Surround)"; break;
+					case KSAUDIO_SPEAKER_DIRECTOUT:	cm += " (DirectOut)";	break;
+					default:						cm += " (Others)";
+					}
+					add_PropLine(_T("チャネルマスク"), cm, lst);
 				}
-				add_PropLine(_T("チャネルマスク"), cm, lst);
+			}
+			else {
+				add_list_errmsg(lst, "dataチャンクが見つかりません。");
 			}
 		}
 		else if (wfx.Format.wFormatTag==WAVE_FORMAT_MPEGLAYER3) {
@@ -383,6 +435,9 @@ void get_WavInf(
 		else {
 			lst->Add(get_PropTitle(_T("形式")).cat_sprintf(_T("その他(0x%04X)"), wfx.Format.wFormatTag));
 		}
+
+		//チャンク
+		add_PropLine(_T("チャンク"), get_chunk_list(fs.get()), lst);
 	}
 	catch (EAbort &e) {
 		add_list_errmsg(lst, e.Message);
@@ -490,6 +545,8 @@ bool get_CdaInf(
 		t = fsRead_int4(fs.get())*1000/75;		//= セクタ数*1000/75 (75=1秒間のセクタ数)
 		if (len) *len = t;
 		if (lst) add_PropLine(_T("長さ"), mSecToTStr(t), lst);
+		//チャンク
+		add_PropLine(_T("チャンク"), get_chunk_list(fs.get()), lst);
 		ret = true;
 	}
 	catch (EAbort &e) {
@@ -1318,6 +1375,10 @@ bool get_WebpInf(
 		}
 		//メタデータ
 		add_PropLine_if(_T("メタデータ"), meta, lst);
+
+		//チャンク
+		add_PropLine(_T("チャンク"), get_chunk_list(fs.get()), lst);
+
 		ret = true;
 	}
 	catch (EAbort &e) {
@@ -1651,6 +1712,9 @@ bool get_AniInf(
 
 			fs->Seek(next_p, soFromBeginning);
 		}
+
+		//チャンク
+		add_PropLine(_T("チャンク"), get_chunk_list(fs.get()), lst);
 		ret = true;
 	}
 	catch (EAbort &e) {
@@ -1731,29 +1795,18 @@ void get_AppInf(
 	}
 
 	//アプリケーション情報
-	WORD cpag_id[] = {0, 932, 949, 950, 1200, 1250, 1251, 1252, 1253, 1254, 1255, 1256};
-	WORD lang_id[] = {
-			0x0401, 0x0402, 0x0403, 0x0404, 0x0405, 0x0406, 0x0407, 0x0408,
-			0x0409, 0x040A, 0x040B, 0x040C, 0x040D, 0x040E, 0x040F, 0x0410,
-			0x0411, 0x0412, 0x0413, 0x0414, 0x0415, 0x0416, 0x0417, 0x0418,
-			0x0419, 0x041A, 0x041B, 0x041C, 0x041D, 0x041E, 0x041F, 0x0420, 0x0421,
-			0x0804, 0x0807, 0x0809, 0x080A, 0x080C, 0x0810, 0x0813, 0x0814, 0x0816, 0x081A, 0x0C0C, 0x100C
-		};
-
 	DWORD dwReserved;
-	DWORD dwSize	= ::GetFileVersionInfoSize(fnam.c_str(), &dwReserved);
+	DWORD dwSize = ::GetFileVersionInfoSize(fnam.c_str(), &dwReserved);
 	if (dwSize==0) return;
-	LPVOID lpBuffer = ::HeapAlloc(::GetProcessHeap(), HEAP_ZERO_MEMORY, dwSize);
-	if (!lpBuffer) return;
 
-	if (::GetFileVersionInfo(fnam.c_str(), NULL, dwSize, lpBuffer)) {
-		LPVOID lpLang = NULL;
-		UINT dwLength;
-		if (::VerQueryValue(lpBuffer, _T("\\VarFileInfo\\Translation"), &lpLang, &dwLength)) {
-			WORD *lpTranslate = (WORD*)lpLang;
+	std::unique_ptr<BYTE[]> lpBuf(new BYTE[dwSize]);
+	if (::GetFileVersionInfo(fnam.c_str(), NULL, dwSize, lpBuf.get())) {
+		LPVOID lpLangPage = NULL;
+		UINT dwLen;
+		if (::VerQueryValue(lpBuf.get(), _T("\\VarFileInfo\\Translation"), &lpLangPage, &dwLen)) {
+			WORD *lpTranslate = (WORD*)lpLangPage;
 			UnicodeString substr;
-			if (*lpTranslate!=0) substr.sprintf(_T("\\StringFileInfo\\%04x%04x\\"), *lpTranslate, *(lpTranslate + 1));
-
+			substr.sprintf(_T("\\StringFileInfo\\%04x%04x\\"), *lpTranslate, *(lpTranslate + 1));
 			std::unique_ptr<TStringList> s_lst(new TStringList());
 			s_lst->Text =
 				"FileDescription=説明\n"
@@ -1772,24 +1825,8 @@ void get_AppInf(
 				UnicodeString nstr = s_lst->Names[j];
 				UnicodeString subblock, vstr;
 				LPVOID lpStr;
-				if (!substr.IsEmpty()) {
-					subblock = substr + nstr;
-					if (::VerQueryValue(lpBuffer, subblock.c_str(), &lpStr, &dwLength))
-						vstr.cat_sprintf(_T("%s"), lpStr);
-				}
-				else {
-					//言語情報がない
-					int c_cnt = sizeof(cpag_id)/sizeof(WORD);
-					int i_cnt = sizeof(lang_id)/sizeof(WORD);
-					for (int c_i=0; c_i<c_cnt && vstr.IsEmpty(); c_i++) {
-						for (int l_i=0; l_i<i_cnt && vstr.IsEmpty(); l_i++) {
-							substr.sprintf(_T("\\StringFileInfo\\%04x%04x\\"), lang_id[l_i], cpag_id[c_i]);
-							subblock = substr + nstr;
-							if (::VerQueryValue(lpBuffer, subblock.c_str(), &lpStr, &dwLength))
-								vstr.cat_sprintf(_T("%s"), lpStr);
-						}
-					}
-				}
+				subblock = substr + nstr;
+				if (::VerQueryValue(lpBuf.get(), subblock.c_str(), &lpStr, &dwLen)) vstr.cat_sprintf(_T("%s"), lpStr);
 				vstr = Trim(vstr);
 				if (!vstr.IsEmpty()) {
 					add_PropLine(s_lst->ValueFromIndex[j], vstr, lst);
@@ -1801,7 +1838,6 @@ void get_AppInf(
 			if (l_cnt==0) usr_SH->get_PropInf(fnam, lst);
 		}
 	}
-	::HeapFree(::GetProcessHeap(), 0, lpBuffer);
 
 	//アイコン数
 	int ixn = (int)::ExtractIcon(HInstance, fnam.c_str(), -1);

@@ -227,7 +227,7 @@ bool __fastcall TDistributionDlg::LoadDistrFile()
 		DistrDefList->Clear();
 		distr_file->LoadListItems("DistrDefList", DistrDefList, 200, false);
 		RegEnabled = true;
-		IniFile->WriteStrGen(_T("DistrDlgFileName"),	to_relative_name(DistrFile));
+		IniFile->WriteStrGen(_T("DistrDlgFileName"), to_relative_name(DistrFile));
 		return true;
 	}
 
@@ -800,7 +800,6 @@ void __fastcall TDistributionDlg::EditListActionUpdate(TObject *Sender)
 void __fastcall TDistributionDlg::RefListBtnClick(TObject *Sender)
 {
 	UserModule->PrepareOpenDlg(_T("リストファイルの指定"), F_FILTER_TXT, NULL);
-
 	UnicodeString fnam;
 	if (UserModule->OpenDlgToStr(fnam, true)) {
 		DistrMaskEdit->Text = "@" + fnam;

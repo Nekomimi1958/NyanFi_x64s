@@ -2359,6 +2359,9 @@ void __fastcall TNyanFiForm::ApplicationEvents1Activate(TObject *Sender)
 	if (DebugForm && DebugForm->Visible) {
 		DebugForm->SetFocus();
 	}
+	else if (RegExChecker && RegExChecker->Visible) {
+		RegExChecker->ReloadSample();
+	}
 	else if (ReqActWnd && ReqActWnd!=MainHandle) {
 		::SetFocus(ReqActWnd);
 		if (ReqActWnd!=get_HelpWnd()) UserModule->RestoreLastComboBox();
@@ -9974,7 +9977,7 @@ void __fastcall TNyanFiForm::ViewFileInf(file_rec *fp,
 					ImgViewThread->AddRequest(_T("FILE"), fnam);
 				}
 				//フォルダ/アーカイブ (ADSサムネイル)
-				else if ((is_dir || usr_ARC->GetArcType(fnam, true)) && file_exists(fnam + THUMB_JPG_ADS)) {
+				else if (file_exists(fnam + THUMB_JPG_ADS) && (is_dir || usr_ARC->GetArcType(fnam, true))) {
 					ImgViewThread->AddRequest(_T("FILE"), fnam + THUMB_JPG_ADS);
 				}
 				//フォルダ (特大アイコン、可能ならサムネイル)

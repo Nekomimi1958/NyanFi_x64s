@@ -31,20 +31,7 @@ void __fastcall TRegExChecker::FormCreate(TObject *Sender)
 		UnicodeString lbuf = lst->Strings[i];
 		if (!lbuf.IsEmpty()) ReferListBox->Items->Add((lbuf[1]=='-')? EmptyStr : lbuf);
 	}
-	//サンプルを追加
-	std::unique_ptr<TStringList> s_lst(new TStringList());
-	s_lst->Text =
-		"\n\n【 サンプル 】\n"
-		"日付\t[12]\\d{3}/(0?[1-9]|1[0-2])/([12][0-9]|3[01]|0?[1-9])\n"
-		"時刻\t([01]?[0-9]|2[0-3])(:[0-5][0-9]){1,2}\n"
-		"URL\thttps?://[\\w/:%#$&?()~.=+-]+\n"
-		"偶数\t\\d*[02468]\n"
-		"奇数\t\\d*[13579]\n"
-		"全角\t[^ -~｡-ﾟ\\t]+\n"
-		"半角ｶﾅ\t[｡-ﾟ]+";
-
-	ReferListBox->Items->AddStrings(s_lst.get());
-
+	
 	PtnComboBox->Tag = CBTAG_HISTORY;
 
 	ObjComboBox   = NULL;
@@ -60,6 +47,7 @@ void __fastcall TRegExChecker::FormShow(TObject *Sender)
 	int mp_wd = IniFile->ReadScaledIntGen( _T("RegExMainWidth"), 380, this);
 	ReferPanel->Width       = ClientWidth - mp_wd - Splitter1->Width;
 	OpePanel->Height        = IniFile->ReadScaledIntGen( _T("RegExOpeHeight"), 240, this);
+	ReferListBox->Height	= IniFile->ReadScaledIntGen( _T("RegExRefHeight"), 320, this);
 	ReplaceEdit->Text       = IniFile->ReadStrGen( _T("RegExChkRepStr"));
 	CaseCheckBox->Checked   = IniFile->ReadBoolGen(_T("RegExChkCase"),		false);
 	UpdtCheckBox->Checked   = IniFile->ReadBoolGen(_T("RegExChkUpdate"),	false);
@@ -74,12 +62,14 @@ void __fastcall TRegExChecker::FormShow(TObject *Sender)
 	AssignScaledFont(ReplaceEdit, ttFont.get());
 
 	ttFont->Color = get_ViewFgCol();
-	AssignScaledFont(ObjMemo, 		ttFont.get());
-	set_ListBoxItemHi(ResListBox,	ttFont.get());
-	set_ListBoxItemHi(ReferListBox, ttFont.get());
-	ObjMemo->Color      = get_ViewBgCol();
-	ResListBox->Color   = get_ViewBgCol();
-	ReferListBox->Color = get_ViewBgCol();
+	AssignScaledFont(ObjMemo, 		 ttFont.get());
+	set_ListBoxItemHi(ResListBox,	 ttFont.get());
+	set_ListBoxItemHi(ReferListBox,  ttFont.get());
+	set_ListBoxItemHi(SampleListBox, ttFont.get());
+	ObjMemo->Color       = get_ViewBgCol();
+	ResListBox->Color    = get_ViewBgCol();
+	ReferListBox->Color  = get_ViewBgCol();
+	SampleListBox->Color = get_ViewBgCol();
 
 	StxPaintBox->Top = PtnComboBox->Top + PtnComboBox->Height;
 
@@ -98,11 +88,29 @@ void __fastcall TRegExChecker::FormShow(TObject *Sender)
 			msgbox_ERR(USTR_FileNotOpen);
 		}
 	}
-
 	if (!ok) {
 		TStringDynArray ibuf = get_csv_array(IniFile->ReadStrGen(_T("RegExChkText"), EmptyStr, false), 20);
 		for (int i=0; i<ibuf.Length; i++) ObjMemo->Lines->Add(ibuf[i]);
 	}
+
+	//サンプルの設定
+	std::unique_ptr<TStringList> s_lst(new TStringList());
+	SampleFile = to_absolute_name(IniFile->ReadStrGen(_T("RegExChkSample")));
+	if (load_text_ex(SampleFile, s_lst.get())) {
+		SampleTime = get_file_age(SampleFile);
+	}
+	if (Trim(s_lst->Text).IsEmpty()) {
+		s_lst->Text =
+			"【 サンプル 】\n"
+			"日付\t[12]\\d{3}/(0?[1-9]|1[0-2])/([12][0-9]|3[01]|0?[1-9])\n"
+			"時刻\t([01]?[0-9]|2[0-3])(:[0-5][0-9]){1,2}\n"
+			"URL\thttps?://[\\w/:%#$&?()~.=+-]+\n"
+			"偶数\t\\d*[02468]\n"
+			"奇数\t\\d*[13579]\n"
+			"全角\t[^ -~｡-ﾟ\\t]+\n"
+			"半角ｶﾅ\t[｡-ﾟ]+\n";
+	}
+	AssignSample(s_lst.get());
 
 	IniFile->LoadComboBoxItems(PtnComboBox, _T("RegExChkHistory"));
 	if (PtnComboBox->Items->Count>0) PtnComboBox->ItemIndex = 0;
@@ -145,14 +153,20 @@ void __fastcall TRegExChecker::FormClose(TObject *Sender, TCloseAction &Action)
 		if (!saveto_TextFile(fnam, ObjMemo->Lines)) msgbox_ERR(USTR_FaildSave);
 	}
 
-	IniFile->WriteScaledIntGen( _T("RegExMainWidth"), MainPanel->Width, this);
-	IniFile->WriteScaledIntGen( _T("RegExOpeHeight"), OpePanel->Height, this);
+	IniFile->WriteStrGen( _T("RegExChkSample"), to_relative_name(SampleFile));
+
+	IniFile->WriteScaledIntGen(_T("RegExMainWidth"), MainPanel->Width, 		this);
+	IniFile->WriteScaledIntGen(_T("RegExOpeHeight"), OpePanel->Height, 		this);
+	IniFile->WriteScaledIntGen(_T("RegExRefHeight"), ReferListBox->Height,	this);
+
 	IniFile->WriteStrGen( _T("RegExChkRepStr"),	ReplaceEdit->Text);
 	IniFile->WriteBoolGen(_T("RegExChkCase"),	CaseCheckBox->Checked);
+
 	IniFile->WriteBoolGen(_T("RegExChkUpdate"),	UpdtCheckBox->Checked);
 	IniFile->WriteBoolGen(_T("RegExChkDetail"),	DetailCheckBox->Checked);
 
 	IniFile->SaveComboBoxItems(PtnComboBox, _T("RegExChkHistory"));
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TRegExChecker::FormDestroy(TObject *Sender)
@@ -390,7 +404,7 @@ void __fastcall TRegExChecker::ReferListBoxDblClick(TObject *Sender)
 	if (idx!=-1) {
 		UnicodeString s = lp->Items->Strings[idx];
 		if (s.Pos('\t')) {
-			s = (idx<UserModule->RefRegExList->Count)? get_pre_tab(s) : get_post_tab(s);
+			s = (lp->Tag==0)? get_pre_tab(s) : get_post_tab(s);
 			PtnComboBox->SetFocus();
 			PtnComboBox->SelStart  = PtnSelStart;
 			PtnComboBox->SelLength = PtnSelLength;
@@ -652,5 +666,60 @@ void __fastcall TRegExChecker::StxPaintBoxPaint(TObject *Sender)
 void __fastcall TRegExChecker::DetailCheckBoxClick(TObject *Sender)
 {
 	ResListBox->Items->Assign(DetailCheckBox->Checked? DetailList : ResultList);
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TRegExChecker::AssignSample(TStringList *lst)
+{
+	SampleListBox->Items->Assign(lst);
+	int tw = 9;
+	for (int i=0; i<SampleListBox->Count; i++) {
+		UnicodeString s = SampleListBox->Items->Strings[i];
+		if (s.Pos('\t')) tw = std::max(tw, str_len_half(get_pre_tab(s)) + 2);
+	}
+	SampleListBox->TabWidth = tw * 4;
+}
+//---------------------------------------------------------------------------
+void __fastcall TRegExChecker::ReloadSample()
+{
+	if (file_exists(SampleFile)) {
+		TDateTime dt = get_file_age(SampleFile);
+		if (dt!=SampleTime) {
+			std::unique_ptr<TStringList> s_lst(new TStringList());
+			if (load_text_ex(RegExChecker->SampleFile, s_lst.get())) {
+				SampleTime = dt;
+				AssignSample(s_lst.get());
+			}
+		}
+	}
+}
+
+//---------------------------------------------------------------------------
+//ファイルからサンプルを読み込む
+//---------------------------------------------------------------------------
+void __fastcall TRegExChecker::LoadSamplActionExecute(TObject *Sender)
+{
+	UserModule->PrepareOpenDlg(_T("サンプルを開く"), F_FILTER_TXT, _T("*.txt"), ExtractFilePath(SampleFile));
+	UnicodeString fnam;
+	if (UserModule->OpenDlgToStr(fnam)) {
+		std::unique_ptr<TStringList> s_lst(new TStringList());
+		if (load_text_ex(fnam, s_lst.get())) {
+			SampleFile = fnam;
+			SampleTime = get_file_age(SampleFile);
+			AssignSample(s_lst.get());
+		}
+	}
+}
+//---------------------------------------------------------------------------
+//編集
+//---------------------------------------------------------------------------
+void __fastcall TRegExChecker::EditSampleActionExecute(TObject *Sender)
+{
+	open_by_TextEditor(SampleFile);
+}
+//---------------------------------------------------------------------------
+void __fastcall TRegExChecker::EditSampleActionUpdate(TObject *Sender)
+{
+	((TAction*)Sender)->Enabled = file_exists(SampleFile);
 }
 //---------------------------------------------------------------------------

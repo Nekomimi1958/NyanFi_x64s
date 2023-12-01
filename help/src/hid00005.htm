@@ -239,7 +239,7 @@
       計算式が無指定の場合、選択中の項目があれば、そのサイズが入力欄に設定されます(バイト単位、カンマ付き)。<br>
       <div class="spc_box">
         パラメータに <b>CB</b> を指定すると、電卓画面を表示せずに、クリップボードを介して計算を行います。<br>
-        計算式が無指定の場合、クリップボードの内容を計算します。複数行の場合は、各行内容を &quot;<b>+</b>&quot; 記号で連結したものが用いられます(空白行などは無視)。<br>
+        計算式が無指定の場合、クリップボードの内容を計算します。複数行の場合は、各行内容を "<b>+</b>" 記号で連結したものが用いられます(空白行などは無視)。<br>
         計算に成功すると、クリップボードに結果が、失敗するとエラー内容が入ります。<br>
         なお <b>CB</b> が指定された場合、<b>NyanFi</b> はアクティブになりません。
       </div>
@@ -258,14 +258,14 @@ NyanFi.exe -XCalculator_CB
     </dd>
 
     <dt id="ChangeDir">ChangeDir<span class="pram_text">_ディレクトリ名[\ファイル名]</span><br>
-      ChangeDir<span class="pram_text">_&quot;UNCパス:接続ユーザ名&quot;</span></dt>
+      ChangeDir<span class="pram_text">_"UNCパス:接続ユーザ名"</span></dt>
     <dd>カレントを、パラメータで指定したディレクトリに変更します。既存のファイル名が指定された場合は、そのディレクトリのファイル位置に移動します。<br>
       <a href="#ExeCommands">ExeCommands</a> コマンドのパラメータ区切り文字との混同を避けるため、ルートディレクトリの場合は <b>:</b> の後に <b>\</b>
-      を付けてください。&quot;%変数名%&quot; という書式で環境変数も使えます。なおドライブ名がない場合はカレントからの相対指定となります。<br>
+      を付けてください。"%変数名%" という書式で環境変数も使えます。なおドライブ名がない場合はカレントからの相対指定となります。<br>
       <div class="spc_box">
         パスワード保護されている共有フォルダのUNCパスでは、その後に <b>:</b>
         (コロン)で区切って接続ユーザ名を指定できます。未接続だった場合、このユーザ名でネットワーク資格情報の入力ダイアログによる接続を試みます。なおユーザ名が指定されていない場合は、既定のユーザ名とそれに関連付けられた現在の規定パスワードを用います。<br>
-        <b>例</b>: ChangeDir_&quot;\\HOGE\share\:nyanko&quot;<br>
+        <b>例</b>: ChangeDir_"\\HOGE\share\:nyanko"<br>
       </div>
       <div class="spc_box">
         なお、<b>\\</b> で始まるコンピュータ名だけを指定した場合は、共有フォルダ一覧(<a href="#ShareList">ShareList</a>)が表示されます<br>
@@ -280,14 +280,14 @@ NyanFi.exe -XCalculator_CB
     </dd>
 
     <dt id="ChangeOppDir">ChangeOppDir<span class="pram_text">_ディレクトリ名</span><br>
-      ChangeOppDir<span class="pram_text">_&quot;UNCパス:接続ユーザ名&quot;</span></dt>
+      ChangeOppDir<span class="pram_text">_"UNCパス:接続ユーザ名"</span></dt>
     <dd>反対側を、パラメータで指定したディレクトリに変更します。<br>
       <a href="#ExeCommands">ExeCommands</a> コマンドのパラメータ区切り文字との混同を避けるため、ルートディレクトリの場合は <b>:</b> の後に <b>\</b>
-      を付けてください(あるいは引用符で囲む)。&quot;%変数名%&quot; という書式で環境変数も使えます。なおドライブ名がない場合は反対パスからの相対指定となります。<br>
+      を付けてください(あるいは引用符で囲む)。"%変数名%" という書式で環境変数も使えます。なおドライブ名がない場合は反対パスからの相対指定となります。<br>
       <div class="spc_box">
         パスワード保護されている共有フォルダのUNCパスでは、その後に <b>:</b>
         (コロン)で区切って接続ユーザ名を指定できます。未接続だった場合、このユーザ名でネットワーク資格情報の入力ダイアログによる接続を試みます。なおユーザ名が指定されていない場合は、既定のユーザ名とそれに関連付けられた現在の規定パスワードを用います。<br>
-        <b>例</b>: ChangeOppDir_&quot;\\HOGE\share\:nyanko&quot;<br>
+        <b>例</b>: ChangeOppDir_"\\HOGE\share\:nyanko"<br>
       </div>
       <a href="#ChangeDir">→ ChangeDir</a>　<a href="#ChangeRegDir">→ ChangeRegDir</a>
     </dd>
@@ -645,9 +645,9 @@ NyanFi.exe -XCalculator_CB
     <dt id="CopyCmdName">CopyCmdName</dt>
     <dd>コマンド名を参照して、クリップボードにコピーします。<br>
       ボタンで、ファイラー/テキストビュアー/イメージビュアー/ログウィンドウを切り替えられます。<br>
-      文字列を入力すると、それが含まれる候補がドロップダウン表示されます(Migemo 対応)。また &quot;<b>*</b>&quot;、&quot;<b>?</b>&quot;、&quot;<b> </b>&quot;
+      文字列を入力すると、それが含まれる候補がドロップダウン表示されます(Migemo 対応)。また "<b>*</b>"、"<b>?</b>"、"<b> </b>"
       のいずれかを入力すると、すべてのコマンドが表示されます。<br>
-      またコマンドの後に &quot;<b>_</b>&quot; を入力すると、そのコマンドで利用できるパラメータの候補(一部動的なものを除く)がドロップダウン表示されます。<br>
+      またコマンドの後に "<b>_</b>" を入力すると、そのコマンドで利用できるパラメータの候補(一部動的なものを除く)がドロップダウン表示されます。<br>
       候補が出ている場合、<span class="btn_frame">ENTER</span>キーを押すか項目をクリックすると確定し、さらに<span
         class="btn_frame">ENTER</span>キーを押すとコピーされます。<br>
       なお入力履歴機能はありません。<br>
@@ -708,7 +708,7 @@ NyanFi.exe -XCalculator_CB
 5e528bf8e16e9a75a981d34edcccfa52 *NyanFi.exe
 </pre>
 
-        <b>例</b>: CopyFileName_$O$X&quot;$B&quot;,$Y,$D(yyyy/mm/dd)<br>
+        <b>例</b>: CopyFileName_$O$X"$B",$Y,$D(yyyy/mm/dd)<br>
         <pre>
 CSV形式で保存
 "NyanFi.chm",768554,2016/11/07
@@ -722,8 +722,8 @@ nyanfi_grep.jpg    800 × 320  (5 : 2)
 nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
 </pre>
 
-        <b>例</b>: CopyFileName_$X&lt;img src=&quot;$B&quot; width=&quot;$W&quot; height=&quot;$H&quot;
-        alt=&quot;&quot;&gt;
+        <b>例</b>: CopyFileName_$X&lt;img src="$B" width="$W" height="$H"
+        alt=""&gt;
         <pre>
 &lt;img src="nyanfi_grep.jpg" width="800" height="320" alt=""&gt;
 &lt;img src="nyanfi_scr.jpg" width="800" height="600" alt=""&gt;
@@ -736,7 +736,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
 
     <dt id="CopyTo">CopyTo<span class="pram_text">_ディレクトリ名</span></dt>
     <dd>選択中(無ければカーソル位置)の項目を指定ディレクトリにコピーします。<br>
-      <b>ディレクトリ名</b>には、&quot;%変数名%&quot; という書式で環境変数も使えます。ドライブ名がない場合はカレントからの相対指定になります。<br>
+      <b>ディレクトリ名</b>には、"%変数名%" という書式で環境変数も使えます。ドライブ名がない場合はカレントからの相対指定になります。<br>
       <b>例</b>:　CopyTo_:一時ディレクトリにコピー:%Temp%<br>
       <a href="#Copy">→ Copy</a>　<a href="#Move">→ Move</a>　<a href="#MoveTo">→ MoveTo</a>　<a href="#Backup">→
         Backup</a>　<a href="#RegSyncDlg">→ RegSyncDlg</a>
@@ -812,7 +812,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       </div>
       <div class="spc_box">
         なおハードリンクのファイル情報には、「種類」の末尾にリンク数が表示されます。
-        例えば、あるファイルに対してハードリンクを一つ作成すると、元のファイルとハードリンクの両方に &quot;(Link Count=2)&quot;
+        例えば、あるファイルに対してハードリンクを一つ作成すると、元のファイルとハードリンクの両方に "(Link Count=2)"
         と表示されます。この場合、両者は同等で、両方とも削除してリンク数が0になったときにファイルの実体が削除されます。<br>
       </div>
       <a href="#FindHardLink">→ FindHardLink</a>　<a href="#CreateJunction">→ CreateJunction</a>　<a
@@ -975,7 +975,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
         マスクの指定方法は <a href="#MaskSelect">MaskSelect</a> コマンドと同じです。<br>
         マスクの末尾が <b>\</b> の場合はディレクトリに、そうでない場合はファイルにマッチします。<br>
         マスクの先頭に <b>!</b> があると、それ以外のファイルまたはディレクトリが選択されます。<br>
-        なお、&quot;SO&quot; という名前のファイルを削除したい場合は、先頭に <b>.\</b> を付けて Delete_.\SO としてください。<br>
+        なお、"SO" という名前のファイルを削除したい場合は、先頭に <b>.\</b> を付けて Delete_.\SO としてください。<br>
       </div>
       <div class="spc_box">
         <b>例</b>: temp ディレクトリと、*.bak ファイルを削除<br>
@@ -1225,16 +1225,16 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       </div>
 
       <div class="spc_box">
-        アクセラレータキーは、タイトル中に &quot;&amp;&quot; + 英数字 という書式で記述してください。タイトルを &quot;-&quot; (ハイフン)にすると<b>セパレータ</b>になります。<br>
-        タイトルの先頭が &quot;&gt;&quot; の場合、<b>サブメニュー</b>が作られ、以降の項目はその階層に入ります。タイトルを &quot;&lt;&quot; とすると階層が戻ります。<br>
+        アクセラレータキーは、タイトル中に "&amp;" + 英数字 という書式で記述してください。タイトルを "-" (ハイフン)にすると<b>セパレータ</b>になります。<br>
+        タイトルの先頭が "&gt;" の場合、<b>サブメニュー</b>が作られ、以降の項目はその階層に入ります。タイトルを "&lt;" とすると階層が戻ります。<br>
       </div>
       <div class="spc_box">
         メニュー定義ファイル内でのみ利用できるコマンドとして <b id="EditMenuFile">EditMenuFile</b> があり、メニュー定義ファイル自身をテキストエディタで開くことができます(<a
-          href="#FileEdit">FileEdit</a>_&quot;メニュー定義ファイル名&quot; と同等)。<br>
+          href="#FileEdit">FileEdit</a>_"メニュー定義ファイル名" と同等)。<br>
       </div>
 
       <div class="spc_box">
-        メニュー定義ファイルの一行目に &quot;;[MenuFile]&quot; と記述しておくと、<a href="hid00019.htm#OpenStandard">オプション設定 - コマンド -
+        メニュー定義ファイルの一行目に ";[MenuFile]" と記述しておくと、<a href="hid00019.htm#OpenStandard">オプション設定 - コマンド -
           OpenStandard</a> で「<b>メニュー定義</b>」をチェックすることで <a href="#OpenStandard">OpenStandard</a> コマンドでもメニューを開けます。<br>
       </div>
 
@@ -1248,15 +1248,15 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
   コマンドファイル     <span class="ctrl_text">[TAB]</span> @Nyan.nbt
   エイリアス           <span class="ctrl_text">[TAB]</span> $HogeHoge
   実行ファイル         <span class="ctrl_text">[TAB]</span> OpenByWin_D:\UsrProg\Tool\Nayn.exe
-  実行ファイル2        <span class="ctrl_text">[TAB]</span> FileRun_&quot;hoge -nyan&quot;
-  URIスキーム          <span class="ctrl_text">[TAB]</span> FileRun_&quot;ms-settings:windowsupdate&quot;
+  実行ファイル2        <span class="ctrl_text">[TAB]</span> FileRun_"hoge -nyan"
+  URIスキーム          <span class="ctrl_text">[TAB]</span> FileRun_"ms-settings:windowsupdate"
   ショートカット       <span class="ctrl_text">[TAB]</span> OpenByWin_D:\UsrProg\Launch\Nyan.lnk
-  サイトを開く         <span class="ctrl_text">[TAB]</span> OpenByWin_&quot;http://nekomimi.la.coocan.jp/&quot;  <span class="ctrl_text">[TAB]</span> favicon.ico
+  サイトを開く         <span class="ctrl_text">[TAB]</span> OpenByWin_"http://nekomimi.la.coocan.jp/"  <span class="ctrl_text">[TAB]</span> favicon.ico
 &lt;
 -
 環境変数一覧(&amp;E)       <span class="ctrl_text">[TAB]</span> {
   SetExeFile_cmd
-  SetExeParam_&quot;/c set&quot;
+  SetExeParam_"/c set"
   SetExeOpt_OH
   ShellExecute
   ListBuffer_環境変数一覧
@@ -1376,8 +1376,8 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       <div class="spc_box">
         <b>例</b>:<br>
         　FileRun_control<br>
-        　FileRun_&quot;ms-settings:&quot;<br>
-        　FileRun_&quot;perfmon /rel&quot;<br>
+        　FileRun_"ms-settings:"<br>
+        　FileRun_"perfmon /rel"<br>
       </div>
       <a href="#ExeCommandLine">→ ExeCommandLine</a>　<a href="#CommandPrompt">→ CommandPrompt</a>　<a
         href="#WinTerminal">→ WinTerminal</a>　<a href="#PowerShell">→ PowerShell</a>
@@ -1406,7 +1406,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
         コマンドで行ってください。別のディレクトリに移動した場合にも解除されます。ワークリストの場合は、通常のファイルリスト表示に戻すと解除されます。<br>
         パラメータに <b>CA</b> を指定すると、実行前に選択マスクを解除します。<br>
         <div class="note_text">
-          選択マスクが適用された状態のワークリストでは、内容の変更や上書き保存は行えません。注意を促すため、ディレクトリ情報に &quot;<b>!</b>&quot; マークが表示されます。
+          選択マスクが適用された状態のワークリストでは、内容の変更や上書き保存は行えません。注意を促すため、ディレクトリ情報に "<b>!</b>" マークが表示されます。
         </div>
       </div>
       <div class="spc_box">
@@ -1487,7 +1487,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
         ディレクトリからの相対指定)、それに記述されているディレクトリが検索対象となります。これによって、任意の複数ディレクトリ内を一括検索できます。<br>
         リストファイルには、検索したいパス付きディレクトリ名(環境変数も使用可)が一行ずつ記述してください。<b>;</b>
         (セミコロン)で始まる行や空行は無視されます。また行にタブ文字が含まれている場合、それ以降の内容は無視されます。したがってワークリストや検索結果リストを保存したものでもかまいません。ディレクトリ名末尾の
-        &quot;<b>\</b>&quot; は無くても可、(ディレクトリとして存在しない)ファイル名はスキップします。<br>
+        "<b>\</b>" は無くても可、(ディレクトリとして存在しない)ファイル名はスキップします。<br>
       </div>
       <div class="spc_box">
         複数のパラメータを指定する場合は <b>;</b> (セミコロン)で区切ってください。<br>
@@ -1565,7 +1565,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       <div class="spc_box">
         パラメータに<b>タグ</b>を指定すると、ダイアログを出さずに直ちに検索を行います。<br>
         複数のタグを指定する場合、<b>;</b> (セミコロン)で区切るとAND検索、<b>|</b> で区切るとOR検索になります(混在不可)。<br>
-        &quot;<b>*</b>&quot; を指定すると、すべてのタグにマッチします。<br>
+        "<b>*</b>" を指定すると、すべてのタグにマッチします。<br>
         なお、ダイアログの「<b>結果リストから反対側へ反映</b>」の設定が適用されます。<br>
         <b>例</b>: FindTag_Hoge|Nyan<br>
       </div>
@@ -1750,7 +1750,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       </div>
 
       <div class="spc_box note_text">
-        選択マスクが適用された状態のワークリストでは、内容の変更や上書き保存は行えません。注意を促すため、ディレクトリ情報に &quot;<b>!</b>&quot; マークが表示されます。
+        選択マスクが適用された状態のワークリストでは、内容の変更や上書き保存は行えません。注意を促すため、ディレクトリ情報に "<b>!</b>" マークが表示されます。
       </div>
 
       <a href="hid00019.htm#IncSearch">→ オプション設定 - コマンド</a><br>
@@ -1773,9 +1773,9 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
         href="hid00015.htm">外部ツール</a>の<b>エイリアス</b>とみなし、その項目を実行します。<br>
       コマンドは <b>:</b> (コロン)で区切って複数指定できます。パラメータに <b>:</b> が含まれる場合は、パラメータ全体をダブルクォーテーションで囲んでください。<br>
       <div class="spc_box">
-        入力ボックスで検索語を入力すると、それが含まれる候補がドロップダウン表示されます(Migemo 対応)。また &quot;<b>*</b>&quot;、&quot;<b>?</b>&quot;、&quot;<b>
-        </b>&quot; のいずれかを入力すると、すべてのコマンドが表示されます。<br>
-        またコマンドの後に &quot;<b>_</b>&quot; を入力すると、そのコマンドで利用できるパラメータの候補(一部動的なものを除く)がドロップダウン表示されます。<br>
+        入力ボックスで検索語を入力すると、それが含まれる候補がドロップダウン表示されます(Migemo 対応)。また "<b>*</b>"、"<b>?</b>"、"<b>
+        </b>" のいずれかを入力すると、すべてのコマンドが表示されます。<br>
+        またコマンドの後に "<b>_</b>" を入力すると、そのコマンドで利用できるパラメータの候補(一部動的なものを除く)がドロップダウン表示されます。<br>
         候補が出ている場合、<span class="btn_frame">ENTER</span>キーを押すか項目をクリックすると確定し、さらに<span
           class="btn_frame">ENTER</span>キーを押すと実行されます。<br>
         <span class="btn_frame">DEL</span>キーを押すと、入力されているコマンドが(複数の場合は順次)クリアされます(パラメータ入力中は通常の文字削除)。<br>
@@ -1793,7 +1793,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 
     <dt id="InputDir">InputDir<span class="pram_text">[_{ND|ND2|SD|CB}]</span></dt>
     <dd>カレントを入力ボックスで指定したディレクトリに変更します。<br>
-      &quot;%変数名%&quot; という書式で環境変数も使えます。またカレントからの相対指定も可能です。<br>
+      "%変数名%" という書式で環境変数も使えます。またカレントからの相対指定も可能です。<br>
       既存のファイル名が入力された場合は、そのディレクトリのファイル位置に移動します。ただしパスワード保護された未接続のUNCパスは、事前に属性が取得できないためディレクトリ名とみなされます。<br>
       <div class="spc_box">
         パスワード保護されている共有フォルダのUNCパスでは、その後に <b>:</b>
@@ -1805,8 +1805,8 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 
       <div class="spc_box">
         入力を行うとフルパスの補完機能が働きます。ドライブ指定がない場合は、カレントパスからの相対とみなして絶対パスに補完します。候補がドロップダウン表示されているとき、<span
-          class="btn_frame">ENTER</span>キーを押すか項目をクリックするとそれが入力欄に設定されます。末尾に &quot;<b>\</b>&quot;
-        を追加するとサブディレクトが候補としてさらに表示され、前方一致で候補を絞り込めます。なお、&quot;<b>\</b>&quot; の代わりに &quot;<b>/</b>&quot;
+          class="btn_frame">ENTER</span>キーを押すか項目をクリックするとそれが入力欄に設定されます。末尾に "<b>\</b>"
+        を追加するとサブディレクトが候補としてさらに表示され、前方一致で候補を絞り込めます。なお、"<b>\</b>" の代わりに "<b>/</b>"
         もディレクトリ区切りとして使えます。<br>
         「<b>→で補完</b>」をチェックしていると、<span
           class="btn_frame">→</span>キーを押したときに補完リストがドロップダウンします。チェックしていない場合は自動的にドロップダウンしますが、空欄の場合(カレントのすべてのサブディレクトリが候補)のみ<span
@@ -1994,7 +1994,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 
       <div class="spc_box">
         <b>例</b>: HTML文書のタイトルを一覧表示<br>
-        　ListFileName_&quot;$B $R(title)&quot;<br>
+        　ListFileName_"$B $R(title)"<br>
       </div>
 
       <a href="#CopyFileName">→ CopyFileName</a>　<a href="#CopyDir">→ CopyDir</a>　<a href="#ListTree">→ ListTree</a>
@@ -2084,7 +2084,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       <div class="spc_box">
         基準となる<b>ディレクトリ名</b>をパラメータで指定することもできます。<br>
         <a href="#ExeCommands">ExeCommands</a> コマンドのパラメータ区切り文字との混同を避けるため、ルートディレクトリの場合は <b>:</b> の後に <b>\</b>
-        を付けてください。&quot;%変数名%&quot; という書式で環境変数も使えます。なおドライブ名がない場合はカレントからの相対指定となります。<br>
+        を付けてください。"%変数名%" という書式で環境変数も使えます。なおドライブ名がない場合はカレントからの相対指定となります。<br>
       </div>
       <div class="spc_box">
         表示内容を右クリックメニューの「<b>一覧をファイルに保存</b>」で保存した場合、それを <a href="#ListText">ListText</a> コマンドで表示すると <b>ListTree</b>
@@ -2317,7 +2317,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 
     <dt id="MoveTo">MoveTo<span class="pram_text">_ディレクトリ名</span></dt>
     <dd>選択中(無ければカーソル位置)の項目を指定ディレクトリへ移動します。<br>
-      ディレクトリ名には、&quot;%変数名%&quot; という書式で環境変数も使えます。ドライブ名がない場合はカレントからの相対指定になります。<br>
+      ディレクトリ名には、"%変数名%" という書式で環境変数も使えます。ドライブ名がない場合はカレントからの相対指定になります。<br>
       <b>例</b>: 親ディレクトリに移動<br>
       　MoveTo_..<br>
       <a href="#Move">→ Move</a>　<a href="#Copy">→ Copy</a>　<a href="#CopyTo">→ CopyTo</a>
@@ -2480,23 +2480,23 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
     </dd>
 
     <dt id="OpenByExp">OpenByExp<span
-        class="pram_text">[_{ディレクトリ名|&quot;CLSID&quot;|&quot;shell:コマンド&quot;|/コマンドライン・オプション}]</span></dt>
+        class="pram_text">[_{ディレクトリ名|"CLSID"|"shell:コマンド"|/コマンドライン・オプション}]</span></dt>
     <dd>カーソル位置のディレクトリをエクスプローラで開きます。[..] の場合はカレントパスが開かれます。<br>
       カーソル位置がファイル場合は、カレントパスを開いて、そのファイルを選択状態にします。<br>
 
       <div class="spc_box">
-        パラメータにディレクトリ名を指定すると直接開けます。ルートディレクトリの場合は <b>:</b> の後に <b>\</b> を付けてください。&quot;%変数名%&quot;
+        パラメータにディレクトリ名を指定すると直接開けます。ルートディレクトリの場合は <b>:</b> の後に <b>\</b> を付けてください。"%変数名%"
         という書式で環境変数も使えます。なおドライブ名がない場合はカレントからの相対指定となります。<br>
         CLSID や shell コマンドを指定することも可能です。またパラメータが <b>/</b> で始まる場合、エクスプローラのコマンドライン・オプションとみなしてそのまま渡します。<br>
       </div>
 
       <div class="spc_box">
         <b>例</b>: マイドキュメント<br>
-        　OpenByExp_&quot;::{450D8FBA-AD25-11D0-98A8-0800361B1103}&quot;<br>
+        　OpenByExp_"::{450D8FBA-AD25-11D0-98A8-0800361B1103}"<br>
         <b>例</b>: プリンター<br>
-        　OpenByExp_&quot;shell:PrintersFolder&quot;<br>
+        　OpenByExp_"shell:PrintersFolder"<br>
         <b>例</b>: 設定<br>
-        　OpenByExp_&quot;shell:AppsFolder\Windows.ImmersiveControlPanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel&quot;<br>
+        　OpenByExp_"shell:AppsFolder\Windows.ImmersiveControlPanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel"<br>
         <b>例</b>: 指定ディレクトリをルートとして開く<br>
         　OpenByExp_/root,D:\qx2<br>
       </div>
@@ -2504,14 +2504,14 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
     </dd>
 
     <dt id="OpenByWin">OpenByWin<span class="pram_text">[_ファイル名[;_ファイル名...]]</span><br>
-      OpenByWin<span class="pram_text">_{&quot;http://～&quot;|&quot;mailto:～&quot;}</span><br>
+      OpenByWin<span class="pram_text">_{"http://～"|"mailto:～"}</span><br>
       OpenByWin<span class="pram_text">_DM[;ファイル名[;_ファイル名...]]</span>
     </dt>
     <dd>選択中(無ければカーソル位置)の項目を、<b>Windows</b> の関連付けで開きます。<br>
       アーカイブ内のファイルは、一時ディレクトリ下に解凍したものが開かれます。仮想ディレクトリから抜けると一時ディレクトリのファイルは削除されますので注意してください(排他的に開かれていると削除できず残ります)。<br>
       <div class="spc_box">
         パラメータで<b>ファイル名</b>を指定して開くこともできます。ドライブ名がない場合はカレントからの相対指定になります。<br>
-        パラメータが &quot;http://&quot;、&quot;https://&quot;、&quot;mailto:&quot; で始まる場合、URLやアドレスとして開けます。<br>
+        パラメータが "http://"、"https://"、"mailto:" で始まる場合、URLやアドレスとして開けます。<br>
       </div>
       <div class="spc_box">
         ファイル名にはワイルドカードを使用できます。該当するファイルが複数見つかった場合は、最初にマッチしたものが開かれます。<br>
@@ -2537,9 +2537,9 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
     </dd>
 
     <dt id="OpenCtrlPanel">OpenCtrlPanel<span class="pram_text">[_GM]</span></dt>
-    <dd><a href="#OpenByExp">OpenByExp</a>_&quot;shell:ControlPanelFolder&quot; のエイリアス(別名)で、コントロールパネルを開きます。<br>
+    <dd><a href="#OpenByExp">OpenByExp</a>_"shell:ControlPanelFolder" のエイリアス(別名)で、コントロールパネルを開きます。<br>
       パラメータに <b>GM</b> を指定すると、<a
-        href="#OpenByExp">OpenByExp</a>_&quot;shell:::{ED7BA470-8E54-465E-825C-99712043E01C}&quot;
+        href="#OpenByExp">OpenByExp</a>_"shell:::{ED7BA470-8E54-465E-825C-99712043E01C}"
       のエイリアスとなり、<b>GodMode</b> で開きます。<br>
       <a href="#OpenByExp">→ OpenByExp</a>
     </dd>
@@ -2570,10 +2570,10 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
         ・<a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>タブグループ</b>」をチェックしていると、タブグループ・ファイルを
         <a href="#LoadTabGroup">LoadTabGroup</a> コマンドで開きます。<br>
         ・<a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a>
-        で「<b>メニュー定義</b>」をチェックしていると、メニュー定義ファイル(一行目が &quot;;[MenuFile]&quot;) を <a href="#ExeMenuFile">ExeMenuFile</a>
+        で「<b>メニュー定義</b>」をチェックしていると、メニュー定義ファイル(一行目が ";[MenuFile]") を <a href="#ExeMenuFile">ExeMenuFile</a>
         コマンドで開きます。<br>
         ・<a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>結果リスト</b>」をチェックしていると、結果リストファイル(一行目が
-        &quot;;[ResultList]&quot;) を <a href="#LoadResultList">LoadResultList</a> コマンドで開きます。<br>
+        ";[ResultList]") を <a href="#LoadResultList">LoadResultList</a> コマンドで開きます。<br>
         ・それ以外のファイルはビュアーでテキストまたはバイナリ表示します。<br>
         ・<a href="hid00080.htm">FTP接続</a>時のリモート側では、ディレクトリの変更のみ可能です。<br>
       </div>
@@ -2782,7 +2782,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       <b>例</b>: 選択項目をシャッフル・リピート再生<br>
       　PlayList_SR<br>
       <b>例</b>: ディレクトリを指定してリピート再生、一覧を表示<br>
-      　PlayList_RP;LS;&quot;d:\Music\丸尾めぐみ\ヤーチャイカ&quot;<br>
+      　PlayList_RP;LS;"d:\Music\丸尾めぐみ\ヤーチャイカ"<br>
       <b>例</b>: リストファイルを指定して再生<br>
       　PlayList_favorite.txt<br>
     </dd>
@@ -3033,7 +3033,7 @@ NyanFi.exe -XRegExChecker
       また <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>結果リスト</b>」をチェックしていると、<a
         href="#OpenStandard">OpenStandard</a> コマンドでも開けます。<br>
       <div class="spc_box">
-        ファイルの内容はワークリストと同様ですが、先頭に &quot;;[ResultList]&quot; という識別行が、その後に &quot;;&quot; で始まるコメントの形で検索情報が付加されます。<br>
+        ファイルの内容はワークリストと同様ですが、先頭に ";[ResultList]" という識別行が、その後に ";" で始まるコメントの形で検索情報が付加されます。<br>
         <a href="#LoadWorkList">LoadWorkList</a> コマンドでワークリストとして読み込むことも可能です。<br>
       </div>
       <a href="#LoadResultList">→ LoadResultList</a>　<a href="#SaveWorkList">→ SaveWorkList</a>　<a
@@ -3169,7 +3169,7 @@ D:\Data\hoge.txt
     </dd>
 
     <dt id="SelGitChanged">SelGitChanged</dt>
-    <dd>Gitの作業ディレクトリにいる場合、カレントで変更されているファイル(状態フラグが &quot;?&quot; 以外)を選択します。<br>
+    <dd>Gitの作業ディレクトリにいる場合、カレントで変更されているファイル(状態フラグが "?" 以外)を選択します。<br>
       <a href="hid00090.htm">→ Git の利用について</a>
     </dd>
 
@@ -3701,7 +3701,7 @@ D:\Data\hoge.txt
       <div class="spc_box">
         パラメータに<b>タグ</b>を指定すると、ダイアログを出さずに直ちに実行できます。<br>
         複数のタグを指定する場合、<b>;</b> (セミコロン)で区切るとAND検索、<b>|</b> で区切るとOR検索になります。混在はできません。<br>
-        &quot;<b>*</b>&quot; を指定すると、すべてのタグにマッチします。<br>
+        "<b>*</b>" を指定すると、すべてのタグにマッチします。<br>
         なお、ダイアログの「<b>選択項目だけを残す</b>」の設定が適用されます。<br>
         <b>例</b>: TagSelect_Hoge|Nyan<br>
       </div>
@@ -3739,7 +3739,7 @@ D:\Data\hoge.txt
         パラメータに特定のファイル名を指定すると直接開けます。ドライブ名がない場合はカレントからの相対指定になります。<br>
       </div>
       <div class="spc_box">
-        URLでHTML文書などのファイルを指定すると、一時ディレクトリにダウンロードしてテキストビュアーで表示します。なお、URLの末尾が <b>/</b> の場合 &quot;<b>index.html</b>&quot;
+        URLでHTML文書などのファイルを指定すると、一時ディレクトリにダウンロードしてテキストビュアーで表示します。なお、URLの末尾が <b>/</b> の場合 "<b>index.html</b>"
         が付加されます。<br>
       </div>
       <div class="spc_box">
@@ -3750,7 +3750,7 @@ D:\Data\hoge.txt
       <b>例</b>: クリップボードを別ウィンドウで表示<br>
       　TextViewer_CB;XW<br>
       <b>例</b>: Webページをダウンロードして別ウィンドウで表示<br>
-      　TextViewer_&quot;http://nekomimi.la.coocan.jp/freesoft/nyanfi.htm&quot;;XW<br>
+      　TextViewer_"http://nekomimi.la.coocan.jp/freesoft/nyanfi.htm";XW<br>
 
       <div class="spc_box">
         パラメータに <b>NN</b> を指定すると、複数の <b>NyanFi</b> が起動している場合、次の <b>NyanFi</b>
@@ -3921,7 +3921,7 @@ D:\Data\hoge.txt
     <dt id="UndoRename">UndoRename</dt>
     <dd>直前の <a href="#RenameDlg">RenameDlg</a>、<a href="#SwapName">SwapName</a>、または <a
         href="#NameFromClip">NameFromClip</a> コマンドで変更したファイル名を元に戻します。<br>
-      改名を行うと、<b>NyanFi</b> ディレクトリに &quot;<b>renamelog.txt</b>&quot;
+      改名を行うと、<b>NyanFi</b> ディレクトリに "<b>renamelog.txt</b>"
       という改名ログが作成されます。アンドゥはこのログファイルに基づいて行われ、実行後には削除されます。<br>
       なお、「<a href="hid00051.htm">名前の変更</a>」ダイアログの 設定 - その他 で「<b>改名ログを作成しない</b>」をチェックしていると、改名ログが作成されませんので注意してください。<br>
       <a href="#RenameDlg">→ RenameDlg</a>　<a href="#SwapName">→ SwapName</a>　<a href="#NameFromClip">→ NameFromClip</a>
@@ -3936,7 +3936,7 @@ D:\Data\hoge.txt
         を指定すると、アーカイブのルートに複数の対象がある場合にディレクトリを作成して解凍します。<br>
         <div class="note_text">
           <b>ZIP</b>、<b>7Z</b> では、解凍先ディレクトリ名に連続した空白が含まれていると、それが一つの空白と解釈されてしまうため(<b>7-zip64.dll</b>
-          の仕様?)、一時的にディレクトリ名を変更(空白×2 を &quot;~x~&quot;(x=A～Z) に置換)して処理しています。<br>
+          の仕様?)、一時的にディレクトリ名を変更(空白×2 を "~x~"(x=A～Z) に置換)して処理しています。<br>
         </div>
       </div>
 

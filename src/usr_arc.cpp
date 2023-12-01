@@ -37,12 +37,9 @@ UserArcUnit::UserArcUnit(HWND hWnd)
 		fp->Prefix	  = get_word_i_idx("SevenZip|Unlha|Cab|Tar|Unrar|UnIso", i);
 		fp->dll7zName = EmptyStr;
 
-#if defined(_WIN64)
 		fp->DllName = get_word_i_idx("7-zip64.dll|unlha64.dll|cab64.dll|tar64.dll|unrar64j.dll|uniso64.dll", i);
 		//unlha64.dll cab64.dll uniso64.dll は現存しない
-#else
-		fp->DllName = get_word_i_idx("7-zip32.dll|unlha32.dll|cab32.dll|tar32.dll|unrar32.dll|uniso32.dll", i);
-#endif
+
 		fp->hDll = ::LoadLibrary(fp->DllName.c_str());
 		if (fp->hDll) {
 			_TCHAR szFname[MAX_PATH];
@@ -144,6 +141,7 @@ FARPROC UserArcUnit::GetProcAdr(arc_func *fp, UnicodeString pnam)
 
 //---------------------------------------------------------------------------
 //ファイル名から種別を判定
+//！APIによる判定は時間がかかる場合があるので要注意
 //---------------------------------------------------------------------------
 int UserArcUnit::GetArcType(UnicodeString arc_file,
 	bool ex_sw)		//7z.dll対応のものを含む	(default = false)
@@ -152,7 +150,6 @@ int UserArcUnit::GetArcType(UnicodeString arc_file,
 	UnicodeString fext = get_extension(arc_file);
 
 	//拡張子による判定
-#if defined(_WIN64)
 	if		(test_FileExt(fext, FEXT_ZIP))	arc_t = UARCTYP_ZIP;
 	else if (test_FileExt(fext, FEXT_7Z) || (Use7zDll && test_FileExt(fext, FExt7zDll)))
 											arc_t = UARCTYP_7Z;
@@ -162,16 +159,6 @@ int UserArcUnit::GetArcType(UnicodeString arc_file,
 	else if (test_FileExt(fext, FEXT_LHA))	arc_t = UARCTYP_LHA;
 	else if (test_FileExt(fext, FEXT_CAB))	arc_t = UARCTYP_CAB;
 	else if (test_FileExt(fext, FEXT_ISO))	arc_t = UARCTYP_ISO;
-#else
-	if		(test_FileExt(fext, FEXT_ZIP))	arc_t = UARCTYP_ZIP;
-	else if (test_FileExt(fext, FEXT_LHA))	arc_t = UARCTYP_LHA;
-	else if (test_FileExt(fext, FEXT_CAB))	arc_t = UARCTYP_CAB;
-	else if (test_FileExt(fext, FEXT_TAR))	arc_t = UARCTYP_TAR;
-	else if (test_FileExt(fext, FEXT_7Z) || (Use7zDll && test_FileExt(fext, FExt7zDll)))
-											arc_t = UARCTYP_7Z;
-	else if (test_FileExt(fext, FEXT_RAR))	arc_t = UARCTYP_RAR;
-	else if (test_FileExt(fext, FEXT_ISO))	arc_t = UARCTYP_ISO;
-#endif
 
 	//APIによる判定
 	if (arc_t==0) {
@@ -194,7 +181,6 @@ int UserArcUnit::GetArcType(UnicodeString arc_file,
 			if (sub_t>=1 && sub_t<=7) arc_t = UARCTYP_TAR;
 		}
 	}
-
 	return arc_t;
 }
 

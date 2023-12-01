@@ -52,8 +52,8 @@
   </div>
 
   <div class="spc_box_p">
-    <a href="hid00011.htm">オプション設定 - テキストビュアー</a> で「<b>青空文庫形式に対応する</b>」をチェックしている場合、&quot;［＃～］&quot;
-    という書式を含むテキストファイル(.txt)を青空文庫形式とみなし、&quot;［＃～］&quot; 部分はコメント色で、&quot;《～》&quot;
+    <a href="hid00011.htm">オプション設定 - テキストビュアー</a> で「<b>青空文庫形式に対応する</b>」をチェックしている場合、"［＃～］"
+    という書式を含むテキストファイル(.txt)を青空文庫形式とみなし、"［＃～］" 部分はコメント色で、"《～》"
     部分はルビ色で表示します。また「字下げ」や「地からの字上げ」にほぼ対応しています。<br>
   </div>
 
@@ -168,7 +168,7 @@
       Calculator<span class="pram_text">_CB[;計算式]</span></dt>
     <dd><a href="hid00087.htm">電卓</a>が開きます。<br>
       パラメータで<b>計算式</b>を指定すると、入力欄にそれを設定して開きます。<br>
-      無指定の場合、選択中の文字列があれば、それが入力欄に設定されます。複数行が選択されていたら、それらの内容を &quot;<b>+</b>&quot;
+      無指定の場合、選択中の文字列があれば、それが入力欄に設定されます。複数行が選択されていたら、それらの内容を "<b>+</b>"
       記号で連結したものが設定されます(空白行などは無視)。例えば、固定長表示で数値項目を箱形選択すれば、それらの合計を計算できます。<br>
       パラメータに <b>CB</b> を用いた書式については、ファイラーの同コマンドを参照してください(<a href="hid00005.htm#Calculator">→ ファイラー: Calculator</a>)。
     </dd>
@@ -405,7 +405,7 @@
     <dt id="FindDown">FindDown<span class="pram_text">[_文字列|/正規表現パターン/]</span></dt>
     <dd>直前に<a href="hid00065.htm">文字列検索ダイアログ</a>で行った検索条件で、下方向に再検索します。<br>
       パラメータで文字列を指定して検索することも可能です。その場合、文字列を / で囲むと正規表現とみなされます。<br>
-      <b>例</b>: FindDown_:URLを検索:&quot;/https?://[\w/:%#\$&amp;\?\(\)~\.=\+\-]+/&quot;<br>
+      <b>例</b>: FindDown_:URLを検索:"/https?://[\w/:%#\$&amp;\?\(\)~\.=\+\-]+/"<br>
       <a href="#FindSelDown">→ FindSelDown</a>　<a href="#FindSelUp">→ FindSelUp</a>
     </dd>
 
@@ -416,12 +416,12 @@
     </dd>
 
     <dt id="FindLinkDown">FindLinkDown</dt>
-    <dd>リンク先(&quot;http://～&quot;、&quot;mailto:～&quot; または &quot;file://～&quot;)を下方向に検索します。<br>
+    <dd>リンク先("http://～"、"mailto:～" または "file://～")を下方向に検索します。<br>
       HTML→テキスト変換表示で <a href="#TagView">TagView</a> コマンドで移動する場合などに便利です。<br>
     </dd>
 
     <dt id="FindLinkUp">FindLinkUp</dt>
-    <dd>リンク先(&quot;http://～&quot;、&quot;mailto:～&quot; または &quot;file://～&quot;)を上方向に検索します。<br>
+    <dd>リンク先("http://～"、"mailto:～" または "file://～")を上方向に検索します。<br>
       HTML→テキスト変換表示で <a href="#TagView">TagView</a> コマンドで移動する場合などに便利です。<br>
     </dd>
 
@@ -509,7 +509,7 @@
     <dt id="HelpCurWord">HelpCurWord<span class="pram_text">_ヘルプファイル名</span></dt>
     <dd>指定したHTMLヘルプファイル(.chm)を用いて、カーソル位置の単語を検索します。選択中の文字列がある場合は、それを検索語とします。<br>
       見つからなかった場合は、ヘルプ画面がキーワードタブになります。<br>
-      <b>例</b>: HelpCurWord_&quot;C:\Program Files (x86)\Embarcadero\Studio\23.0\Help\Doc\ja\vcl.chm&quot;
+      <b>例</b>: HelpCurWord_"C:\Program Files (x86)\Embarcadero\Studio\23.0\Help\Doc\ja\vcl.chm"
       <div class="spc_box">
       このコマンドは、<b>hhh.exe</b> (saitou155 氏作)を利用しています。あらかじめ、パスの通ったディレクトリ(hh.exe がある C:\Windows など)にインストールしておいてください。<br>
       </div>
@@ -656,7 +656,7 @@
     <dd>選択中の文字列(なければ現在行)からURLを抽出して開きます(<b>ttp://</b>～の場合、先頭の<b>h</b>を補完)。また <b>mailto:～</b> の場合は既定のメーラで開きます。<br />
       なお、<a href="hid00011.htm">オプション設定 - テキストビュアー</a> で「<b>ダブルクリックでURLを開く</b>」をチェックしていると、テキスト上のダブルクリックでも実行されます。<br>
       パラメータで URL を指定することもできます。その場合、URL に日本語などが含まれていたら UTF-8 でエンコードします。<br>
-      <b>例</b>: OpenURL_:googleで「猫を」検索:&quot;https://www.google.co.jp/search?q=猫&amp;ie=UTF-8&quot;<br>
+      <b>例</b>: OpenURL_:googleで「猫を」検索:"https://www.google.co.jp/search?q=猫&amp;ie=UTF-8"<br>
       <a href="#WebSearch">→ WebSearch</a>
     </dd>
 

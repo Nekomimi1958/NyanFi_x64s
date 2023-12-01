@@ -273,12 +273,21 @@ object RegExChecker: TRegExChecker
     BevelOuter = bvLowered
     BorderWidth = 4
     TabOrder = 1
+    object Splitter3: TSplitter
+      Left = 5
+      Top = 225
+      Width = 230
+      Height = 5
+      Cursor = crVSplit
+      Align = alTop
+      ExplicitTop = 145
+    end
     object ReferListBox: TListBox
       Left = 5
       Top = 5
       Width = 230
-      Height = 390
-      Align = alClient
+      Height = 220
+      Align = alTop
       BorderStyle = bsNone
       ItemHeight = 15
       TabOrder = 0
@@ -295,6 +304,20 @@ object RegExChecker: TRegExChecker
       ModalResult = 2
       TabOrder = 1
       TabStop = False
+    end
+    object SampleListBox: TListBox
+      Tag = 1
+      Left = 5
+      Top = 230
+      Width = 230
+      Height = 165
+      Align = alClient
+      BorderStyle = bsNone
+      ItemHeight = 15
+      PopupMenu = PopupMenu1
+      TabOrder = 2
+      TabWidth = 36
+      OnDblClick = ReferListBoxDblClick
     end
   end
   object ActionList1: TActionList
@@ -325,6 +348,25 @@ object RegExChecker: TRegExChecker
       Caption = #12467#12500#12540'(C'#29992#25991#23383#21015')'
       OnExecute = CopyActionExecute
       OnUpdate = CopyActionUpdate
+    end
+    object LoadSamplAction: TAction
+      Caption = #12501#12449#12452#12523#12363#12425#35501#12415#36796#12416'(&L)...'
+      OnExecute = LoadSamplActionExecute
+    end
+    object EditSampleAction: TAction
+      Caption = #32232#38598'(&E)'
+      OnExecute = EditSampleActionExecute
+      OnUpdate = EditSampleActionUpdate
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 441
+    Top = 264
+    object LoadSampleItem: TMenuItem
+      Action = LoadSamplAction
+    end
+    object EditSampleItem: TMenuItem
+      Action = EditSampleAction
     end
   end
 end
