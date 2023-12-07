@@ -19,6 +19,8 @@
 #define THUMB_TXT_ADS ":thumbnail.txt"	//サムネイル情報
 #define FAVICON_ADS   ":favicon"
 
+#define DROPBOX_ADS   ":com.dropbox.attrs"
+
 //---------------------------------------------------------------------------
 //拡張子
 #define FEXT_ARCHIVE	FEXT_ZIP FEXT_7Z FEXT_TAR FEXT_RAR						//アーカイブ

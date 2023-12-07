@@ -302,7 +302,18 @@ bool __fastcall TTaskThread::EX_delete_File(UnicodeString fnam, bool use_trash)
 bool __fastcall TTaskThread::EX_delete_Dir(UnicodeString dnam)
 {
 	AddDebugLog("Call RemoveDirectory");
+
+	bool is_dropbox = file_exists(ExcludeTrailingPathDelimiter(dnam) + DROPBOX_ADS);
+	if (is_dropbox) Sleep(250);
+
 	bool res = ::RemoveDirectory(cv_ex_filename(dnam).c_str());
+
+	if (!res && is_dropbox) {
+		for (int n=0; n<3 && !res; n++,Sleep(500)) {
+			res = ::RemoveDirectory(cv_ex_filename(dnam).c_str());
+		}
+	}
+
 	AddDebugLog("Return");
 	if (res) usr_TAG->DelItem(dnam);
 	return res;
@@ -882,7 +893,15 @@ void __fastcall TTaskThread::Task_CPY(
 								msg.cat_sprintf(_T("  %s"), format_DateTime(dt).c_str());
 								SetLastError(NO_ERROR);
 								AddDebugLog("Call SetFileTime");
-								if (!set_file_age(dnam, dt, ForceDel)) set_LogErrMsg(msg);
+								bool is_dropbox = file_exists(ExcludeTrailingPathDelimiter(dnam) + DROPBOX_ADS);
+								if (is_dropbox) Sleep(250);
+								bool res = set_file_age(dnam, dt, ForceDel);
+								if (!res && is_dropbox) {
+									for (int n=0; n<3 && !res; n++,Sleep(500)) {
+										res = set_file_age(dnam, dt, ForceDel);
+									}
+								}
+								if (!res) set_LogErrMsg(msg);
 								AddDebugLog("Return");
 							}
 							catch (EConvertError &e) {

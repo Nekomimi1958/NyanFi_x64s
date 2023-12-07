@@ -1112,6 +1112,7 @@ __published:	// IDE で管理されるコンポーネント
 	TLabeledEdit *SubDirNEdit;
 	TUpDown *SubDirNUpDown;
 	TPanel *ThumbnailPanel;
+	TMainMenu *DummyMenu;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -2586,6 +2587,7 @@ public:		// ユーザー宣言
 	bool __fastcall CheckUncPath(UnicodeString pnam, unsigned int *err_code = NULL);
 	bool __fastcall CheckPath(UnicodeString dnam);
 
+	TMainMenu * __fastcall GetDummyMenu(bool disabled = false);
 	void __fastcall SetScrMode(int scr_mode = SCMD_FLIST, int tag = -1);
 	void __fastcall SetCurPathMask(UnicodeString kstr = EmptyStr);
 	void __fastcall SetFullScreen(bool full_sw, bool redraw = true);

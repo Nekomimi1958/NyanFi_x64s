@@ -1540,6 +1540,12 @@ inline void InvalidateFileList(int tag = CurListTag)
 }
 
 //---------------------------------------------------------------------------
+inline bool use_VclStyle()
+{
+	return !SameText(TStyleManager::ActiveStyle->Name, "Windows");
+}
+
+//---------------------------------------------------------------------------
 //”zF‚Ìæ“¾
 //---------------------------------------------------------------------------
 inline TColor get_ListBgCol()

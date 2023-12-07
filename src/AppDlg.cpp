@@ -928,7 +928,7 @@ void __fastcall TAppListDlg::UpdateAppSttBar(
 
 		TRect rc_dst = ViewPanel->BoundsRect;
 		//¦VCLƒXƒ^ƒCƒ‹‚¾‚Æ‚¸‚ê‚é‚æ‚¤‚È‚Ì‚Å•â³
-		int ofs_y = !SameText(VclStyle, "Windows")? get_SysMetricsForPPI(SM_CYCAPTION, CurrentPPI) + SCALED_THIS(6) : 0;
+		int ofs_y = use_VclStyle()? get_SysMetricsForPPI(SM_CYCAPTION, CurrentPPI) + SCALED_THIS(6) : 0;
 		OffsetRect(rc_dst, AppPanel->Left, ofs_y);
 		InflateRect(rc_dst, SCALED_THIS(-16), SCALED_THIS(-8));
 		if (size.cx>0 && size.cy>0 && rc_dst.Width()>0 && rc_dst.Height()>0

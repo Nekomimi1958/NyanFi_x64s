@@ -540,11 +540,9 @@ void __fastcall TNyanFiForm::FormCreate(TObject *Sender)
 	}
 
 	UnicodeString sct = "Grep";
-//	for (int i=0; i<100; i++) SubDirNCombo->Items->Add(i);
 
 	SubDirCheckBox->Checked   = IniFile->ReadBool(   sct, "FindSubDir");
 	SubDirNUpDown->Position	  = IniFile->ReadInteger(sct, "SubDirN",	99);
-//	SubDirNCombo->ItemIndex   = IniFile->ReadInteger(sct, "SubDirN",	99);
 	SkipDirEdit->Hint		  = LoadUsrMsg(USTR_HintMltSepSC);
 	SkipDirEdit->Text		  = IniFile->ReadString( sct, "SkipDirs");
 	RegExCheckBox->Checked	  = IniFile->ReadBool(   sct, "RegExp");
@@ -981,6 +979,8 @@ void __fastcall TNyanFiForm::FormClose(TObject *Sender, TCloseAction &Action)
 
 	CloseHelpWnd();
 
+	ErrMarkList->ClearAll();	//***
+
 	//他のNyanFiを終了
 	if (IsPrimary && !ReqKeepDupl && (CloseOthers || StoreTaskTray) && IsDuplicated()) {
 		StartLog(_T("他のNyanFiを終了"));
@@ -1235,6 +1235,7 @@ void __fastcall TNyanFiForm::FormDestroy(TObject *Sender)
 	delete LogRWLock;
 	delete IconRWLock;
 	delete FldIcoRWLock;
+	OutDebugStr("  < delete RWLocks");
 
 	delete SttPrgBar;
 	delete MsgHint;
@@ -1257,13 +1258,16 @@ void __fastcall TNyanFiForm::FormDestroy(TObject *Sender)
 	delete ImgInfScrPanel;
 	delete TxtViewScrPanel;
 	delete ResultScrPanel;
+	OutDebugStr("  < delete ScrPanels");
 
 	delete IdFTP1;
 	delete IdAntiFreeze1;
 	delete IdSSLIOHandlerSocketOpenSSL1;
+	OutDebugStr("  < delete Indy components");
 
 	delete UserHighlight;
 	delete IniFile;
+	OutDebugStr("  < delete IniFile");
 
 	if (!::UnhookWindowsHookEx(hDlgHook))
 		OutDebugStr(UnicodeString().sprintf(_T("! UnhookWindowsHookEx is falied : %d"), GetLastError()));
@@ -3525,7 +3529,7 @@ void __fastcall TNyanFiForm::GrepPageControlDrawTab(TCustomTabControl *Control, 
 	cv->Brush->Color = Active? col_bgOptTab : get_PanelColor();
 	cv->FillRect(Rect);
 	//輪郭
-	if (!SameText(VclStyle, "Windows") && !Active) {
+	if (use_VclStyle() && !Active) {
 		cv->Pen->Style = psSolid;
 		cv->Pen->Width = 1;
 		cv->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clWindowFrame);
@@ -3616,13 +3620,13 @@ void __fastcall TNyanFiForm::UpdateBusyCore(bool Value)
 {
 	if (Value) {
 		cursor_HourGlass();
+		if (Menu) Menu = GetDummyMenu(true);
 	}
 	else {
 		MsgHint->ReleaseHandle();
+		if (Menu) Menu = MainMenu1;
 		cursor_Default();
 	}
-
-	for (int i=0; i<MainMenu1->Items->Count; i++) MainMenu1->Items->Items[i]->Enabled = !Value;
 
 	if (ToolBarF->Visible) {
 		ToolBarF->Enabled = !Value;
@@ -5426,6 +5430,24 @@ void __fastcall TNyanFiForm::FKeyRenameActionExecute(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
+//ダミーのメインメニューを設定
+//※VCLスタイルでメニュー更新に時間がかかためダミー表示で対策
+//---------------------------------------------------------------------------
+TMainMenu * __fastcall TNyanFiForm::GetDummyMenu(bool disabled)
+{
+	DummyMenu->Items->Clear();
+	for (int i=0; i<MainMenu1->Items->Count; i++) {
+		TMenuItem *mp = MainMenu1->Items->Items[i]; 
+		TMenuItem *dp = new TMenuItem(DummyMenu->Items);
+		dp->Caption = mp->Caption;
+		dp->Visible = mp->Visible;
+		dp->Enabled = disabled? false : mp->Enabled;
+		DummyMenu->Items->Add(dp);
+	}
+	return DummyMenu;
+}
+
+//---------------------------------------------------------------------------
 //画面モードの切換
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::SetScrMode(
@@ -5455,6 +5477,9 @@ void __fastcall TNyanFiForm::SetScrMode(
 	BlinkTimer->Enabled = false;
 
 	//メニュー表示の切換
+	//※ちらつきを抑えるために一旦ダミー表示
+	Menu = GetDummyMenu();
+
 	//※「表示」は項目が多く、VCLスタイルだと適切に表示されないため、モード毎に3つに分割
 	ViewMenuF->Visible = ScrMode == SCMD_FLIST || ScrMode == SCMD_GREP;
 	ViewMenuV->Visible = ScrMode == SCMD_TVIEW;
@@ -5467,6 +5492,8 @@ void __fastcall TNyanFiForm::SetScrMode(
 	ViewMenuF->Caption = ViewMenuF->Visible? "表示(&V)" : "表示";
 	ViewMenuV->Caption = ViewMenuV->Visible? "表示(&V)" : "表示";
 	ViewMenuI->Caption = ViewMenuI->Visible? "表示(&V)" : "表示";
+
+	Menu = MainMenu1;
 
 	//ツールバーの切替
 	for (int i=0; i<ToolBarF->ButtonCount;  i++) ToolBarF->Buttons[i]->Enabled  = (ScrMode==SCMD_FLIST);
@@ -5745,6 +5772,8 @@ void __fastcall TNyanFiForm::SetFlItemWidth(TStringList *lst, int tag)
 	lst_stt->lxp_path  = x_path;
 
 	SetListHeader(tag);
+
+	lp->Invalidate();
 }
 
 //---------------------------------------------------------------------------
@@ -6505,7 +6534,7 @@ bool __fastcall TNyanFiForm::PopupDriveMenu(
 	update_DriveInfo();
 
 	TPopupMenu *pPop = DrivePopupMenu;
-	while (pPop->Items->Count>0) pPop->Items->Delete(0);
+	pPop->Items->Clear();
 	UnicodeString cur_key = ExtractFileDrive(CurPath[CurListTag]).SubString(1, 1);
 	UnicodeString tmp;
 
@@ -6602,7 +6631,7 @@ void __fastcall TNyanFiForm::PopupRegDirMenu(const _TCHAR *id_str)
 	ClearKeyBuff(true);
 
 	TPopupMenu *pPop = SelItemPopupMenu;
-	while (pPop->Items->Count>0) pPop->Items->Delete(0);
+	pPop->Items->Clear();
 
 	TStringList *lst = NULL;
 	int tag_base = 0;
@@ -6680,7 +6709,7 @@ void __fastcall TNyanFiForm::PopupTabMenu()
 	ClearKeyBuff(true);
 
 	TPopupMenu *pPop = SelItemPopupMenu;
-	while (pPop->Items->Count>0) pPop->Items->Delete(0);
+	pPop->Items->Clear();
 
 	for (int i=0; i<TabList->Count; i++) {
 		TStringDynArray itm_buf = get_csv_array(TabList->Strings[i], TABLIST_CSVITMCNT, true);
@@ -9977,7 +10006,9 @@ void __fastcall TNyanFiForm::ViewFileInf(file_rec *fp,
 					ImgViewThread->AddRequest(_T("FILE"), fnam);
 				}
 				//フォルダ/アーカイブ (ADSサムネイル)
-				else if (file_exists(fnam + THUMB_JPG_ADS) && (is_dir || usr_ARC->GetArcType(fnam, true))) {
+				else if (file_exists(fnam + THUMB_JPG_ADS) && !test_ExeExt(fext)
+					&& (is_dir || test_ArcExt(fext)))
+				{
 					ImgViewThread->AddRequest(_T("FILE"), fnam + THUMB_JPG_ADS);
 				}
 				//フォルダ (特大アイコン、可能ならサムネイル)
@@ -10460,7 +10491,7 @@ void __fastcall TNyanFiForm::FileListDrawItem(TWinControl *Control, int Index, T
 
 	//描画
 	lp->Canvas->Draw(Rect.Left, Rect.Top, tmp_bmp.get());
-	if (State.Contains(odFocused)) lp->Canvas->DrawFocusRect(Rect);
+	if (State.Contains(odFocused) && !use_VclStyle()) lp->Canvas->DrawFocusRect(Rect);
 }
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::FileListBoxEnter(TObject *Sender)
@@ -11015,7 +11046,7 @@ void __fastcall TNyanFiForm::TxtPrvListBoxDrawItem(TWinControl *Control, int Ind
 			draw_Line(cv, Rect.Left, yp, Rect.Right, yp, lw, col_Cursor, psSolid);
 		}
 	}
-	if (is_focused) cv->DrawFocusRect(Rect);
+	if (is_focused && !use_VclStyle()) cv->DrawFocusRect(Rect);
 }
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::TxtPrvListBoxData(TWinControl *Control, int Index, UnicodeString &Data)
@@ -23499,6 +23530,11 @@ void __fastcall TNyanFiForm::ExePopMenuList(
 	PopMenuList->Assign(lst);
 	PopMenuIndex = -1;
 
+	//VCLスタイルがメニューのスクロールに対応していないため列分割
+	int  max_cnt  = MulDiv(ClientHeight, 8, 10)/get_SysMetricsForPPI(SM_CYMENU, CurrentPPI);
+	int  itm_cnt  = 0;
+	bool rq_break = false;
+
 	TMenuItem *pp = ExPopupMenu->Items;
 	for (int i=0; i<PopMenuList->Count; i++) {
 		UnicodeString lbuf = Trim(PopMenuList->Strings[i]);
@@ -23509,10 +23545,17 @@ void __fastcall TNyanFiForm::ExePopMenuList(
 
 		//サブメニュー
 		if (remove_top_s(tit, '>')) {
-			TMenuItem *mp = new TMenuItem(ExPopupMenu);
+			TMenuItem  *mp = new TMenuItem(ExPopupMenu);
 			mp->Caption    = tit;
 			mp->ImageIndex = (m_buf.Length>=3)? add_IconImage(m_buf[2], IconVImgListP) : -1;
 			pp->Add(mp);
+			if (pp==ExPopupMenu->Items) {
+				itm_cnt++;
+				if (itm_cnt>=max_cnt) {
+					mp->Break = mbBarBreak;
+					itm_cnt   = 1;
+				}
+			}
 			pp = mp;
 		}
 		else if (remove_top_s(tit, '<')) {
@@ -23543,6 +23586,13 @@ void __fastcall TNyanFiForm::ExePopMenuList(
 			mp->Enabled    = !TRegEx::IsMatch(tit, "^\\[.+\\]\\s不明なエイリアス");
 			mp->ImageIndex = (m_buf.Length>=3)? add_IconImage(m_buf[2], IconVImgListP) : -1;
 			pp->Add(mp);
+			if (pp==ExPopupMenu->Items) {
+				itm_cnt++;
+				if (itm_cnt>=max_cnt) {
+					mp->Break = mbBarBreak;
+					itm_cnt   = 1;
+				}
+			}
 		}
 	}
 	IconVImgListP->AutoFill = true;
@@ -30007,7 +30057,7 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 
 	//描画
 	lp->Canvas->Draw(Rect.Left, Rect.Top, tmp_bmp.get());
-	if (State.Contains(odFocused)) lp->Canvas->DrawFocusRect(Rect);
+	if (State.Contains(odFocused) && !use_VclStyle()) lp->Canvas->DrawFocusRect(Rect);
 }
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::ResultListBoxExit(TObject *Sender)
@@ -30637,7 +30687,6 @@ void __fastcall TNyanFiForm::GrepStartActionUpdate(TObject *Sender)
 		ap->Enabled = !FindBusy && kwd_ok && !(GrepMaskComboBox->Enabled && GrepMaskComboBox->Text.IsEmpty());
 
 		AndCheckBox->Enabled   = !RegExCheckBox->Checked;
-//		SubDirNCombo->Enabled = SubDirCheckBox->Checked;
 		SubDirNUpDown->Enabled = SubDirCheckBox->Checked;
 		SubDirNEdit->Enabled   = SubDirCheckBox->Checked;
 
@@ -30942,7 +30991,6 @@ void __fastcall TNyanFiForm::GrepSelResActionExecute(TObject *Sender)
 	bool sel_f_only = (cnt>0);
 	GrepMaskComboBox->Enabled = !sel_f_only;
 	SubDirCheckBox->Enabled   = !sel_f_only;
-//	SubDirNCombo->Enabled	  = !sel_f_only;
 	SubDirNUpDown->Enabled	  = !sel_f_only;
 	SubDirNEdit->Enabled	  = !sel_f_only;
 	SkipDirEdit->Enabled	  = !sel_f_only;

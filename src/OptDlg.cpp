@@ -684,7 +684,7 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	ModalScrCheckBox->Tag		= (NativeInt)&ModalScreen;
 	DlgCenterCheckBox->Tag		= (NativeInt)&DialogCenter;
 	NoRoundWinCheckBox->Tag		= (NativeInt)&NoRoundWin;
-	NoRoundWinCheckBox->Enabled = IsWin11 && SameText(VclStyle, "Windows");
+	NoRoundWinCheckBox->Enabled = IsWin11 && !use_VclStyle();
 	ShowLnNoCheckBox->Tag		= (NativeInt)&ShowLineNo;
 	ShowLnCsrCheckBox->Tag		= (NativeInt)&ShowLineCursor;
 	ShowTabCheckBox->Tag		= (NativeInt)&ShowTAB;
@@ -1240,8 +1240,7 @@ void __fastcall TOptionDlg::PageControl1DrawTab(TCustomTabControl *Control, int 
 		cv->Brush->Color = (PageControl1->Pages[TabIndex]->Tag==0)? (Active? col_bgOptTab : get_PanelColor()) : col_OptFind;
 		cv->FillRect(Rect);
 		//—ÖŠs
-		bool is_nrm = SameText(VclStyle, "Windows");
-		if (!is_nrm && !Active) {
+		if (use_VclStyle() && !Active) {
 			cv->Pen->Style = psSolid;
 			cv->Pen->Width = 1;
 			cv->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clWindowFrame);
@@ -1255,7 +1254,7 @@ void __fastcall TOptionDlg::PageControl1DrawTab(TCustomTabControl *Control, int 
 		cv->Font->Style = Active? (cv->Font->Style << fsBold) : (cv->Font->Style >> fsBold);
 		UnicodeString tstr = tp->Tabs->Strings[TabIndex];
 		int xp = Rect.Left + (Rect.Width() - cv->TextWidth(tstr))/2;
-		int yp = Rect.Top + (is_nrm? SCALED_THIS(Active? 4 : 2) : (Rect.Height() - cv->TextHeight(tstr))/2);
+		int yp = Rect.Top + (use_VclStyle()? (Rect.Height() - cv->TextHeight(tstr))/2 : SCALED_THIS(Active? 4 : 2));
 		cv->Brush->Style = bsClear;
 		cv->TextOut(xp, yp, tstr);
 	}

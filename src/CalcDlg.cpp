@@ -911,7 +911,7 @@ void __fastcall TCalculator::AngleActionUpdate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TCalculator::RefDefBtnClick(TObject *Sender)
 {
-	while (ConstPopupMenu->Items->Count>0) ConstPopupMenu->Items->Delete(0);
+	ConstPopupMenu->Items->Clear();
 
 	//’è”
 	TMenuItem *mp;

@@ -11811,8 +11811,7 @@ void draw_OwnerTab(TCustomTabControl *Control, int idx, const TRect rc, bool act
 	cv->Brush->Color = active? col_bgOptTab : get_PanelColor();
 	cv->FillRect(rc);
 	//輪郭
-	bool is_nrm = SameText(TStyleManager::ActiveStyle->Name, "Windows");
-	if (!is_nrm && !active) {
+	if (use_VclStyle() && !active) {
 		cv->Pen->Style = psSolid;
 		cv->Pen->Width = 1;
 		cv->Pen->Color = TStyleManager::ActiveStyle->GetSystemColor(clWindowFrame);
@@ -11839,10 +11838,11 @@ void draw_OwnerTab(TCustomTabControl *Control, int idx, const TRect rc, bool act
 	TRect tt_rc = rc;
 	tt_rc.Left	= rc.Left + (rc.Width() - cv->TextWidth(ReplaceStr(titstr, "&", EmptyStr)))/2;
 	if (tp->TabPosition==tpBottom) {
-		tt_rc.Top = is_nrm? rc.Bottom - cv->TextHeight(titstr) - ScaledInt(4) : rc.Top + (rc.Height() - cv->TextHeight(titstr))/2;
+		tt_rc.Top = use_VclStyle()? rc.Top + (rc.Height() - cv->TextHeight(titstr))/2
+								  : rc.Bottom - cv->TextHeight(titstr) - ScaledInt(4);
 	}
 	else {
-		tt_rc.Top = rc.Top + (is_nrm? ScaledInt(active? 4 : 2) : (rc.Height() - cv->TextHeight(titstr))/2);
+		tt_rc.Top = rc.Top + (use_VclStyle()? (rc.Height() - cv->TextHeight(titstr))/2 : ScaledInt(active? 4 : 2));
 	}
 	::DrawText(cv->Handle, titstr.c_str(), -1, &tt_rc, DT_LEFT);
 }
@@ -11873,7 +11873,7 @@ void draw_ListCursor(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 		int yp = Rect.Bottom - lw;
 		draw_Line(lp->Canvas, Rect.Left, yp, Rect.Right, yp, lw, col_Cursor, psSolid);
 	}
-	if (is_focused) lp->Canvas->DrawFocusRect(Rect);
+	if (is_focused && !use_VclStyle()) lp->Canvas->DrawFocusRect(Rect);
 }
 //---------------------------------------------------------------------------
 void draw_ListCursor2(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State)
@@ -11885,7 +11885,7 @@ void draw_ListCursor2(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState Stat
 		int yp = Rect.Bottom - lw;
 		draw_Line(lp->Canvas, Rect.Left, yp, Rect.Right, yp, lw, col_Cursor, is_focused? psSolid : psDot);
 	}
-	if (is_focused) lp->Canvas->DrawFocusRect(Rect);
+	if (is_focused && !use_VclStyle()) lp->Canvas->DrawFocusRect(Rect);
 }
 //---------------------------------------------------------------------------
 //グリッドのラインカーソルを描画

@@ -46,7 +46,6 @@ object NyanFiForm: TNyanFiForm
     UseSystemFont = False
     StyleElements = [seBorder]
     OnDrawPanel = StatusBarDrawPanel
-    ExplicitTop = 520
   end
   object MainContainer: TPanel
     Left = 0
@@ -56,7 +55,6 @@ object NyanFiForm: TNyanFiForm
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 520
     object ImgViewPanel: TPanel
       Left = 0
       Top = 0
@@ -72,7 +70,6 @@ object NyanFiForm: TNyanFiForm
       ShowCaption = False
       TabOrder = 3
       Visible = False
-      ExplicitHeight = 498
       object ToolBarI: TToolBar
         Left = 0
         Top = 0
@@ -98,7 +95,6 @@ object NyanFiForm: TNyanFiForm
         BevelOuter = bvLowered
         ParentBackground = False
         TabOrder = 2
-        ExplicitTop = 464
         object SeekSttPanel: TPanel
           Left = 1
           Top = 1
@@ -183,7 +179,6 @@ object NyanFiForm: TNyanFiForm
         DoubleBuffered = True
         ParentDoubleBuffered = False
         TabOrder = 1
-        ExplicitHeight = 445
         object ImgSideSplitter: TSplitter
           Left = 185
           Top = 22
@@ -242,7 +237,6 @@ object NyanFiForm: TNyanFiForm
           Color = clBlack
           ParentBackground = False
           TabOrder = 2
-          ExplicitHeight = 423
           object ImgScrollBox: TScrollBox
             Left = 0
             Top = 0
@@ -256,7 +250,6 @@ object NyanFiForm: TNyanFiForm
             BorderStyle = bsNone
             TabOrder = 0
             StyleElements = [seFont, seBorder]
-            ExplicitHeight = 423
             object ViewerImage: TImage
               Left = 0
               Top = 0
@@ -286,7 +279,6 @@ object NyanFiForm: TNyanFiForm
           ParentBackground = False
           TabOrder = 1
           OnDockDrop = ImgSidePanelDockDrop
-          ExplicitHeight = 423
           object ToolBarI2: TToolBar
             Left = 0
             Top = 0
@@ -311,7 +303,6 @@ object NyanFiForm: TNyanFiForm
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 1
-            ExplicitHeight = 401
             object SideDockSplitter: TSplitter
               Tag = 1
               Left = 0
@@ -344,7 +335,6 @@ object NyanFiForm: TNyanFiForm
               SizeGrip = False
               UseSystemFont = False
               OnDrawPanel = StatusBarDrawPanel
-              ExplicitTop = 382
             end
             object SideDockPanel: TPanel
               Left = 0
@@ -402,7 +392,6 @@ object NyanFiForm: TNyanFiForm
               Align = alClient
               BevelOuter = bvNone
               TabOrder = 1
-              ExplicitHeight = 376
               object ImgInfListBox: TListBox
                 Left = 0
                 Top = 22
@@ -420,7 +409,6 @@ object NyanFiForm: TNyanFiForm
                 TabOrder = 1
                 StyleElements = [seBorder]
                 OnDrawItem = InfListBoxDrawItem
-                ExplicitHeight = 354
               end
               object ImgInfBar: TStatusBar
                 Left = 0
@@ -463,7 +451,6 @@ object NyanFiForm: TNyanFiForm
           ParentBackground = False
           TabOrder = 3
           StyleElements = [seFont, seBorder]
-          ExplicitHeight = 423
           object ThumbnailGrid: TStringGrid
             Left = 4
             Top = 4
@@ -492,7 +479,6 @@ object NyanFiForm: TNyanFiForm
             OnMouseMove = ThumbnailGridMouseMove
             OnMouseUp = ThumbnailGridMouseUp
             OnSelectCell = ThumbnailGridSelectCell
-            ExplicitHeight = 415
             ColWidths = (
               120)
             RowHeights = (
@@ -513,7 +499,6 @@ object NyanFiForm: TNyanFiForm
       ShowCaption = False
       TabOrder = 1
       Visible = False
-      ExplicitHeight = 498
       object ResultListBox: TListBox
         Left = 0
         Top = 130
@@ -534,7 +519,6 @@ object NyanFiForm: TNyanFiForm
         OnDrawItem = ResultListBoxDrawItem
         OnExit = ResultListBoxExit
         OnKeyDown = ResultListBoxKeyDown
-        ExplicitHeight = 368
       end
       object GrepOpPanel: TPanel
         Left = 0
@@ -1086,7 +1070,6 @@ object NyanFiForm: TNyanFiForm
       TabOrder = 2
       Visible = False
       StyleElements = [seBorder]
-      ExplicitHeight = 498
       object ViewMemo: TRichEdit
         Left = 0
         Top = 19
@@ -1109,7 +1092,6 @@ object NyanFiForm: TNyanFiForm
         TabOrder = 1
         Visible = False
         WantReturns = False
-        ExplicitHeight = 479
       end
       object ToolBarV: TToolBar
         Left = 0
@@ -1136,7 +1118,6 @@ object NyanFiForm: TNyanFiForm
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 2
-        ExplicitHeight = 479
         object TxtSttHeader: TStatusBar
           Left = 0
           Top = 0
@@ -1188,7 +1169,6 @@ object NyanFiForm: TNyanFiForm
           TabOrder = 1
           StyleElements = [seBorder]
           OnResize = TxtScrollPanelResize
-          ExplicitHeight = 460
           object TextPaintBox: TPaintBox
             Left = 0
             Top = 16
@@ -1244,7 +1224,6 @@ object NyanFiForm: TNyanFiForm
             TabOrder = 0
             TabStop = False
             OnChange = TextScrollBarChange
-            ExplicitHeight = 444
           end
           object TextCurColPanel: TPanel
             Left = 32
@@ -1278,7 +1257,6 @@ object NyanFiForm: TNyanFiForm
       ShowCaptions = True
       TabOrder = 4
       StyleElements = []
-      ExplicitTop = 498
     end
     object MainPanel: TPanel
       Left = 0
@@ -1290,7 +1268,6 @@ object NyanFiForm: TNyanFiForm
       ShowCaption = False
       TabOrder = 0
       StyleElements = [seBorder]
-      ExplicitHeight = 498
       object ToolBarF: TToolBar
         Left = 0
         Top = 0
@@ -1324,7 +1301,6 @@ object NyanFiForm: TNyanFiForm
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitHeight = 476
         object ListSubSplitter: TSplitter
           Left = 0
           Top = 364
@@ -1354,7 +1330,6 @@ object NyanFiForm: TNyanFiForm
           ParentDoubleBuffered = False
           TabOrder = 0
           OnResize = ListPanelResize
-          ExplicitHeight = 359
           object LRSplitter: TSplitter
             Left = 342
             Top = 53
@@ -1379,7 +1354,6 @@ object NyanFiForm: TNyanFiForm
             Constraints.MinWidth = 30
             TabOrder = 2
             OnResize = L_PanelResize
-            ExplicitHeight = 306
             object L_StatPanel: TPanel
               Left = 0
               Top = 293
@@ -1392,7 +1366,6 @@ object NyanFiForm: TNyanFiForm
               TabOrder = 3
               StyleElements = [seBorder]
               OnClick = DirSttPanelClick
-              ExplicitTop = 288
               object FilterComboBox: TComboBox
                 Left = 74
                 Top = 0
@@ -1445,7 +1418,6 @@ object NyanFiForm: TNyanFiForm
               OnMouseDown = FileListBoxMouseDown
               OnMouseMove = FileListBoxMouseMove
               OnMouseUp = FileListBoxMouseUp
-              ExplicitHeight = 250
             end
             object L_HeaderControl: THeaderControl
               Left = 0
@@ -1559,7 +1531,6 @@ object NyanFiForm: TNyanFiForm
             Constraints.MinWidth = 30
             TabOrder = 3
             OnResize = R_PanelResize
-            ExplicitHeight = 306
             object R_ListBox: TListBox
               Tag = 1
               Left = 0
@@ -1594,7 +1565,6 @@ object NyanFiForm: TNyanFiForm
               OnMouseDown = FileListBoxMouseDown
               OnMouseMove = FileListBoxMouseMove
               OnMouseUp = FileListBoxMouseUp
-              ExplicitHeight = 250
             end
             object R_StatPanel: TPanel
               Tag = 1
@@ -1609,7 +1579,6 @@ object NyanFiForm: TNyanFiForm
               TabOrder = 3
               StyleElements = [seBorder]
               OnClick = DirSttPanelClick
-              ExplicitTop = 288
             end
             object R_HeaderControl: THeaderControl
               Tag = 1
@@ -1891,7 +1860,6 @@ object NyanFiForm: TNyanFiForm
           TabOrder = 1
           StyleElements = []
           OnResize = SubPanelResize
-          ExplicitTop = 363
           object InfLogSplitter: TSplitter
             Tag = 1
             Left = 341
@@ -2215,6 +2183,7 @@ object NyanFiForm: TNyanFiForm
     Top = 226
     Width = 320
     Height = 140
+    BevelOuter = bvNone
     DoubleBuffered = False
     ParentDoubleBuffered = False
     TabOrder = 2
@@ -6321,5 +6290,9 @@ object NyanFiForm: TNyanFiForm
         Action = UpdateFromArcAction
       end
     end
+  end
+  object DummyMenu: TMainMenu
+    Left = 284
+    Top = 398
   end
 end
