@@ -741,49 +741,6 @@ int get_GridIndex(TStringGrid *gp, int max_count)
 	if (idx>=max_count) idx = -1;
 	return idx;
 }
-//---------------------------------------------------------------------------
-//インデックスによってグリッド位置を設定
-//---------------------------------------------------------------------------
-void set_GridIndex(TStringGrid *gp, int idx, int max_count,
-	bool center)		//1列/行なら中央へ	(default = false)
-{
-	if (gp->Visible) gp->SetFocus();
-
-	if (idx<0) idx = 0;
-	if (idx>=max_count) idx = (max_count>0)? max_count - 1 : 0;
-	int c0 = gp->Col;
-	int c1 = idx%gp->ColCount;
-	int r1 = idx/gp->ColCount;
-
-	try {
-		if ((r1*gp->ColCount + c0) >= max_count) {
-			gp->Col = c1;
-			gp->Row = r1;
-		}
-		else {
-			gp->Row = r1;
-			gp->Col = c1;
-		}
-
-		if (center) {
-			if (gp->RowCount==1) {
-				int c0  = std::max(max_count - gp->VisibleColCount, 0);
-				int mgn = gp->VisibleColCount/2 - ((gp->VisibleColCount%2==0)? 1 : 0);
-				gp->LeftCol = std::min(std::max(gp->Col - mgn, 0), c0);
-			}
-			else if (gp->ColCount==1) {
-				int r0  = std::max(max_count - gp->VisibleRowCount, 0);
-				int mgn = gp->VisibleRowCount/2 - ((gp->VisibleRowCount%2==0)? 1 : 0);
-				gp->TopRow = std::min(std::max(gp->Row - mgn, 0), r0);
-			}
-		}
-	}
-	catch (...) {
-		gp->Col = 0; gp->Row = 0;
-	}
-
-	if (gp->Visible) gp->Invalidate();
-}
 
 //---------------------------------------------------------------------------
 //ListBox のカーソル移動

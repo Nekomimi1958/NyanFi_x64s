@@ -1056,7 +1056,7 @@ UnicodeString UserShell::get_PropInf(
 	UnicodeString idx_str,	//プロパティ名 (, 区切りで複数指定可 default = EmptyStr)
 	bool lst_sw)			//名前=値形式で取得 (default = false);
 {
-	OutDebugStr("  => get_PropInf");
+	OutDebugStr("  => get_PropInf: " +fnam);
 
 	UnicodeString typ_str;
 	ITEMIDLIST *dir_pidl = NULL;

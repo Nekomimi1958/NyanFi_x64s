@@ -2380,6 +2380,7 @@ private:	// ÉÜÅ[ÉUÅ[êÈåæ
 	bool __fastcall OpenImgViewer(file_rec *fp, bool fitted = false, int zoom = 0);
 	bool __fastcall OpenImgViewer(int idx);
 	bool __fastcall ViewClipImage(bool fitted = false, int zoom = 0);
+	void __fastcall SetThumbnailIndex(int idx, int max_count, bool center = false);
 	void __fastcall SetImgInfListBox(file_rec *fp);
 	void __fastcall ClearViewImage();
 	void __fastcall SetSeekStat(int idx);
