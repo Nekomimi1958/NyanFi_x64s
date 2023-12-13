@@ -6,14 +6,15 @@
   <title>構文強調表示定義ファイル</title>
   <link rel="stylesheet" type="text/css" href="help.css">
   <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-    <param name="Keyword" value="FunctionList">
-    <param name="Keyword" value="Highlight.INI">
-    <param name="Keyword" value="SearchPair">
-    <param name="Keyword" value="SetColor">
-    <param name="Keyword" value="TextViewer">
-    <param name="Keyword" value="テキストビュアー">
-    <param name="Keyword" value="関数一覧">
-    <param name="Keyword" value="構文強調表示定義ファイル">
+	<param name="Keyword" value="FunctionList">
+	<param name="Keyword" value="Highlight.INI">
+	<param name="Keyword" value="SearchPair">
+	<param name="Keyword" value="SetColor">
+	<param name="Keyword" value="TextViewer">
+	<param name="Keyword" value="スティッキー表示">
+	<param name="Keyword" value="テキストビュアー">
+	<param name="Keyword" value="関数一覧">
+	<param name="Keyword" value="構文強調表示定義ファイル">
   </object>
 </head>
 
@@ -305,6 +306,7 @@ KeywordCol2=66FFFF
 
     <dt class="no_bg" id="FunctionPtn">FunctionPtn</dt>
     <dd><a href="hid00066.htm">関数一覧</a>で表示する関数の正規表現パターンです。<br>
+      スティッキー表示にも用いられます。<br>
       <pre class="example_box">
 FunctionPtn=^function\s+[_a-zA-Z]\w*\(
 </pre>
@@ -313,7 +315,8 @@ FunctionPtn=^function\s+[_a-zA-Z]\w*\(
     <dt class="no_bg">FuncNamePtn</dt>
     <dd><a href="hid00066.htm">関数一覧</a>で、<img src="chkbox.png" alt=""> <b>名前</b>
       をチェックしている場合に、関数の名前部分を取得するための正規表現パターンです。<br>
-      マッチした名前の末尾に括弧がある場合、それを除いて表示します。
+      マッチした名前の末尾に括弧がある場合、それを除いて表示します。<br>
+      スティッキー表示では、名前部分が強調されます。<br>
       <pre class="example_box">
 FuncNamePtn=\b[_a-zA-Z]\w*\(
 </pre>

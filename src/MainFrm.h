@@ -1035,7 +1035,6 @@ __published:	// IDE で管理されるコンポーネント
 	TPanel *SubPanel;
 	TPanel *TabOuterPanel;
 	TPanel *TabPanel;
-	TPanel *TextCurColPanel;
 	TPanel *TxtMainPanel;
 	TPanel *TxtPrvListPanel;
 	TPanel *TxtScrollPanel;
@@ -2621,6 +2620,7 @@ public:		// ユーザー宣言
 	bool __fastcall ViewClipText();
 
 	void __fastcall UpdateLoupe();
+	void __fastcall TempTopThumbnailGrid(bool sw_repaint = false);
 	bool __fastcall DeleteICore(int idx);
 	void __fastcall NextPrevFileICore(bool is_next);
 

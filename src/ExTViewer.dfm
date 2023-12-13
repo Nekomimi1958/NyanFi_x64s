@@ -45,6 +45,12 @@ object ExTxtViewer: TExTxtViewer
       BevelInner = bvNone
       BevelOuter = bvNone
       BorderStyle = bsNone
+      Font.Charset = SHIFTJIS_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
       ParentShowHint = False
       ReadOnly = True
       ShowHint = False
@@ -70,6 +76,7 @@ object ExTxtViewer: TExTxtViewer
         Font.Color = clWindowText
         Font.Height = -12
         Font.Name = 'Segoe UI'
+        Font.Pitch = fpVariable
         Font.Style = []
         Panels = <
           item
@@ -149,15 +156,6 @@ object ExTxtViewer: TExTxtViewer
           TabOrder = 0
           TabStop = False
           OnChange = TextScrollBarChange
-        end
-        object TextCurColPanel: TPanel
-          Left = 32
-          Top = 221
-          Width = 60
-          Height = 24
-          TabOrder = 1
-          Visible = False
-          StyleElements = [seBorder]
         end
       end
     end

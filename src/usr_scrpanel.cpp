@@ -67,8 +67,8 @@ UsrScrollPanel::UsrScrollPanel(TPanel *pp, TScrollBar *sp, int flag)
 //---------------------------------------------------------------------------
 UsrScrollPanel::~UsrScrollPanel()
 {
-	ScrPanelV->WindowProc  = org_ScrPanelVWndProc;
-	if (ScrPanelH && org_ScrPanelHWndProc) 	ScrPanelH->WindowProc	= org_ScrPanelHWndProc;
+	ScrPanelV->WindowProc = org_ScrPanelVWndProc;
+	if (ScrPanelH && org_ScrPanelHWndProc) 	ScrPanelH->WindowProc = org_ScrPanelHWndProc;
 
 	if (org_ParentPanelWndProc)						ParentPanel->WindowProc    = org_ParentPanelWndProc;
 	if (AssoListBox && org_AssoListWndProc) 		AssoListBox->WindowProc    = org_AssoListWndProc;

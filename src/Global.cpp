@@ -236,6 +236,7 @@ bool ShowLineCursor;			//行カーソルを表示
 bool ShowTAB;					//タブを表示
 bool ShowCR;					//改行を表示
 bool ShowTextRuler;				//ルーラを表示
+bool ShowSticky;				//スティッキーを表示
 bool ScrBarToFoldPos;			//スクロールバーを折り返し位置に表示
 bool TxtSttIsBottom;			//情報ヘッダを下部に表示(TV)
 bool ChkAozora;					//青空文庫形式を考慮する
@@ -1705,6 +1706,7 @@ void InitializeGlobal()
 		{_T("ShowTAB=true"),				(TObject*)&ShowTAB},
 		{_T("ShowCR=true"),					(TObject*)&ShowCR},
 		{_T("ShowTextRuler=true"),			(TObject*)&ShowTextRuler},
+		{_T("ShowSticky=false"),			(TObject*)&ShowSticky},
 		{_T("ScrBarToFoldPos=true"),		(TObject*)&ScrBarToFoldPos},
 		{_T("TxtSttIsBottom=false"),		(TObject*)&TxtSttIsBottom},
 		{_T("ChkAozora=false"),				(TObject*)&ChkAozora},
@@ -3832,6 +3834,7 @@ UnicodeString format_CloneName(
 //  \A       ファイル名全体
 //  \E       拡張子
 //  \C       ファイルのパス無しディレクトリ名
+//  \DT(…)	現在日時
 //  \TS(…)  タイムスタンプ
 //  \XT(…)  Exit撮影日時
 //　\Z(...)  初期文字列から始まるアルファベット順の文字列
@@ -3871,6 +3874,9 @@ UnicodeString format_FileName(
 			}
 			else if (StartsStr("\\XT(", s)) {
 				ret_str += EXIF_GetExifTimeStr(fnam, get_in_paren(s));
+			}
+			else if (StartsStr("\\DT(", s)) {
+				ret_str += FormatDateTime(get_in_paren(s), Now());
 			}
 			else if (StartsStr("\\Z(", s)) {
 				UnicodeString ini_str = get_in_paren(s);

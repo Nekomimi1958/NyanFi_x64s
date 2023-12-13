@@ -35,14 +35,14 @@ void __fastcall TRenameDlg::FormCreate(TObject *Sender)
 
 	set_ComboBoxText(IniSttComboBox,
 		_T("ファイル名主部の末尾\n")
-		_T("名前の先頭\n")
+		_T("ファイル名の先頭\n")
 		_T("ファイル名主部を選択\n")
 		_T("ファイル名全体を選択\n")
 		_T("指定語の後\n")
 		_T("指定語の前\n"));
 	set_ComboBoxText(IniStt2ComboBox,
 		_T("ファイル名主部の末尾\n")
-		_T("名前の先頭\n")
+		_T("ファイル名の先頭\n")
 		_T("ファイル名主部を選択\n")
 		_T("ファイル名全体を選択\n"));
 
@@ -274,6 +274,10 @@ void __fastcall TRenameDlg::FormShow(TObject *Sender)
 	SttPrgBar->BgColor	 = col_bgPrgBar;
 	SttPrgBar->BarColor  = col_fgPrgBar;
 
+	PreNameEdit->Text    = EmptyStr;
+	PostNameEdit->Text   = EmptyStr;
+	SerFmtComboBox->Text = EmptyStr;
+
 	DlgInitialized = true;
 	::PostMessage(Handle, WM_FORM_SHOWED, 0, 0);
 }
@@ -379,7 +383,14 @@ void __fastcall TRenameDlg::Timer1Timer(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TRenameDlg::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
-	if (ActiveControl!=TimeMaskEdit) SpecialKeyProc(this, Key, Shift);
+	UnicodeString KeyStr = get_KeyStr(Key, Shift);
+	if (IsNameSheet() && ActiveControl==RenameEdit && SameText(KeyStr, "F2")) {
+		ChangeSelFileNameEdit((TCustomEdit *)RenameEdit, ends_PathDlmtr(ItemList->Strings[0]));
+		Key = 0;
+	}
+	else if (ActiveControl!=TimeMaskEdit) {
+		SpecialKeyProc(this, Key, Shift);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TRenameDlg::FormResize(TObject *Sender)
@@ -1296,6 +1307,13 @@ void __fastcall TRenameDlg::Fmt_TS_BtnClick(TObject *Sender)
 void __fastcall TRenameDlg::Fmt_XT_BtnClick(TObject *Sender)
 {
 	set_FmtEdit(_T("\\XT(yyyymmdd-hhnnss)"));
+}
+//---------------------------------------------------------------------------
+//現在日時
+//---------------------------------------------------------------------------
+void __fastcall TRenameDlg::Fmt_DT_BtnClick(TObject *Sender)
+{
+	set_FmtEdit(_T("\\DT(yyyymmdd-hhnnss)"));
 }
 
 //---------------------------------------------------------------------------

@@ -292,7 +292,11 @@ void __fastcall TInputExDlg::FormClose(TObject *Sender, TCloseAction &Action)
 void __fastcall TInputExDlg::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	UnicodeString KeyStr = get_KeyStr(Key, Shift);
-	if (equal_F1(KeyStr) && !HelpTopic.IsEmpty()) {
+	if (SameText(Caption, LoadUsrMsg(USTR_Rename)) && SameText(KeyStr, "F2")) {
+		ChangeSelFileNameEdit((TCustomEdit *)InputEdit);
+		Key = 0;
+	}
+	else if (equal_F1(KeyStr) && !HelpTopic.IsEmpty()) {
 		HtmlHelpTopic(HelpTopic.c_str());
 		Key = 0;
 	}

@@ -573,9 +573,9 @@ UnicodeString GetDefReservedPtn(
 	}
 	else if (test_FileExt(fext, ".js.jsx.ts")) {
 		ret_str.sprintf(_T("%s"),
-			_T("\\b(abstract|boolean|break|byte|case|catch|char|class|const|continue|default|do|")
-			_T("double|else|extends|false|final|finally|float|for|function|goto|if|implements|import|")
-			_T("in|instanceof|int|interface|long|native|new|null|package|private|protected|public|")
+			_T("\\b(abstract|await|boolean|break|byte|case|catch|char|class|const|continue|default|do|")
+			_T("double|else|enum|extends|false|final|finally|float|for|function|goto|if|implements|import|")
+			_T("in|instanceof|int|interface|let|long|native|new|null|package|private|protected|public|")
 			_T("return|short|static|super|switch|synchronized|this|throw|throws|transient|true|")
 			_T("try|typeof|var|void|while|with)\\b"));
 	}
@@ -884,7 +884,7 @@ UnicodeString GetDefFunctionPtn(
 		name_ptn = "\\b\\w+\\b";
 	}
 	else if (test_FileExt(fext, ".js.jsx.ts.as.awk")) {
-		func_ptn = "^function\\s+[_a-zA-Z]\\w*\\(";
+		func_ptn = "^(async\\s+)?function\\s+[_a-zA-Z]\\w*\\(";
 		name_ptn = std_ptn;
 	}
 	else if (test_FileExt(fext, ".java")) {

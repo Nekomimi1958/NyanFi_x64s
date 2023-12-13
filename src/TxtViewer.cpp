@@ -40,7 +40,6 @@ TTxtViewer::TTxtViewer(
 	UsrScrollPanel *sp, 	//独自スクロールバー
 	TStatusBar *stthdr,		//情報ヘッダ
 	TPaintBox *ruler,		//ルーラ
-	TPanel *colref,			//カラー表示
 	TPaintBox *mgn_box)		//右余白パネル	(default = NULL)
 {
 	isReady    = false;
@@ -54,13 +53,30 @@ TTxtViewer::TTxtViewer(
 	ScrPanel   = sp;
 	SttHeader  = stthdr;
 	RulerBox   = ruler;
-	ColorPanel = colref;
 	MarginBox  = mgn_box;
 
 	if (RulerBox) {
 		RulerBox->OnPaint	 = onRulerPaint;
 		RulerBox->OnDblClick = onRulerDblClick;
 	}
+
+	ColorPanel = new TPanel(OwnerForm);
+	ColorPanel->Parent  = ViewBox->Parent;
+	ColorPanel->Visible = false;
+	ColorPanel->Caption = EmptyStr;
+	ColorPanel->StyleElements = ColorPanel->StyleElements >> seClient;
+
+	StickyPanel = new TPanel(OwnerForm);
+	StickyPanel->Parent     = ViewBox->Parent;
+	StickyPanel->Visible    = false;
+	StickyPanel->Caption    = EmptyStr;
+	StickyPanel->BevelOuter = bvNone;
+
+	StickyBox = new TPaintBox(OwnerForm);
+	StickyBox->Parent  = StickyPanel;
+	StickyBox->Align   = alClient;
+	StickyBox->OnPaint = onStickyPaint;
+	StickyBox->OnClick = onStickyClick;
 
 	ImgBuff = new Graphics::TBitmap();
 
@@ -268,6 +284,10 @@ void __fastcall TTxtViewer::Clear()
 	MaxLine = 0;
 	ClearDispLine();
 
+	StickyPanel->Visible = false;
+	StickyStr  = EmptyStr;
+	StickyLine = 0;
+
 	AssignScaledFont(ViewBox, ViewerFont);
 	useFontName = ViewBox->Font->Name;
 	useFontSize = ViewBox->Font->Size;
@@ -473,10 +493,8 @@ void __fastcall TTxtViewer::SetMetric(bool set_hi)
 		MaxFoldWd = (ViewBox->ClientWidth - HchWidth*2 - TopXpos) / HchWidth;
 	}
 
-	if (ColorPanel) {
-		ColorPanel->ClientHeight = FontHeight;
-		ColorPanel->ClientWidth  = FontHeight * 2;
-	}
+	ColorPanel->ClientHeight = FontHeight;
+	ColorPanel->ClientWidth  = FontHeight * 2;
 
 	if (set_hi) {
 		ImgBuff->Handle = NULL;
@@ -658,6 +676,59 @@ TStringDynArray __fastcall TTxtViewer::GetCsvHdrList()
 }
 
 //---------------------------------------------------------------------------
+//関数のマッチパターンを取得
+//---------------------------------------------------------------------------
+UnicodeString __fastcall TTxtViewer::GetFuncPtns(
+	UnicodeString *nam_ptn,		//関数名の強調パターン	(default = NULL)
+	UnicodeString *cap_str)		//一覧用キャプション	(default = NULL)
+{
+	UnicodeString r_fnc_ptn;
+	UnicodeString r_nam_ptn;
+	UnicodeString r_cap_str = "関数一覧";
+
+	UnicodeString fext = get_extension(FileName);
+
+	//ユーザ定義から取得
+	if (UserHighlight->GetSection(FileName, isClip, isLog, isHtm2Txt)) {
+		r_fnc_ptn = UserHighlight->ReadKeyStr(_T("FunctionPtn"));
+		if (!r_fnc_ptn.IsEmpty()) r_nam_ptn = UserHighlight->ReadKeyStr(_T("FuncNamePtn"));
+	}
+	//デフォルト
+	else {
+		r_fnc_ptn = GetDefFunctionPtn(fext, r_nam_ptn, isHtm2Txt);
+	}
+
+	//関数以外
+	if (r_fnc_ptn.IsEmpty()) {
+		if (test_FileExt(fext, ".bat.cmd.qbt")) {
+			r_fnc_ptn = "^:[^:]+";
+			r_cap_str = "ラベル一覧";
+		}
+		else if (test_FileExt(fext, ".dfm")) {
+			r_fnc_ptn = "^\\s*object\\s";
+			r_nam_ptn = "\\s\\w+:";
+			r_cap_str = "オブジェクト一覧";
+		}
+		else if (isIniFmt) {
+			r_fnc_ptn = "^\\[.+\\]";
+			r_nam_ptn = "\\[.+\\]";
+			r_cap_str = "セクション一覧";
+		}
+		else if (!HeadlinePtn.IsEmpty()) {
+			r_fnc_ptn = HeadlinePtn;
+			r_cap_str = test_FileExt(fext, ".eml")? "件名一覧" : isLog? "タスク一覧" : "見出し一覧";
+		}
+	}
+
+	if (!chk_RegExPtn(r_fnc_ptn)) r_fnc_ptn = EmptyStr;
+	if (!chk_RegExPtn(r_nam_ptn)) r_nam_ptn = EmptyStr;
+
+	if (nam_ptn) *nam_ptn = r_nam_ptn;
+	if (cap_str) *cap_str = r_cap_str;
+	return r_fnc_ptn;
+}
+
+//---------------------------------------------------------------------------
 //画面に合わせて行内容を設定
 //---------------------------------------------------------------------------
 void __fastcall TTxtViewer::UpdateScr(
@@ -776,6 +847,10 @@ void __fastcall TTxtViewer::UpdateScr(
 	UsrKeywdCol2  = color_fgView;
 	alt_BackSlash = AltBackSlash;
 	PairPtnList->Clear();
+
+	//関数マッチパターン
+	FuncPtn    = !isBinary? GetFuncPtns(&FuncNamPtn) : EmptyStr;
+	FuncBrkPtn = "^(\\}|end)";	//***
 
 	//ユーザ定義の取得
 	bool usr_hl = UserHighlight->GetSection(FileName, isClip, isLog, isHtm2Txt);
@@ -1789,7 +1864,7 @@ void __fastcall TTxtViewer::PaintText()
 	tmp_cv->Font->Assign(ViewBox->Font);
 
 	int fld_xp	= isFitWin ? tmp_bmp->Width
-						   : (TopXpos + (isBinary? MaxHchX : ViewFoldWidth + 1) * HchWidth + 4);
+						   : (TopXpos + (isBinary? MaxHchX : ViewFoldWidth + 1) * HchWidth + ScaledInt(4, OwnerForm));
 	int top_idx = ScrBar->Position - 1;
 	int d_idx	= top_idx - LastTop;
 	int btm_idx	= top_idx + LineCount + 1;
@@ -1854,7 +1929,7 @@ void __fastcall TTxtViewer::PaintText()
 			tmp_cv->FillRect(bg_rc);
 		}
 		else {
-			rc_xp = (MarginBox && MarginBox->Width>0)? tmp_rc.Right : fld_xp + 4;
+			rc_xp = (MarginBox && MarginBox->Width>0)? tmp_rc.Right : fld_xp + ScaledInt(4, OwnerForm);
 			bg_rc.Right = rc_xp;
 			tmp_cv->FillRect(bg_rc);
 			//右余白
@@ -1889,9 +1964,10 @@ void __fastcall TTxtViewer::PaintText()
 			//不要な描画はスキップ
 			if (buffered && i>buf_idx0 && i<buf_idx1) {
 				//行カーソルを一旦描画しておく
-				if (CurPos.y==i && ShowLineCursor)
-					draw_Line(ViewCanvas, LeftMargin + 1, v_yp + csr_yl, fld_xp - 2, v_yp + csr_yl, csr_lw, color_Cursor);
-
+				if (CurPos.y==i && ShowLineCursor) {
+					draw_Line(ViewCanvas, LeftMargin + 1, v_yp + csr_yl,
+								fld_xp - ScaledInt(2, OwnerForm), v_yp + csr_yl, csr_lw, color_Cursor);
+				}
 				//選択なし
 				if (SelStart==SelEnd) {
 					if (!LastSel) continue;
@@ -2096,7 +2172,7 @@ void __fastcall TTxtViewer::PaintText()
 								for (int i_x=mt_Idx[i_p]; mt_Len[i_p]>0 && i_x<=lbuf_len; i_x++,mt_Len[i_p]--) {
 									//文字
 									TColor *fg = &curFgCol[i_x];
-									if (EmFgC[i_p]==color_URL)		//URL優先
+									if (EmFgC[i_p]==color_URL)	//URL優先
 										*fg = EmFgC[i_p];
 									else if (*fg!=color_Comment && *fg!=color_Strings && *fg!=color_URL && (isText || i_x<50))
 										*fg = EmFgC[i_p];
@@ -2105,7 +2181,7 @@ void __fastcall TTxtViewer::PaintText()
 									if (EmBgC[i_p]!=col_None && *bg!=color_selItem) *bg = EmBgC[i_p];
 								}
 								if (mt_Len[i_p]>0) {
-									mt_Idx[i_p] = 1; break;	//次行に続く
+									mt_Idx[i_p] = 1; break;		//次行に続く
 								}
 								else {
 									mt_Idx[i_p] = 0;
@@ -2193,8 +2269,10 @@ void __fastcall TTxtViewer::PaintText()
 		TRect v_rc = tmp_rc;  OffsetRect(v_rc, 0, v_yp);
 		buf_cv->CopyRect(v_rc, tmp_bmp->Canvas, tmp_rc);
 		//行カーソルを一旦描画しておく
-		if (CurPos.y==i && ShowLineCursor)
-			draw_Line(tmp_cv, LeftMargin + 1, csr_yl, fld_xp - 2, csr_yl, csr_lw, color_Cursor);
+		if (CurPos.y==i && ShowLineCursor) {
+			draw_Line(tmp_cv, LeftMargin + 1, csr_yl,
+						fld_xp - ScaledInt(2, OwnerForm), csr_yl, csr_lw, color_Cursor);
+		}
 		ViewCanvas->CopyRect(v_rc, tmp_cv, tmp_rc);
 	}
 
@@ -2205,7 +2283,10 @@ void __fastcall TTxtViewer::PaintText()
 	if (csr_yp>=0) {
 		int yp_l = csr_yp + csr_yl;
 		//行カーソル
-		if (ShowLineCursor) draw_Line(ViewCanvas, LeftMargin + 1, yp_l, fld_xp - 2, yp_l, csr_lw, color_Cursor);
+		if (ShowLineCursor) {
+			draw_Line(ViewCanvas, LeftMargin + 1, yp_l,
+						fld_xp - ScaledInt(2, OwnerForm), yp_l, csr_lw, color_Cursor);
+		}
 		//桁カーソル
 		draw_Line(ViewCanvas, csr_xp, csr_yp, csr_xp, yp_l - 1, 2, color_Cursor);
 		//対応アドレスカーソル
@@ -2313,6 +2394,99 @@ void __fastcall TTxtViewer::onRulerPaint(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
+//スティッキーの描画
+//---------------------------------------------------------------------------
+void __fastcall TTxtViewer::onStickyPaint(TObject *Sender)
+{
+	if (!isReady) return;
+
+	TCanvas *cv = StickyBox->Canvas;
+	cv->Font->Assign(ViewBox->Font);
+	TRect bg_rc = StickyBox->ClientRect;
+
+	//余白
+	if (LeftMargin>0) {
+		cv->Brush->Color = color_Margin;
+		bg_rc.Right = LeftMargin;
+		cv->FillRect(bg_rc);
+	}
+
+	//行番号
+	if (ShowLineNo) {
+		cv->Brush->Color = AdjustColor(color_bgLineNo, ADJCOL_BGLTL);
+		bg_rc.Left	= LeftMargin;
+		bg_rc.Right = TopXpos - TopMargin;
+		cv->FillRect(bg_rc);
+		if (StickyLine>0) {
+			cv->Font->Color = color_LineNo;
+			cv->TextOut(LeftMargin + MARK_WIDTH, 0, UnicodeString().sprintf(_T("%6u"), StickyLine));
+		}
+	}
+
+	//背景
+	cv->Brush->Color = AdjustColor(color_bgView, ADJCOL_BGLTL);
+	bg_rc.Left  = TopXpos - TopMargin;
+	bg_rc.Right = StickyBox->ClientWidth;
+	cv->FillRect(bg_rc);
+
+	if (!StickyStr.IsEmpty()) {
+		TColor FgCol[4096];
+		int s_len = StickyStr.Length();
+		for (int i=1; i<=s_len; i++) FgCol[i] = color_fgView;
+
+		//予約語
+		if (!ReservedPtn.IsEmpty()) {
+			TMatchCollection mts = TRegEx::Matches(StickyStr, ReservedPtn);
+			for (int i=0; i<mts.Count; i++) {
+				if (mts.Item[i].Success) {
+					for (int j=0; j<mts.Item[i].Length; j++) FgCol[mts.Item[i].Index + j] = color_Reserved;
+				}
+			}
+		}
+	
+		//関数名強調
+		std::unique_ptr<TStringList> elist(new TStringList());
+		if (!FuncNamPtn.IsEmpty()) {
+			TRegExOptions opt; opt << roIgnoreCase;
+			TMatch mt = TRegEx::Match(StickyStr, FuncNamPtn, opt);
+			if (mt.Success) {
+				for (int i=0; i<mt.Length; i++) FgCol[mt.Index + i] = col_Headline;
+			}
+		}
+
+		//シンボル
+		if (!SymbolChs.IsEmpty()) {
+			for (int i=1; i<=s_len; i++) {
+				if (StickyStr.IsDelimiter(SymbolChs, i)) FgCol[i] = color_Symbol;
+			}
+		}
+
+		int xp = TopXpos;
+		int max_xp = StickyPanel->Width;
+		cv->Font->Color  = FgCol[1];
+		cv->Brush->Color = AdjustColor(color_bgView, ADJCOL_BGLTL);
+		UnicodeString sbuf;
+		for (int i=1; i<=s_len; i++) {
+			TColor *fg = &FgCol[i];
+			if (*fg==cv->Font->Color) {
+				sbuf.cat_sprintf(_T("%c"), StickyStr[i]);
+			}
+			else {
+				TabTextOut(sbuf, cv, xp, max_xp);
+				sbuf = StickyStr[i];
+				cv->Font->Color = *fg;
+			}
+		}
+		if (!sbuf.IsEmpty()) TabTextOut(sbuf, cv, xp, max_xp);
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TTxtViewer::onStickyClick(TObject *Sender)
+{
+	ToLine(StickyLine);
+}
+
+//---------------------------------------------------------------------------
 //再描画要求
 //---------------------------------------------------------------------------
 void __fastcall TTxtViewer::Repaint(bool force)
@@ -2325,8 +2499,8 @@ void __fastcall TTxtViewer::Repaint(bool force)
 	}
 
 	PaintText();
-
 	if (RulerBox->Visible) RulerBox->Repaint();
+	if (force) UpdateSticky();
 }
 
 //---------------------------------------------------------------------------
@@ -2455,6 +2629,7 @@ void __fastcall TTxtViewer::UpdatePos(
 	bool force)			// (default = false)
 {
 	LineCount = ViewBox->ClientHeight / LineHeight - 1;
+	int last_top = CurTop;
 
 	if (up_pos) {
 		CurTop = CurPos.y - 5;
@@ -2486,13 +2661,47 @@ void __fastcall TTxtViewer::UpdatePos(
 	if (changed) ScrBar->Position = CurTop;
 
 	set_CurCsvCol();
-
+	if (CurTop!=last_top) UpdateSticky();
 	Repaint(force);
 
 	//イメージプレビュー
 	if (SubViewer->Visible) {
 		UnicodeString fnam = GetCurImgFile();
 		if (!fnam.IsEmpty() && !SameText(SubViewer->FileName, fnam)) SubViewer->DrawImage(fnam);
+	}
+}
+
+//---------------------------------------------------------------------------
+//スティッキーを更新
+//---------------------------------------------------------------------------
+void __fastcall TTxtViewer::UpdateSticky()
+{
+	if (isReady && ShowSticky && !FuncPtn.IsEmpty()) {
+		bool has_par = ContainsStr(FuncPtn, "\\(");
+		bool non_tab = StartsStr('^', FuncPtn) && !StartsStr("^\\s*", FuncPtn);
+		StickyStr  = EmptyStr;
+		TRegExOptions opt; opt << roIgnoreCase;
+		for (int i=CurTop-1; i>=0; i--) {
+			line_rec *rp = get_LineRec(i);  if (rp->LineIdx>0) continue;
+			UnicodeString lbuf = TrimRight(get_DispLine(i));
+			if (TRegEx::IsMatch(lbuf, FuncBrkPtn, opt)) break;
+			if (non_tab && (StartsStr('\t', lbuf) || StartsStr(' ', lbuf))) continue;
+			if (has_par && (!ContainsStr(lbuf, "(") || ContainsStr(lbuf, "="))) continue;
+			if (TRegEx::IsMatch(lbuf, FuncPtn, opt)) {
+				StickyStr = lbuf;
+				StickyLine  = rp->LineNo;
+				break;
+			}
+		}
+		StickyPanel->Top     = RulerBox->Height;
+		StickyPanel->Left    = 0;
+		StickyPanel->Height  = LineHeight;
+		StickyPanel->Width   = isFitWin? ViewBox->ClientWidth : (TopXpos + (ViewFoldWidth + 1) * HchWidth + 8);
+		StickyPanel->Visible = !StickyStr.IsEmpty();
+		StickyBox->Repaint();
+	}
+	else {
+		StickyPanel->Visible = false;
 	}
 }
 
@@ -2514,7 +2723,7 @@ void __fastcall TTxtViewer::SetSttInf(UnicodeString msg)
 	if (!isReady) return;
 
 	//ルーラ
-	if (RulerBox && RulerBox->Visible) RulerBox->Repaint();
+	if (RulerBox && RulerBox->Visible)	RulerBox->Repaint();
 
 	//ステータス
 	if (SttHeader) {
@@ -2630,7 +2839,7 @@ void __fastcall TTxtViewer::SetSttInf(UnicodeString msg)
 	}
 
 	//カラー
-	if (isText && TxtColorHint && ColorPanel && SelStart==SelEnd) {
+	if (isText && TxtColorHint && SelStart==SelEnd) {
 		int xp;
 		UnicodeString colstr = GetCurWord(false,
 				"(#[0-9a-fA-F]{3}\\b)|(#[0-9a-fA-F]{6}\\b)|"
@@ -3091,8 +3300,10 @@ void __fastcall TTxtViewer::MovePage(bool is_down, bool sel)
 //---------------------------------------------------------------------------
 void __fastcall TTxtViewer::ScrollAdjust()
 {
+	int last_top = CurTop;
 	CurTop	  = ScrBar->Position;
 	CurBottom = CurTop + LineCount;
+
 	//カーソルを常に可視領域に
 	if (TvCursorVisible) {
 		if (CurPos.y < CurTop-1)
@@ -3100,7 +3311,9 @@ void __fastcall TTxtViewer::ScrollAdjust()
 		else if (CurPos.y > CurBottom-1)
 			CurPos.y = CurBottom - 1;
 	}
+
 	SetSttInf();
+	if (CurTop!=last_top) UpdateSticky();
 	Repaint();
 }
 
@@ -3116,7 +3329,6 @@ void __fastcall TTxtViewer::MoveScroll(
 	if (!is_down && CurTop<=1) return;
 
 	int last_top = CurTop;
-
 	if (prm.IsEmpty()) prm = "MW";
 	int n = get_MovePrm(prm);
 	CurTop += is_down? n : -n;
@@ -3137,6 +3349,8 @@ void __fastcall TTxtViewer::MoveScroll(
 
 	CurBottom = CurTop + LineCount;
 	ScrBar->Position = CurTop;
+
+	if (CurTop!=last_top) UpdateSticky();
 	Repaint(true);
 }
 
@@ -5024,4 +5238,3 @@ bool __fastcall TTxtViewer::IsCmdInhibited(UnicodeString cmd)
 	return false;
 }
 //---------------------------------------------------------------------------
-

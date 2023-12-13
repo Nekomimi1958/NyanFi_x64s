@@ -74,9 +74,10 @@
     対象が一つの場合、単純にその名前を変更します。<br>
   </p>
   <p>
-    入力欄で<span class="btn_frame">Ctrl</span>+<span class="btn_frame">U</span>を押すと、キャレット位置の１文字が大文字化されます。また<span
-      class="btn_frame">Ctrl</span>+<span class="btn_frame">L</span>を押すと小文字化されます。<br>
-    この機能は、名前の変更ダイアログによらない単純な改名を行う際の入力ボックスなどでも利用できます。
+    入力欄で<span class="btn_frame">F2</span>キーを押すと、ファイル名主部の末尾/先頭/主部を選択/全体を選択 の順番で状態が切り替わります。初期状態は、後述の<span class="tab_frame"><a href="#Option">設定</a></span>タブで変更できます。<br>
+    入力欄で<span class="btn_frame">Ctrl</span>+<span class="btn_frame">U</span>を押すとキャレット位置の１文字が大文字化、
+    <span class="btn_frame">Ctrl</span>+<span class="btn_frame">L</span>を押すと小文字化されます。<br>
+    これらの機能は、名前の変更ダイアログによらない単純な改名を行う際の入力ボックスなどでも利用できます(例: FTPリモート側の改名)。
   </p>
   <div class="spc_box_p">
     右クリックメニューで「<b>カレントのパス無しディレクトリ名</b>」をカーソル位置に挿入することもできます(D:\hoge\data\ なら data を挿入)。
@@ -117,7 +118,7 @@
     </tr>
     <tr>
       <td valign="top">　　<b>\TS(</b>日時書式<b>)</b></td>
-      <td><span class="btn_frame_4">日時</span>タイムスタンプ<br>
+      <td><span class="btn_frame_4">タイム</span>タイムスタンプ<br>
         日時書式には以下の指定子が使えます。<br>
         yyyy 年(4桁)、yy 年(2桁)、mm 月(01～12)、dd 日(01～31)、hh 時(00～23)、nn 分(00～59)、ss 秒(00～59)<br>
         <b>例</b>: <span class="inp_box">\TS(yymmdd_hhnn)</span>　→　160512_0759<br>
@@ -126,6 +127,13 @@
     <tr>
       <td valign="top">　　<b>\XT(</b>日時書式<b>)</b></td>
       <td><span class="btn_frame_4">Exif</span>Exif情報の撮影日時 (取得できなかった場合は空文字列になります)<br>
+        日時書式は <b>\TS</b> と同じです。<br>
+      </td>
+    </tr>
+
+    <tr>
+      <td valign="top">　　<b>\DT(</b>日時書式<b>)</b></td>
+      <td><span class="btn_frame_4">現在</span>現在時刻<br>
         日時書式は <b>\TS</b> と同じです。<br>
       </td>
     </tr>
@@ -376,7 +384,6 @@
       (セミコロン)で区切って複数設定することも可能です。その場合、先のものほど優先順位が高くなります。<br>
       <img src="chkbox.png" alt=""> <b>最後の語にマッチ</b> をチェックしていると、同じ語が名前に複数含まれている場合、一番最後のものにマッチします。<br>
       名前に指定語が含まれていない場合の状態は、「<b>次候補</b>」で指定できます。<br>
-      <br>
     </dd>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> 主部/拡張子の文字種設定を記憶</dt>

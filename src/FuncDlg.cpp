@@ -171,46 +171,9 @@ void __fastcall TFuncListDlg::InitializeList(int mode)
 		cap_str = "関数一覧";
 		UserDefPanel->Visible = false;
 
+		UnicodeString fnc_ptn = TxtViewer->GetFuncPtns(&NamePtn, &cap_str);
 		UnicodeString fext = get_extension(TxtViewer->FileName);
 		is_DFM = test_FileExt(fext, ".dfm");
-
-		UnicodeString fnc_ptn;
-
-		//ユーザ定義から取得
-		if (UserHighlight->GetSection(TxtViewer->FileName,
-			TxtViewer->isClip, TxtViewer->isLog, TxtViewer->isHtm2Txt))
-		{
-			fnc_ptn = UserHighlight->ReadKeyStr(_T("FunctionPtn"));
-			if (!fnc_ptn.IsEmpty()) NamePtn = UserHighlight->ReadKeyStr(_T("FuncNamePtn"));
-		}
-		//デフォルト
-		else {
-			fnc_ptn = GetDefFunctionPtn(fext, NamePtn, TxtViewer->isHtm2Txt);
-		}
-
-		//関数以外
-		if (fnc_ptn.IsEmpty()) {
-			if (test_FileExt(fext, ".bat.cmd.qbt")) {
-				fnc_ptn = "^:[^:]+";
-				cap_str = "ラベル一覧";
-			}
-			else if (is_DFM) {
-				fnc_ptn = "^\\s*object\\s";
-				NamePtn = "\\s\\w+:";
-				cap_str = "オブジェクト一覧";
-			}
-			else if (TxtViewer->isIniFmt) {
-				fnc_ptn = "^\\[.+\\]";
-				cap_str = "セクション一覧";
-			}
-			else if (!TxtViewer->HeadlinePtn.IsEmpty()) {
-				fnc_ptn = TxtViewer->HeadlinePtn;
-				cap_str = test_FileExt(fext, ".eml")? "件名一覧" : TxtViewer->isLog? "タスク一覧" : "見出し一覧";
-			}
-		}
-
-		if (!chk_RegExPtn(fnc_ptn)) fnc_ptn = EmptyStr;
-		if (!chk_RegExPtn(NamePtn)) NamePtn = EmptyStr;
 
 		//一覧を作成
 		if (FunctionList->Count==0 && !fnc_ptn.IsEmpty()) {

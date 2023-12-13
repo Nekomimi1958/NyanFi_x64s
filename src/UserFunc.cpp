@@ -298,6 +298,35 @@ int EditToInt(TEdit *ep, int def)
 }
 
 //---------------------------------------------------------------------------
+//ファイル名入力欄の選択状態を順に切り替える
+//---------------------------------------------------------------------------
+void ChangeSelFileNameEdit(TCustomEdit *ep,
+	bool is_dir)	// (default = false)
+{
+	int p = !is_dir? (pos_r(".", ep->Text) - 1) : -1;
+	if (p<0) p = ep->Text.Length();
+	int idx = (ep->SelStart==0 && ep->SelLength==0)? 1 :
+			  (ep->SelStart==0 && ep->SelLength==p
+				&& ep->SelLength<ep->Text.Length())? 2 :
+			  (ep->SelStart==0 && ep->SelLength>=p)? 3 : 0;
+	idx = (idx + 1)%4;
+	switch (idx) {
+	case 1:	//名前の先頭
+		ep->SelStart = 0;
+		break;
+	case 2:	//ファイル名主部を選択
+		ep->SelStart  = 0;
+		ep->SelLength = p;
+		break;
+	case 3:	//ファイル名全体を選択
+		ep->SelectAll();
+		break;
+	default:
+		ep->SelStart = p;
+	}
+}
+
+//---------------------------------------------------------------------------
 //年月日から TDate を取得 (月末補正)
 //！不正な年/月を指定すると例外を送出
 //---------------------------------------------------------------------------

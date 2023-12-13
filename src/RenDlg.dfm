@@ -5,10 +5,10 @@ object RenameDlg: TRenameDlg
   BorderIcons = [biSystemMenu]
   Caption = #21517#21069#12398#22793#26356
   ClientHeight = 465
-  ClientWidth = 540
+  ClientWidth = 570
   Color = clBtnFace
   Constraints.MinHeight = 500
-  Constraints.MinWidth = 550
+  Constraints.MinWidth = 580
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -27,7 +27,7 @@ object RenameDlg: TRenameDlg
   object StatusBar1: TStatusBar
     Left = 0
     Top = 445
-    Width = 540
+    Width = 570
     Height = 20
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -55,7 +55,7 @@ object RenameDlg: TRenameDlg
   object MainPanel: TPanel
     Left = 0
     Top = 0
-    Width = 540
+    Width = 570
     Height = 445
     Align = alClient
     BevelOuter = bvNone
@@ -63,18 +63,18 @@ object RenameDlg: TRenameDlg
     object CommonPanel: TPanel
       Left = 0
       Top = 294
-      Width = 540
+      Width = 570
       Height = 151
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
       DesignSize = (
-        540
+        570
         151)
       object AtrGroupBox: TGroupBox
-        Left = 8
+        Left = 12
         Top = 7
-        Width = 524
+        Width = 545
         Height = 42
         Anchors = [akLeft, akBottom]
         Caption = #23646#24615
@@ -186,9 +186,9 @@ object RenameDlg: TRenameDlg
         end
       end
       object TimeGroupBox: TGroupBox
-        Left = 8
+        Left = 12
         Top = 55
-        Width = 524
+        Width = 545
         Height = 54
         Anchors = [akLeft, akBottom]
         Caption = #12479#12452#12512#12473#12479#12531#12503'(&T)'
@@ -252,7 +252,7 @@ object RenameDlg: TRenameDlg
         end
       end
       object OkButton: TButton
-        Left = 351
+        Left = 375
         Top = 118
         Width = 80
         Height = 26
@@ -262,7 +262,7 @@ object RenameDlg: TRenameDlg
         TabOrder = 4
       end
       object CanButton: TButton
-        Left = 439
+        Left = 463
         Top = 118
         Width = 80
         Height = 26
@@ -273,7 +273,7 @@ object RenameDlg: TRenameDlg
         TabOrder = 5
       end
       object PreviewPanel: TPanel
-        Left = 129
+        Left = 153
         Top = 114
         Width = 216
         Height = 34
@@ -319,7 +319,7 @@ object RenameDlg: TRenameDlg
     object NamePageControl: TPageControl
       Left = 0
       Top = 0
-      Width = 540
+      Width = 570
       Height = 294
       ActivePage = NameSheet
       Align = alClient
@@ -333,13 +333,13 @@ object RenameDlg: TRenameDlg
         object NameComPanel: TPanel
           Left = 0
           Top = 40
-          Width = 532
+          Width = 562
           Height = 224
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
           DesignSize = (
-            532
+            562
             224)
           object NameInfMLabel: TLabel
             Left = 212
@@ -364,17 +364,18 @@ object RenameDlg: TRenameDlg
           object SttInfLabel: TLabel
             Left = 378
             Top = 210
-            Width = 144
+            Width = 174
             Height = 18
             Alignment = taRightJustify
             Anchors = [akLeft, akRight, akBottom]
             AutoSize = False
             ExplicitTop = 174
+            ExplicitWidth = 144
           end
           object PreviewGrid: TStringGrid
-            Left = 10
+            Left = 8
             Top = 74
-            Width = 512
+            Width = 545
             Height = 130
             Anchors = [akLeft, akTop, akRight, akBottom]
             ColCount = 3
@@ -398,9 +399,9 @@ object RenameDlg: TRenameDlg
               20)
           end
           object FbaseRadioGroup: TRadioGroup
-            Left = 10
+            Left = 8
             Top = 2
-            Width = 364
+            Width = 376
             Height = 42
             Caption = #20027#37096'(&M)'
             Columns = 6
@@ -415,9 +416,9 @@ object RenameDlg: TRenameDlg
             OnClick = FModRadioGroupClick
           end
           object FextRadioGroup: TRadioGroup
-            Left = 382
+            Left = 396
             Top = 2
-            Width = 142
+            Width = 157
             Height = 42
             Caption = #25313#24373#23376'(&E)'
             Columns = 3
@@ -450,18 +451,18 @@ object RenameDlg: TRenameDlg
         object NameTopPanel: TPanel
           Left = 0
           Top = 0
-          Width = 532
+          Width = 562
           Height = 40
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 0
           DesignSize = (
-            532
+            562
             40)
           object RenameEdit: TEdit
-            Left = 10
+            Left = 8
             Top = 8
-            Width = 512
+            Width = 545
             Height = 23
             Anchors = [akLeft, akTop, akRight]
             MaxLength = 255
@@ -478,18 +479,18 @@ object RenameDlg: TRenameDlg
         object SerialTopPanel: TPanel
           Left = 0
           Top = 0
-          Width = 532
+          Width = 562
           Height = 66
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 0
           DesignSize = (
-            532
+            562
             66)
           object SerEditPanel: TPanel
             Left = 0
             Top = 0
-            Width = 532
+            Width = 562
             Height = 34
             Align = alTop
             BevelOuter = bvNone
@@ -516,7 +517,7 @@ object RenameDlg: TRenameDlg
                 34)
               object PreNameEdit: TEdit
                 Tag = 10
-                Left = 9
+                Left = 8
                 Top = 8
                 Width = 174
                 Height = 23
@@ -559,27 +560,28 @@ object RenameDlg: TRenameDlg
             object SerRightPanel: TPanel
               Left = 285
               Top = 0
-              Width = 247
+              Width = 277
               Height = 34
               Align = alClient
               BevelOuter = bvNone
               TabOrder = 1
               DesignSize = (
-                247
+                277
                 34)
               object DotLabel: TLabel
-                Left = 159
+                Left = 189
                 Top = 11
                 Width = 3
                 Height = 15
                 Anchors = [akTop, akRight]
                 Caption = '.'
+                ExplicitLeft = 159
               end
               object PostNameEdit: TEdit
                 Tag = 13
                 Left = 4
                 Top = 8
-                Width = 149
+                Width = 179
                 Height = 23
                 Hint = #24460#37096#20998
                 Anchors = [akLeft, akTop, akRight]
@@ -590,7 +592,7 @@ object RenameDlg: TRenameDlg
               end
               object ExtEdit: TEdit
                 Tag = 14
-                Left = 170
+                Left = 200
                 Top = 8
                 Width = 68
                 Height = 23
@@ -603,9 +605,9 @@ object RenameDlg: TRenameDlg
             end
           end
           object SerFmtComboBox: TComboBox
-            Left = 426
+            Left = 479
             Top = 38
-            Width = 97
+            Width = 74
             Height = 23
             Anchors = [akLeft, akTop, akRight]
             PopupMenu = FmtPopupMenu
@@ -613,18 +615,18 @@ object RenameDlg: TRenameDlg
             OnClick = SerFmtComboBoxClick
           end
           object Fmt_A_Btn: TButton
-            Left = 170
+            Left = 164
             Top = 38
-            Width = 50
+            Width = 48
             Height = 22
             Caption = #20027#37096
             TabOrder = 2
             OnClick = Fmt_A_BtnClick
           end
           object Fmt_E_Btn: TButton
-            Left = 222
+            Left = 214
             Top = 38
-            Width = 50
+            Width = 48
             Height = 22
             Caption = #25313#24373#23376
             TabOrder = 3
@@ -633,25 +635,27 @@ object RenameDlg: TRenameDlg
           object Fmt_L_Btn: TButton
             Left = 8
             Top = 38
-            Width = 50
+            Width = 48
             Height = 22
+            Hint = #12501#12449#12452#12523#21517#20027#37096#12398#24038#12363#12425'n'#25991#23383
             Caption = #24038'n'#23383
             TabOrder = 4
             OnClick = Fmt_L_BtnClick
           end
           object Fmt_R_Btn: TButton
-            Left = 112
+            Left = 108
             Top = 38
-            Width = 50
+            Width = 48
             Height = 22
+            Hint = #12501#12449#12452#12523#21517#20027#37096#12398#21491#12363#12425'n'#25991#23383
             Caption = #21491'n'#23383
             TabOrder = 5
             OnClick = Fmt_R_BtnClick
           end
           object Fmt_S_Btn: TButton
-            Left = 60
+            Left = 58
             Top = 38
-            Width = 50
+            Width = 48
             Height = 22
             Hint = #12501#12449#12452#12523#21517#20027#37096#12398'm'#30058#30446#12363#12425'n'#25991#23383
             Caption = 'm..n'#23383
@@ -659,30 +663,42 @@ object RenameDlg: TRenameDlg
             OnClick = Fmt_S_Btn2Click
           end
           object Fmt_TS_Btn: TButton
-            Left = 280
+            Left = 270
             Top = 38
             Width = 45
             Height = 22
-            Caption = #26085#26178
+            Hint = #12479#12452#12512#12473#12479#12531#12503
+            Caption = #12479#12452#12512
             TabOrder = 7
             OnClick = Fmt_TS_BtnClick
           end
           object Fmt_XT_Btn: TButton
-            Left = 327
+            Left = 317
             Top = 38
             Width = 45
             Height = 22
+            Hint = 'Exif'#24773#22577#12398#25774#24433#26085#26178
             Caption = 'Exif'
             TabOrder = 8
             OnClick = Fmt_XT_BtnClick
           end
           object SaveFmtBtn: TButton
-            Left = 384
+            Left = 435
             Top = 38
             Width = 40
             Height = 22
             Action = SaveSerFmtAction
             TabOrder = 9
+          end
+          object Fmt_DT_Btn: TButton
+            Left = 364
+            Top = 38
+            Width = 45
+            Height = 22
+            Hint = #29694#22312#26085#26178
+            Caption = #29694#22312
+            TabOrder = 10
+            OnClick = Fmt_DT_BtnClick
           end
         end
       end
@@ -692,13 +708,13 @@ object RenameDlg: TRenameDlg
         object ReplaceTopPanel: TPanel
           Left = 0
           Top = 0
-          Width = 532
+          Width = 562
           Height = 85
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 0
           DesignSize = (
-            532
+            562
             85)
           object TLabel
             Left = 13
@@ -719,7 +735,7 @@ object RenameDlg: TRenameDlg
           object SrcStrComboBox: TComboBox
             Left = 42
             Top = 8
-            Width = 480
+            Width = 510
             Height = 23
             Anchors = [akLeft, akTop, akRight]
             DropDownCount = 20
@@ -732,7 +748,7 @@ object RenameDlg: TRenameDlg
           object RepStrComboBox: TComboBox
             Left = 42
             Top = 34
-            Width = 480
+            Width = 510
             Height = 23
             Anchors = [akLeft, akTop, akRight]
             DropDownCount = 20
@@ -775,13 +791,13 @@ object RenameDlg: TRenameDlg
         object ListTopPanel: TPanel
           Left = 0
           Top = 0
-          Width = 532
+          Width = 562
           Height = 59
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 0
           DesignSize = (
-            532
+            562
             59)
           object ListErrLabel: TLabel
             Left = 264
@@ -791,9 +807,9 @@ object RenameDlg: TRenameDlg
             AutoSize = False
           end
           object RenListComboBox: TComboBox
-            Left = 10
+            Left = 8
             Top = 8
-            Width = 417
+            Width = 447
             Height = 23
             Style = csDropDownList
             Anchors = [akLeft, akTop, akRight]
@@ -804,7 +820,7 @@ object RenameDlg: TRenameDlg
             OnExit = SrcStrComboBoxExit
           end
           object RefListBtn: TButton
-            Left = 430
+            Left = 458
             Top = 7
             Width = 36
             Height = 24
@@ -814,7 +830,7 @@ object RenameDlg: TRenameDlg
             OnClick = RefListBtnClick
           end
           object EditListBtn: TButton
-            Left = 468
+            Left = 496
             Top = 7
             Width = 60
             Height = 24
@@ -848,16 +864,16 @@ object RenameDlg: TRenameDlg
         object Mp3TopPanel: TPanel
           Left = 0
           Top = 0
-          Width = 532
+          Width = 562
           Height = 65
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 0
           DesignSize = (
-            532
+            562
             65)
           object mp3fextLabel: TLabel
-            Left = 486
+            Left = 516
             Top = 11
             Width = 28
             Height = 13
@@ -869,6 +885,7 @@ object RenameDlg: TRenameDlg
             Font.Name = #65325#65331' '#12468#12471#12483#12463
             Font.Style = []
             ParentFont = False
+            ExplicitLeft = 486
           end
           object TLabel
             Left = 11
@@ -880,7 +897,7 @@ object RenameDlg: TRenameDlg
           object Mp3FmtComboBox: TComboBox
             Left = 42
             Top = 8
-            Width = 441
+            Width = 471
             Height = 23
             Anchors = [akLeft, akTop, akRight]
             DropDownCount = 20
@@ -948,7 +965,7 @@ object RenameDlg: TRenameDlg
         object PageControl1: TPageControl
           Left = 0
           Top = 0
-          Width = 532
+          Width = 562
           Height = 264
           ActivePage = AssRenSheet
           Align = alClient
@@ -961,16 +978,16 @@ object RenameDlg: TRenameDlg
             object Opt1BtmPanel: TPanel
               Left = 0
               Top = 172
-              Width = 524
+              Width = 554
               Height = 62
               Align = alBottom
               BevelOuter = bvNone
               TabOrder = 1
               DesignSize = (
-                524
+                554
                 62)
               object DelAssRenBtn: TButton
-                Left = 373
+                Left = 403
                 Top = 34
                 Width = 60
                 Height = 24
@@ -979,7 +996,7 @@ object RenameDlg: TRenameDlg
                 TabOrder = 4
               end
               object ChgAssRenBtn: TButton
-                Left = 309
+                Left = 339
                 Top = 34
                 Width = 60
                 Height = 24
@@ -988,7 +1005,7 @@ object RenameDlg: TRenameDlg
                 TabOrder = 3
               end
               object AddAssRenBtn: TButton
-                Left = 245
+                Left = 275
                 Top = 34
                 Width = 60
                 Height = 24
@@ -999,7 +1016,7 @@ object RenameDlg: TRenameDlg
               object AssExtEdit: TLabeledEdit
                 Left = 70
                 Top = 4
-                Width = 443
+                Width = 473
                 Height = 23
                 Hint = '. '#12391#21306#20999#12387#12390#35079#25968#25351#23450#12375#12390#12367#12384#12373#12356
                 Anchors = [akLeft, akRight, akBottom]
@@ -1011,7 +1028,7 @@ object RenameDlg: TRenameDlg
                 Text = ''
               end
               object DowColBtn: TButton
-                Left = 483
+                Left = 513
                 Top = 34
                 Width = 30
                 Height = 24
@@ -1020,7 +1037,7 @@ object RenameDlg: TRenameDlg
                 TabOrder = 6
               end
               object UpColBtn: TButton
-                Left = 449
+                Left = 479
                 Top = 34
                 Width = 30
                 Height = 24
@@ -1041,18 +1058,18 @@ object RenameDlg: TRenameDlg
             object Opt1MainPanel: TPanel
               Left = 0
               Top = 0
-              Width = 524
+              Width = 554
               Height = 172
               Align = alClient
               BevelOuter = bvNone
               TabOrder = 0
               DesignSize = (
-                524
+                554
                 172)
               object AssRenListBox: TCheckListBox
                 Left = 8
                 Top = 4
-                Width = 505
+                Width = 535
                 Height = 162
                 Anchors = [akLeft, akTop, akRight, akBottom]
                 DragMode = dmAutomatic
@@ -1072,19 +1089,19 @@ object RenameDlg: TRenameDlg
             object Opt2MainPanel: TPanel
               Left = 0
               Top = 0
-              Width = 266
+              Width = 284
               Height = 234
               Align = alClient
               BevelOuter = bvNone
               TabOrder = 0
               OnResize = Opt2MainPanelResize
               DesignSize = (
-                266
+                284
                 234)
               object CnvCharGroupBox: TGroupBox
-                Left = 4
+                Left = 8
                 Top = 4
-                Width = 252
+                Width = 268
                 Height = 227
                 Anchors = [akLeft, akTop, akRight, akBottom]
                 Caption = #12501#12449#12452#12523#21517#20027#37096#12398#25991#23383#32622#25563
@@ -1122,7 +1139,7 @@ object RenameDlg: TRenameDlg
                 object CnvCharPanelR: TPanel
                   Left = 132
                   Top = 17
-                  Width = 118
+                  Width = 134
                   Height = 208
                   Align = alClient
                   BevelOuter = bvNone
@@ -1177,9 +1194,9 @@ object RenameDlg: TRenameDlg
               end
             end
             object Opt2SubPanel: TPanel
-              Left = 266
+              Left = 284
               Top = 0
-              Width = 258
+              Width = 270
               Height = 234
               Align = alRight
               BevelOuter = bvNone
@@ -1194,12 +1211,12 @@ object RenameDlg: TRenameDlg
               object IniSttGroupBox: TGroupBox
                 Left = 4
                 Top = 4
-                Width = 247
+                Width = 253
                 Height = 138
                 Caption = #21517#21069#20837#21147#27396#12398#21021#26399#29366#24907
                 TabOrder = 0
                 DesignSize = (
-                  247
+                  253
                   138)
                 object TLabel
                   Left = 12
@@ -1212,7 +1229,7 @@ object RenameDlg: TRenameDlg
                 object IniSttComboBox: TComboBox
                   Left = 8
                   Top = 22
-                  Width = 232
+                  Width = 238
                   Height = 23
                   Style = csDropDownList
                   Anchors = [akLeft, akTop, akRight]
@@ -1222,7 +1239,7 @@ object RenameDlg: TRenameDlg
                 object IniSttWdEdit: TLabeledEdit
                   Left = 55
                   Top = 51
-                  Width = 185
+                  Width = 191
                   Height = 23
                   Anchors = [akLeft, akTop, akRight]
                   EditLabel.Width = 39
@@ -1235,7 +1252,7 @@ object RenameDlg: TRenameDlg
                 object IniStt2ComboBox: TComboBox
                   Left = 55
                   Top = 106
-                  Width = 185
+                  Width = 191
                   Height = 23
                   Style = csDropDownList
                   Anchors = [akLeft, akTop, akRight]

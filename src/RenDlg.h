@@ -163,6 +163,7 @@ __published:	// IDE で管理されるコンポーネント
 	TLabel *Label1;
 	TPanel *PreviewPanel;
 	TPanel *SglOpPanel;
+	TButton *Fmt_DT_Btn;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -239,6 +240,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall RefListBtnClick(TObject *Sender);
 	void __fastcall EditListActionExecute(TObject *Sender);
 	void __fastcall EditListActionUpdate(TObject *Sender);
+	void __fastcall Fmt_DT_BtnClick(TObject *Sender);
 
 private:	// ユーザー宣言
 	bool DlgInitialized;

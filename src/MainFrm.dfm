@@ -1056,6 +1056,27 @@ object NyanFiForm: TNyanFiForm
         end
       end
     end
+    object FKeyBar: TToolBar
+      Left = 0
+      Top = 503
+      Width = 720
+      Height = 22
+      Align = alBottom
+      AutoSize = True
+      DoubleBuffered = True
+      DrawingStyle = dsGradient
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      List = True
+      ParentDoubleBuffered = False
+      ParentFont = False
+      ShowCaptions = True
+      TabOrder = 4
+      StyleElements = []
+    end
     object TxtViewPanel: TPanel
       Left = 0
       Top = 0
@@ -1225,38 +1246,8 @@ object NyanFiForm: TNyanFiForm
             TabStop = False
             OnChange = TextScrollBarChange
           end
-          object TextCurColPanel: TPanel
-            Left = 32
-            Top = 221
-            Width = 60
-            Height = 24
-            TabOrder = 1
-            Visible = False
-            StyleElements = [seBorder]
-          end
         end
       end
-    end
-    object FKeyBar: TToolBar
-      Left = 0
-      Top = 503
-      Width = 720
-      Height = 22
-      Align = alBottom
-      AutoSize = True
-      DoubleBuffered = True
-      DrawingStyle = dsGradient
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      List = True
-      ParentDoubleBuffered = False
-      ParentFont = False
-      ShowCaptions = True
-      TabOrder = 4
-      StyleElements = []
     end
     object MainPanel: TPanel
       Left = 0

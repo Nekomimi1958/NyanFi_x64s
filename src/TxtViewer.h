@@ -36,20 +36,29 @@ struct line_rec {
 class TTxtViewer
 {
 private:
-	TPaintBox	*ViewBox;		//ビュアー描画用PaintBox
+	TPaintBox	*ViewBox;			//ビュアー描画用PaintBox
 	TCanvas		*ViewCanvas;
 	TScrollBar	*ScrBar;
 	UsrScrollPanel *ScrPanel;
-	TPaintBox	*RulerBox;		//ルーラ
-	TStatusBar	*SttHeader;		//ステータスヘッダ
-	TPanel		*ColorPanel;	//カーソル位置値のカラー表示
-	TPaintBox	*MarginBox;		//右余白
+	TPaintBox	*RulerBox;			//ルーラ
+	TStatusBar	*SttHeader;			//ステータスヘッダ
+	TPaintBox	*MarginBox;			//右余白
 
-	bool isExtWnd;				//外部ウィンドウで表示
+	bool isExtWnd;					//外部ウィンドウで表示
 
 	UnicodeString EmPtn[MAX_EM_PTN];	//強調表示パターン
 	TColor EmFgC[MAX_EM_PTN];			//強調文字色
 	TColor EmBgC[MAX_EM_PTN];			//強調背景色
+
+	TPanel *ColorPanel;					//カーソル位置値のカラー表示
+
+	TPanel *StickyPanel;					//関数スティッキー表示
+	TPaintBox *StickyBox;
+	UnicodeString StickyStr;				//スティッキー表示内容
+	int  StickyLine;						//スティッキー行番号(1ベース)
+	UnicodeString FuncPtn;				//関数マッチパターン
+	UnicodeString FuncBrkPtn;			//関数ブレークパターン
+	UnicodeString FuncNamPtn;			//関数名強調パターン
 
 	Graphics::TBitmap *ImgBuff;
 
@@ -113,6 +122,8 @@ private:
 
 	void __fastcall AlphaBlendCsvCol(TCanvas *cv, int max_x, int y, int h);
 	void __fastcall onRulerPaint(TObject *Sender);
+	void __fastcall onStickyPaint(TObject *Sender);
+	void __fastcall onStickyClick(TObject *Sender);
 	void __fastcall PaintText();
 	bool __fastcall SetToggleSw(bool &sw, UnicodeString prm);
 
@@ -138,6 +149,7 @@ private:
 	void __fastcall SetPosFromPt(int x, int y);
 	bool __fastcall PtInSelected(int x, int y);
 	void __fastcall UpdatePos(bool up_pos = false, bool force = false);
+	void __fastcall UpdateSticky();
 	void __fastcall UpdateVisible();
 	int  __fastcall get_MovePrm(UnicodeString prm);
 	int  __fastcall to_Bytes(UnicodeString s, bool &case_sw, int code_page = 932);
@@ -273,7 +285,7 @@ public:
 	TColor color_Ctrl;			//コントロールコード
 
 	TTxtViewer(TForm *frm, TPaintBox *viewbox, TScrollBar *scrbar, UsrScrollPanel *sp,
-				TStatusBar *stthdr, TPaintBox *ruler, TPanel *colref, TPaintBox *mgn_box = NULL);
+				TStatusBar *stthdr, TPaintBox *ruler, TPaintBox *mgn_box = NULL);
 	~TTxtViewer();
 
 	bool __fastcall CloseAuxForm();
@@ -282,6 +294,7 @@ public:
 	void __fastcall SetColor(UnicodeString prm = EmptyStr);
 	void __fastcall SetOptColor();
 	void __fastcall SetMetric(bool set_hi = false);
+	UnicodeString __fastcall GetFuncPtns(UnicodeString *nam_ptn = NULL, UnicodeString *cap_str = NULL);
 	void __fastcall UpdateScr(int lno = 1);
 	void __fastcall AssignText(TStrings *lst = NULL, int lno = 1, int sort_mode = 0);
 	bool __fastcall AssignBin(__int64 top_adr = 0, bool reload = false, unsigned int adr = 0);

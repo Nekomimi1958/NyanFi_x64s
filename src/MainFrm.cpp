@@ -611,7 +611,7 @@ void __fastcall TNyanFiForm::FormCreate(TObject *Sender)
 
 	//テキストビュアー
 	TxtViewer = new TTxtViewer(this, TextPaintBox, TextScrollBar, TxtViewScrPanel,
-								TxtSttHeader, TextRulerBox, TextCurColPanel, TextMarginBox);
+								TxtSttHeader, TextRulerBox, TextMarginBox);
 	TxtViewer->isHtm2Txt   = IniFile->ReadBoolGen(_T("Htm2Txt"));
 	TxtViewer->isFixedLen  = IniFile->ReadBoolGen(_T("FixedLen"));
 	TxtViewer->ShowRuby    = IniFile->ReadBoolGen(_T("ShowRuby"),	true);
@@ -5478,7 +5478,8 @@ void __fastcall TNyanFiForm::SetScrMode(
 
 	//メニュー表示の切換
 	//※ちらつきを抑えるために一旦ダミー表示
-	Menu = GetDummyMenu();
+	bool show_menu = (Menu!=NULL);
+	if (show_menu) Menu = GetDummyMenu();
 
 	//※「表示」は項目が多く、VCLスタイルだと適切に表示されないため、モード毎に3つに分割
 	ViewMenuF->Visible = ScrMode == SCMD_FLIST || ScrMode == SCMD_GREP;
@@ -5493,7 +5494,7 @@ void __fastcall TNyanFiForm::SetScrMode(
 	ViewMenuV->Caption = ViewMenuV->Visible? "表示(&V)" : "表示";
 	ViewMenuI->Caption = ViewMenuI->Visible? "表示(&V)" : "表示";
 
-	Menu = MainMenu1;
+	if (show_menu) Menu = MainMenu1;
 
 	//ツールバーの切替
 	for (int i=0; i<ToolBarF->ButtonCount;  i++) ToolBarF->Buttons[i]->Enabled  = (ScrMode==SCMD_FLIST);
@@ -34075,12 +34076,7 @@ void __fastcall TNyanFiForm::CloseIActionExecute(TObject *Sender)
 		if (cfp) cfp->selected = ((file_rec*)ViewFileList->Objects[i])->selected;
 	}
 	clear_FileList(ViewFileList);
-
-	//インデックスエラーの回避
-	TStringGrid *gp = ThumbnailGrid;
-	InhDrawImg++; {
-		gp->Col = 0; gp->Row = 0; gp->Repaint();
-	} InhDrawImg--;
+	TempTopThumbnailGrid(true);		//インデックスエラーの回避
 
 	SetScrMode(SCMD_FLIST, CurListTag);
 	if (ViewFromArc) RecoverFileList(CurListTag);
@@ -34153,6 +34149,20 @@ void __fastcall TNyanFiForm::ColorPickerActionExecute(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
+//ThumbnailGrid を一時的に先頭に
+// インデックスエラーを回避、画像は表示させない
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::TempTopThumbnailGrid(
+	bool sw_repaint)	//	(default = false)
+{
+	InhDrawImg++;
+	ThumbnailGrid->Col = 0;
+	ThumbnailGrid->Row = 0;
+	if (sw_repaint) ThumbnailGrid->Repaint(); 
+	InhDrawImg--;
+}
+
+//---------------------------------------------------------------------------
 //イメージビュアーから画像ファイルを削除
 //---------------------------------------------------------------------------
 bool __fastcall TNyanFiForm::DeleteICore(int idx)
@@ -34188,9 +34198,9 @@ void __fastcall TNyanFiForm::DeleteIActionExecute(TObject *Sender)
 		int sel_cnt = GetSelCount(ViewFileList);
 		if (TEST_ActParam("SO") && sel_cnt==0) SkipAbort();
 
-		int v_idx	= GetCurIndex();
-		int r_top	= gp->TopRow;
-		int l_col	= gp->LeftCol;
+		int v_idx = GetCurIndex();
+		int r_top = gp->TopRow;
+		int l_col = gp->LeftCol;
 
 		//ワークリスト
 		if (isViewWork) {
@@ -34199,7 +34209,7 @@ void __fastcall TNyanFiForm::DeleteIActionExecute(TObject *Sender)
 			//選択画像
 			if (sel_cnt>0) {
 				if (msgbox_Sure(_T("選択ファイルをワークリストから外しますか?"), SureDelete)) {
-					gp->Col = 0; gp->Row = 0;
+					TempTopThumbnailGrid();
 					int i = 0;
 					while (i<ViewFileList->Count) {
 						file_rec *vfp = (file_rec*)ViewFileList->Objects[i];
@@ -34222,7 +34232,7 @@ void __fastcall TNyanFiForm::DeleteIActionExecute(TObject *Sender)
 				if (msgbox_Sure(_T("このファイルをワークリストから外しますか?"), SureDelete)) {
 					int w_idx = WorkList->IndexOf(ViewFileList->Strings[v_idx]);
 					if (v_idx!=-1) {
-						gp->Col = 0; gp->Row = 0;
+						TempTopThumbnailGrid();
 						del_FileListItem(WorkList,		w_idx);
 						del_FileListItem(ViewFileList,	v_idx);
 					}
@@ -34238,7 +34248,7 @@ void __fastcall TNyanFiForm::DeleteIActionExecute(TObject *Sender)
 			if (sel_cnt>0) {
 				if (msgbox_Sure(LoadUsrMsg(USTR_DeleteQ, _T("選択ファイル")), SureDelete)) {
 					StartLog(LoadUsrMsg(USTR_BeginDelete, CurPath[CurListTag]));
-					gp->Col = 0; gp->Row = 0;
+					TempTopThumbnailGrid();
 					int i = 0;
 					while (i<ViewFileList->Count) {
 						if (((file_rec*)ViewFileList->Objects[i])->selected) {
@@ -34253,7 +34263,7 @@ void __fastcall TNyanFiForm::DeleteIActionExecute(TObject *Sender)
 				if (v_idx==-1) Abort();
 				if (msgbox_Sure(LoadUsrMsg(USTR_DeleteQ, _T("このファイル")), SureDelete)) {
 					StartLog(LoadUsrMsg(USTR_BeginDelete, CurPath[CurListTag]));
-					gp->Col = 0; gp->Row = 0;
+					TempTopThumbnailGrid();
 					if (!DeleteICore(v_idx)) UserAbort(USTR_FaildDelete);
 				}
 			}
@@ -34288,10 +34298,9 @@ void __fastcall TNyanFiForm::DeleteIActionExecute(TObject *Sender)
 		}
 		else {
 			//すべて削除された
-			InhDrawImg++; {
-				gp->Col = 0; gp->Row = 0; gp->Repaint();
-				gp->ColCount = 1;	gp->RowCount = 1;
-			} InhDrawImg--;
+			TempTopThumbnailGrid(true);
+			gp->ColCount = 1;
+			gp->RowCount = 1;
 			ImgViewThread->AddRequest(_T("CLEAR"));
 		}
 	}
@@ -35259,11 +35268,7 @@ void __fastcall TNyanFiForm::WarnHighlightActionUpdate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::WorkListIActionExecute(TObject *Sender)
 {
-	//インデックスエラーの回避
-	InhDrawImg++; {
-		TStringGrid *gp = ThumbnailGrid;
-		gp->Col = 0; gp->Row = 0; gp->Repaint();
-	} InhDrawImg--;
+	TempTopThumbnailGrid(true);	//インデックスエラーの回避
 
 	isViewWork = !isViewWork;
 	SetViewFileList(true, true);
@@ -37501,3 +37506,4 @@ void __fastcall TNyanFiForm::IS_Match1ActionUpdate(TObject *Sender)
 	ap->Enabled = !CurStt->is_Migemo && !CurStt->is_Filter;
 }
 //---------------------------------------------------------------------------
+

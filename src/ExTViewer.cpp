@@ -35,7 +35,7 @@ void __fastcall TExTxtViewer::FormCreate(TObject *Sender)
 
 	TxtViewScrPanel = new UsrScrollPanel(TxtScrollPanel, TextScrollBar, USCRPNL_FLAG_TV|USCRPNL_FLAG_L_WP);
 
-	ExViewer = new TTxtViewer(this, TextPaintBox, TextScrollBar, TxtViewScrPanel, TxtSttHeader, TextRulerBox, TextCurColPanel);
+	ExViewer = new TTxtViewer(this, TextPaintBox, TextScrollBar, TxtViewScrPanel, TxtSttHeader, TextRulerBox);
 	ExViewer->isHtm2Txt   = TxtViewer->isHtm2Txt;	//“à•”ƒrƒ…ƒA[‚©‚ç”½‰f
 	ExViewer->isFixedLen  = TxtViewer->isFixedLen;
 	ExViewer->ShowRuby	  = IniFile->ReadBoolGen(_T("ShowRuby"), true);

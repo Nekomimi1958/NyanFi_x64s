@@ -690,6 +690,7 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	ShowTabCheckBox->Tag		= (NativeInt)&ShowTAB;
 	ShowCrCheckBox->Tag 		= (NativeInt)&ShowCR;
 	ShowRulerCheckBox->Tag		= (NativeInt)&ShowTextRuler;
+	ShowStickyCheckBox->Tag		= (NativeInt)&ShowSticky;
 	TxtSttIsBtmCheckBox->Tag	= (NativeInt)&TxtSttIsBottom;
 	UseXd2txCheckBox->Tag		= (NativeInt)&UseXd2tx;		UseXd2txCheckBox->Enabled = xd2tx_Available;
 	AozoraCheckBox->Tag 		= (NativeInt)&ChkAozora;

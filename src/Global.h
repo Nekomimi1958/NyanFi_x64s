@@ -424,6 +424,7 @@ extern bool ShowLineCursor;
 extern bool ShowTAB;
 extern bool ShowCR;
 extern bool ShowTextRuler;
+extern bool ShowSticky;
 extern bool ScrBarToFoldPos;
 extern bool TxtSttIsBottom;
 extern bool ChkAozora;

@@ -68,7 +68,6 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *SortDesItem;
 	TPaintBox *TextPaintBox;
 	TPaintBox *TextRulerBox;
-	TPanel *TextCurColPanel;
 	TPanel *TxtMainPanel;
 	TPanel *TxtScrollPanel;
 	TPanel *TxtViewPanel;
