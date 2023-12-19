@@ -382,8 +382,6 @@ extern bool LoopFilerCursor;
 extern bool FlCursorVisible;
 extern bool AutoCompComboBox;
 extern bool DialogCenter;
-extern bool MenuAutoHotkey;
-extern bool EscapeHelp;
 extern bool InhbitAltMenu;
 extern bool SelectByMouse;
 extern bool SelectBaseOnly;

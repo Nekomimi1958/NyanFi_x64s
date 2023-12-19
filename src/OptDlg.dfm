@@ -358,14 +358,14 @@ object OptionDlg: TOptionDlg
       end
       object DispGroupBox: TGroupBox
         Left = 10
-        Top = 77
+        Top = 87
         Width = 434
-        Height = 186
+        Height = 190
         Caption = #34920#31034
         TabOrder = 4
         object TLabel
           Left = 10
-          Top = 130
+          Top = 134
           Width = 63
           Height = 15
           Caption = #12479#12452#12488#12523#12496#12540':'
@@ -404,7 +404,7 @@ object OptionDlg: TOptionDlg
         end
         object PathInTitleBarCheckBox: TCheckBox
           Left = 297
-          Top = 129
+          Top = 133
           Width = 105
           Height = 17
           Caption = #12459#12524#12531#12488#12497#12473
@@ -446,7 +446,7 @@ object OptionDlg: TOptionDlg
         end
         object GetFaviUrlEdit: TLabeledEdit
           Left = 110
-          Top = 97
+          Top = 99
           Width = 313
           Height = 23
           Hint = ' \D : '#12489#12513#12452#12531#21517
@@ -459,7 +459,7 @@ object OptionDlg: TOptionDlg
         end
         object CompInTitleBarCheckBox: TCheckBox
           Left = 83
-          Top = 129
+          Top = 133
           Width = 105
           Height = 17
           Caption = #12467#12531#12500#12517#12540#12479#21517
@@ -467,7 +467,7 @@ object OptionDlg: TOptionDlg
         end
         object TabGrInTitleBarCheckBox: TCheckBox
           Left = 190
-          Top = 129
+          Top = 133
           Width = 105
           Height = 17
           Caption = #12479#12502#12464#12523#12540#12503
@@ -475,7 +475,7 @@ object OptionDlg: TOptionDlg
         end
         object DlgCenterCheckBox: TCheckBox
           Left = 10
-          Top = 158
+          Top = 164
           Width = 223
           Height = 17
           Caption = #12480#12452#12450#12525#12464#12434#12513#12452#12531#30011#38754#12398#20013#22830#12395#34920#31034
@@ -483,7 +483,7 @@ object OptionDlg: TOptionDlg
         end
         object NoRoundWinCheckBox: TCheckBox
           Left = 241
-          Top = 158
+          Top = 164
           Width = 182
           Height = 17
           Caption = #35282#20024#12454#12451#12531#12489#12454#12398#28961#21177#21270
@@ -492,8 +492,8 @@ object OptionDlg: TOptionDlg
       end
       object MigemoDirEdit: TLabeledEdit
         Left = 120
-        Top = 41
-        Width = 273
+        Top = 47
+        Width = 285
         Height = 23
         EditLabel.Width = 102
         EditLabel.Height = 23
@@ -504,9 +504,9 @@ object OptionDlg: TOptionDlg
       end
       object OpeGroupBox: TGroupBox
         Left = 10
-        Top = 273
+        Top = 287
         Width = 434
-        Height = 98
+        Height = 72
         Caption = #25805#20316
         TabOrder = 5
         object FlCsrVisiCheckBox: TCheckBox
@@ -526,19 +526,11 @@ object OptionDlg: TOptionDlg
           TabOrder = 0
         end
         object AutoCompCheckBox: TCheckBox
-          Left = 10
-          Top = 66
+          Left = 216
+          Top = 43
           Width = 191
           Height = 17
           Caption = #12467#12531#12508#12508#12483#12463#12473#12398#33258#21205#35036#23436
-          TabOrder = 4
-        end
-        object AutoHotkeyCheckBox: TCheckBox
-          Left = 216
-          Top = 43
-          Width = 200
-          Height = 17
-          Caption = #12450#12463#12475#12521#12524#12540#12479#12461#12540#33258#21205#35519#25972
           TabOrder = 3
         end
         object InhAltMenuCheckBox: TCheckBox
@@ -575,8 +567,8 @@ object OptionDlg: TOptionDlg
         end
       end
       object RefMigemoBtn: TButton
-        Left = 397
-        Top = 41
+        Left = 408
+        Top = 47
         Width = 36
         Height = 22
         Anchors = [akTop, akRight]
@@ -585,8 +577,8 @@ object OptionDlg: TOptionDlg
         OnClick = RefMigemoBtnClick
       end
       object RefTmpDirBtn: TButton
-        Left = 397
-        Top = 13
+        Left = 408
+        Top = 19
         Width = 36
         Height = 22
         Anchors = [akTop, akRight]
@@ -620,8 +612,8 @@ object OptionDlg: TOptionDlg
       end
       object TempDirEdit: TLabeledEdit
         Left = 120
-        Top = 12
-        Width = 273
+        Top = 18
+        Width = 285
         Height = 23
         EditLabel.Width = 80
         EditLabel.Height = 23
@@ -654,14 +646,14 @@ object OptionDlg: TOptionDlg
       end
       object WatchGroupBox: TGroupBox
         Left = 10
-        Top = 381
+        Top = 369
         Width = 434
-        Height = 130
+        Height = 145
         Caption = #30435#35222'/'#26356#26032
         TabOrder = 6
         DesignSize = (
           434
-          130)
+          145)
         object TLabel
           Left = 397
           Top = 50
@@ -702,7 +694,7 @@ object OptionDlg: TOptionDlg
         end
         object NoWatchPathEdit: TLabeledEdit
           Left = 10
-          Top = 96
+          Top = 97
           Width = 413
           Height = 23
           Anchors = [akLeft, akTop, akRight]

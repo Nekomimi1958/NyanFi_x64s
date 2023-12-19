@@ -2676,10 +2676,11 @@ void __fastcall TTxtViewer::UpdatePos(
 //---------------------------------------------------------------------------
 void __fastcall TTxtViewer::UpdateSticky()
 {
+	StickyStr  = EmptyStr;
+	StickyLine = 0;
 	if (isReady && ShowSticky && !FuncPtn.IsEmpty()) {
 		bool has_par = ContainsStr(FuncPtn, "\\(");
 		bool non_tab = StartsStr('^', FuncPtn) && !StartsStr("^\\s*", FuncPtn);
-		StickyStr  = EmptyStr;
 		TRegExOptions opt; opt << roIgnoreCase;
 		for (int i=CurTop-1; i>=0; i--) {
 			line_rec *rp = get_LineRec(i);  if (rp->LineIdx>0) continue;
@@ -2688,8 +2689,8 @@ void __fastcall TTxtViewer::UpdateSticky()
 			if (non_tab && (StartsStr('\t', lbuf) || StartsStr(' ', lbuf))) continue;
 			if (has_par && (!ContainsStr(lbuf, "(") || ContainsStr(lbuf, "="))) continue;
 			if (TRegEx::IsMatch(lbuf, FuncPtn, opt)) {
-				StickyStr = lbuf;
-				StickyLine  = rp->LineNo;
+				StickyStr  = lbuf;
+				StickyLine = rp->LineNo;
 				break;
 			}
 		}
@@ -4570,23 +4571,29 @@ void __fastcall TTxtViewer::JumpLine(UnicodeString ln_str)
 		}
 		//テキスト
 		else {
-			InputExDlg->IpuntExMode = INPEX_JUMP_LINE;
-			InputExDlg->InputEdit->EditLabel->Caption = msg.sprintf(_T("行番号(1～%u)"), MaxLine);
-			ln_str = (InputExDlg->ShowModal()==mrOk)? InputExDlg->InputEdit->Text : EmptyStr;
-			if (ln_str.IsEmpty()) throw EAbort(EmptyStr);	//キャンセル
-			if (contains_wd_i(ln_str, "+|=")) throw EAbort(EmptyStr);
-
-			int inp_n = ln_str.ToIntDef(-1);
-			if (inp_n==-1)				   UserAbort(USTR_IllegalParam);
-			if (inp_n<=0 || inp_n>MaxLine) SysErrAbort(DISP_E_OVERFLOW);
-
-			for (int i=0; i<MaxDispLine && !jumped; i++) {
-				if (inp_n != get_LineRec(i)->LineNo) continue;
-				CurPos	= Point(0, i);	set_PosFromCol(CsvCol);
-				CurHchX = cv_PosX_to_HchX(CurPos.x);
-				if (isSelMode) SelEnd = CurPos;
-				UpdatePos(true);
+			if (SameText(ln_str, "ST")) {
+				ToLine(StickyLine);
 				jumped = true;
+			}
+			else {
+				InputExDlg->IpuntExMode = INPEX_JUMP_LINE;
+				InputExDlg->InputEdit->EditLabel->Caption = msg.sprintf(_T("行番号(1～%u)"), MaxLine);
+				ln_str = (InputExDlg->ShowModal()==mrOk)? InputExDlg->InputEdit->Text : EmptyStr;
+				if (ln_str.IsEmpty()) throw EAbort(EmptyStr);	//キャンセル
+				if (contains_wd_i(ln_str, "+|=")) throw EAbort(EmptyStr);
+
+				int inp_n = ln_str.ToIntDef(-1);
+				if (inp_n==-1)				   UserAbort(USTR_IllegalParam);
+				if (inp_n<=0 || inp_n>MaxLine) SysErrAbort(DISP_E_OVERFLOW);
+
+				for (int i=0; i<MaxDispLine && !jumped; i++) {
+					if (inp_n != get_LineRec(i)->LineNo) continue;
+					CurPos	= Point(0, i);	set_PosFromCol(CsvCol);
+					CurHchX = cv_PosX_to_HchX(CurPos.x);
+					if (isSelMode) SelEnd = CurPos;
+					UpdatePos(true);
+					jumped = true;
+				}
 			}
 		}
 

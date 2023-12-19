@@ -565,11 +565,16 @@
       <a href="#BitmapView">→ BitmapView</a>
     </dd>
 
-    <dt id="JumpLine">JumpLine<span class="pram_text">[_{行番号|[+|-]アドレス}]</span></dt>
+    <dt id="JumpLine">JumpLine<span class="pram_text">[_{行番号|[+|-]アドレス}]</span><br>
+      JumpLine<span class="pram_text">_ST</span>
+    </dt>
     <dd>テキスト表示の場合、指定した行番号に移動します。<br>
       バイナリ・ダンプ表示の場合は、指定した(16進/10進)アドレスに移動します。その際、<b>+</b> または <b>-</b>
       を付けると、現在位置からの相対移動になります。また、指定アドレスが読み込み済み範囲外だった場合、先頭アドレスを変更して移動します。<br>
       パラメータを指定しない場合は入力ボックスが出ます。<br>
+      <div class="spc_box">
+        パラメータに <b>ST</b> を指定すると、スティッキーが表示されている場合、その行に移動します。<br>
+      </div>
       <a href="#SetTopAddr">→ SetTopAddr</a>
     </dd>
 

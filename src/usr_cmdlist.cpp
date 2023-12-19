@@ -812,6 +812,9 @@ void get_PrmList(
 			_T("SD : フォルダ参照ダイアログを表示\n")
 			_T("CB : クリップボード内容のディレクトリに移動\n"));
 	}
+	else if (SameText(cmd, "JumpLine")) {
+		params = "\nST : スティッキー行に移動\n";
+	}
 	else if (SameText(cmd, "JsonViewer")) {
 		params = "\nCB : クリップボード内容を表示\n";
 	}

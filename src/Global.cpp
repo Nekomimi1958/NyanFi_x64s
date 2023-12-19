@@ -194,8 +194,6 @@ bool LoopFilerCursor;			//ファイラーでカーソルをループ移動
 bool FlCursorVisible;			//ファイラーでカーソルを常に可視領域に
 bool AutoCompComboBox;			//コンボボックス入力を自動補完
 bool DialogCenter;				//ダイアログをメイン画面の中央に
-bool MenuAutoHotkey;			//メニューのアクセラレータキーを自動調整
-bool EscapeHelp;				//ESCキーでヘルプを閉じる					※v16.00で廃止
 bool InhbitAltMenu;				//ALTキーでメニューにフォーカスしない
 bool SelectByMouse;				//マウスでファイラーの項目を選択
 bool SelectBaseOnly;			//ファイル名主部でのみ選択
@@ -1203,10 +1201,10 @@ void InitializeGlobal()
 	mute_Volume("GET");	//ミュート状態を取得
 
 	//廃止セクション、キーの削除、修正
+	IniFile->DeleteKey( SCT_Option,  "MenuAutoHotkey");					//v16.08
+	IniFile->DeleteKey( SCT_Option,  "MenuAutoHotkey");					//v16.08
+	IniFile->DeleteKey( SCT_Option,  "FlatInfPanel");					//v16.00
 	IniFile->ReplaceKey(SCT_Option,  "RevTagCololr", "RevTagColor");	//v16.01
-	IniFile->ReplaceKey(SCT_General, "FintTagInfHi", "FindTagInfHi");	//v15.56
-	IniFile->DeleteKey( SCT_Option,  "TabFocusSubWin");					//v15.20
-	IniFile->DeleteKey( SCT_Option,  "RestoreComboBox");				//v15.10
 
 	CurStt = &ListStt[CurListTag];
 	OppStt = &ListStt[OppListTag];
@@ -1774,8 +1772,6 @@ void InitializeGlobal()
 		{_T("KeepCurListWidth=false"),		(TObject*)&KeepCurListWidth},
 		{_T("NoSpaceFExt=false"),			(TObject*)&NoSpaceFExt},
 		{_T("HideTitleMenu=false"),			(TObject*)&HideTitleMenu},
-		{_T("MenuAutoHotkey=false"),		(TObject*)&MenuAutoHotkey},
-		{_T("EscapeHelp=false"),			(TObject*)&EscapeHelp},
 		{_T("InhbitAltMenu=false"),			(TObject*)&InhbitAltMenu},
 		{_T("SureCopy=false"),				(TObject*)&SureCopy},
 		{_T("SureMove=false"),				(TObject*)&SureMove},

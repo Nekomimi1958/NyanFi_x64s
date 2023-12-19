@@ -190,7 +190,6 @@ __published:	// IDE で管理されるコンポーネント
 	TCheckBox *AsoSortCheckBox;
 	TCheckBox *AutoCompCheckBox;
 	TCheckBox *AutoDelWLCheckBox;
-	TCheckBox *AutoHotkeyCheckBox;
 	TCheckBox *BeepTopEndCheckBox;
 	TCheckBox *BinMemMapedCheckBox;
 	TCheckBox *CacheThumbADSCheckBox;

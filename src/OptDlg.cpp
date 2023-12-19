@@ -648,7 +648,6 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	LoopFlCsrCheckBox->Tag		= (NativeInt)&LoopFilerCursor;
 	FlCsrVisiCheckBox->Tag		= (NativeInt)&FlCursorVisible;
 	AutoCompCheckBox->Tag		= (NativeInt)&AutoCompComboBox;
-	AutoHotkeyCheckBox->Tag 	= (NativeInt)&MenuAutoHotkey;
 	InhAltMenuCheckBox->Tag 	= (NativeInt)&InhbitAltMenu;
 	PermitCmdsCheckBox->Tag 	= (NativeInt)&PermitDotCmds;
 	InheritDotCheckBox->Tag 	= (NativeInt)&InheritDotNyan;
@@ -2673,7 +2672,7 @@ void __fastcall TOptionDlg::AssociateListBoxMouseUp(TObject *Sender, TMouseButto
 		make_AssoMenuList(app_lst, m_lst.get());
 		//テストメニューを作成
 		TestPopupMenu->Items->Clear();
-		TestPopupMenu->AutoHotkeys = AutoHotkeyCheckBox->Checked? maAutomatic : maManual;
+		TestPopupMenu->AutoHotkeys = maAutomatic;
 		IconVImgListP->AutoFill = false;
 		IconVImgListP->Clear();
 		for (int i=0; i<m_lst->Count; i++) {

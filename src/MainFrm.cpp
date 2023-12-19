@@ -4937,9 +4937,8 @@ void __fastcall TNyanFiForm::SetupDesign(
 	}
 
 	//メニュー
-	TMenuAutoFlag ak_flag	 = MenuAutoHotkey? maAutomatic : maManual;
-	MainMenu1->AutoHotkeys	 = ak_flag;
-	ExPopupMenu->AutoHotkeys = ak_flag;
+	MainMenu1->AutoHotkeys	 = maAutomatic;
+	ExPopupMenu->AutoHotkeys = maAutomatic;
 
 	//ツールバー
 	ToolBarF->Visible  = ShowToolBar;
@@ -28254,7 +28253,7 @@ void __fastcall TNyanFiForm::MoveActionExecute(TObject *Sender)
 	del_file_rec(cfp);
 }
 //---------------------------------------------------------------------------
-//指定ディレクトリへ移動
+//対象を指定ディレクトリへ移動
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::MoveToActionExecute(TObject *Sender)
 {

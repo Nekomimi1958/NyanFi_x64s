@@ -5501,7 +5501,6 @@ object NyanFiForm: TNyanFiForm
     Top = 147
   end
   object MainMenu1: TMainMenu
-    AutoHotkeys = maManual
     Left = 40
     Top = 136
     object FileMenu: TMenuItem
