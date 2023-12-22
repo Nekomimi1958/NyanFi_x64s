@@ -217,15 +217,7 @@ void __fastcall TSubViewer::LockImage()
 void __fastcall TSubViewer::SetImgLocked(bool Value)
 {
 	FImgLocked = Value;
-
-	if (FImgLocked) {
-		Color = clRed;
-		BorderWidth = 1;
-	}
-	else {
-		BorderWidth = 0;
-		Color = ImgPanel->Color;
-	}
+	if (FImgLocked) SetToolWinBorder(this, true, clRed); else SetToolWinBorder(this);
 }
 
 //---------------------------------------------------------------------------

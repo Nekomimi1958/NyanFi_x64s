@@ -1643,7 +1643,12 @@ Set_Buffer=%SelFiles%: SaveBuffer_D:\filelist.txt
 
     ハッシュを比較し、不一致ならメッセージ表示<br>
     <pre class="example_box">
-CompareHash_MD5: Test_LogNgCount>0: IfTrue: MsgBox_一致しません: EndIf
+CompareHash_MD5: Test_LogNgCount&gt;0: IfTrue: MsgBox_一致しません: EndIf
+</pre>
+
+  今日付の画像をイメージビュアーで閲覧<br>
+<pre class="example_box">
+  DateSelect_TD: SelMask: ImageViewer
 </pre>
 
     すべてのタスクが終了したら <b>Windows</b> を終了<br>

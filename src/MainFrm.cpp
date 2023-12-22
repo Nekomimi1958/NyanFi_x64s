@@ -247,6 +247,10 @@ __fastcall TNyanFiForm::TNyanFiForm(TComponent* Owner)
 	ApplyDotNyan = false;
 	ChkHardLink  = false;
 
+	Activating	 = false;
+	WaitingToolBtn = NULL;
+	WaitingFKeyBtn = NULL;
+
 	hWatchDir[0] = hWatchDir[1] = NULL;
 
 	InhDrawImg	 = 0;
@@ -1503,10 +1507,12 @@ void __fastcall TNyanFiForm::SetCurWorking(bool Value)
 	if (!Initialized) return;
 
 	if (Value) {
+		OutDebugStr("#CurWorking = true");
 		WorkingTag = CurListTag;
 		cursor_HourGlass();
 	}
 	else {
+		OutDebugStr("#CurWorking = false");
 		MsgHint->ReleaseHandle();
 		cursor_Default();
 	}
@@ -1591,6 +1597,8 @@ void __fastcall TNyanFiForm::WmActivate(TMessage &msg)
 
 	//ここで Active は更新されている
 	RepaintActiveArea();
+
+	OutDebugStr("<= WmActivate");
 }
 //---------------------------------------------------------------------------
 //Windows終了時の処理
@@ -2358,6 +2366,7 @@ void __fastcall TNyanFiForm::ApplicationEvents1Activate(TObject *Sender)
 {
 	if (!Initialized || UnInitializing) return;
 
+	Activating = true;
 	OutDebugStr("=> ApplicationEvents1Activate");
 
 	if (DebugForm && DebugForm->Visible) {
@@ -2407,6 +2416,18 @@ void __fastcall TNyanFiForm::ApplicationEvents1Activate(TObject *Sender)
 	ReqActWnd = NULL;
 
 	RepaintActiveArea();
+
+	Activating = false;
+	OutDebugStr("<= ApplicationEvents1Activate");
+
+	if (WaitingToolBtn) {
+		ToolBtnClick(WaitingToolBtn);
+		WaitingToolBtn = NULL;
+	}
+	if (WaitingFKeyBtn) {
+		FKeyBtnClick(WaitingFKeyBtn);
+		WaitingFKeyBtn = NULL;
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::ApplicationEvents1Deactivate(TObject *Sender)
@@ -5227,6 +5248,14 @@ void __fastcall TNyanFiForm::ToolBtnClick(TObject *Sender)
 	TToolButton *bp = dynamic_cast<TToolButton *>(Sender);
 	if (bp==NULL) return;
 
+	if (Activating) {
+		WaitingToolBtn = bp;
+		return;
+	}
+	else {
+		WaitingToolBtn = NULL;
+	}
+
 	//他の画面モードのアクセラレータキーによる誤動作防止
 	if (ScrMode==SCMD_FLIST && bp->Parent!=ToolBarF) return;
 	if (ScrMode==SCMD_TVIEW && bp->Parent!=ToolBarV) return;
@@ -5374,8 +5403,16 @@ void __fastcall TNyanFiForm::UpdateFKeyBtn()
 void __fastcall TNyanFiForm::FKeyBtnClick(TObject *Sender)
 {
 	TToolButton *bp = (TToolButton *)Sender;
-	UnicodeString cmds = bp->Hint;
 
+	if (Activating) {
+		WaitingFKeyBtn = bp;
+		return;
+	}
+	else {
+		WaitingFKeyBtn = NULL;
+	}
+
+	UnicodeString cmds = bp->Hint;
 	if (SameStr(cmds, "Help")) {
 		int idx = 4;
 		if (FileListBox[CurListTag]->Focused())
@@ -9267,6 +9304,8 @@ void __fastcall TNyanFiForm::ReloadList(
 {
 	if (!Initialized || UnInitializing || DisReload || ScrMode!=SCMD_FLIST) return;
 
+	OutDebugStr(" => ReloadList:" + IntToStr(tag));
+
 	int idx[MAX_FILELIST], top[MAX_FILELIST];
 	UnicodeString lnam[MAX_FILELIST];
 	for (int i=0; i<MAX_FILELIST; i++) {
@@ -9349,6 +9388,8 @@ void __fastcall TNyanFiForm::ReloadList(
 	if (tag==-1 || tag==1) FileListBox[1]->UnlockDrawing();
 
 	if (tag==-1 || tag==CurListTag) SetFileInf();
+
+	OutDebugStr(" <= ReloadList");
 }
 
 //---------------------------------------------------------------------------
@@ -16087,7 +16128,8 @@ void __fastcall TNyanFiForm::DateSelectActionExecute(TObject *Sender)
 		if (ActionParam.IsEmpty()) UserAbort(USTR_NoParameter);
 
 		TDateTime dt;
-		int cnd = get_DateCond(ActionParam, dt);
+		file_rec *fp = GetCurFrecPtr();
+		int cnd = get_DateCond(ActionParam, dt, fp? fp->f_time : Now());
 		if (cnd<=0) UserAbort(USTR_IllegalDtCond);
 
 		//選択
@@ -35357,16 +35399,17 @@ void __fastcall TNyanFiForm::SetViewFileList(
 	std::unique_ptr<TStringList> sel_lst(new TStringList());
 	GetSelList(ViewFileList, sel_lst.get());
 
-	//表示候補数を取得
+	//表示候補を取得
+	std::unique_ptr<TStringList> v_lst(new TStringList());
 	TStringList *lst = isViewWork? WorkList : GetCurList(true);
-	int f_cnt = 0;
 	for (int i=0; i<lst->Count; i++) {
 		file_rec *fp = (file_rec*)lst->Objects[i];
 		if (fp->is_dir || contains_Slash(fp->f_name) || fp->f_attr==faInvalid)	continue;
 		if (test_FileExt(fp->f_ext, FExtNoIView))		continue;
 		if (!is_Viewable(fp) && !is_ExtractIcon(fp))	continue;
-		f_cnt++;
+		v_lst->AddObject(fp->f_name, (TObject *)fp);
 	}
+	int f_cnt = v_lst->Count;
 
 	//グリッド初期化
 	TStringGrid *gp = ThumbnailGrid;
@@ -35398,12 +35441,9 @@ void __fastcall TNyanFiForm::SetViewFileList(
 	bool has_vir = false;
 	try {
 		VListMaking = true;
-		for (int i=0; i<lst->Count; i++) {
+		for (int i=0; i<v_lst->Count; i++) {
 			if (ScrMode!=SCMD_IVIEW) Abort();	//途中でビュアーが閉じられた
-			file_rec *fp = (file_rec*)lst->Objects[i];
-			if (fp->is_dir || contains_Slash(fp->f_name) || fp->f_attr==faInvalid)	continue;
-			if (test_FileExt(fp->f_ext, FExtNoIView))		continue;
-			if (!is_Viewable(fp) && !is_ExtractIcon(fp))	continue;
+			file_rec *fp = (file_rec*)v_lst->Objects[i];
 			UnicodeString fnam = fp->f_name;
 			if (fp->is_virtual) {
 				if (NotThumbIfArc) {
@@ -37505,4 +37545,3 @@ void __fastcall TNyanFiForm::IS_Match1ActionUpdate(TObject *Sender)
 	ap->Enabled = !CurStt->is_Migemo && !CurStt->is_Filter;
 }
 //---------------------------------------------------------------------------
-

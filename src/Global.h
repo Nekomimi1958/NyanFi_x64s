@@ -2073,7 +2073,7 @@ void ApplyOptionByTag(TForm *fp);
 void ApplyOptionByTag(TTabSheet *sp);
 void ApplyOptionByTag(TPanel *pp);
 
-void SetToolWinBorder(TForm *fp, bool sw = true);
+void SetToolWinBorder(TForm *fp, bool sw = true, TColor col = col_TlBorder);
 
 void InitializeListGrid(TStringGrid *gp, TFont *font = NULL);
 void InitializeListHeader(THeaderControl *hp, const _TCHAR *hdr, TFont *font = NULL);
@@ -2125,8 +2125,8 @@ int  get_TabTextWidth(UnicodeString s, TCanvas *cv, int tab_wd);
 
 void out_Text(TCanvas *cv, int x, int y, const _TCHAR *s);
 void out_Text(TCanvas *cv, int x, int y, const _TCHAR *s, TColor fg);
-
 void out_TextEx(TCanvas *cv, int &x, int y, UnicodeString s, TColor fg = col_None, TColor bg = col_None, int mgn = 0);
+void out_TextRect(TCanvas *cv, TRect &rc, UnicodeString s, TColor fg = col_None, TColor bg = col_None);
 
 int  get_MatchWordList(UnicodeString lbuf, UnicodeString kwd, SearchOption opt, TStringList *lst);
 

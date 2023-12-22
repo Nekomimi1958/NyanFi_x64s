@@ -4204,7 +4204,14 @@ void __fastcall TOptionDlg::EventCmdsEditChange(TObject *Sender)
 		EventListBox->Items->Strings[idx]
 			= get_pre_tab(EventListBox->Items->Strings[idx]) + "\t" + EventCmdsEdit->Text;
 }
-
+//---------------------------------------------------------------------------
+void __fastcall TOptionDlg::EventCmdsEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	if (SameText(get_KeyStr(Key, Shift), "F2")) {
+		ChangeSelCmdEdit((TCustomEdit *)Sender);
+		Key = 0;
+	}
+}
 //---------------------------------------------------------------------------
 void __fastcall TOptionDlg::FindEvEditChange(TObject *Sender)
 {

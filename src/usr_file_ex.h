@@ -36,6 +36,7 @@ UnicodeString to_relative_name(UnicodeString fnam);
 UnicodeString to_absolute_name(UnicodeString fnam, UnicodeString rnam = EmptyStr);
 UnicodeString extract_file_path(UnicodeString fnam);
 bool is_same_file(UnicodeString fnam1, UnicodeString fnam2, UnicodeString rnam = EmptyStr);
+bool is_same_dir(UnicodeString dir1, UnicodeString dir2);
 bool match_path_list(UnicodeString dnam, UnicodeString plist, bool start_sw = false);
 
 UnicodeString get_root_name(UnicodeString pnam);

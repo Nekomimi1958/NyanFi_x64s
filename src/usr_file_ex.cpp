@@ -229,6 +229,16 @@ bool is_same_file(UnicodeString fnam1, UnicodeString fnam2,
 }
 
 //---------------------------------------------------------------------------
+//同一ディレクトリか? (環境変数対応)
+//---------------------------------------------------------------------------
+bool is_same_dir(UnicodeString dir1, UnicodeString dir2)
+{
+	dir1 = ExcludeTrailingPathDelimiter(cv_env_str(dir1));
+	dir2 = ExcludeTrailingPathDelimiter(cv_env_str(dir2));
+	return SameText(dir1, dir2);
+}
+
+//---------------------------------------------------------------------------
 //ルート名(ドライブ名またはUNCのコンピュータ名)を取得
 //---------------------------------------------------------------------------
 UnicodeString get_root_name(UnicodeString pnam)

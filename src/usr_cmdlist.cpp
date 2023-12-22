@@ -690,6 +690,9 @@ void get_PrmList(
 	else if (SameText(cmd, "CursorEnd")) {
 		params = "\nAO : 有効なワークリスト項目に移動\n";
 	}
+	else if (SameText(cmd, "DateSelect")) {
+		params = "\nTD : 今日付のファイル\nCP : カーソル位置と同じ日付のファイル\n";
+	}
 	else if (SameText(cmd, "DeleteADS")) {
 		params = "\nZI : Zone.Identifier のみ削除\nTC : サムネイルキャッシュのみ削除\n";
 	}

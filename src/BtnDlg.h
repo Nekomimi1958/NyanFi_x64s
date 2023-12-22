@@ -49,6 +49,7 @@ __published:	// IDE で管理されるコンポーネント
 	bool __fastcall FormHelp(WORD Command, THelpEventData Data, bool &CallHelp);
 	void __fastcall OkButtonClick(TObject *Sender);
 	void __fastcall BtnCmdsComboBoxChange(TObject *Sender);
+	void __fastcall BtnCmdsComboBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall RefCmdsBtnClick(TObject *Sender);
 	void __fastcall RefIconBtnClick(TObject *Sender);
 	void __fastcall IconEditChange(TObject *Sender);
@@ -62,6 +63,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall InsBtnActionExecute(TObject *Sender);
 	void __fastcall ChgBtnActionExecute(TObject *Sender);
 	void __fastcall ChgBtnActionUpdate(TObject *Sender);
+
 
 private:	// ユーザー宣言
 	void __fastcall WmDropped(TMessage &msg);

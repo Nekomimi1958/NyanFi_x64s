@@ -930,7 +930,9 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       <a href="#CopyToClip">→ CopyToClip</a>　<a href="#Paste">→ Paste</a>
     </dd>
 
-    <dt id="DateSelect">DateSelect<span class="pram_text">_日付条件</span></dt>
+    <dt id="DateSelect">DateSelect<span class="pram_text">_日付条件</span><br>
+      DateSelect<span class="pram_text">_{TD|CP}</span>
+    </dt>
     <dd>パラメータで指定した<b>日付条件</b>に合うファイルを選択します。<br>
       以下のように、現在の日付からの相対指定と、絶対指定が可能です。
       <div class="mono_text">
@@ -940,6 +942,10 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
         <b>例</b>:<br>
         　DateSelect_&lt;-14D　　　　　14日前の日付よりも古い<br>
         　DateSelect_=2014/03/30　　2014年3月30日に一致
+      </div>
+      <div class="spc_box">
+        パラメータに <b>TD</b> を指定すると、今日付のファイルが選択されます。<br>
+        パラメータに <b>CP</b> を指定すると、カーソル位置と同じ日付のファイルが選択されます。
       </div>
       <a href="#MaskSelect">→ MaskSelect</a>　<a href="#MatchSelect">→ MatchSelect</a>　<a href="#TagSelect">→
         TagSelect</a>
@@ -1722,6 +1728,13 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
         のイメージビュアーで表示します(アーカイブやFTPは除く)。二重起動されていない場合は、自身で表示します。<br>
         <a href="hid00080.htm">FTP接続</a>時にリモート側のファイルを開いた場合、サムネイルは非表示になります。<br>
       </div>
+
+      <div class="spc_box">
+        <span class="tips">Tips</span>カレントに多数の画像がある場合、あらかじめ対象を絞っておくとよいかもしれません。<br>
+        <b>例</b>: カーソル位置と同じ日付の画像だけを閲覧<br>
+        　DateSelect_CP: SelMask: ImageViewer<br>
+      </div>
+
       <a href="#SubViewer">→ SubViewer</a>
     </dd>
 
@@ -1781,6 +1794,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
         <span class="btn_frame">DEL</span>キーを押すと、入力されているコマンドが(複数の場合は順次)クリアされます(パラメータ入力中は通常の文字削除)。<br>
         コンボボックスをドロップダウンすると、入力履歴を参照できます。<br>
         <span class="btn_frame">F1</span>キーを押すと、入力されているコマンド、またはドロップダウンで選択されていコマンドについてのヘルプが表示されます。<br>
+        <span class="btn_frame">F2</span>キーを押すと、入力内容全体を選択/パラメータ(引用符があればその内部)を選択/末尾に移動 の順番で状態が切り替わります。
       </div>
       <div class="spc_box">
         パラメータに <b>FZ</b> を指定すると、検索語の各文字間に任意の文字列があってもマッチするあいまい検索になります。<br>
@@ -3273,6 +3287,11 @@ D:\Data\hoge.txt
         <span class="tips">Tips</span>ディレクトリは、設定されているフォルダアイコンの名前によってもソート可能(<a
           href="#SortDlg">SortDlg</a>_XI)。適切な名前を付けたアイコンファイルを用意すれば、好きな並べ方で整理できます。<br>
       </div>
+
+      <div class="spc_box">
+        このコマンドでフォルダアイコンが設定されていなくても、フォルダのプロパティでアイコンがカスタマイズされている場合(desktop.ini が存在)には、それが表示されます。この場合、アイコン名によるソート対象にはなりません。
+      </div>
+
       <a href="#FindFolderIcon">→ FindFolderIcon</a>　<a href="#ShowIcon">→ ShowIcon</a>　<a href="#SortDlg">→ SortDlg</a>
     </dd>
 

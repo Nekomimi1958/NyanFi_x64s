@@ -250,7 +250,7 @@ object RegExChecker: TRegExChecker
         ItemHeight = 13
         TabOrder = 1
         TabWidth = 40
-        StyleElements = [seFont, seBorder]
+        StyleElements = [seBorder]
         OnDrawItem = ResListBoxDrawItem
       end
       object DetailCheckBox: TCheckBox

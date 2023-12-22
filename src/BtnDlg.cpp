@@ -164,6 +164,14 @@ void __fastcall TToolBtnDlg::BtnCmdsComboBoxChange(TObject *Sender)
 		}
 	}
 }
+//---------------------------------------------------------------------------
+void __fastcall TToolBtnDlg::BtnCmdsComboBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	if (SameText(get_KeyStr(Key, Shift), "F2")) {
+		ChangeSelCmdComboBox((TComboBox *)Sender);
+		Key = 0;
+	}
+}
 
 //---------------------------------------------------------------------------
 //ファイル/ディレクトリの参照

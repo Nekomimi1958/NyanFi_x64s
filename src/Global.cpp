@@ -2683,16 +2683,18 @@ void ApplyOptionByTag(TPanel *pp)
 //---------------------------------------------------------------------------
 //ツールウインドウの境界線を設定
 //---------------------------------------------------------------------------
-void SetToolWinBorder(TForm *fp, bool sw)
+void SetToolWinBorder(TForm *fp,
+	bool sw,		//表示			(default = true)
+	TColor col)		//境界線の色	(default = col_TlBorder)
 {
-	sw &= (col_TlBorder!=col_None && TlWinBorderWidth>0);
+	sw &= (col!=col_None && TlWinBorderWidth>0);
 	for (int i=0; i<fp->ControlCount; i++) {
 		TControl *cp = fp->Controls[i];
 		if (cp->ClassNameIs("TShape") && StartsStr("Border", cp->Name)) {
 			TShape *sp = (TShape *)cp;
 			if (sw) {
-				sp->Brush->Color = col_TlBorder;
-				sp->Pen->Color	 = col_TlBorder;
+				sp->Brush->Color = col;
+				sp->Pen->Color	 = col;
 				if (sp->Align==alLeft || sp->Align==alRight)
 					sp->Width = TlWinBorderWidth;
 				else
@@ -6818,13 +6820,35 @@ HICON get_fext_SmallIcon(
 HICON get_folder_icon(UnicodeString dnam)
 {
 	HICON hIcon = NULL;
-
-	UnicodeString fnam = to_absolute_name(get_actual_name(DefFldIcoName));
+	UnicodeString fnam;
 
 	FldIcoRWLock->BeginWrite();
 	int idx = FolderIconList->IndexOfName(ExcludeTrailingPathDelimiter(dnam));
-	if (idx!=-1) fnam = to_absolute_name(get_actual_name(FolderIconList->ValueFromIndex[idx]));
+	if (idx!=-1) {
+		fnam = to_absolute_name(get_actual_name(FolderIconList->ValueFromIndex[idx]));
+	}
 	FldIcoRWLock->EndWrite();
+	if (idx==-1) {
+		UnicodeString dt_nam = IncludeTrailingPathDelimiter(dnam) + "desktop.ini";
+		if (file_exists(dt_nam)) {
+			std::unique_ptr<UsrIniFile> dt_ini(new UsrIniFile(dt_nam));
+			UnicodeString ires = dt_ini->ReadString(".ShellClassInfo", "IconResource");
+			if (ires.IsEmpty()) {
+				ires = dt_ini->ReadString(".ShellClassInfo", "IconFile");
+				if (!ires.IsEmpty()) {
+					if (test_FileExt(get_extension(ires), ".exe.dll")) {
+						ires.cat_sprintf(_T(",%d"), dt_ini->ReadInteger(".ShellClassInfo", "IconIndex", 0));
+					}
+				}
+			}
+			if (!ires.IsEmpty()) fnam = cv_env_var(ires);
+		}
+		else if (is_same_dir("%OneDrive%", dnam)) {
+			fnam = cv_env_var("%SystemRoot%\\system32\\imageres.dll,220");
+		}
+	}
+
+	if (fnam.IsEmpty()) fnam = to_absolute_name(get_actual_name(DefFldIcoName));
 
 	if (file_exists_ico(fnam)) {
 		IconRWLock->BeginWrite();
@@ -10892,6 +10916,15 @@ void out_TextEx(
 	x += (cv->TextWidth(s) + mgn);
 	cv->Font->Color  = org_fg;
 	cv->Brush->Color = org_bg;
+}
+//---------------------------------------------------------------------------
+void out_TextRect(TCanvas *cv, TRect &rc, UnicodeString s,
+	TColor fg, TColor bg)	//	(default = clNone)
+{
+	if (fg!=col_None) cv->Font->Color  = fg;
+	if (bg!=col_None) cv->Brush->Color = bg;
+	cv->TextRect(rc, rc.Left, rc.Top, s);
+	rc.Left += cv->TextWidth(s);
 }
 
 //---------------------------------------------------------------------------
@@ -15083,7 +15116,7 @@ void AddCmdHistory(
 {
 	if (SameText(cmd, "CmdHistory") || (InhCmdHistory && !SameStr(id, "-"))) return;
 
-	OutDebugStr("#AddCmdHistory: " + cmd);
+	OutDebugStr("#AddCmdHistory: " + cmd + (!prm.IsEmpty()? "_" + prm : EmptyStr));
 
 	UnicodeString lbuf = FormatDateTime("hh:nn:ss.zzz", Now());
 	lbuf.cat_sprintf(_T(" %s %s %s"), id.c_str(), (CurListTag==1)? _T("_R") : _T("L_"), cmd.c_str());

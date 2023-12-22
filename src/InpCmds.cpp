@@ -277,6 +277,9 @@ void __fastcall TInpCmdsDlg::CmdsComboBoxKeyDown(TObject *Sender, WORD &Key, TSh
 		else if (cp_down->ItemIndex>0)
 			cp_down->ItemIndex = cp_down->ItemIndex - 1;
 	}
+	else if (SameText(KeyStr, "F2")) {
+		if (!cp_down) ChangeSelCmdComboBox(cp_inp);
+	}
 	//ó‹µˆË‘¶ƒwƒ‹ƒv
 	else if (equal_F1(KeyStr)) {
 		UnicodeString kwd;

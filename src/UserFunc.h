@@ -62,6 +62,8 @@ int  EditToInt(TLabeledEdit *ep, int def = 0);
 int  EditToInt(TEdit *ep, int def = 0);
 
 void ChangeSelFileNameEdit(TCustomEdit *ep, bool is_dir = false);
+void ChangeSelCmdComboBox(TComboBox *cp);
+void ChangeSelCmdEdit(TCustomEdit *ep);
 
 TDate set_NormDay(unsigned short y, unsigned short m, unsigned short d);
 bool ToDateTime(UnicodeString s, TDateTime *dt);
@@ -69,7 +71,7 @@ UnicodeString format_DateTime(TDateTime dt, bool omit = false);
 UnicodeString format_Date(TDateTime dt);
 UnicodeString format_DateTimeEx(UnicodeString fmt, TDateTime dt);
 
-int get_DateCond(UnicodeString prm, TDateTime &dt);
+int get_DateCond(UnicodeString prm, TDateTime &dt, TDateTime ct = 0);
 
 int  format_res_list(TStringList *lst, int mgn = 2, int min_wd = 16);
 

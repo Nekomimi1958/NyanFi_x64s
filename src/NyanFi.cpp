@@ -227,7 +227,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR lpCmdLine, int)
 		Application->CreateForm(__classid(TNetShareDlg), &NetShareDlg);
 		cursor_Default();
 		Application->Run();
-		OutDebugStr("<==Run");
+		OutDebugStr("<== Run");
 	}
 	catch (Exception &exception) {
 		Application->ShowException(&exception);

@@ -15,7 +15,8 @@
 TRegDirDlg *RegDirDlg = NULL;
 
 //---------------------------------------------------------------------------
-#define SPITM_EXE 100	//項目は実行ファイル (SpDirList->Objects)
+#define SPITM_EXE  100	//項目は実行ファイル (SpDirList->Objects)
+#define SPITM_PATH 200	//項目はPATH (SpDirList->Objects)
 
 //---------------------------------------------------------------------------
 __fastcall TRegDirDlg::TRegDirDlg(TComponent* Owner)
@@ -307,7 +308,7 @@ void __fastcall TRegDirDlg::UpdateSpDirList(bool reload)
 			for (int i=0; i<elst.Length; i++) if (!elst[i].IsEmpty()) plst->Add(elst[i]);
 			plst->Sort();
 			SpDirList->AddObject("\t-", (TObject*)8);	//セパレータ
-			for (int i=0; i<plst->Count; i++) SpDirList->Add(plst->Strings[i] + "\t");
+			for (int i=0; i<plst->Count; i++) SpDirList->AddObject(plst->Strings[i] + "\t", (TObject*)SPITM_PATH);
 		}
 	}
 
@@ -465,6 +466,7 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 	}
 
 	UnicodeString lbuf = lp->Items->Strings[Index];
+	int flag = (int)lp->Items->Objects[Index];
 	if (!lbuf.IsEmpty()) {
 		//特殊フォルダ
 		if (IsSpecial) {
@@ -477,7 +479,7 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 					draw_Separator(cv, rc);
 					cv->Font->Color = col_Folder;
 					UnicodeString snam;
-					switch ((int)lp->Items->Objects[Index]) {
+					switch (flag) {
 					case  1: snam = lp->Focused()? "<All Users (&U)> " : "<All Users> "; break;
 					case  2: snam = lp->Focused()? "<仮想フォルダ (&V)> " : "<仮想フォルダ> "; break;
 					case  5: snam = lp->Focused()? "<NyanFi (&N)> " : "<NyanFi> "; break;
@@ -494,9 +496,8 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 				//項目
 				else {
 					UnicodeString dnam = itm_buf[0];
-					bool is_exe = ((int)lp->Items->Objects[Index]==SPITM_EXE);
 					//アイコン
-					if (is_exe && ShowIconAction->Checked) {
+					if (ShowIconAction->Checked && flag==SPITM_EXE) {
 						draw_SmallIconF(dnam, cv, xp, std::max(yp + (cv->TextHeight("Q") - SCALED_THIS(16))/2, 0), this);
 						xp += SCALED_THIS(20);
 					}
@@ -509,7 +510,7 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 					//場所
 					lp->Tag &= 0x7fff0000;
 					lp->Tag |= xp;			//表示位置を Tag に設定
-					if (is_exe) dnam = ExtractFilePath(dnam);
+					if (flag==SPITM_EXE) dnam = ExtractFilePath(dnam);
 					if (UseEnvVarAction->Checked) {
 						if (contained_wd_i("TEMP|TMP", itm_buf[1]))
 							dnam = "%" + itm_buf[1] + "%";

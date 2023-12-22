@@ -311,18 +311,83 @@ void ChangeSelFileNameEdit(TCustomEdit *ep,
 			  (ep->SelStart==0 && ep->SelLength>=p)? 3 : 0;
 	idx = (idx + 1)%4;
 	switch (idx) {
-	case 1:	//名前の先頭
+	case 1:		//名前の先頭
 		ep->SelStart = 0;
 		break;
-	case 2:	//ファイル名主部を選択
+	case 2:		//ファイル名主部を選択
 		ep->SelStart  = 0;
 		ep->SelLength = p;
 		break;
-	case 3:	//ファイル名全体を選択
+	case 3:		//ファイル名全体を選択
 		ep->SelectAll();
 		break;
-	default:
+	default:	//末尾
 		ep->SelStart = p;
+	}
+}
+
+//---------------------------------------------------------------------------
+//コマンド入力欄の選択状態を順に切り替える
+//---------------------------------------------------------------------------
+void ChangeSelCmdComboBox(TComboBox *cp)
+{
+	int pos = -1;
+	int len = -1;
+	TMatch mt = TRegEx::Match(cp->Text, "[^_]+_(?:\"(.+)\"|(.+))");
+	if (mt.Success && mt.Groups.Count>1) {
+		for (int i=1; i<mt.Groups.Count; i++) {
+			if (mt.Groups.Item[i].Success && mt.Groups.Item[i].Length>0) {
+				pos = mt.Groups.Item[i].Index - 1;
+				len = mt.Groups.Item[i].Length;
+				break; 
+			}
+		}
+	}
+
+	int idx = (cp->SelStart==0 && cp->SelLength==cp->Text.Length())? 1 :
+			  			  (cp->SelStart==pos && cp->SelLength==len)? 2 : 0;
+	idx = (idx + 1)%(len>0? 3 : 2);
+	switch (idx) {
+	case 1:		//全体を選択
+		cp->SelectAll();
+		break;
+	case 2:		//パラメータを選択
+		cp->SelStart  = pos;
+		cp->SelLength = len;
+		break;
+	default:	//末尾
+		cp->SelStart = cp->Text.Length();
+	}
+}
+//---------------------------------------------------------------------------
+void ChangeSelCmdEdit(TCustomEdit *ep)
+{
+	int pos = -1;
+	int len = -1;
+	TMatch mt = TRegEx::Match(ep->Text, "[^_]+_(?:\"(.+)\"|(.+))");
+	if (mt.Success && mt.Groups.Count>1) {
+		for (int i=1; i<mt.Groups.Count; i++) {
+			if (mt.Groups.Item[i].Success && mt.Groups.Item[i].Length>0) {
+				pos = mt.Groups.Item[i].Index - 1;
+				len = mt.Groups.Item[i].Length;
+				break; 
+			}
+		}
+	}
+
+	int idx = (ep->SelStart==0 && ep->SelLength==ep->Text.Length())? 1 :
+			  			  (ep->SelStart==pos && ep->SelLength==len)? 2 : 0;
+	idx = (idx + 1)%(len>0? 3 : 2);
+	switch (idx) {
+	case 1:		//全体を選択
+		ep->SelectAll();
+		break;
+	case 2:		//パラメータを選択
+		ep->SelStart  = pos;
+		ep->SelLength = len;
+		break;
+	default:	//末尾
+		ep->SelStart = ep->Text.Length();
 	}
 }
 
@@ -390,16 +455,20 @@ UnicodeString format_DateTimeEx(UnicodeString fmt, TDateTime dt)
 //日付条件を取得
 //　相対指定: {<|=|>}-n{D|M|Y}　　(D:日、M:月、Y:年)
 //　絶対指定: {<|=|>}yyyy/mm/dd
+//	  	  今日付: TD
+//  カーソル位置: CP (= ct)
 //
 //  戻り値 : 1: < より古い/ 2: = 同じ/ 3: > より新しい/ 0: 条件なし
 //			-1: エラー
 //---------------------------------------------------------------------------
-int get_DateCond(UnicodeString prm, TDateTime &dt)
+int get_DateCond(UnicodeString prm, TDateTime &dt, TDateTime ct)
 {
 	try {
 		int cnd = 0;
-
 		if (!prm.IsEmpty()) {
+			if		(SameText(prm, "TD")) prm = "=" + format_Date(Date());
+			else if (SameText(prm, "CP")) prm = "=" + format_Date(ct);
+
 			cnd = UnicodeString("<=>").Pos(prm[1]);
 			if (cnd>0) {
 				prm.Delete(1, 1);

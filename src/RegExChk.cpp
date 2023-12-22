@@ -219,11 +219,12 @@ void __fastcall TRegExChecker::TestActionExecute(TObject *Sender)
 				for (int j=0; j<mts.Count; j++) {
 					if (mts.Item[j].Success) {
 						//Match
-						DetailList->AddObject("Match " + IntToStr(j + 1) + ":\t" + mts.Item[j].Value, (TObject*)1);
+						DetailList->AddObject("Match " + IntToStr(j + 1) + ":" + mts.Item[j].Value, (TObject*)1);
 						//Group
 						if (mts.Item[j].Groups.Count>1) {
 							for (int k=1; k<mts.Item[j].Groups.Count; k++) {
-								DetailList->AddObject("Group " + IntToStr(k) + ":\t" + mts.Item[j].Groups.Item[k].Value, (TObject*)2);
+								DetailList->AddObject(
+									"Group " + IntToStr(k) + ":" + mts.Item[j].Groups.Item[k].Value, (TObject*)2);
 							}
 						}
 					}
@@ -312,13 +313,15 @@ void __fastcall TRegExChecker::ReplaceActionExecute(TObject *Sender)
 				for (int j=0; j<mts.Count; j++) {
 					if (mts.Item[j].Success) {
 						//Replace
-						DetailList->AddObject("Replace " + IntToStr(j + 1) + ":\t" + mts.Item[j].Value, (TObject*)1);
+						DetailList->AddObject("Replace " + IntToStr(j + 1) + ":" + mts.Item[j].Value, (TObject*)1);
 						UnicodeString rwd = TRegEx::Replace(mts.Item[j].Value, ptnstr, ReplaceEdit->Text, opt);
-						DetailList->AddObject("→\t" + TRegEx::Replace(mts.Item[j].Value, ptnstr, ReplaceEdit->Text, opt), (TObject*)2);
+						DetailList->AddObject(
+							"→:" + TRegEx::Replace(mts.Item[j].Value, ptnstr, ReplaceEdit->Text, opt), (TObject*)2);
 						//Group
 						if (mts.Item[j].Groups.Count>1) {
 							for (int k=1; k<mts.Item[j].Groups.Count; k++) {
-								DetailList->AddObject("Group " + IntToStr(k) + ":\t" + mts.Item[j].Groups.Item[k].Value, (TObject*)2);
+								DetailList->AddObject(
+									"Group " + IntToStr(k) + ":" + mts.Item[j].Groups.Item[k].Value, (TObject*)2);
 							}
 						}
 					}
@@ -445,11 +448,8 @@ void __fastcall TRegExChecker::ResListBoxDrawItem(TWinControl *Control, int Inde
 	TRect rc = Rect;
 	cv->FillRect(rc);
 
-	UnicodeString   lbuf = lp->Items->Strings[Index];
-	TStringDynArray mbuf = split_strings_tab(get_tkn_r(lbuf, "\f"));
-				    lbuf = get_tkn(lbuf, "\f");
-	int flag  = (int)lp->Items->Objects[Index];
-	int l_len = lbuf.Length();
+	UnicodeString lbuf = lp->Items->Strings[Index];
+	int	flag  = (int)lp->Items->Objects[Index];
 
 	//セパレータ
 	if (flag==9) {
@@ -459,6 +459,10 @@ void __fastcall TRegExChecker::ResListBoxDrawItem(TWinControl *Control, int Inde
 
 	//マッチ行
 	if (flag==0) {
+		TStringDynArray mbuf = split_strings_tab(get_tkn_r(lbuf, "\f"));
+		lbuf = get_tkn(lbuf, "\f");
+		int l_len = lbuf.Length();
+
 		std::unique_ptr<TColor[]> FgCol(new TColor[l_len + 1]);
 		std::unique_ptr<TColor[]> BgCol(new TColor[l_len + 1]);
 		for (int i=0; i<=l_len; i++) {
@@ -495,37 +499,47 @@ void __fastcall TRegExChecker::ResListBoxDrawItem(TWinControl *Control, int Inde
 				sbuf = lbuf[i];
 				cp += str_len_half(sbuf);
 			}
-
-			int w = cv->TextWidth(sbuf);
-			rc.Right = rc.Left + w;
-			cv->Font->Color  = FgCol[i];
-			cv->Brush->Color = BgCol[i];
-			cv->TextRect(rc, rc.Left, rc.Top, sbuf);
-			rc.Left += w;
+			rc.Right = rc.Left + cv->TextWidth(sbuf);
+			out_TextRect(cv, rc, sbuf, FgCol[i], BgCol[i]); 
 		}
 	}
 	else {
 		//詳細
-		TStringDynArray itms = split_strings_tab(lbuf);
-		if (itms.Length==2) {
+		if (lbuf.Pos(":")) {
+			UnicodeString t = get_tkn(lbuf, ":");
+			if (!SameStr(t, "→")) t += ":";
+			UnicodeString s = get_tkn_r(lbuf, ":");
+			//項目名
 			rc.Left += SCALED_THIS(8);
 			int wd = cv->TextWidth("WWWWWWWWWW");
 			cv->Font->Color = (flag==1)? col_Headline : col_Reserved;
-			cv->TextRect(rc, rc.Left + wd - cv->TextWidth(itms[0]), rc.Top, itms[0]);
+			cv->TextRect(rc, rc.Left + wd - cv->TextWidth(t), rc.Top, t);
 			rc.Left += (wd + SCALED_THIS(8));
-			cv->Font->Color = col_Symbol;
-			cv->TextRect(rc, rc.Left, rc.Top, "\"");
-			rc.Left += cv->TextWidth("\"");
-			cv->Font->Color = col_Strings;
-			cv->TextRect(rc, rc.Left, rc.Top, itms[1]);
-			rc.Left += cv->TextWidth(itms[1]);
-			cv->Font->Color = col_Symbol;
-			cv->TextRect(rc, rc.Left, rc.Top, "\"");
+			//文字列
+			out_TextRect(cv, rc, "\"", col_Symbol); 
+			if (s.Pos("\t")) {
+				int ofs = 1;
+				for (;;) {
+					int p = PosEx("\t", s, ofs);
+					if (p>0) {
+						out_TextRect(cv, rc, s.SubString(ofs, p - ofs), col_Strings); 
+						out_TextRect(cv, rc, "\\t", col_TAB); 
+						ofs = p + 1;
+					}
+					else {
+						out_TextRect(cv, rc, s.SubString(ofs, s.Length() - ofs + 1), col_Strings); 
+						break;
+					}
+				}
+			}
+			else {
+				out_TextRect(cv, rc, s, col_Strings); 
+			}
+			out_TextRect(cv, rc, "\"", col_Symbol); 
 		}
 		//その他
 		else {
-			cv->Font->Color = get_ViewFgCol();
-			cv->TextRect(rc, rc.Left, rc.Top, lbuf);
+			out_TextRect(cv, rc, lbuf, get_ViewFgCol()); 
 		}
 	}
 }

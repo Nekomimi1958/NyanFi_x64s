@@ -1955,6 +1955,10 @@ private:	// ユーザー宣言
 	bool ReqKeepDupl;					//二重起動した NyanFi を終了させない
 	bool NotSaveINI;					//INIファイルを保存せずに終了
 
+	bool Activating;					//ApplicationEvents1Activate 処理中
+	TToolButton *WaitingToolBtn;		//待機ツールボタン
+	TToolButton *WaitingFKeyBtn;		//待機Fキー
+
 	bool WndSizing;
 	int  ViewInfCnt;					//ファイル情報の表示処理中
 	int  InhDrawImg;					//画像描画の抑止

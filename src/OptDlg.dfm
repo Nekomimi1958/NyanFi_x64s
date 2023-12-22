@@ -7194,6 +7194,7 @@ object OptionDlg: TOptionDlg
         TabOrder = 4
         Text = ''
         OnChange = EventCmdsEditChange
+        OnKeyDown = EventCmdsEditKeyDown
       end
       object EventListBox: TListBox
         Left = 0

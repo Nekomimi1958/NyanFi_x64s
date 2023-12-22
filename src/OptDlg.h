@@ -254,6 +254,7 @@ __published:	// IDE で管理されるコンポーネント
 	TCheckBox *HotWinCheckBox;
 	TCheckBox *ImgEditSglCheckBox;
 	TCheckBox *ImgSttIsBtmCheckBox;
+	TCheckBox *InactGrayCheckBox;
 	TCheckBox *IncSea1ExitCheckBox;
 	TCheckBox *IncSeaCaseCheckBox;
 	TCheckBox *IncSeaFuzzyCheckBox;
@@ -349,6 +350,7 @@ __published:	// IDE で管理されるコンポーネント
 	TCheckBox *ShowProcInfCheckBox;
 	TCheckBox *ShowRulerCheckBox;
 	TCheckBox *ShowSpaceCheckBox;
+	TCheckBox *ShowStickyCheckBox;
 	TCheckBox *ShowTabCheckBox;
 	TCheckBox *ShowTargetInfCheckBox;
 	TCheckBox *ShowTooltipCheckBox;
@@ -763,8 +765,6 @@ __published:	// IDE で管理されるコンポーネント
 	TTabSheet *StartupSheet;
 	TTabSheet *TxtViewerSheet;
 	TVirtualImageList *IconVImgListP;
-	TCheckBox *InactGrayCheckBox;
-	TCheckBox *ShowStickyCheckBox;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -916,6 +916,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall ChgStdCmdActionUpdate(TObject *Sender);
 	void __fastcall EventListBoxClick(TObject *Sender);
 	void __fastcall EventCmdsEditChange(TObject *Sender);
+	void __fastcall EventCmdsEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FindEvEditChange(TObject *Sender);
 	void __fastcall FindEvEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FindEvDownActionExecute(TObject *Sender);
@@ -931,6 +932,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall OkActionExecute(TObject *Sender);
 	void __fastcall OkActionUpdate(TObject *Sender);
 	void __fastcall CanButtonClick(TObject *Sender);
+
 
 private:	// ユーザー宣言
 	MarkList *FindMarkList;
