@@ -14,12 +14,12 @@
     <param name="Keyword" value="Git for Windows">
     <param name="Keyword" value="git.exe">
     <param name="Keyword" value="xdoc2txt">
-    <param name="Keyword" value="イメージビュアー">
+    <param name="Keyword" value="イメージビューア">
     <param name="Keyword" value="エイリアス">
     <param name="Keyword" value="コマンドファイル">
     <param name="Keyword" value="コマンドファイル一覧">
     <param name="Keyword" value="ツールバー">
-    <param name="Keyword" value="テキストビュアー">
+    <param name="Keyword" value="テキストビューア">
     <param name="Keyword" value="デバッグウィンドウ">
     <param name="Keyword" value="デバッグモード">
     <param name="Keyword" value="ファイラー">
@@ -46,7 +46,7 @@
   <h1>ExeCommands コマンド</h1>
 
   <p>
-    ファイラー、<a href="hid00006.htm">テキストビュアー</a>、<a href="hid00007.htm">イメージビュアー</a>、 <a href="hid00013.htm">オプション設定 -
+    ファイラー、<a href="hid00006.htm">テキストビューア</a>、<a href="hid00007.htm">イメージビューア</a>、 <a href="hid00013.htm">オプション設定 -
       関連付け</a>、<a href="hid00014.htm">オプション設定 - 追加メニュー</a> で <a href="hid00005.htm#ExeCommands">ExeCommands</a>
     コマンドを用いると、一連の複数コマンドを実行できます。制御文などを用いたバッチ処理も可能です。なお、<b>ExeCommands</b> コマンドの中でさらに <b>ExeCommands</b>
     コマンドを実行することはできません。<br>
@@ -278,7 +278,7 @@ MsgBox_%..N%回目です
         </tr>
         <tr>
           <th id="ScrMode">ScrMode</th>
-          <td>画面モード (FL:ファイラー、TV:テキストビュアー、IV:イメージビュアー、GR:文字列検索(GREP))</td>
+          <td>画面モード (FL:ファイラー、TV:テキストビューア、IV:イメージビューア、GR:文字列検索(GREP))</td>
         </tr>
         <tr>
           <th>SortMode</th>
@@ -286,27 +286,27 @@ MsgBox_%..N%回目です
         </tr>
         <tr>
           <th>SelText</th>
-          <td>テキストビュアーで選択中のテキスト</td>
+          <td>テキストビューアで選択中のテキスト</td>
         </tr>
         <tr>
           <th>LineNo</th>
-          <td>テキストビュアーでのカーソル位置の行番号(改行単位)</td>
+          <td>テキストビューアでのカーソル位置の行番号(改行単位)</td>
         </tr>
         <tr>
           <th>LineText</th>
-          <td>テキストビュアーでのカーソル位置の行内容(改行まで)</td>
+          <td>テキストビューアでのカーソル位置の行内容(改行まで)</td>
         </tr>
         <tr>
           <th>CursorPosY</th>
-          <td>テキストビュアーでのカーソルのY位置(0～)</td>
+          <td>テキストビューアでのカーソルのY位置(0～)</td>
         </tr>
         <tr>
           <th>CursorPosX</th>
-          <td>テキストビュアーでのカーソルのX位置(0～)</td>
+          <td>テキストビューアでのカーソルのX位置(0～)</td>
         </tr>
         <tr>
           <th>PageSize</th>
-          <td>テキストビュアーの1ページ中の表示行数</td>
+          <td>テキストビューアの1ページ中の表示行数</td>
         </tr>
         <tr>
           <th>Battery</th>
@@ -324,7 +324,7 @@ MsgBox_%..N%回目です
         <tr>
           <th>CodePage</th>
           <td>コードページ(Buffer の読み込み/保存に使用)<br>
-            テキストビュアーでは表示中テキストのコードページ(変更するとその値が優先)</td>
+            テキストビューアでは表示中テキストのコードページ(変更するとその値が優先)</td>
         </tr>
         <tr>
           <th>MenuIndex</th>
@@ -422,7 +422,7 @@ MsgBox_%..N%回目です
     <b>Clipboard</b> は、<a href="#SetClipboard">SetClipboard</a> によって設定可能です。<br>
     <div class="spc_box">
       <b>CodePage</b> は設定可能ですが、<a href="#LoadBuffer">LoadBuffer</a>
-      を実行すると、そのとき判定されたコードページが設定されます。またテキストビュアーでは表示中テキストのコードページになりますが、<b>ExeCommands</b> コマンド実行中に変更された場合はその値が優先されます。<br>
+      を実行すると、そのとき判定されたコードページが設定されます。またテキストビューアでは表示中テキストのコードページになりますが、<b>ExeCommands</b> コマンド実行中に変更された場合はその値が優先されます。<br>
     </div>
     それ以外の定義済み変数は<b>参照専用</b>です。<br>
   </div>
@@ -472,7 +472,7 @@ EndIf
 
       <dt id="AppendBuffer" class="no_bg">AppendBuffer<span class="pram_text">_ファイル名[;NB]</span></dt>
       <dd>定義済み変数 <b>Buffer</b> の内容を指定したファイルに追記保存します。<br>
-        ファイル名にドライブ指定がない場合、ファイラーではカレント、ビュアーでは閲覧中ファイルのディレクトリからの相対指定とみなされます。<br>
+        ファイル名にドライブ指定がない場合、ファイラーではカレント、ビューアでは閲覧中ファイルのディレクトリからの相対指定とみなされます。<br>
         保存の際のエンコーディングには、定義済み変数 <b>CodePage</b> が用いられます。ファイルが存在しない場合は新規作成します。<br>
         パラメータに <b>NB</b> を指定すると、新規作成の場合に Unicode ファイルをBOM無しで保存します。既存ファイルに対する追記保存ではこのパラメータが効きませんので、<a href="hid00005.htm#ConvertTextEnc">ConvertTextEnc</a> コマンドであらかじめBOM無しに変換しておいてください。<br>
         <div class="spc_box">
@@ -530,7 +530,7 @@ AppendBuffer_"nyan.log"
         <div class="spc_box">
           URLの後に &gt;&gt;[テキストファイル名]
           を指定すると、ダウンロードしたファイルがHTML文書の場合、それをテキストに変換して保存します。<br>
-          変換はテキストビュアーでのHTML→テキスト変換表示に準じます。ただし拡張子を .md にすると、オプション設定にかかわらずMarkdown記法に変換します。また、パラメータに <b>MD</b>
+          変換はテキストビューアでのHTML→テキスト変換表示に準じます。ただし拡張子を .md にすると、オプション設定にかかわらずMarkdown記法に変換します。また、パラメータに <b>MD</b>
           を指定するとMarkdown記法に、<b>TX</b> を指定すると通常テキストに変換します。<br>
           ファイル名にドライブ指定がない場合はカレントからの相対指定とみなされます。ファイル名を指定しない場合は、ダウンロードしたファイルの拡張子を .txt または .md に変えて一時ディレクトリに保存します。
           <b>DownloadName</b> は変換保存したファイル名になります。<br>
@@ -568,7 +568,7 @@ ListText_%DownloadName%
         Edit<span class="pram_text">_":タイトル:変数名"</span></dt>
       <dd>複数行入力可能なテキストボックスによって、変数の内容を編集します。<br>
         バラメータでタイトルを指定できます。その場合、パラメータ全体をダブルクォーテーションで囲んでください。タイトル内では <b>:\</b> を表示文字として使えます。<br>
-        フォントや文字色/背景色はテキストビュアーのものが用いられますが、文字色/背景色については右クリックメニューで変更可能です。<br>
+        フォントや文字色/背景色はテキストビューアのものが用いられますが、文字色/背景色については右クリックメニューで変更可能です。<br>
         <div class="spc_box">
           ボックスにフォーカスがある場合、<span class="btn_frame">ENTER</span>キーは改行になります。<span class="btn_frame">OK</span>は、<span
             class="btn_frame">Ctrl</span>+<span class="btn_frame">ENTER</span>で行ってください。<br>
@@ -603,7 +603,7 @@ EndIf
 
       <dt id="FileExists" class="no_bg">FileExists<span class="pram_text">_ファイル名|ディレクトリ名</span></dt>
       <dd>パラメータで指定したファイルまたはディレクトリが存在するかを調べます。<br>
-        名前にドライブ指定がない場合、ファイラーではカレント、ビュアーでは閲覧中ファイルのディレクトリからの相対指定とみなされます。<br>
+        名前にドライブ指定がない場合、ファイラーではカレント、ビューアでは閲覧中ファイルのディレクトリからの相対指定とみなされます。<br>
         結果を後続の <a href="#IfStatement">If 文</a>の条件(<b>True</b>、<b>False</b>)として利用できます。<br>
       </dd>
 
@@ -767,7 +767,7 @@ Hint
       <dd>指定したテキストファイルを、定義済み変数 <b>Buffer</b> に読み込みます。<br>
         パラメータにファイル名を指定しないとダイアログが表示されます。<br>
         またファイル名に <b>*</b> や <b>?</b> が含まれている場合、それをファイルマスクとしてダイアログが出ます。<br>
-        ファイル名/ファイルマスクにドライブ指定がない場合、ファイラーではカレント、ビュアーでは閲覧中ファイルのディレクトリからの相対指定とみなされます。<br>
+        ファイル名/ファイルマスクにドライブ指定がない場合、ファイラーではカレント、ビューアでは閲覧中ファイルのディレクトリからの相対指定とみなされます。<br>
         ファイルが読み込まれると、判定されたコードページが定義済み変数 <b>CodePage</b> に設定されます。<br>
         なお、定義済み変数 <b>BufferIndex</b> は 0 にリセットします。<br>
 
@@ -1039,7 +1039,7 @@ MsgBox_%Buffer%
       </dd>
 
       <dt id="SaveBuffer" class="no_bg">SaveBuffer<span class="pram_text">[_ファイル名[;NB]]</span></dt>
-      <dd>定義済み変数 <b>Buffer</b> の内容を指定したファイル名で保存します。ファイル名にドライブ指定がない場合、ファイラーではカレント、ビュアーでは閲覧中ファイルのディレクトリからの相対指定とみなされます。<br>
+      <dd>定義済み変数 <b>Buffer</b> の内容を指定したファイル名で保存します。ファイル名にドライブ指定がない場合、ファイラーではカレント、ビューアでは閲覧中ファイルのディレクトリからの相対指定とみなされます。<br>
         ファイル名をパラメータで指定しない場合、ダイアログが表示されます。<br>
         ファイル名をパラメータで指定した場合、エンコーディングには定義済み変数 <b>CodePage</b> が用いられます。また、パラメータに <b>NB</b> を追加指定すると、Unicode ファイルがBOM無しで保存されます。なお、改行コードは CR/LF になります。<br>
         <div class="spc_box">
@@ -1311,11 +1311,11 @@ IfFalse_Exit
           <table>
             <tr>
               <th>Top</th>
-              <td>ファイラーでリストの最上行/ テキストビュアーで最上行/ イメージビュアーで最初の画像</td>
+              <td>ファイラーでリストの最上行/ テキストビューアで最上行/ イメージビューアで最初の画像</td>
             </tr>
             <tr>
               <th>End</th>
-              <td>ファイラーでリストの最下行/ テキストビュアーで最下行/ イメージビュアーで最後の画像</td>
+              <td>ファイラーでリストの最下行/ テキストビューアで最下行/ イメージビューアで最後の画像</td>
             </tr>
             <tr>
               <th>Left</th>
@@ -1327,7 +1327,7 @@ IfFalse_Exit
             </tr>
             <tr>
               <th>Sel</th>
-              <td>ファイラーのカレント側で選択あり/ テキストビュアーで選択中/ イメージビュアーで選択あり<br></td>
+              <td>ファイラーのカレント側で選択あり/ テキストビューアで選択中/ イメージビューアで選択あり<br></td>
             </tr>
             <tr>
               <th>SelMask</th>
@@ -1359,7 +1359,7 @@ IfFalse_Exit
             </tr>
             <tr>
               <th><b>Found</b></th>
-              <td>ファイラーでカレントが検索結果リスト/ テキストビュアーで直前の文字列/リンク先/マーク行検索で発見</td>
+              <td>ファイラーでカレントが検索結果リスト/ テキストビューアで直前の文字列/リンク先/マーク行検索で発見</td>
             </tr>
             <tr>
               <th>Work</th>
@@ -1383,7 +1383,7 @@ IfFalse_Exit
             </tr>
             <tr>
               <th>Marked</th>
-              <td>カーソル位置が栞マーク項目/ テキストビュアーでカーソル行がマークされている</td>
+              <td>カーソル位置が栞マーク項目/ テキストビューアでカーソル行がマークされている</td>
             </tr>
             <tr>
               <th>Dir</th>
@@ -1403,19 +1403,19 @@ IfFalse_Exit
             </tr>
             <tr>
               <th>Binary</th>
-              <td>カーソル位置がバイナリ・ファイル/ テキストビュアーでバイナリ・ダンプ表示</td>
+              <td>カーソル位置がバイナリ・ファイル/ テキストビューアでバイナリ・ダンプ表示</td>
             </tr>
             <tr>
               <th>Log</th>
-              <td>カーソル位置が NyanFi ログファイル/ テキストビュアーでログを閲覧中</td>
+              <td>カーソル位置が NyanFi ログファイル/ テキストビューアでログを閲覧中</td>
             </tr>
             <tr>
               <th>HtmTxt</th>
-              <td>テキストビュアーでHTML→テキスト変換表示</td>
+              <td>テキストビューアでHTML→テキスト変換表示</td>
             </tr>
             <tr>
               <th>Grep</th>
-              <td><a href="hid00056.htm">文字列検索(GREP)</a>の結果リストからテキストビュアーを開いている</td>
+              <td><a href="hid00056.htm">文字列検索(GREP)</a>の結果リストからテキストビューアを開いている</td>
             </tr>
             <tr>
               <th>Task</th>
@@ -1646,7 +1646,7 @@ Set_Buffer=%SelFiles%: SaveBuffer_D:\filelist.txt
 CompareHash_MD5: Test_LogNgCount&gt;0: IfTrue: MsgBox_一致しません: EndIf
 </pre>
 
-  今日付の画像をイメージビュアーで閲覧<br>
+  今日付の画像をイメージビューアで閲覧<br>
 <pre class="example_box">
   DateSelect_TD: SelMask: ImageViewer
 </pre>
@@ -1695,7 +1695,7 @@ PushDir
 PopDir
 </pre>
 
-    (カーソル位置がディレクトリまたはアーカイブならその中へ入り)最初の栞マークファイル(無ければ最初の .jpg)をイメージビュアーで開く。
+    (カーソル位置がディレクトリまたはアーカイブならその中へ入り)最初の栞マークファイル(無ければ最初の .jpg)をイメージビューアで開く。
     <pre class="example_box">
 IfDir
   OpenStandard
@@ -1785,7 +1785,7 @@ EndIf
 WriteINI_LogOnly=%状態%
 </pre>
 
-    テキストビュアーで、マーク行の一覧をクルップボードに取得。
+    テキストビューアで、マーク行の一覧をクルップボードに取得。
     <pre class="example_box">
 Test_ScrMode==TV: IfFalse_Exit
 
@@ -1837,7 +1837,7 @@ EndIf
 ClearAll
 </pre>
 
-    掲示板「NyanFiだニャン その3」をテキストビュアーで表示し、最新位置へ移動。
+    掲示板「NyanFiだニャン その3」をテキストビューアで表示し、最新位置へ移動。
     <pre class="example_box">
 IfConnected
   HtmlToText_ON
@@ -1861,7 +1861,7 @@ Else
 EndIf
 </pre>
 
-    カーソル位置がインターネットショートカットなら、そのページをテキストビュアーで表示
+    カーソル位置がインターネットショートカットなら、そのページをテキストビューアで表示
     <pre class="example_box">
 MatchExt_.url
 IfFalse_Exit

@@ -1661,7 +1661,7 @@ object OptionDlg: TOptionDlg
         Top = 287
         Width = 434
         Height = 234
-        Caption = #12452#12513#12540#12472#12499#12517#12450#12540
+        Caption = #12452#12513#12540#12472#12499#12517#12540#12450
         TabOrder = 2
         DesignSize = (
           434
@@ -1798,7 +1798,7 @@ object OptionDlg: TOptionDlg
         Top = 10
         Width = 434
         Height = 267
-        Caption = #12486#12461#12473#12488#12499#12517#12450#12540
+        Caption = #12486#12461#12473#12488#12499#12517#12540#12450
         TabOrder = 1
         DesignSize = (
           434
@@ -3360,7 +3360,7 @@ object OptionDlg: TOptionDlg
     end
     object TxtViewerSheet: TTabSheet
       HelpContext = 11
-      Caption = #12486#12461#12473#12488#12499#12517#12450#12540
+      Caption = #12486#12461#12473#12488#12499#12517#12540#12450
       ImageIndex = -1
       DesignSize = (
         906
@@ -3399,7 +3399,7 @@ object OptionDlg: TOptionDlg
         Width = 205
         Height = 17
         Caption = '"\" '#12434' "'#8726'"(U+2216)'#12391#34920#31034
-        TabOrder = 25
+        TabOrder = 26
       end
       object AozoraCheckBox: TCheckBox
         Left = 684
@@ -3407,7 +3407,7 @@ object OptionDlg: TOptionDlg
         Width = 209
         Height = 17
         Caption = #38738#31354#25991#24235#24418#24335#12395#23550#24540#12377#12427
-        TabOrder = 24
+        TabOrder = 25
       end
       object BinMemMapedCheckBox: TCheckBox
         Left = 684
@@ -3415,7 +3415,7 @@ object OptionDlg: TOptionDlg
         Width = 203
         Height = 17
         Caption = #12513#12514#12522#12510#12483#12503#12489#12501#12449#12452#12523#12392#12375#12390#38283#12367
-        TabOrder = 30
+        TabOrder = 31
       end
       object CellAlphaEdit: TLabeledEdit
         Left = 265
@@ -3429,7 +3429,7 @@ object OptionDlg: TOptionDlg
         EditLabel.Caption = #12475#12523#945
         LabelPosition = lpLeft
         NumbersOnly = True
-        TabOrder = 16
+        TabOrder = 17
         Text = ''
         OnChange = ModalAlphaEditChange
       end
@@ -3439,7 +3439,7 @@ object OptionDlg: TOptionDlg
         Width = 180
         Height = 17
         Caption = #12480#12502#12523#12463#12522#12483#12463#12391'URL'#12434#38283#12367
-        TabOrder = 20
+        TabOrder = 21
       end
       object ColorHintCheckBox: TCheckBox
         Left = 20
@@ -3447,7 +3447,7 @@ object OptionDlg: TOptionDlg
         Width = 229
         Height = 17
         Caption = #12459#12540#12477#12523#20301#32622#25968#20516#12398#12459#12521#12540#34920#31034
-        TabOrder = 19
+        TabOrder = 20
       end
       object DecDfmStrCheckBox: TCheckBox
         Left = 684
@@ -3455,16 +3455,16 @@ object OptionDlg: TOptionDlg
         Width = 209
         Height = 17
         Caption = '.dfm '#12501#12449#12452#12523#12398#25991#23383#21015#20516#12434#12487#12467#12540#12489
-        TabOrder = 26
+        TabOrder = 27
       end
       object EmpGroupBox: TGroupBox
         Left = 10
         Top = 409
-        Width = 429
+        Width = 434
         Height = 162
         Anchors = [akLeft, akTop, akRight]
         Caption = #24375#35519#34920#31034
-        TabOrder = 21
+        TabOrder = 22
         object EmRemCheckBox: TCheckBox
           Left = 10
           Top = 20
@@ -3508,7 +3508,7 @@ object OptionDlg: TOptionDlg
         object EmpBin1Edit: TLabeledEdit
           Left = 89
           Top = 75
-          Width = 330
+          Width = 331
           Height = 21
           Hint = #27491#35215#34920#29694#21487
           AutoSize = False
@@ -3522,7 +3522,7 @@ object OptionDlg: TOptionDlg
         object EmpBin2Edit: TLabeledEdit
           Left = 89
           Top = 102
-          Width = 330
+          Width = 331
           Height = 21
           Hint = #27491#35215#34920#29694#21487
           AutoSize = False
@@ -3552,7 +3552,7 @@ object OptionDlg: TOptionDlg
         object EmpBin3Edit: TLabeledEdit
           Left = 89
           Top = 129
-          Width = 330
+          Width = 331
           Height = 21
           Hint = #27491#35215#34920#29694#21487
           AutoSize = False
@@ -3561,45 +3561,6 @@ object OptionDlg: TOptionDlg
           EditLabel.Caption = '3'
           LabelPosition = lpLeft
           TabOrder = 9
-          Text = ''
-        end
-      end
-      object ExtTxViewerGroupBox: TGroupBox
-        Left = 460
-        Top = 495
-        Width = 429
-        Height = 76
-        Anchors = [akLeft, akTop, akRight]
-        Caption = #22806#37096#12499#12517#12450#12540
-        TabOrder = 31
-        object ExtTxViewerEdit: TEdit
-          Left = 10
-          Top = 18
-          Width = 378
-          Height = 23
-          TabOrder = 0
-        end
-        object RefExtTxViewerBtn: TButton
-          Tag = 4
-          Left = 391
-          Top = 17
-          Width = 36
-          Height = 22
-          Caption = '...'
-          TabOrder = 1
-          OnClick = RefEditorBtnClick
-        end
-        object ExtTxViewerFmtEdit: TLabeledEdit
-          Left = 189
-          Top = 44
-          Width = 199
-          Height = 23
-          Hint = '$F '#12501#12449#12452#12523#21517'/  $L '#34892#30058#21495
-          EditLabel.Width = 49
-          EditLabel.Height = 23
-          EditLabel.Caption = #12497#12521#12513#12540#12479
-          LabelPosition = lpLeft
-          TabOrder = 2
           Text = ''
         end
       end
@@ -3615,13 +3576,13 @@ object OptionDlg: TOptionDlg
         EditLabel.Caption = #22266#23450#38263#34920#31034#12398#21046#38480#24133
         LabelPosition = lpLeft
         NumbersOnly = True
-        TabOrder = 15
+        TabOrder = 16
         Text = ''
       end
       object FoldGroupBox: TGroupBox
         Left = 10
         Top = 10
-        Width = 433
+        Width = 434
         Height = 46
         Caption = #25240#12426#36820#12375#24133
         TabOrder = 0
@@ -3656,11 +3617,11 @@ object OptionDlg: TOptionDlg
       object H2TGroupBox: TGroupBox
         Left = 460
         Top = 10
-        Width = 429
+        Width = 434
         Height = 283
         Anchors = [akLeft, akTop, akRight]
         Caption = 'HTML'#8594#12486#12461#12473#12488#22793#25563
-        TabOrder = 22
+        TabOrder = 23
         object InsHrClsEdit: TLabeledEdit
           Left = 10
           Top = 190
@@ -3750,7 +3711,7 @@ object OptionDlg: TOptionDlg
         EditLabel.Caption = #24038#20596#20313#30333
         LabelPosition = lpLeft
         NumbersOnly = True
-        TabOrder = 9
+        TabOrder = 10
         Text = ''
       end
       object LimitBinCsrCheckBox: TCheckBox
@@ -3759,7 +3720,7 @@ object OptionDlg: TOptionDlg
         Width = 327
         Height = 17
         Caption = #12496#12452#12490#12522#34920#31034#12391#12459#12540#12477#12523#31227#21205#12434'16'#36914#12480#12531#12503#20869#12395#21046#38480
-        TabOrder = 18
+        TabOrder = 19
       end
       object LimitBinEdit: TLabeledEdit
         Left = 589
@@ -3772,7 +3733,7 @@ object OptionDlg: TOptionDlg
         EditLabel.Caption = #12496#12452#12490#12522#26368#22823#35501#36796#12469#12452#12474
         LabelPosition = lpLeft
         NumbersOnly = True
-        TabOrder = 29
+        TabOrder = 30
         Text = ''
       end
       object LimitTxtEdit: TLabeledEdit
@@ -3786,7 +3747,7 @@ object OptionDlg: TOptionDlg
         EditLabel.Caption = #12486#12461#12473#12488#26368#22823#35501#36796#12469#12452#12474
         LabelPosition = lpLeft
         NumbersOnly = True
-        TabOrder = 28
+        TabOrder = 29
         Text = ''
       end
       object RstViewLnCheckBox: TCheckBox
@@ -3795,7 +3756,7 @@ object OptionDlg: TOptionDlg
         Width = 112
         Height = 17
         Caption = #34892#20301#32622#12434#24489#20803
-        TabOrder = 5
+        TabOrder = 6
       end
       object ScrBarFoldCheckBox: TCheckBox
         Left = 20
@@ -3803,7 +3764,7 @@ object OptionDlg: TOptionDlg
         Width = 227
         Height = 17
         Caption = #12473#12463#12525#12540#12523#12496#12540#12434#25240#12426#36820#12375#20301#32622#12395#34920#31034
-        TabOrder = 6
+        TabOrder = 7
       end
       object ShowCrCheckBox: TCheckBox
         Left = 345
@@ -3811,15 +3772,15 @@ object OptionDlg: TOptionDlg
         Width = 94
         Height = 17
         Caption = #25913#34892#12434#34920#31034
-        TabOrder = 11
+        TabOrder = 12
       end
       object ShowLnCsrCheckBox: TCheckBox
-        Left = 141
+        Left = 137
         Top = 91
         Width = 124
         Height = 17
         Caption = #34892#12459#12540#12477#12523#12434#34920#31034
-        TabOrder = 4
+        TabOrder = 5
       end
       object ShowLnNoCheckBox: TCheckBox
         Left = 20
@@ -3827,7 +3788,7 @@ object OptionDlg: TOptionDlg
         Width = 109
         Height = 17
         Caption = #34892#30058#21495#12434#34920#31034
-        TabOrder = 3
+        TabOrder = 4
       end
       object ShowRulerCheckBox: TCheckBox
         Left = 20
@@ -3843,7 +3804,7 @@ object OptionDlg: TOptionDlg
         Width = 90
         Height = 17
         Caption = #12479#12502#12434#34920#31034
-        TabOrder = 10
+        TabOrder = 11
       end
       object TabXWdEdit: TLabeledEdit
         Left = 16
@@ -3855,7 +3816,7 @@ object OptionDlg: TOptionDlg
         EditLabel.Height = 15
         EditLabel.Caption = #12479#12502#12473#12488#12483#12503
         NumbersOnly = True
-        TabOrder = 13
+        TabOrder = 14
         Text = ''
       end
       object TextInterLnEdit: TLabeledEdit
@@ -3869,7 +3830,7 @@ object OptionDlg: TOptionDlg
         EditLabel.Caption = #34892#38291
         LabelPosition = lpLeft
         NumbersOnly = True
-        TabOrder = 8
+        TabOrder = 9
         Text = ''
       end
       object TvCsrVisiCheckBox: TCheckBox
@@ -3878,10 +3839,10 @@ object OptionDlg: TOptionDlg
         Width = 198
         Height = 17
         Caption = #12459#12540#12477#12523#12434#24120#12395#21487#35222#38936#22495#12395
-        TabOrder = 17
+        TabOrder = 18
       end
       object TxtSttIsBtmCheckBox: TCheckBox
-        Left = 141
+        Left = 137
         Top = 66
         Width = 167
         Height = 17
@@ -3894,28 +3855,28 @@ object OptionDlg: TOptionDlg
         Width = 205
         Height = 17
         Caption = 'xd2txlib.dll '#12391#12486#12461#12473#12488#34920#31034
-        TabOrder = 23
+        TabOrder = 24
       end
       object ViewTab4Edit: TLabeledEdit
         Left = 16
         Top = 197
-        Width = 413
+        Width = 428
         Height = 23
         EditLabel.Width = 112
         EditLabel.Height = 15
         EditLabel.Caption = #12479#12502#12473#12488#12483#12503'4'#12398#25313#24373#23376
-        TabOrder = 12
+        TabOrder = 13
         Text = ''
       end
       object ViewTabXEdit: TLabeledEdit
         Left = 74
         Top = 244
-        Width = 355
+        Width = 370
         Height = 23
         EditLabel.Width = 39
         EditLabel.Height = 15
         EditLabel.Caption = #25313#24373#23376
-        TabOrder = 14
+        TabOrder = 15
         Text = ''
       end
       object FormatJsonCheckBox: TCheckBox
@@ -3924,7 +3885,7 @@ object OptionDlg: TOptionDlg
         Width = 205
         Height = 17
         Caption = '.json '#12501#12449#12452#12523#12434#25972#24418#12375#12390#34920#31034
-        TabOrder = 27
+        TabOrder = 28
       end
       object ShowStickyCheckBox: TCheckBox
         Left = 249
@@ -3932,12 +3893,20 @@ object OptionDlg: TOptionDlg
         Width = 205
         Height = 17
         Caption = #38306#25968'/'#35211#20986#12375#31561#12434#12473#12486#12451#12483#12461#12540#34920#31034
-        TabOrder = 7
+        TabOrder = 8
+      end
+      object ShowIndentCheckBox: TCheckBox
+        Left = 305
+        Top = 66
+        Width = 149
+        Height = 17
+        Caption = #12452#12531#12487#12531#12488#12460#12452#12489#12434#34920#31034
+        TabOrder = 3
       end
     end
     object ImgViewerSheet: TTabSheet
       HelpContext = 20
-      Caption = #12452#12513#12540#12472#12499#12517#12450#12540
+      Caption = #12452#12513#12540#12472#12499#12517#12540#12450
       ImageIndex = -1
       DesignSize = (
         906
@@ -4139,7 +4108,7 @@ object OptionDlg: TOptionDlg
         TabOrder = 9
       end
       object MarkImgGroupBox: TGroupBox
-        Left = 460
+        Left = 461
         Top = 10
         Width = 433
         Height = 139
@@ -4596,7 +4565,7 @@ object OptionDlg: TOptionDlg
           Hint = '$F '#12501#12449#12452#12523#21517'/  $L '#34892#30058#21495
           EditLabel.Width = 232
           EditLabel.Height = 23
-          EditLabel.Caption = #12497#12521#12513#12540#12479' (GREP'#12420#12499#12517#12450#12540#12391#12398#12479#12464#12472#12515#12531#12503#29992')'
+          EditLabel.Caption = #12497#12521#12513#12540#12479' (GREP'#12420#12499#12517#12540#12450#12391#12398#12479#12464#12472#12515#12531#12503#29992')'
           LabelPosition = lpLeft
           TabOrder = 2
           Text = ''
@@ -4632,8 +4601,8 @@ object OptionDlg: TOptionDlg
         Tabs.Strings = (
           #12501#12449#12452#12521#12540
           'INC.'#12469#12540#12481
-          #12486#12461#12473#12488#12499#12517#12450#12540
-          #12452#12513#12540#12472#12499#12517#12450#12540
+          #12486#12461#12473#12488#12499#12517#12540#12450
+          #12452#12513#12540#12472#12499#12517#12540#12450
           #12525#12464#12454#12451#12531#12489#12454)
         TabIndex = 0
         TabWidth = 120
@@ -7575,5 +7544,11 @@ object OptionDlg: TOptionDlg
     Images = <>
     Left = 300
     Top = 622
+  end
+  object Timer1: TTimer
+    Enabled = False
+    OnTimer = Timer1Timer
+    Left = 20
+    Top = 54
   end
 end

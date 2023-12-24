@@ -3227,7 +3227,7 @@ object NyanFiForm: TNyanFiForm
     end
     object GitViewerAction: TAction
       Category = 'Command'
-      Caption = 'Git'#12499#12517#12450#12540'...'
+      Caption = 'Git'#12499#12517#12540#12450'...'
       OnExecute = GitViewerActionExecute
       OnUpdate = GitViewerActionUpdate
     end
@@ -3320,7 +3320,7 @@ object NyanFiForm: TNyanFiForm
     end
     object JsonViewerAction: TAction
       Category = 'Command'
-      Caption = 'JSON'#12499#12517#12450#12540'(&J)...'
+      Caption = 'JSON'#12499#12517#12540#12450'(&J)...'
       OnExecute = JsonViewerActionExecute
       OnUpdate = MenuFActionUpdate
     end
@@ -3951,7 +3951,7 @@ object NyanFiForm: TNyanFiForm
     end
     object SetColorAction: TAction
       Category = 'Command'
-      Caption = #12486#12461#12473#12488#12499#12517#12450#12540#12398#37197#33394'(&C)...'
+      Caption = #12486#12461#12473#12488#12499#12517#12540#12450#12398#37197#33394'(&C)...'
       OnExecute = SetColorActionExecute
       OnUpdate = SetColorActionUpdate
     end
@@ -4059,6 +4059,12 @@ object NyanFiForm: TNyanFiForm
       OnExecute = ShowIconActionExecute
       OnUpdate = ShowIconActionUpdate
     end
+    object ShowIndentAction: TAction
+      Category = 'Command'
+      Caption = #12452#12531#12487#12531#12488#12460#12452#12489#12434#34920#31034'(&G)'
+      OnExecute = ShowIndentActionExecute
+      OnUpdate = ShowIndentActionUpdate
+    end
     object ShowLineNoAction: TAction
       Category = 'Command'
       Caption = #34892#30058#21495#12434#34920#31034'(&N)'
@@ -4153,7 +4159,7 @@ object NyanFiForm: TNyanFiForm
     end
     object SubViewerAction: TAction
       Category = 'Command'
-      Caption = #12469#12502#12499#12517#12450#12540
+      Caption = #12469#12502#12499#12517#12540#12450
       OnExecute = SubViewerActionExecute
       OnUpdate = SubViewerActionUpdate
     end
@@ -4779,7 +4785,7 @@ object NyanFiForm: TNyanFiForm
     end
     object XmlViewerAction: TAction
       Category = 'Command'
-      Caption = 'XML'#12499#12517#12450#12540'(&X)...'
+      Caption = 'XML'#12499#12517#12540#12450'(&X)...'
       OnExecute = XmlViewerActionExecute
       OnUpdate = MenuFActionUpdate
     end
@@ -5842,6 +5848,9 @@ object NyanFiForm: TNyanFiForm
       end
       object ShowRulerItem: TMenuItem
         Action = ShowRulerAction
+      end
+      object G1: TMenuItem
+        Action = ShowIndentAction
       end
       object ShowLineNoItem: TMenuItem
         Action = ShowLineNoAction

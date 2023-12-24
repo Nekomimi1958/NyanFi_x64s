@@ -31,6 +31,7 @@ object GeneralInfoDlg: TGeneralInfoDlg
     Font.Color = clWindowText
     Font.Height = -12
     Font.Name = 'Segoe UI'
+    Font.Pitch = fpVariable
     Font.Style = []
     Panels = <
       item
@@ -340,12 +341,12 @@ object GeneralInfoDlg: TGeneralInfoDlg
       OnUpdate = CopyCmdActionUpdate
     end
     object ViewListAction: TAction
-      Caption = #19968#35239#12434#12486#12461#12473#12488#12499#12517#12450#12540#12391#38283#12367'(&V)'
+      Caption = #19968#35239#12434#12486#12461#12473#12488#12499#12517#12540#12450#12391#38283#12367'(&V)'
       OnExecute = ViewListActionExecute
       OnUpdate = ViewListActionUpdate
     end
     object ViewFileAction: TAction
-      Caption = #12501#12449#12452#12523#12434#12486#12461#12473#12488#12499#12517#12450#12540#12391#38283#12367'(&V)'
+      Caption = #12501#12449#12452#12523#12434#12486#12461#12473#12488#12499#12517#12540#12450#12391#38283#12367'(&V)'
       OnExecute = ViewFileActionExecute
       OnUpdate = OpenFileActionUpdate
     end

@@ -158,15 +158,17 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 		"Error=エラー/注意の文字色\n"
 		"bgInfHdr=|情報ヘッダの背景色\n"
 		"fgInfHdr=情報ヘッダの文字色\n"
-		"bgView=|テキストビュアーの背景色\n"
-		"fgView=テキストビュアーの文字色\n"
-		"Margin=テキストビュアーの余白白\n"
+		"bgView=|テキストビューアの背景色\n"
+		"fgView=テキストビューアの文字色\n"
+		"Margin=テキストビューアの余白白\n"
 		"bgRuler=ルーラの背景色\n"
 		"fgRuler=ルーラの目盛色\n"
 		"bgLineNo=行番号背景色\n"
 		"LineNo=行番号文字色\n"
 		"Mark=行マーク\n"
 		"bdrLine=行番号境界線\n"
+		"Indent=インデントガイド\n"
+		"Indent2=インデントガイド(交互)\n"
 		"bdrFold=折り返し境界線\n"
 		"bdrFixed=固定長表示の縦罫線\n"
 		"Comment=|コメントの文字色\n"
@@ -397,7 +399,7 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	set_ComboBoxText(StdCmdComboBox,
 		_T("Windowsの関連付けで開く (OpenByWin)\n")
 		_T("独自の関連付けで開く (OpenByApp)\n")
-		_T("テキストビュアーで開く (TextViewer)\n")
+		_T("テキストビューアで開く (TextViewer)\n")
 		_T("エディタで開く (FileEdit)\n")
 		_T("バイナリエディタで開く (BinaryEdit)\n")
 		_T("コマンドファイルとして実行 (ExeCommands)\n")
@@ -447,6 +449,7 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	SysAtrCheckBox->Hint	   = LoadUsrMsg(USTR_HintOptCmd, _T("ShowSystemAtr"));
 	DelUseTrsCheckBox->Hint    = LoadUsrMsg(USTR_HintOptCmd, _T("UseTrash"));
 	ShowRulerCheckBox->Hint    = LoadUsrMsg(USTR_HintOptCmd, _T("ShowRuler"));
+	ShowIndentCheckBox->Hint   = LoadUsrMsg(USTR_HintOptCmd, _T("ShowIndent"));
 	ShowLnNoCheckBox->Hint	   = LoadUsrMsg(USTR_HintOptCmd, _T("ShowLineNo"));
 	LeftMarginEdit->Hint	   = LoadUsrMsg(USTR_HintOptCmd, _T("SetMargin"));
 	ShowTabCheckBox->Hint	   = LoadUsrMsg(USTR_HintOptCmd, _T("ShowTAB"));
@@ -468,8 +471,6 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	TextEditorEdit->Tag 		= (NativeInt)&TextEditor;
 	TextEditorFrmtEdit->Tag 	= (NativeInt)&TextEditorFrmt;
 	TextEditorFrmt2Edit->Tag 	= (NativeInt)&TextEditorFrmt2;
-	ExtTxViewerEdit->Tag		= (NativeInt)&ExtTxViewer;
-	ExtTxViewerFmtEdit->Tag 	= (NativeInt)&ExtTxViewerFrmt;
 	ImageEditorEdit->Tag		= (NativeInt)&ImageEditor;
 	FExtImgEdit->Tag			= (NativeInt)&FExtImgEidt;
 	BinaryEditorEdit->Tag		= (NativeInt)&BinaryEditor;
@@ -689,6 +690,7 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	ShowTabCheckBox->Tag		= (NativeInt)&ShowTAB;
 	ShowCrCheckBox->Tag 		= (NativeInt)&ShowCR;
 	ShowRulerCheckBox->Tag		= (NativeInt)&ShowTextRuler;
+	ShowIndentCheckBox->Tag		= (NativeInt)&ShowIndent;
 	ShowStickyCheckBox->Tag		= (NativeInt)&ShowSticky;
 	TxtSttIsBtmCheckBox->Tag	= (NativeInt)&TxtSttIsBottom;
 	UseXd2txCheckBox->Tag		= (NativeInt)&UseXd2tx;		UseXd2txCheckBox->Enabled = xd2tx_Available;
@@ -842,7 +844,6 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	usr_SH->AddTargetList(this, ImageEditorEdit);
 	usr_SH->AddTargetList(this, BinaryEditorEdit);
 	usr_SH->AddTargetList(this, EtcEditorEdit);
-	usr_SH->AddTargetList(this, ExtTxViewerEdit);
 	usr_SH->AddTargetList(this, AsoAppComboBox);
 
 	KeySetOnly = false;
@@ -1123,8 +1124,8 @@ bool __fastcall TOptionDlg::FormHelp(WORD Command, THelpEventData Data, bool &Ca
 			switch (KeyTabControl->TabIndex) {
 			case 0: topic = HELPTOPIC_FL;	break;	//ファイラー
 			case 1: topic = HELPTOPIC_IS;	break;	//INC.サーチ
-			case 2: topic = HELPTOPIC_TV;	break;	//テキストビュアー
-			case 3: topic = HELPTOPIC_IV;	break;	//イメージビュアー
+			case 2: topic = HELPTOPIC_TV;	break;	//テキストビューア
+			case 3: topic = HELPTOPIC_IV;	break;	//イメージビューア
 			case 4: topic = HELPTOPIC_CILW;	break;	//ログ
 			}
 
@@ -1523,13 +1524,13 @@ void __fastcall TOptionDlg::EtcEditorListBoxClick(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-//エディタ/ビュアーの参照
+//エディタ/ビューアの参照
 //---------------------------------------------------------------------------
 void __fastcall TOptionDlg::RefEditorBtnClick(TObject *Sender)
 {
 	int tag = ((TComponent*)Sender)->Tag;
 	UnicodeString tit = get_word_i_idx(
-		"テキストエディタ|イメージエディタ|バイナリエディタ|その他のエディタ|外部テキストビュアー", tag);
+		"テキストエディタ|イメージエディタ|バイナリエディタ|その他のエディタ", tag);
 	UserModule->PrepareOpenDlg(tit.c_str(), F_FILTER_EXE2);
 	UnicodeString fnam;
 	if (UserModule->OpenDlgToStr(fnam)) {
@@ -1538,7 +1539,6 @@ void __fastcall TOptionDlg::RefEditorBtnClick(TObject *Sender)
 		case 1: SetExtNameToCtrl(fnam, ImageEditorEdit);	break;
 		case 2: SetExtNameToCtrl(fnam, BinaryEditorEdit);	break;
 		case 3: SetExtNameToCtrl(fnam, EtcEditorEdit);		break;
-		case 4: SetExtNameToCtrl(fnam, ExtTxViewerEdit);	break;
 		}
 	}
 }
@@ -1671,8 +1671,8 @@ void __fastcall TOptionDlg::RefFontBtnClick(TObject *Sender)
 	if (idx>=0 && idx<FontComboBox->Items->Count && idx<FontBufList->Count) {
 		TFont *f = (TFont*)FontBufList->Objects[idx];
 		UserModule->FontDlg->Options.Clear();
-		if (SameText(FontBufList->ValueFromIndex[idx], "テキストビュアー"))
-			UserModule->FontDlg->Options << fdFixedPitchOnly;	//テキストビュアーは等幅
+		if (SameText(FontBufList->ValueFromIndex[idx], "テキストビューア"))
+			UserModule->FontDlg->Options << fdFixedPitchOnly;	//テキストビューアは等幅
 
 		if (UserModule->FontDlgToFont(f)) FontComboBox->Repaint();
 	}
@@ -1729,7 +1729,7 @@ void __fastcall TOptionDlg::DisableColActionUpdate(TObject *Sender)
 			"bgList|bgList2|fgList|Splitter|fgSelItem|Protect|Compress|frScrKnob|bgActKnob|lnScrHit|lnScrSel|"
 			"bgTabBar|bgListHdr|fgListHdr|bgDirInf|fgDirInf|bgDirRel|bgDirRel|fgDirRel|fgDirRel|bgDrvInf|fgDrvInf|"
 			"bgInf|fgInf|bgTxtPrv|fgTxtPrv|bgLog|fgLog|bgTask|"
-			"frmTab|bgView|fgView|bdrLine|bdrFold|bdrFixed|TlBorder|bgTlBar1|bgTlBar2|fgTlBar|bgInfHdr|fgInfHdr",
+			"frmTab|bgView|fgView|bdrLine|Indent2|bdrFold|bdrFixed|TlBorder|bgTlBar1|bgTlBar2|fgTlBar|bgInfHdr|fgInfHdr",
 			col_id);
 }
 //---------------------------------------------------------------------------
@@ -3794,7 +3794,7 @@ void __fastcall TOptionDlg::DelKeyActionUpdate(TObject *Sender)
 //---------------------------------------------------------------------------
 //検索
 //---------------------------------------------------------------------------
-void __fastcall TOptionDlg::FindEditChange(TObject *Sender)
+void __fastcall TOptionDlg::FindCore()
 {
 	FindMarkList->ClearAll();
 	FindMarkList->MarkColor = col_OptFind;
@@ -3826,6 +3826,20 @@ void __fastcall TOptionDlg::FindEditChange(TObject *Sender)
 		}
 		if (!found) beep_Warn();
 	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TOptionDlg::FindEditChange(TObject *Sender)
+{
+	//IME入力対策
+	Timer1->Enabled  = false;
+	Timer1->Interval = REPEAT_WAIT;
+	Timer1->Enabled  = true;
+}
+//---------------------------------------------------------------------------
+void __fastcall TOptionDlg::Timer1Timer(TObject *Sender)
+{
+	Timer1->Enabled = false;
+	FindCore();
 }
 
 //---------------------------------------------------------------------------
@@ -4611,8 +4625,6 @@ void __fastcall TOptionDlg::OkActionUpdate(TObject *Sender)
 	InvColIfEmpty(FExtImgPrvEdit);
 	InvColIfEmpty(FExtNoImgPrvEdit);
 	InvColIfEmpty(NoCachePathEdit);
-	InvColIfEmpty(ExtTxViewerEdit);
-	ExtTxViewerFmtEdit->Color = ExtTxViewerEdit->Color;
 
 	set_EditColor(HdrStrEdit, MarkdownCheckBox->Checked);
 

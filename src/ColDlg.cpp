@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------//
 // NyanFi																//
-//  テキストビュアーの配色												//
+//  テキストビューアの配色												//
 //----------------------------------------------------------------------//
 #include "UserFunc.h"
 #include "UserMdl.h"
@@ -37,6 +37,8 @@ void __fastcall TColorDlg::FormCreate(TObject *Sender)
 		"LineNo=行番号文字色\n"
 		"Mark=行マーク\n"
 		"bdrLine=行番号境界線\n"
+		"Indent=インデントガイド\n"
+		"Indent2=インデントガイド(交互)\n"
 		"bdrFold=折り返し境界線\n"
 		"bdrFixed=固定長表示の縦罫線\n"
 		"Comment=|コメントの文字色\n"
@@ -251,6 +253,6 @@ void __fastcall TColorDlg::DisableColActionUpdate(TObject *Sender)
 {
 	TListBox *lp = ColorListBox;
 	UnicodeString col_id = (lp->ItemIndex!=-1)? lp->Items->Names[lp->ItemIndex] : EmptyStr;
-	((TAction*)Sender)->Enabled = contained_wd_i("fgSelItem|bdrLine|bdrFold|bdrFixed", col_id);
+	((TAction*)Sender)->Enabled = contained_wd_i("fgSelItem|bdrLine|Indent2|bdrFold|bdrFixed", col_id);
 }
 //---------------------------------------------------------------------------

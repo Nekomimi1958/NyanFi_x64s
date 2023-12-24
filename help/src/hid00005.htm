@@ -407,7 +407,7 @@ NyanFi.exe -XCalculator_CB
       パラメータに <b>FF</b> を指定すると、開いたときフィルタ欄にフォーカスします。<br>
       <div class="spc_box">
         最大表示項目数は1000で、超えた場合には古いものから順に削除されます。右クリックメニューで「<b>コマンド履歴をクリア</b>」も可能。<br>
-        一覧には、実行時刻、種別(F:ファイラー、V:テキストビュアー、I:イメージビュアー、L:ログ)、カレント(L:左、R:右)、コマンド内容、カレントディレクトリなどが表示されます。<br>
+        一覧には、実行時刻、種別(F:ファイラー、V:テキストビューア、I:イメージビューア、L:ログ)、カレント(L:左、R:右)、コマンド内容、カレントディレクトリなどが表示されます。<br>
         また画面モードが変化したらセパレータが、前回の実行から30秒以上経過していたら分割線が表示されます。<br>
         なお、<a href="#ExeCommands">ExeCommands</a> コマンド内で実行される個々のコマンドについては履歴に入りません。<br>
       </div>
@@ -535,14 +535,14 @@ NyanFi.exe -XCalculator_CB
 
     <dt id="ConvertHtm2Txt">ConvertHtm2Txt<span class="pram_text">[_HD][;{MD|TX}]</span></dt>
     <dd>選択中(無ければカーソル位置)のHTML文書をテキストに変換して反対パスに出力します(拡張子 <b>.txt</b> または <b>.md</b>)。<br>
-      変換はテキストビュアーでのHTML→テキスト変換表示に準じます。<br>
+      変換はテキストビューアでのHTML→テキスト変換表示に準じます。<br>
 
       <div class="spc_box">
         パラメータに <b>HD</b> を指定した場合、ヘッダ情報に Title や Description があれば先頭に挿入します。<br>
         パラメータに <b>MD</b> を指定すると、オプション設定にかかわらず <b>Markdown</b> 記法に、また <b>TX</b> を指定すると通常テキストに変換します。<b>HD</b> とともに指定する場合は
         <b>;</b> (セミコロン)で区切ってください。<br>
       </div>
-      <a href="hid00011.htm#HtmlToText">→ オプション設定 - テキストビュアー - 「HTML→テキスト変換」</a><br>
+      <a href="hid00011.htm#HtmlToText">→ オプション設定 - テキストビューア - 「HTML→テキスト変換」</a><br>
       <a href="#JoinText">→ JoinText</a>
     </dd>
 
@@ -644,7 +644,7 @@ NyanFi.exe -XCalculator_CB
 
     <dt id="CopyCmdName">CopyCmdName</dt>
     <dd>コマンド名を参照して、クリップボードにコピーします。<br>
-      ボタンで、ファイラー/テキストビュアー/イメージビュアー/ログウィンドウを切り替えられます。<br>
+      ボタンで、ファイラー/テキストビューア/イメージビューア/ログウィンドウを切り替えられます。<br>
       文字列を入力すると、それが含まれる候補がドロップダウン表示されます(Migemo 対応)。また "<b>*</b>"、"<b>?</b>"、"<b> </b>"
       のいずれかを入力すると、すべてのコマンドが表示されます。<br>
       またコマンドの後に "<b>_</b>" を入力すると、そのコマンドで利用できるパラメータの候補(一部動的なものを除く)がドロップダウン表示されます。<br>
@@ -1371,7 +1371,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
     <dt id="FileListOnly">FileListOnly<span class="pram_text">[_{ON|OFF}]</span></dt>
     <dd>ファイルリストのみを表示し、それ以外の部分(プレビュー、ファイル情報、ログウィンドウ)を隠します。再び実行すると通常表示に戻ります(トグル動作)。<br>
       パラメータに <b>ON</b> を指定するとファイルリストのみ表示、<b>OFF</b> では通常表示になります。<br>
-      なおファイルリストのみ表示のときにログを確認したい場合、<a href="#ViewLog">ViewLog</a> コマンドを用いてテキストビュアーで見ると便利かもしれません。<br>
+      なおファイルリストのみ表示のときにログを確認したい場合、<a href="#ViewLog">ViewLog</a> コマンドを用いてテキストビューアで見ると便利かもしれません。<br>
       <a href="#ViewLog">→ ViewLog</a>
     </dd>
 
@@ -1588,7 +1588,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
     <dt id="FindTagName">FindTagName<span class="pram_text">[_EJ]</span></dt>
     <dd><a href="hid00083.htm#Dialog">タグ名検索ダイアログ</a> を開き、カレントパスから参照できる <b>tags</b> でタグ名を検索した後、ダイレクトタグジャンプを行います。<br>
       パラメータに <b>EJ</b> を指定すると ダイレクトタグジャンプをテキストエディタで(<a
-        href="hid00006.htm#TagJumpDirect">TagJumpDirect</a>)、そうでない場合はテキストビュアーで(<a
+        href="hid00006.htm#TagJumpDirect">TagJumpDirect</a>)、そうでない場合はテキストビューアで(<a
         href="hid00006.htm#TagViewDirect">TagViewDirect</a>)行います。
     </dd>
 
@@ -1657,7 +1657,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
     </dd>
 
     <dt id="GitViewer">GitViewer<span class="pram_text">[_N履歴制限数(デフォルト=100)][;CP]</span></dt>
-    <dd>Gitの作業ディレクトリにいる場合、<a href="hid00090.htm#GitViewer">Gitビュアー</a>が表示されます。<br>
+    <dd>Gitの作業ディレクトリにいる場合、<a href="hid00090.htm#GitViewer">Gitビューア</a>が表示されます。<br>
       ブランチ一覧、コミット履歴、差分の概略を確認でき、ブランチやコミットに対する操作、ステージングやコミット、Console、GUI、diffツールの起動などを行えます。<br>
       <div class="spc_box">
         パラメータに <b>N</b>～ を指定すると、表示するコミット履歴数を制限できます。<br>
@@ -1666,12 +1666,12 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       </div>
       <div class="spc_box">
         パラメータに <b>CP</b> を指定すると、カーソル位置ファイルのみについてのコミット履歴を表示します。<br>
-        ビュアーで<span class="btn_frame">更新</span>ボタンまたは<span class="btn_frame">F5</span>キーを押すと絞り込みが解除されます。<br>
+        ビューアで<span class="btn_frame">更新</span>ボタンまたは<span class="btn_frame">F5</span>キーを押すと絞り込みが解除されます。<br>
       </div>
       <div class="spc_box">
         複数のパラメータを指定する場合は <b>;</b> (セミコロン)で区切ってください。<br>
       </div>
-      <a href="hid00090.htm#GitViewer">→ Git の利用について - Gitビュアー</a><br>
+      <a href="hid00090.htm#GitViewer">→ Git の利用について - Gitビューア</a><br>
       <a href="#RepositoryList">→ RepositoryList</a><br>
     </dd>
 
@@ -1717,15 +1717,15 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
     </dd>
 
     <dt id="ImageViewer">ImageViewer<span class="pram_text">[_{CB|NN}]</span></dt>
-    <dd>カーソル位置のファイルを<a href="hid00007.htm">イメージビュアー</a>で表示します。<br>
+    <dd>カーソル位置のファイルを<a href="hid00007.htm">イメージビューア</a>で表示します。<br>
       実行ファイルやDLLの場合は、アイコンを抽出して一覧表示できます。<br>
       <div class="spc_box">
-        アーカイブファイルに対して実行した場合、内部に栞マークの付いた画像があればそれを、無ければ最初に見つかった画像を表示します。この場合、イメージビュアーを閉じると仮想ディレクトリから抜けます。<br>
+        アーカイブファイルに対して実行した場合、内部に栞マークの付いた画像があればそれを、無ければ最初に見つかった画像を表示します。この場合、イメージビューアを閉じると仮想ディレクトリから抜けます。<br>
       </div>
       <div class="spc_box">
         パラメータに <b>CB</b> を指定すると、クリップボードのビットマップ内容を表示します。この場合、サムネイルは非表示になります。<br>
         パラメータに <b>NN</b> を指定すると、複数の <b>NyanFi</b> が起動している場合、次の <b>NyanFi</b>
-        のイメージビュアーで表示します(アーカイブやFTPは除く)。二重起動されていない場合は、自身で表示します。<br>
+        のイメージビューアで表示します(アーカイブやFTPは除く)。二重起動されていない場合は、自身で表示します。<br>
         <a href="hid00080.htm">FTP接続</a>時にリモート側のファイルを開いた場合、サムネイルは非表示になります。<br>
       </div>
 
@@ -1889,10 +1889,10 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
     </dd>
 
     <dt id="JsonViewer">JsonViewer<span class="pram_text">[_CB]</span></dt>
-    <dd>カーソル位置のJSONファイルを<a href="hid00092.htm">JSONビュアー</a>でツリー表示します。<br>
+    <dd>カーソル位置のJSONファイルを<a href="hid00092.htm">JSONビューア</a>でツリー表示します。<br>
       <b>.json</b> 以外の拡張子でも、JSONファイルと認識されれば閲覧できます。<br>
       <div class="spc_box">
-        パラメータに <b>CB</b> を指定すると、クリップボードのテキスト内容をビュアーで表示します。
+        パラメータに <b>CB</b> を指定すると、クリップボードのテキスト内容をビューアで表示します。
       </div>
     </dd>
 
@@ -1995,7 +1995,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
     <dt id="ListFileInfo">ListFileInfo</dt>
     <dd><a href="#ShowFileInfo">ShowFileInfo</a>_SD のエイリアス(別名)です。<br>
       カーソル位置のファイル情報をダイアログ表示します。<br>
-      ダイアログでのカーソル移動などは、ファイラーやテキストビュアーで割り当てられているのと同じキー操作や、テキストビュアーで割り当てられているマウスホイール操作によって可能です。
+      ダイアログでのカーソル移動などは、ファイラーやテキストビューアで割り当てられているのと同じキー操作や、テキストビューアで割り当てられているマウスホイール操作によって可能です。
       ただし、2ストロークキー操作はできません。<br>
       <a href="#ShowFileInfo">→ ShowFileInfo</a>　<a href="#ShowProperty">→ ShowProperty</a>
     </dd>
@@ -2072,7 +2072,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 
     <dt id="ListText">ListText<span class="pram_text">[_FF][;EO][;/見出しパターン/][;ファイル名]</span></dt>
     <dd>カーソル位置のテキストファイルを<a href="hid00073.htm">一覧ダイアログ</a>で表示します。<br>
-      表示処理などが単純な分、テキストビュアーよりも高速に動作します。またフィルタによる絞り込み表示が可能。<br>
+      表示処理などが単純な分、テキストビューアよりも高速に動作します。またフィルタによる絞り込み表示が可能。<br>
 
       <div class="spc_box">
         パラメータに <b>FF</b> を指定すると、開いたときフィルタ欄にフォーカスします。<br>
@@ -2574,7 +2574,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       <div class="indent1">
         ・実行可能なファイルは実行します(仮想ディレクトリ内は除く)。<br>
         ・「管理者として実行」が設定されているショートカット(<b>.lnk</b>)は、管理者として実行します。<br>
-        ・画像ファイルやアイコンファイルはイメージビュアーで表示。<br>
+        ・画像ファイルやアイコンファイルはイメージビューアで表示。<br>
         ・サウンドファイル(<b>.wav</b>、<b>.wma</b>、<b>.mp3</b>、<b>.mid</b>)は秒数制限で再生。<br>
         ・対応可能なアーカイブは仮想ディレクトリとして開きます。<br>
         ・<b>.nwl</b> ファイルは<a href="hid00060.htm">ワークリスト</a>として開きます。<br>
@@ -2588,7 +2588,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
         コマンドで開きます。<br>
         ・<a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>結果リスト</b>」をチェックしていると、結果リストファイル(一行目が
         ";[ResultList]") を <a href="#LoadResultList">LoadResultList</a> コマンドで開きます。<br>
-        ・それ以外のファイルはビュアーでテキストまたはバイナリ表示します。<br>
+        ・それ以外のファイルはビューアでテキストまたはバイナリ表示します。<br>
         ・<a href="hid00080.htm">FTP接続</a>時のリモート側では、ディレクトリの変更のみ可能です。<br>
       </div>
 
@@ -2598,7 +2598,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
           href="#FileEdit">FileEdit</a>、<a href="#BinaryEdit">BinaryEdit</a>、<a
           href="#ExeCommands">ExeCommands</a>)を指定することも可能です。<br>
         <b>xd2txlib.dll</b> を利用して <b>.docx</b>、<b>.pptx</b>、<b>.xlsx</b>
-        ファイルをテキスト表示したい場合は、これらの拡張子に対して「<b>テキストビュアーで開く(TextViewer)</b>」を設定してください。<br>
+        ファイルをテキスト表示したい場合は、これらの拡張子に対して「<b>テキストビューアで開く(TextViewer)</b>」を設定してください。<br>
         なお、「<b>実行後にカーソルを下に移動</b>」をチェックしていると、実行後にカーソルが一つ下に移動します。<br>
       </div>
 
@@ -2625,7 +2625,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       OptionDlg<span class="pram_text">_KYO</span></dt>
     <dd>「<a href="hid00008.htm">オプション設定</a>」ダイアログを開きます。<br>
       パラメータを指定すると特定のタブを開くことができます。パラメータとタブの対応は次の通りです。<b>GN</b>: 一般、<b>G2</b>: 一般2、<b>MO</b>: マウス操作、<b>DS</b>:
-      デザイン、<b>FC</b>: フォント・配色、<b>TV</b>: テキストビュアー、<b>IV</b>: イメージビュアー、<b>ED</b>: エディタ、<b>KY</b>: キー設定、<b>AC</b>:
+      デザイン、<b>FC</b>: フォント・配色、<b>TV</b>: テキストビューア、<b>IV</b>: イメージビューア、<b>ED</b>: エディタ、<b>KY</b>: キー設定、<b>AC</b>:
       関連付け、<b>XM</b>: 追加メニュー、<b>XT</b>: 外部ツール、<b>ST</b>: 起動時、<b>NT</b>: 通知・確認、<b>CM</b>: コマンド、<b>EV</b>: イベント。<br>
       <div class="spc_box note_text">
         ダイアログを開く直前に、画面が通常のファイルリスト表示に戻りますので注意してください。FTPも切断されます。<br>
@@ -2995,7 +2995,7 @@ NyanFi.exe -XRegExChecker
     <dt id="RepositoryList">RepositoryList<span class="pram_text">[_FF]</span></dt>
     <dd><a href="hid00090.htm#RepositoryList">リポジトリ一覧</a>を表示します。<br>
       キー操作などは他の一覧と同様です。数字キーまたは<span class="btn_frame">ENTER</span>キーで確定すると、そのディレクトリに移動します。<br>
-      また <a href="#GitViewer">GitViewer</a>、<a href="#TextViewer">TextViewer</a> コマンドのキーを押すと、ディレクトリ移動後にGitビュアーが開きます。<br>
+      また <a href="#GitViewer">GitViewer</a>、<a href="#TextViewer">TextViewer</a> コマンドのキーを押すと、ディレクトリ移動後にGitビューアが開きます。<br>
       <div class="spc_box">
         パラメータに <b>FF</b> を指定すると、開いたときフィルタ欄にフォーカスします。<br>
       </div>
@@ -3303,10 +3303,10 @@ D:\Data\hoge.txt
     </dd>
 
     <dt id="SetInterpolation">SetInterpolation<span class="pram_text">_{N|L|C|F|H|X}[{N|L|C|F|H|X}...]</span></dt>
-    <dd><a href="hid00020.htm">オプション設定 - イメージビュアー</a> - 「<b>縮小・拡大アルゴリズム</b>」を変更します。<br>
+    <dd><a href="hid00020.htm">オプション設定 - イメージビューア</a> - 「<b>縮小・拡大アルゴリズム</b>」を変更します。<br>
       パラメータで <b>N</b> (ニアレストネイバー)、<b>L</b> (バイリニア)、<b>C</b> (バイキュービック)、<b>F</b> (ファントリサンプリング)、<b>H</b>
       (高品質バイキュービック)、<b>X</b> (補間しない)のいずれかを指定してください。複数を組み合わせて指定すると、それらの間をトグルで切り替えられます。<br>
-      この設定は、<a href="hid00007.htm">イメージビュアー</a>だけでなくイメージプレビューやファイルリストの背景画像の表示にも適用されます。<br>
+      この設定は、<a href="hid00007.htm">イメージビューア</a>だけでなくイメージプレビューやファイルリストの背景画像の表示にも適用されます。<br>
 
       <div class="note_text">
         <b>H</b> (高品質バイキュービック) は <b>Windows 10</b> 以降で利用可能です。
@@ -3395,8 +3395,8 @@ D:\Data\hoge.txt
 
       <div class="spc_box">
         パラメータに <b>SD</b> を指定すると、ファイル情報の画面の表示状態にかかわらずダイアログで表示します(= <a href="#ListFileInfo">ListFileInfo</a>)。<br>
-        ダイアログでのカーソル移動などは、ファイラーやテキストビュアーで割り当てられているのと同じキー操作や、テキストビュアーで割り当てられているマウスホイール操作によって可能です。ただし、2ストロークキー操作はできません。<br>
-        右クリックメニューの「<b>イメージプレビュー</b>」では、サブビュアーを利用して画像を表示できます。ビュアーの表示状態、位置、サイズは別途保存/復元。<br>
+        ダイアログでのカーソル移動などは、ファイラーやテキストビューアで割り当てられているのと同じキー操作や、テキストビューアで割り当てられているマウスホイール操作によって可能です。ただし、2ストロークキー操作はできません。<br>
+        右クリックメニューの「<b>イメージプレビュー</b>」では、サブビューアを利用して画像を表示できます。ビューアの表示状態、位置、サイズは別途保存/復元。<br>
 
       </div>
       <a href="#ListFileInfo">→ ListFileInfo</a>　<a href="#CopyFileInfo">→ CopyFileInfo</a>　<a href="#LogFileInfo">→
@@ -3630,16 +3630,16 @@ D:\Data\hoge.txt
 
     <dt id="SubViewer">SubViewer<span class="pram_text">[_{ON|OFF|CB|LK|RL|RR|FH|FV}]</span></dt>
     <dd>
-      パラメータを指定しない場合、<b>サブビュアー</b>の表示/非表示をトグルで切り替えます。<br>
+      パラメータを指定しない場合、<b>サブビューア</b>の表示/非表示をトグルで切り替えます。<br>
       パラメータに <b>ON</b> を指定すると表示、<b>OFF</b> では非表示になります。<br>
-      サブビュアーには、ファイルリストのカーソル位置の画像がフィット表示されます(アニメーションGIF対応)。<br>
+      サブビューアには、ファイルリストのカーソル位置の画像がフィット表示されます(アニメーションGIF対応)。<br>
       縮小の際は単純な補間しか行われませんが、画面のリサイズにしたがってすぐにフィットします。<br>
       <div class="spc_box">
         パラメータに <b>CB</b> を指定すると、クリップボードのビットマップ内容を表示します。<br>
       </div>
       <div class="spc_box">
         パラメータに <b>LK</b> を指定すると、現在表示中の画像の固定/解除をトグルで切り替えます。固定状態(赤枠表示)では、別のファイルに移動しても表示が変わりません。<b>LK</b>
-        を指定したコマンドによってサブビュアーが非表示から表示になった場合は、固定状態になります。<br>
+        を指定したコマンドによってサブビューアが非表示から表示になった場合は、固定状態になります。<br>
         パラメータに <b>RL</b> を指定すると表示中の画像(GIFやメタファイルは除く)を左に90度、<b>RR</b> を指定すると右に90度回転します。また <b>FH</b> では左右反転、 <b>FV</b>
         では上下反転します。これらの操作は右クリックメニューからも可能です。<br>
         なお、右クリックメニューで背景色を変更できます。<br>
@@ -3752,18 +3752,18 @@ D:\Data\hoge.txt
 
     <dt id="TextViewer">TextViewer<span class="pram_text">[_{ファイル名|URL|CB|XW|NN}]</span><br>
       TextViewer<span class="pram_text">_{ファイル名|URL|CB};XW</span></dt>
-    <dd>カーソル位置のファイルを<a href="hid00006.htm">テキストビュアー</a>で表示します。<br>
+    <dd>カーソル位置のファイルを<a href="hid00006.htm">テキストビューア</a>で表示します。<br>
       テキストファイル以外は、バイナリ・ダンプ表示します。<br>
       <div class="spc_box">
         パラメータに特定のファイル名を指定すると直接開けます。ドライブ名がない場合はカレントからの相対指定になります。<br>
       </div>
       <div class="spc_box">
-        URLでHTML文書などのファイルを指定すると、一時ディレクトリにダウンロードしてテキストビュアーで表示します。なお、URLの末尾が <b>/</b> の場合 "<b>index.html</b>"
+        URLでHTML文書などのファイルを指定すると、一時ディレクトリにダウンロードしてテキストビューアで表示します。なお、URLの末尾が <b>/</b> の場合 "<b>index.html</b>"
         が付加されます。<br>
       </div>
       <div class="spc_box">
         パラメータに <b>CB</b> を指定すると、クリップボードのテキストを表示します。<br>
-        パラメータに <b>XW</b> を付加すると、テキストビュアーを別ウィンドウで開きます。詳しくは <a href="hid00006.htm#XW">テキストビュアー</a> のページを参照してください。<br>
+        パラメータに <b>XW</b> を付加すると、テキストビューアを別ウィンドウで開きます。詳しくは <a href="hid00006.htm#XW">テキストビューア</a> のページを参照してください。<br>
         ２番目の書式のように、表示対象に追加指定することもできます。<br>
       </div>
       <b>例</b>: クリップボードを別ウィンドウで表示<br>
@@ -3773,15 +3773,15 @@ D:\Data\hoge.txt
 
       <div class="spc_box">
         パラメータに <b>NN</b> を指定すると、複数の <b>NyanFi</b> が起動している場合、次の <b>NyanFi</b>
-        のテキストビュアーで表示します(アーカイブやFTPは除く)。二重起動されていない場合は、自身で表示します。<br>
-        なお、<a href="hid00021.htm">オプション設定 - イベント</a>で、テキストビュアーを開く直前/開いた直後/閉じる直前/閉じた直後に実行するコマンドを設定できます(別ウィンドウの場合は開く直前のみ)。
-        これを利用すれば、例えば拡張子別にビュアーの表示設定を変えるようなことも可能です。<br>
+        のテキストビューアで表示します(アーカイブやFTPは除く)。二重起動されていない場合は、自身で表示します。<br>
+        なお、<a href="hid00021.htm">オプション設定 - イベント</a>で、テキストビューアを開く直前/開いた直後/閉じる直前/閉じた直後に実行するコマンドを設定できます(別ウィンドウの場合は開く直前のみ)。
+        これを利用すれば、例えば拡張子別にビューアの表示設定を変えるようなことも可能です。<br>
       </div>
       <a href="#ToExViewer">→ ToExViewer</a>　<a href="#ViewTail">→ ViewTail</a>　<a href="#ViewHistory">→ ViewHistory</a>
     </dd>
 
     <dt id="ToExViewer">ToExViewer</dt>
-    <dd>別ウィンドウのテキストビュアーにフォーカスを移します。<br>
+    <dd>別ウィンドウのテキストビューアにフォーカスを移します。<br>
       ウィンドウが複数ある場合は、ポップアップメニューで選択できます。<br>
       なお、<a href="hid00076.htm">アプリケーション一覧</a>によって切り替えることも可能です。<br>
       <a href="#TextViewer">→ TextViewer</a>
@@ -3924,7 +3924,7 @@ D:\Data\hoge.txt
       ファイラーで <a href="#ToLeft">ToLeft</a> / <a href="#ToRight">ToRight</a>、<a href="#ToParentOnLeft">ToParentOnLeft</a>
       / <a href="#ToParentOnRight">ToParentOnRight</a> コマンドが割り当てられているキーや、<span class="btn_frame">←</span> / <span
         class="btn_frame">→</span>キーを押すことによって、左/右ファイルリストに戻れます。<br>
-      なお、テキストプレビューでは、ファイラーやテキストビュアーで割り当てられているのと同じキー(2ストローク操作は除く)でカーソル移動などを行えます。<br>
+      なお、テキストプレビューでは、ファイラーやテキストビューアで割り当てられているのと同じキー(2ストローク操作は除く)でカーソル移動などを行えます。<br>
       <a href="#ToLog">→ ToLog</a>
     </dd>
 
@@ -3995,7 +3995,7 @@ D:\Data\hoge.txt
     </dd>
 
     <dt id="ViewHistory">ViewHistory<span class="pram_text">[_{FF|AC}]</span></dt>
-    <dd><a href="hid00058.htm">最近閲覧したファイル一覧</a>が開き、<a href="hid00006.htm">テキストビュアー</a> (<a
+    <dd><a href="hid00058.htm">最近閲覧したファイル一覧</a>が開き、<a href="hid00006.htm">テキストビューア</a> (<a
         href="#TextViewer">TextViewer</a>) で閲覧したファイルの履歴が表示されます。<br>
       画面は <a href="#EditHistory">EditHistory</a> と共用していますので、表示位置やサイズは同じになります。<br>
       パラメータに <b>FF</b> を指定すると、開いたときフィルタ欄にフォーカスします。<br>
@@ -4005,19 +4005,19 @@ D:\Data\hoge.txt
     </dd>
 
     <dt id="ViewIniFile">ViewIniFile<span class="pram_text">[_XW]</span></dt>
-    <dd>現在のINIファイルを<a href="hid00006.htm">テキストビュアー</a>で表示します。<br>
-      パラメータに <b>XW</b> を指定すると、別ウィンドウのテキストビュアーで開きます。<br>
+    <dd>現在のINIファイルを<a href="hid00006.htm">テキストビューア</a>で表示します。<br>
+      パラメータに <b>XW</b> を指定すると、別ウィンドウのテキストビューアで開きます。<br>
       <a href="#EditIniFile">→ EditIniFile</a>　<a href="#TextViewer">→ TextViewer</a>
     </dd>
 
     <dt id="ViewLog">ViewLog<span class="pram_text">[_XW]</span></dt>
-    <dd>現在のログ内容を<a href="hid00006.htm">テキストビュアー</a>で表示します(ログウィンドウの右クリックメニューからも可能)。<br>
-      パラメータに <b>XW</b> を指定すると、別ウィンドウのテキストビュアーで開きます。<br>
+    <dd>現在のログ内容を<a href="hid00006.htm">テキストビューア</a>で表示します(ログウィンドウの右クリックメニューからも可能)。<br>
+      パラメータに <b>XW</b> を指定すると、別ウィンドウのテキストビューアで開きます。<br>
       <a href="#ListLog">→ ListLog</a>　<a href="#TextViewer">→ TextViewer</a>
     </dd>
 
     <dt id="ViewTail">ViewTail<span class="pram_text">[_[R][行数]]</span></dt>
-    <dd>カーソル位置のテキストファイルの末尾から指定行数分を<a href="hid00006.htm">テキストビュアー</a>で表示します。<br>
+    <dd>カーソル位置のテキストファイルの末尾から指定行数分を<a href="hid00006.htm">テキストビューア</a>で表示します。<br>
       表示部分のみを読み込むので、巨大なログファイルなどもすばやく確認できます。<br>
       パラメータで<b>行数</b>を指定しない場合、デフォルトの100行になります。<br>
       行数の頭に <b>R</b> を付けると、逆順で表示します。<br>
@@ -4216,7 +4216,7 @@ var marker = L.marker([$Latitude$, $Longitude$]).addTo(map);
     </dd>
 
     <dt id="XmlViewer">XmlViewer</dt>
-    <dd>カーソル位置のXMLファイルを<a href="hid00081.htm">XMLビュアー</a>で表示します。<br>
+    <dd>カーソル位置のXMLファイルを<a href="hid00081.htm">XMLビューア</a>で表示します。<br>
       <b>.xml</b> 以外の拡張子でも、XMLファイルと認識されれば閲覧できます。<br>
     </dd>
 
@@ -4242,8 +4242,8 @@ var marker = L.marker([$Latitude$, $Longitude$]).addTo(map);
   <br>
 
   <p>
-    以下は<a href="hid00006.htm">テキストビュアー</a>についてコマンドですが、ファイラーからも実行できます。<br>
-    <a href="hid00021.htm">オプション設定 - イベント</a> 「<b>テキストビュアーを開く直前</b>」のコマンドで用いれば、拡張子別に表示設定を変えたりできます。
+    以下は<a href="hid00006.htm">テキストビューア</a>についてコマンドですが、ファイラーからも実行できます。<br>
+    <a href="hid00021.htm">オプション設定 - イベント</a> 「<b>テキストビューアを開く直前</b>」のコマンドで用いれば、拡張子別に表示設定を変えたりできます。
   </p>
 
   <dl class="indent1">
@@ -4252,29 +4252,29 @@ var marker = L.marker([$Latitude$, $Longitude$]).addTo(map);
 
     <dt id="HtmlToText">HtmlToText<span class="pram_text">_{ON|OFF}[;{MD|TX}]</span></dt>
     <dd>パラメータに <b>ON</b> を指定するとHTML→テキスト変換表示、<b>OFF</b> では通常表示(ソース)になります。<br>
-      さらに <b>MD</b> を指定すると、<a href="hid00011.htm#HtmlToText">→ オプション設定 - テキストビュアー -「HTML→テキスト変換」</a>
+      さらに <b>MD</b> を指定すると、<a href="hid00011.htm#HtmlToText">→ オプション設定 - テキストビューア -「HTML→テキスト変換」</a>
       の「<b>Markdown記法に変換</b>」オプションが有効に、また <b>TX</b> を指定するとオプションが無効になります。
     </dd>
 
     <dt id="SetColor">SetColor<span class="pram_text">_ファイル名</span></dt>
     <dd>
-      パラメータで指定したカラー設定ファイル(.INI)を読み込んで、テキストビュアーの配色を一時的に変更します。ドライブ名がない場合、<b>NyanFi</b> ディレクトリからの相対指定とみなされます。<br>
+      パラメータで指定したカラー設定ファイル(.INI)を読み込んで、テキストビューアの配色を一時的に変更します。ドライブ名がない場合、<b>NyanFi</b> ディレクトリからの相対指定とみなされます。<br>
       設定ファイルには、このダイアログでエクスポートしたもの、<a href="hid00023.htm">オプション設定 - フォント・配色</a> - 配色の「エクスポート」で保存したもの、あるいは <b>NyanFi</b>
-      のINIファイルのいずれかを利用できます。読み込む際には、テキストビュアーに関する設定内容だけが用いられます。
+      のINIファイルのいずれかを利用できます。読み込む際には、テキストビューアに関する設定内容だけが用いられます。
     </dd>
 
     <dt id="SetMargin">SetMargin<span class="pram_text">_左側余白幅</span></dt>
-    <dd><a href="hid00011.htm">オプション設定 - テキストビュアー</a> の「<b>左側余白幅</b>」を設定します。</dd>
+    <dd><a href="hid00011.htm">オプション設定 - テキストビューア</a> の「<b>左側余白幅</b>」を設定します。</dd>
 
     <dt id="SetTab">SetTab<span class="pram_text">[_タブストップ幅]</span></dt>
     <dd>タブストップ幅を変更します。4、8以外の値を設定することも可能です。<br>
-      0 または無指定の場合は、<a href="hid00011.htm">オプション設定 - テキストビュアー</a> の「<b>タブストップ4の拡張子</b>」の設定にしたがいます。<br>
-      この変更は一時的なもので、テキストビュアーを閉じるとリセットされます。
+      0 または無指定の場合は、<a href="hid00011.htm">オプション設定 - テキストビューア</a> の「<b>タブストップ4の拡張子</b>」の設定にしたがいます。<br>
+      この変更は一時的なもので、テキストビューアを閉じるとリセットされます。
     </dd>
 
     <dt id="SetWidth">SetWidth<span class="pram_text">[_折り返し幅]</span></dt>
     <dd>
-      <a href="hid00011.htm">オプション設定 - テキストビュアー</a> の「<b>折り返し幅</b>」を設定します。入力値を 0 (または空欄)にするとウィンドウの幅に合わせます。<br>
+      <a href="hid00011.htm">オプション設定 - テキストビューア</a> の「<b>折り返し幅</b>」を設定します。入力値を 0 (または空欄)にするとウィンドウの幅に合わせます。<br>
       パラメータで幅を指定すると、入力ボックスを出さずに、その値を設定します。<br>
       <a href="#ShowRuler">→ ShowRuler</a>
     </dd>
@@ -4282,14 +4282,20 @@ var marker = L.marker([$Latitude$, $Longitude$]).addTo(map);
     <dt id="ShowCR">ShowCR<span class="pram_text">[_{ON|OFF}]</span></dt>
     <dd>パラメータを指定しない場合、改行マーク(<b>&#x21b5;</b>)の表示/非表示をトグルで切り替えます。<br>
       パラメータに <b>ON</b> を指定すると表示、<b>OFF</b> で非表示になります。<br>
-      <a href="hid00011.htm">オプション設定 - テキストビュアー</a> の「<b>改行を表示</b>」に反映されます。<br>
+      <a href="hid00011.htm">オプション設定 - テキストビューア</a> の「<b>改行を表示</b>」に反映されます。<br>
       <a href="#ShowTAB">→ ShowTAB</a>
+    </dd>
+
+    <dt id="ShowIndent">ShowIndent<span class="pram_text">[_{ON|OFF}]</span></dt>
+    <dd>パラメータを指定しない場合、インデントガイドの表示/非表示をトグルで切り替えます。<br>
+      パラメータに <b>ON</b> を指定すると表示、<b>OFF</b> で非表示になります。<br>
+      <a href="hid00011.htm">オプション設定 - テキストビューア</a> の「<b>インデントガイドの表示</b>」に反映されます。<br>
     </dd>
 
     <dt id="ShowLineNo">ShowLineNo<span class="pram_text">[_{ON|OFF}]</span></dt>
     <dd>パラメータを指定しない場合、行番号の表示/非表示をトグルで切り替えます。<br>
       パラメータに <b>ON</b> を指定すると表示、<b>OFF</b> で非表示になります。<br>
-      <a href="hid00011.htm">オプション設定 - テキストビュアー</a> の「<b>行番号を表示</b>」に反映されます。
+      <a href="hid00011.htm">オプション設定 - テキストビューア</a> の「<b>行番号を表示</b>」に反映されます。
     </dd>
 
     <dt id="ShowRuby">ShowRuby<span class="pram_text">[_{ON|OFF}]</span></dt>
@@ -4300,13 +4306,13 @@ var marker = L.marker([$Latitude$, $Longitude$]).addTo(map);
     <dt id="ShowRuler">ShowRuler<span class="pram_text">[_{ON|OFF}]</span></dt>
     <dd>パラメータを指定しない場合、ルーラの表示/非表示をトグルで切り替えます。<br>
       パラメータに <b>ON</b> を指定すると表示、<b>OFF</b> で非表示になります。<br>
-      <a href="hid00011.htm">オプション設定 - テキストビュアー</a> の「<b>ルーラを表示</b>」に反映されます。
+      <a href="hid00011.htm">オプション設定 - テキストビューア</a> の「<b>ルーラを表示</b>」に反映されます。
     </dd>
 
     <dt id="ShowTAB">ShowTAB<span class="pram_text">[_{ON|OFF}]</span></dt>
     <dd>パラメータを指定しない場合、タブマーク(<b>&#x21c0;</b>)の表示/非表示をトグルで切り替えます。<br>
       パラメータに <b>ON</b> を指定すると表示、<b>OFF</b> で非表示になります。<br>
-      <a href="hid00011.htm">オプション設定 - テキストビュアー</a> の「<b>タブを表示</b>」に反映されます。<br>
+      <a href="hid00011.htm">オプション設定 - テキストビューア</a> の「<b>タブを表示</b>」に反映されます。<br>
       <a href="#ShowCR">→ ShowCR</a>
     </dd>
   </dl>

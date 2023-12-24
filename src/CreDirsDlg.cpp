@@ -292,8 +292,9 @@ void __fastcall TCreateDirsDlg::ListMemoKeyDown(TObject *Sender, WORD &Key, TShi
 void __fastcall TCreateDirsDlg::CreateActionExecute(TObject *Sender)
 {
 	int ok_cnt	= 0;
-	for (int i=0; i<ListMemo->Lines->Count; i++)
+	for (int i=0; i<ListMemo->Lines->Count; i++) {
 		if (!ExtractFileName(ListMemo->Lines->Strings[i]).IsEmpty()) ok_cnt++;
+	}
 	if (ok_cnt==0) {
 		msgbox_ERR(USTR_NoObject);
 		ModalResult = mrNone;

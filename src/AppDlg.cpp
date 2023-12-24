@@ -745,7 +745,7 @@ void __fastcall TAppListDlg::AddLnkFileRec(UnicodeString fnam, TStringList *lst,
 		}
 		//•ÒW‹——£
 		if (!rnam.IsEmpty()) {
-	 		fp->distance = get_NrmLevenshteinDistance(rnam, fp->b_name, true);
+			fp->distance = get_NrmLevenshteinDistance(rnam, fp->b_name, true);
 		}
 		lst->AddObject(fp->f_name, (TObject*)fp);
 	}

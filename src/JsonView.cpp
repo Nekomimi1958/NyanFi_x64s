@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------//
 // NyanFi																//
-//  JSONビュアー														//
+//  JSONビューア														//
 //----------------------------------------------------------------------//
 #include "UserFunc.h"
 #include "UserMdl.h"
@@ -39,7 +39,7 @@ void __fastcall TJsonViewer::FormShow(TObject *Sender)
 	AssignScaledFont(JsonTreeView, ListFont);
 	AssignScaledFont(StatusBar1, SttBarFont);
 
-	Caption = (isClip? UnicodeString("クリップボード") : yen_to_delimiter(FileName)) + " - JSONビュアー";
+	Caption = (isClip? UnicodeString("クリップボード") : yen_to_delimiter(FileName)) + " - JSONビューア";
 
 	::PostMessage(Handle, WM_FORM_SHOWED, 0, 0);
 }

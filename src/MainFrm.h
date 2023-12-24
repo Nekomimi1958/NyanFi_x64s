@@ -444,6 +444,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *ShowGridAction;
 	TAction *ShowHideAtrAction;
 	TAction *ShowIconAction;
+	TAction *ShowIndentAction;
 	TAction *ShowLineNoAction;
 	TAction *ShowLogWinAction;
 	TAction *ShowOpenAsRunAction;
@@ -590,6 +591,7 @@ __published:	// IDE で管理されるコンポーネント
 	TLabel *RepStrLabel;
 	TLabeledEdit *GrepFilterEdit;
 	TLabeledEdit *SkipDirEdit;
+	TLabeledEdit *SubDirNEdit;
 	TListBox *ImgInfListBox;
 	TListBox *InfListBox;
 	TListBox *L_ListBox;
@@ -598,6 +600,7 @@ __published:	// IDE で管理されるコンポーネント
 	TListBox *ResultListBox;
 	TListBox *TxtPrvListBox;
 	TListBox *TxtTailListBox;
+	TMainMenu *DummyMenu;
 	TMainMenu *MainMenu1;
 	TMenuItem *AboutItem;
 	TMenuItem *AddTagItem;
@@ -1035,6 +1038,7 @@ __published:	// IDE で管理されるコンポーネント
 	TPanel *SubPanel;
 	TPanel *TabOuterPanel;
 	TPanel *TabPanel;
+	TPanel *ThumbnailPanel;
 	TPanel *TxtMainPanel;
 	TPanel *TxtPrvListPanel;
 	TPanel *TxtScrollPanel;
@@ -1103,15 +1107,13 @@ __published:	// IDE で管理されるコンポーネント
 	TToolBar *ToolBarV;
 	TTrackBar *SeekBar;
 	TTrayIcon *TrayIcon1;
+	TUpDown *SubDirNUpDown;
 	TVirtualImageList *BtnVImgList;
 	TVirtualImageList *IconVImgListF;
 	TVirtualImageList *IconVImgListI;
 	TVirtualImageList *IconVImgListP;
 	TVirtualImageList *IconVImgListV;
-	TLabeledEdit *SubDirNEdit;
-	TUpDown *SubDirNUpDown;
-	TPanel *ThumbnailPanel;
-	TMainMenu *DummyMenu;
+	TMenuItem *G1;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -1760,6 +1762,8 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall ShowRulerActionUpdate(TObject *Sender);
 	void __fastcall ShowLineNoActionExecute(TObject *Sender);
 	void __fastcall ShowLineNoActionUpdate(TObject *Sender);
+	void __fastcall ShowIndentActionExecute(TObject *Sender);
+	void __fastcall ShowIndentActionUpdate(TObject *Sender);
 	void __fastcall ShowCRActionExecute(TObject *Sender);
 	void __fastcall ShowCRActionUpdate(TObject *Sender);
 	void __fastcall ShowTABActionExecute(TObject *Sender);
@@ -1989,9 +1993,9 @@ private:	// ユーザー宣言
 	bool isRichText;					//リッチテキスト表示
 	bool isXDoc2Txt;					//xdoc2txt を利用して表示
 	bool fromGrep;						//GREPから開いている
-	bool isViewWork;					//イメージビュアーでワークリストを表示中
+	bool isViewWork;					//イメージビューアでワークリストを表示中
 	bool VListMaking;					//ViewFileList 作成中
-	bool ImgMoving;						//ビュアーイメージ移動中
+	bool ImgMoving;						//ビューアイメージ移動中
 	bool TmpEqualSize;					//一時的な等倍表示
 	bool ThumbExtended;					//サムネイルの拡張表示
 	bool ThumbClicked;					//直前にサムネイルがクリックされている
@@ -2049,7 +2053,7 @@ private:	// ユーザー宣言
 	bool GrepLnSorted;					//行内容でソート中
 	bool GrepWorkList;					//対象がワークリスト
 
-	bool fromViewer;					//テキストビュアーから
+	bool fromViewer;					//テキストビューアから
 
 	SttProgressBar *SttPrgBar;			//Grep用プログレスバー
 	UsrHintWindow *MsgHint;				//メッセージ、警告のヒント表示ウィンドウ
@@ -2577,7 +2581,7 @@ public:		// ユーザー宣言
 	UsrScrollPanel *InfScrPanel;				//独自スクロールバー(ファイル情報)
 	UsrScrollPanel *LogScrPanel;				//独自スクロールバー(ログ)
 	UsrScrollPanel *ImgInfScrPanel;				//独自スクロールバー(ファイル情報)
-	UsrScrollPanel *TxtViewScrPanel;			//独自スクロールバー(テキストビュアー)
+	UsrScrollPanel *TxtViewScrPanel;			//独自スクロールバー(テキストビューア)
 	UsrScrollPanel *ResultScrPanel;				//独自スクロールバー(Grep結果)
 
 	int CurListWidth, CurListHeight;

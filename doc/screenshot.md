@@ -9,7 +9,7 @@
 
 ![画像](nyanfi_option_dk.png)  
 
-## テキストビュアー
+## テキストビューア
 
 ![画像](nyanfi_txtview.png)  
 
@@ -19,7 +19,7 @@
 CSV/TSVの固定長表示  
 ![画像](nyanfi_csv.png)  
 
-## イメージビュアー
+## イメージビューア
 
 ![画像](nyanfi_imgview.png)  
 
@@ -46,13 +46,13 @@ GREP を実装、置換も可能
 タスクの切り替え、ランチャー  
 ![画像](nyanfi_app.png)  
 
-Gitビュアー  
+Gitビューア  
 ![画像](nyanfi_gitview.png)  
 
-XMLビュアー  
+XMLビューア  
 ![画像](nyanfi_xmlview.png)  
 
-JSONビュアー  
+JSONビューア  
 ![画像](nyanfi_jsonview.png)  
 
 正規表現チェッカー  

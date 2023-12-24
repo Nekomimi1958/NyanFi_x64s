@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------//
 // NyanFi																//
-//  テキストビュアー													//
+//  テキストビューア													//
 //----------------------------------------------------------------------//
 #include <IdURI.hpp>
 #include "htmconv.h"
@@ -221,6 +221,32 @@ line_rec* __fastcall TTxtViewer::AddDispLine(UnicodeString s, int lno, int lidx)
 	lp->topQch	 = '\0';
 	lp->RemPos0  = 0;
 	lp->RemPos1  = 0;
+	lp->IndentN  = 0;
+
+	//インデントガイドの表示数
+	if (!isBinary) {
+		if (Trim(s).IsEmpty()) {
+			lp->IndentN = -1;
+		}
+		else {
+			int w = 0;
+			int i = 1;
+			while (i<=s.Length()) {
+				WideChar c = s[i++];
+				if (c=='\t') {
+					w += HchWidth;
+					int dt = w % TabWidth;
+					if (dt>0) w += (TabWidth - dt);
+				}
+				else if (c==' ') {
+					w += HchWidth;
+				}
+				else break;
+			}
+			lp->IndentN = (w>0)? (w - HchWidth)/TabWidth : 0;
+		}
+	}
+
 	DispLines->AddObject(s, (TObject*)lp);
 	return lp;
 }
@@ -362,6 +388,8 @@ void __fastcall TTxtViewer::SetColor(TStringList *lst)
 	color_LineNo	= read_ColorList(_T("LineNo"),		col_LineNo,		lst);
 	color_Mark		= read_ColorList(_T("Mark"),		col_Mark,		lst);
 	color_bdrLine	= read_ColorList(_T("bdrLine"),		col_bdrLine,	lst);
+	color_Indent	= read_ColorList(_T("Indent"),		col_Indent,		lst);
+	color_Indent2	= read_ColorList(_T("Indent2"),		col_Indent2,	lst);
 	color_bdrFold	= read_ColorList(_T("bdrFold"),		col_bdrFold,	lst);
 	color_bdrFixed	= read_ColorList(_T("bdrFixed"),	col_bdrFixed,	lst);
 	color_Comment	= read_ColorList(_T("Comment"),		col_Comment,	lst);
@@ -751,10 +779,10 @@ void __fastcall TTxtViewer::UpdateScr(
 	}
 
 	UnicodeString fext = get_extension(FileName);
-
 	bool is_xml = false;
-	if (!isBinary && TxtBufList->Count>0)
+	if (!isBinary && TxtBufList->Count>0) {
 		is_xml = (StartsText("<?xml ", TxtBufList->Strings[0]) || test_FileExt(fext, FEXT_XML));
+	}
 
 	//青空文庫か？
 	isAozora = ChkAozora && test_FileExt(fext, ".txt") && TRegEx::IsMatch(TxtBufList->Text, "［＃.*?］");
@@ -1466,8 +1494,9 @@ void __fastcall TTxtViewer::AssignText(
 	if (!ViewBox) return;
 
 	isText = true;
+	UnicodeString fext = get_extension(FileName);
 	isLog  = !isClip && (FileName.IsEmpty() || str_match(ExePath + "tasklog*.txt", FileName));
-	isXDoc2Txt = UseXd2tx && xd2tx_TestExt(get_extension(FileName));
+	isXDoc2Txt = UseXd2tx && xd2tx_TestExt(fext);
 
 	if (lst) {
 		SortMode = 0;
@@ -2255,6 +2284,19 @@ void __fastcall TTxtViewer::PaintText()
 						v_xp += HchWidth;
 					}
 				}
+				//インデントガイド
+				else if (!isBinary && ShowIndent) {
+					int i_n = (lp->IndentN==-1 && i>0)? get_LineRec(i - 1)->IndentN : lp->IndentN;
+					if (i_n>0) {
+						int i_xp = TopXpos;
+						TColor c1 = color_Indent;
+						TColor c2 = (color_Indent2!=col_None)? color_Indent2 : color_Indent;
+						for (int i_p=0; i_p<i_n; i_p++) {
+							i_xp += TabWidth;
+							draw_Line(tmp_cv, i_xp, 0, i_xp, LineHeight, 1, (i_p%2==0)? c1 : c2);
+						}
+					}
+				}
 			}
 		}
 
@@ -2842,7 +2884,7 @@ void __fastcall TTxtViewer::SetSttInf(UnicodeString msg)
 	//カラー
 	if (isText && TxtColorHint && SelStart==SelEnd) {
 		int xp;
-		UnicodeString colstr = GetCurWord(false,
+		UnicodeString colstr = GetCurWord(
 				"(#[0-9a-fA-F]{3}\\b)|(#[0-9a-fA-F]{6}\\b)|"
 				"(0x|\\$)[0-9a-fA-F]{6,8}|"
 				"(=[0-9a-fA-F]{6})", NULL, &xp);
@@ -3088,7 +3130,7 @@ void __fastcall TTxtViewer::onDblClick()
 	else {
 		//URLを開く/カーソル位置の単語選択
 		UnicodeString url = ClickableUrl? get_CurUrl() : EmptyStr;
-		if (!url.IsEmpty()) Execute_ex(url); else GetCurWord(true);
+		if (!url.IsEmpty()) Execute_ex(url); else SelCurWord();
 	}
 
 	SelSkip = true;	//DblClick後の選択を回避
@@ -3777,13 +3819,10 @@ void __fastcall TTxtViewer::SelectAll()
 //カーソル位置の単語を取得/選択
 //---------------------------------------------------------------------------
 UnicodeString __fastcall TTxtViewer::GetCurWord(
-	bool select,			//選択				(default = false)
 	UnicodeString ptn,		//マッチパターン	(default = EmptyStr)
 	int *p_s,				//開始位置			(default = NULL)
 	int *p_e)				//終了位置			(default = NULL)
 {
-	if (select) IniSelected();
-
 	UnicodeString lbuf = get_CurLine(true);
 	line_rec *lp = get_LineRec(CurPos.y);
 	int ofs = 0;
@@ -3795,15 +3834,8 @@ UnicodeString __fastcall TTxtViewer::GetCurWord(
 
 	UnicodeString ret_str;
 	if (!lbuf.IsEmpty()) {
-		TMatchCollection  mts;
-		if (!ptn.IsEmpty()) {
-			mts = TRegEx::Matches(lbuf, ptn);
-		}
-		else {
-			mts = TRegEx::Matches(lbuf, LINK_MATCH_PTN);
-			if (mts.Count==0) mts = TRegEx::Matches(lbuf, WORD_MATCH_PTN);
-		}
-
+		if (ptn.IsEmpty()) ptn = WORD_MATCH_PTN;
+		TMatchCollection mts = TRegEx::Matches(lbuf, ptn);
 		for (int i=0; i<mts.Count; i++) {
 			int p0 = mts.Item[i].Index - 1 - ofs;
 			int p1 = p0 + mts.Item[i].Length;
@@ -3811,18 +3843,51 @@ UnicodeString __fastcall TTxtViewer::GetCurWord(
 				ret_str = mts.Item[i].Value;
 				if (p_s) *p_s = p0;
 				if (p_e) *p_e = p1;
-				if (select) {
-					SelStart = nrm_Pos(Point(p0, CurPos.y));
-					SelEnd	 = nrm_Pos(Point(p1, CurPos.y));
-					CurPos   = SelEnd;
-					CurHchX	 = cv_PosX_to_HchX(CurPos.x);
-					Repaint(true);
-				}
 				break;
 			}
 		}
 	}
 	return ret_str;
+}
+
+//---------------------------------------------------------------------------
+//カーソル位置の単語を選択
+//---------------------------------------------------------------------------
+void __fastcall TTxtViewer::SelCurWord(
+	bool append)	//追加	(default = false)
+{
+	if (SelEnd!=CurPos) {
+		IniSelected();
+		append = false;
+	}
+	else if (append) {
+		append = (SelStart!=SelEnd);
+	}
+
+	UnicodeString lbuf = get_CurLine(true);
+	line_rec *lp = get_LineRec(CurPos.y);
+	int ofs = 0;
+	if (lp->LineIdx>0 && CurPos.y>0) {
+		UnicodeString pbuf = get_DispLine(CurPos.y - 1);
+		lbuf = pbuf + lbuf;
+		ofs  = pbuf.Length();
+	}
+
+	if (!lbuf.IsEmpty()) {
+		TMatchCollection mts = TRegEx::Matches(lbuf, WORD_MATCH_PTN _T("|."));
+		for (int i=0; i<mts.Count; i++) {
+			int p0 = mts.Item[i].Index - 1 - ofs;
+			int p1 = p0 + mts.Item[i].Length;
+			if (p0<=CurPos.x && CurPos.x<p1) {
+				if (!append) SelStart = nrm_Pos(Point(p0, CurPos.y));
+				SelEnd  = nrm_Pos(Point(p1, CurPos.y));
+				CurPos  = SelEnd;
+				CurHchX = cv_PosX_to_HchX(CurPos.x);
+				Repaint(true);
+				break;
+			}
+		}
+	}
 }
 
 //---------------------------------------------------------------------------
@@ -3890,7 +3955,7 @@ int __fastcall TTxtViewer::change_CodePage(UnicodeString prm)
 //---------------------------------------------------------------------------
 UnicodeString __fastcall TTxtViewer::GetCurImgFile()
 {
-	UnicodeString fnam = GetCurWord(false, "[^\"(=*?<>|（ ]+\\.\\w+\\b");
+	UnicodeString fnam = GetCurWord("[^\"(=*?<>|（ ]+\\.\\w+\\b");
 	remove_top_text(fnam, "file:///");
 	fnam = slash_to_yen(fnam);
 	fnam = to_absolute_name(fnam, ExtractFilePath(FileName));
@@ -4361,7 +4426,7 @@ bool __fastcall TTxtViewer::SearchPair(
 	if (!found && test_HtmlExt(get_extension(FileName)) && !isHtm2Txt) {
 		int p_s, p_e;
 		UnicodeString tag_str =
-			GetCurWord(false,
+			GetCurWord(
 				"</?(head|body|div|header|footer|nav|main|section|article|aside|table|ul|ol|form|script).*?>",
 				&p_s, &p_e);
 
@@ -4863,7 +4928,7 @@ bool __fastcall TTxtViewer::ExeCommand(const _TCHAR *t_cmd, UnicodeString prm)
 		case 24: MoveScroll(false, prm, true);	break;
 		case 25: MoveScroll(true,  prm, true);	break;
 		case 26: SearchPair(prm);				break;
-		case 27: GetCurWord(true);				break;
+		case 27: SelCurWord(SameText(prm, "EX"));	break;
 		case 28: SelLine();						break;
 		case 29: SelLine(true);					break;
 		case 30: SelectAll();					break;
@@ -4917,6 +4982,11 @@ bool __fastcall TTxtViewer::ExeCommand(const _TCHAR *t_cmd, UnicodeString prm)
 	//改行を表示
 	else if (SameText(cmd, "ShowCR")) {
 		SetToggleSw(ShowCR, prm);
+		Repaint(true);
+	}
+	//インデントガイドを表示
+	else if (SameText(cmd, "ShowIndent")) {
+		SetToggleSw(ShowIndent, prm);
 		Repaint(true);
 	}
 	//ズーム
@@ -5025,7 +5095,7 @@ bool __fastcall TTxtViewer::ExeCommand(const _TCHAR *t_cmd, UnicodeString prm)
 		//HTML→テキスト変換
 		if (SameText(cmd, "HtmlToText")) {
 			SetHtmlToText(prm);
-			if (isExtWnd) TxtViewer->isHtm2Txt = isHtm2Txt;		//内部ビュアーに反映
+			if (isExtWnd) TxtViewer->isHtm2Txt = isHtm2Txt;		//内部ビューアに反映
 			AssignText();
 		}
 		//CSV/TSVを固定長表示
@@ -5036,7 +5106,7 @@ bool __fastcall TTxtViewer::ExeCommand(const _TCHAR *t_cmd, UnicodeString prm)
 				prm = "ON";
 			}
 			SetToggleSw(isFixedLen, prm);
-			if (isExtWnd) TxtViewer->isFixedLen = isFixedLen;	//内部ビュアーに反映
+			if (isExtWnd) TxtViewer->isFixedLen = isFixedLen;	//内部ビューアに反映
 			AssignText(NULL, cur_lno);
 		}
 		//ルビを表示
@@ -5174,7 +5244,7 @@ bool __fastcall TTxtViewer::ExeCommand(const _TCHAR *t_cmd, UnicodeString prm)
 }
 
 //---------------------------------------------------------------------------
-//テキストビュアーで利用可能なコマンドか?
+//テキストビューアで利用可能なコマンドか?
 //---------------------------------------------------------------------------
 bool __fastcall TTxtViewer::IsCmdAvailable(UnicodeString cmd)
 {
@@ -5213,7 +5283,7 @@ bool __fastcall TTxtViewer::IsCmdAvailable(UnicodeString cmd)
 	if (isText) {
 		return(contained_wd_i(
 			"CharInfo|CsvCalc|CsvGraph|CsvRecord|FindLinkDown|FindLinkUp|FixedLen|HelpCurWord|HtmlToText|ImgPreview|"
-			"OpenURL|SetUserDefStr|ShowRuby|Sort|WebSearch", cmd));
+			"OpenURL|SetUserDefStr|ShowIndent|ShowRuby|Sort|WebSearch", cmd));
 	}
 
 	//バイナリのみのコマンド

@@ -233,6 +233,7 @@ bool ShowLineNo;				//行番号を表示
 bool ShowLineCursor;			//行カーソルを表示
 bool ShowTAB;					//タブを表示
 bool ShowCR;					//改行を表示
+bool ShowIndent;				//インデントガイドを表示
 bool ShowTextRuler;				//ルーラを表示
 bool ShowSticky;				//スティッキーを表示
 bool ScrBarToFoldPos;			//スクロールバーを折り返し位置に表示
@@ -240,8 +241,8 @@ bool TxtSttIsBottom;			//情報ヘッダを下部に表示(TV)
 bool ChkAozora;					//青空文庫形式を考慮する
 bool UseXd2tx;					//xd2txlib.dll でテキスト表示
 bool ClickableUrl;				//ダブルクリックでURLを開く
-bool RestoreViewLine;			//ビュアーでカーソルの行位置を復元
-bool TvCursorVisible;			//ビュアーでカーソルを常に可視領域に
+bool RestoreViewLine;			//ビューアでカーソルの行位置を復元
+bool TvCursorVisible;			//ビューアでカーソルを常に可視領域に
 bool LimitBinCsr;				//バイナリ表示でカーソル移動を制限
 bool TxtColorHint;				//カーソル位置数値のカラーをヒント表示
 bool AltBackSlash;				//\ を ＼(U+2216)で表示
@@ -263,7 +264,7 @@ bool ShowThumbTags;				//サムネイルにタグを表示
 bool ShowThumbFExt;				//サムネイルに拡張子を強調表示
 bool NotThumbIfArc;				//アーカイブ内は一括取得しない
 bool CacheThumbADS;				//サムネイルをADSにキャッシュする
-bool LoopViewCursor;			//イメージビュアーでカーソルをループ移動
+bool LoopViewCursor;			//イメージビューアでカーソルをループ移動
 bool HintTopEndImg;				//先頭・最後でヒント表示
 bool BeepTopEndImg;				//警告音
 bool ImgSttIsBottom;			//情報ヘッダを下部に表示(IV)
@@ -271,11 +272,11 @@ bool SeekBindDir;				//シークバーの始点を綴じ方向に合わせる
 bool SeekSwapNxtPrv;			//右綴じでNext/PrevFile入替
 bool HideCsrInFull;				//全画面表示でマウスカーソルを隠す
 bool HideThumbInFull;			//全画面表示でサムネイルを隠す
-bool AnimateGif;				//イメージビュアーでアニメーションGIFを表示
+bool AnimateGif;				//イメージビューアでアニメーションGIFを表示
 bool ShowThumbScroll;			//サムネイルのスクロールバーを表示
 bool ShowHistogram;				//ヒストグラムを表示
 bool ShowLoupe;					//ルーペを表示
-bool ShowSubViewer;				//GIFビュアーを表示
+bool ShowSubViewer;				//GIFビューアを表示
 bool ShowSeekBar;				//シークバーを表示
 bool WarnHighlight;				//白飛び警告
 bool DoublePage;				//見開き表示
@@ -293,10 +294,10 @@ int  ModalScrAlpha;				//スクリーンの透明度
 
 int  TlWinBorderWidth;			//ツールウインドウの境界線幅
 
-int  InitialModeI;				//イメージビュアーを開いた時の初期状態
+int  InitialModeI;				//イメージビューアを開いた時の初期状態
 int  LastZoomRatio;				//前回のズーム
 
-bool MarkImgClose;				//イメージビュアーを閉じる時に栞マークを設定
+bool MarkImgClose;				//イメージビューアを閉じる時に栞マークを設定
 UnicodeString MarkImgPath;		//マークするパス
 UnicodeString MarkImgFExt;		//マークする拡張子
 UnicodeString MarkImgMemo;
@@ -349,7 +350,7 @@ UnicodeString FExtImgPrv;		//イメージプレビューを行う拡張子
 UnicodeString FExtNoImgPrv;		//イメージプレビューを行わない拡張子
 UnicodeString NoImgPrvPath;		//イメージプレビューを行わないパスリスト
 
-UnicodeString FExtNoIView;		//イメージビュアーで閲覧しない拡張子
+UnicodeString FExtNoIView;		//イメージビューアで閲覧しない拡張子
 UnicodeString NoCachePath;		//サムネイルキャッシュしないパス
 
 UnicodeString DrvInfFmtR;		//ドライブ情報の書式 : ルート
@@ -570,11 +571,11 @@ TStringList *GrepFileList; 				//GREP 対象ファイルリスト
 TStringList *GrepResultList;			//GREP の結果リスト
 TStringList *GrepResultBuff;			//GREP 結果の退避バッファ
 
-TStringList *ViewFileList;				//イメージビュアーでのファイル名リスト
-bool isViewIcon   = false;				//イメージビュアーでアイコンを表示中
-bool isViewAGif   = false;				//イメージビュアーでアニメーションGIFを表示中
-bool isViewClip   = false;				//イメージビュアーでクリップボードを表示中
-bool isViewFTP	  = false;				//イメージビュアーでFTPのファイルを表示中
+TStringList *ViewFileList;				//イメージビューアでのファイル名リスト
+bool isViewIcon   = false;				//イメージビューアでアイコンを表示中
+bool isViewAGif   = false;				//イメージビューアでアニメーションGIFを表示中
+bool isViewClip   = false;				//イメージビューアでクリップボードを表示中
+bool isViewFTP	  = false;				//イメージビューアでFTPのファイルを表示中
 bool rqThumbnail  = false;				//クリップボード/FTP閲覧後のサムネイル復帰要求
 bool nrmThumbnail = false;				//通常画面時のサムネイル表示
 
@@ -714,12 +715,12 @@ TFont *ListFont;		//ファイルリスト等
 TFont *FileInfFont;		//ファイル情報
 TFont *TxtPrvFont;		//テキストプレビュー
 TFont *LogFont;			//ログ
-TFont *ViewerFont;		//テキストビュアー
+TFont *ViewerFont;		//テキストビューア
 TFont *GrepResFont;		//GREP結果リスト
 TFont *DirInfFont;		//ディレクトリ情報
 TFont *DrvInfFont;		//ドライブ情報
 TFont *LstHdrFont;		//一覧のヘッダ
-TFont *ViewHdrFont;		//ビュアー情報ヘッダ
+TFont *ViewHdrFont;		//ビューア情報ヘッダ
 TFont *GenListFont;		//一覧ダイアログ
 TFont *HintFont;		//ヒント
 TFont *SttBarFont;		//ステータスバー
@@ -790,9 +791,9 @@ TColor col_bgPrgBar;	//タスク進捗背景色
 TColor col_Error;		//エラー/注意の文字色
 TColor col_TlBorder;	//ツールウインドウの境界線
 
-TColor col_bgView;		//テキストビュアーの背景色
-TColor col_fgView;		//テキストビュアーの文字色
-TColor col_Margin;		//テキストビュアーの余白白
+TColor col_bgView;		//テキストビューアの背景色
+TColor col_fgView;		//テキストビューアの文字色
+TColor col_Margin;		//テキストビューアの余白白
 TColor col_bgRuler;		//ルーラの背景色
 TColor col_fgRuler;		//ルーラの目盛色
 TColor col_bgLineNo;	//行番号背景色
@@ -801,6 +802,8 @@ TColor col_Mark;		//行マーク
 TColor col_bdrLine;		//行番号の境界線
 TColor col_bdrFold;		//折り返し境界線
 TColor col_bdrFixed;	//固定長表示の縦罫線
+TColor col_Indent;		//インデントガイド
+TColor col_Indent2;		//インデントガイド(交互)
 TColor col_Comment;		//コメントの文字色
 TColor col_Strings;		//文字列の文字色
 TColor col_Reserved;	//予約語の文字色
@@ -863,7 +866,7 @@ TColor col_GrLine;		//グラフのライン
 TColor col_GrGrid;		//グラフのグリッド
 TColor col_GrText;		//グラフの文字色
 
-TColor col_GitHEAD;		//Gitビュアー : ヘッド
+TColor col_GitHEAD;		//Gitビューア : ヘッド
 TColor col_GitMark;		//  グラフマーク
 TColor col_GitBra;		//  ブランチ
 TColor col_GitBraR;		//  リモートブランチ
@@ -920,9 +923,6 @@ UnicodeString TextEditor;		//テキストエディタ
 UnicodeString TextEditorFrmt;	//パラメータ(Grep用)
 UnicodeString TextEditorFrmt2;	//パラメータ(ファラー用)
 
-UnicodeString ExtTxViewer;		//外部テキストビュアー
-UnicodeString ExtTxViewerFrmt;
-
 UnicodeString ImageEditor;		//イメージエディタ
 UnicodeString FExtImgEidt;		//イメージエディタの対応拡張子
 bool ImageEditSgl;				//イメージエディタをファイル毎に個別起動
@@ -958,15 +958,15 @@ int  MsgHintTime;				//ヒントの表示時間
 int  KeyHintTime;				//2ストロークヒントの待機時間
 int  NotifyTaskTime;			//～秒以上かかったタスクの終了時に鳴らす
 int  CmpDelOwCnt;				//完全削除の上書き回数
-int  ViewTxtInterLn;			//ビュアーの行間
-int  ViewLeftMargin;			//ビュアーの左余白
+int  ViewTxtInterLn;			//ビューアの行間
+int  ViewLeftMargin;			//ビューアの左余白
 int  ViewFoldWidth;				//折り返し幅(半角単位)
 bool ViewFoldFitWin;			//折り返しをウィンドウ幅に合わせる
 int  ViewFixedLimit;			//固定長表示の最大幅
 int  ViewTxtLimitSize;			//テキストの最大読込サイズ
 int  ViewBinLimitSize;			//バイナリの最大読込(or マップ)サイズ
 int  ListWheelScrLn;			//ホイールによるスクロール行数(リスト)
-int  ViewWheelScrLn;			//ホイールによるスクロール行数(ビュアー)
+int  ViewWheelScrLn;			//ホイールによるスクロール行数(ビューア)
 int  PlaySndLimitTime;			//サウンド再生タイム制限
 bool ShowTextPreview;			//テキストプレビューを表示
 int  PrvTxtInfLn;				//テキストプレビューの行数
@@ -1118,24 +1118,24 @@ const event_rec EventCmdList[MAX_EVENT_CMD] = {
 	{&OnSttRClick,		_T("OnSttRClick"),	_T("ステータスバーを右クリック")},
 	{&OnTimDClick,		_T("OnTimDClick"),	_T("時計パネルをダブルクリック")},
 	{&OnTimRClick,		_T("OnTimRClick"),	_T("時計パネルを右クリック")},
-	{&OnTvOpen,			_T("OnTvOpen"),		_T("|テキストビュアーを開く直前(FL)")},
-	{&OnTvOpened,		_T("OnTvOpened"),	_T("テキストビュアーを開いた直後(TV)")},
-	{&OnTvClose,		_T("OnTvClose"),	_T("テキストビュアーを閉じる直前(TV)")},
-	{&OnTvClosed,		_T("OnTvClosed"),	_T("テキストビュアーを閉じた直後(FL)")},
-	{&OnTvTbRClick,		_T("OnTvTbRClick"),	_T("テキストビュアーのツールバーを右クリック(TV)")},
-	{&OnTvHRClick,		_T("OnTvHRClick"),	_T("テキストビュアーで情報ヘッダを右クリック(TV)")},
-	{&OnIvOpened,		_T("OnIvOpened"),	_T("|イメージビュアーを開いた直後(IV)")},
-	{&OnIvClosed,		_T("OnIvClosed"),	_T("イメージビュアーを閉じた直後(FL)")},
-	{&OnFullScr,		_T("OnFullScr"),	_T("イメージビュアーで全画面表示にした(IV)")},
-	{&OnNormScr,		_T("OnNormScr"),	_T("イメージビュアーで通常表示に戻った(IV)")},
-	{&OnIvTbRClick,		_T("OnIvTbRClick"),	_T("イメージビュアーのツールバーを右クリック(IV)")},
-	{&OnIvImgDClick,	_T("OnIvImgDClick"),_T("イメージビュアーで画像部分をダブルクリック(IV)")},
-	{&OnIvImgRClick,	_T("OnIvImgRClick"),_T("イメージビュアーで画像表示部を右クリック(IV)")},
-	{&OnIvMgnDClick,	_T("OnIvMgnDClick"),_T("イメージビュアーで余白部分をダブルクリック(IV)")},
-	{&OnThmDClick,		_T("OnThmDClick"),	_T("イメージビュアーでサムネイルをダブルクリック(IV)")},
-	{&OnThmRClick,		_T("OnThmRClick"),	_T("イメージビュアーでサムネイルを右クリック(IV)")},
-	{&OnIvIDClick,		_T("OnIvIDClick"),	_T("イメージビュアーでファイル情報をダブルクリック(IV)")},
-	{&OnIvSbRClick,		_T("OnIvSbRClick"),	_T("イメージビュアーでシークバーを右クリック(IV)")},
+	{&OnTvOpen,			_T("OnTvOpen"),		_T("|テキストビューアを開く直前(FL)")},
+	{&OnTvOpened,		_T("OnTvOpened"),	_T("テキストビューアを開いた直後(TV)")},
+	{&OnTvClose,		_T("OnTvClose"),	_T("テキストビューアを閉じる直前(TV)")},
+	{&OnTvClosed,		_T("OnTvClosed"),	_T("テキストビューアを閉じた直後(FL)")},
+	{&OnTvTbRClick,		_T("OnTvTbRClick"),	_T("テキストビューアのツールバーを右クリック(TV)")},
+	{&OnTvHRClick,		_T("OnTvHRClick"),	_T("テキストビューアで情報ヘッダを右クリック(TV)")},
+	{&OnIvOpened,		_T("OnIvOpened"),	_T("|イメージビューアを開いた直後(IV)")},
+	{&OnIvClosed,		_T("OnIvClosed"),	_T("イメージビューアを閉じた直後(FL)")},
+	{&OnFullScr,		_T("OnFullScr"),	_T("イメージビューアで全画面表示にした(IV)")},
+	{&OnNormScr,		_T("OnNormScr"),	_T("イメージビューアで通常表示に戻った(IV)")},
+	{&OnIvTbRClick,		_T("OnIvTbRClick"),	_T("イメージビューアのツールバーを右クリック(IV)")},
+	{&OnIvImgDClick,	_T("OnIvImgDClick"),_T("イメージビューアで画像部分をダブルクリック(IV)")},
+	{&OnIvImgRClick,	_T("OnIvImgRClick"),_T("イメージビューアで画像表示部を右クリック(IV)")},
+	{&OnIvMgnDClick,	_T("OnIvMgnDClick"),_T("イメージビューアで余白部分をダブルクリック(IV)")},
+	{&OnThmDClick,		_T("OnThmDClick"),	_T("イメージビューアでサムネイルをダブルクリック(IV)")},
+	{&OnThmRClick,		_T("OnThmRClick"),	_T("イメージビューアでサムネイルを右クリック(IV)")},
+	{&OnIvIDClick,		_T("OnIvIDClick"),	_T("イメージビューアでファイル情報をダブルクリック(IV)")},
+	{&OnIvSbRClick,		_T("OnIvSbRClick"),	_T("イメージビューアでシークバーを右クリック(IV)")},
 	{&OnDragStartI,		_T("OnDragStartI"),	_T("サムネイルからのドラッグ開始時(IV)")},
 	{&OnDragEndI,		_T("OnDragEndI"),	_T("サムネイルからのドラッグ完了時(IV)")},
 	{&OnClipText,		_T("OnClipText"),	_T("|クリップボードにテキストをコピー")},
@@ -1201,6 +1201,8 @@ void InitializeGlobal()
 	mute_Volume("GET");	//ミュート状態を取得
 
 	//廃止セクション、キーの削除、修正
+	IniFile->DeleteKey( SCT_Option,  "ExtTxViewer");					//v16.10
+	IniFile->DeleteKey( SCT_Option,  "ExtTxViewerFrmt");				//v16.10
 	IniFile->DeleteKey( SCT_Option,  "MenuAutoHotkey");					//v16.08
 	IniFile->DeleteKey( SCT_Option,  "MenuAutoHotkey");					//v16.08
 	IniFile->DeleteKey( SCT_Option,  "FlatInfPanel");					//v16.00
@@ -1421,8 +1423,6 @@ void InitializeGlobal()
 		{_T("TextEditor=\"\""),						(TObject*)&TextEditor},
 		{_T("TextEditorFrmt=\"$F\""),				(TObject*)&TextEditorFrmt},
 		{_T("TextEditorFrmt2=\"$F\""),				(TObject*)&TextEditorFrmt2},
-		{_T("ExtTxViewer=\"\""),					(TObject*)&ExtTxViewer},
-		{_T("ExtTxViewerFrmt=\"$F\""),				(TObject*)&ExtTxViewerFrmt},
 		{_T("ImageEditor=\"\""),					(TObject*)&ImageEditor},
 		{_T("FExtImgEidt=\".jpg.gif.png.bmp\""),	(TObject*)&FExtImgEidt},
 		{_T("BinaryEditor=\"\""),					(TObject*)&BinaryEditor},
@@ -1703,6 +1703,7 @@ void InitializeGlobal()
 		{_T("ShowLineCursor=true"),			(TObject*)&ShowLineCursor},
 		{_T("ShowTAB=true"),				(TObject*)&ShowTAB},
 		{_T("ShowCR=true"),					(TObject*)&ShowCR},
+		{_T("ShowIndent=true"),				(TObject*)&ShowIndent},
 		{_T("ShowTextRuler=true"),			(TObject*)&ShowTextRuler},
 		{_T("ShowSticky=false"),			(TObject*)&ShowSticky},
 		{_T("ScrBarToFoldPos=true"),		(TObject*)&ScrBarToFoldPos},
@@ -9508,7 +9509,7 @@ bool is_SoundID(UnicodeString s)
 }
 
 //---------------------------------------------------------------------------
-//ビュアーで表示可能か？ (アイコンは除く)
+//ビューアで表示可能か？ (アイコンは除く)
 //---------------------------------------------------------------------------
 bool is_ViewableFext(UnicodeString fext)
 {
@@ -10413,6 +10414,8 @@ void set_col_from_ColorList()
 		{&col_bdrLine,	_T("bdrLine"),		clDkGray},
 		{&col_bdrFold,	_T("bdrFold"),		clBlue},
 		{&col_bdrFixed,	_T("bdrFixed"),		col_None},
+		{&col_Indent,	_T("Indent"),		clGrayText},
+		{&col_Indent2,	_T("Indent2"),		col_None},
 		{&col_Comment,	_T("Comment"),		clLime},
 		{&col_Strings,	_T("Strings"),		clAqua},
 		{&col_Reserved,	_T("Reserved"),		clSkyBlue},
@@ -12361,44 +12364,6 @@ bool open_by_TextEditor(UnicodeString fnam, int lno)
 
 		//編集履歴を更新
 		if (!ContainsText(fnam, TempPathA)) add_TextEditHistory(fnam);
-
-		return true;
-	}
-	catch (EAbort &e) {
-		GlobalErrMsg = e.Message;
-		return false;
-	}
-}
-
-//---------------------------------------------------------------------------
-//外部テキストビュアーで開く
-//---------------------------------------------------------------------------
-bool open_by_ExtTextViewer(UnicodeString fnam, int lno)
-{
-	try {
-		GlobalErrMsg = EmptyStr;
-		if (!file_exists(fnam)) SysErrAbort(ERROR_FILE_NOT_FOUND);
-		UnicodeString viewer = get_actual_path(ExtTxViewer);
-		if (!file_exists(viewer)) UserAbort(USTR_AppNotFound);
-
-		//起動パラメータの構成
-		UnicodeString p_fnam = add_quot_if_spc(fnam);
-		UnicodeString prmstr;
-		if (lno>0) {
-			if (!ExtTxViewerFrmt.IsEmpty()) {
-				prmstr = ExtTxViewerFrmt;
-				prmstr = ReplaceStr(prmstr, "$F", p_fnam);
-				prmstr = ReplaceStr(prmstr, "$L", IntToStr(lno));
-			}
-			else {
-				prmstr = p_fnam;
-			}
-		}
-		else {
-			prmstr = p_fnam;
-		}
-
-		if (!Execute_ex(viewer, prmstr)) UserAbort(USTR_FaildExec);
 
 		return true;
 	}
@@ -14546,7 +14511,7 @@ bool IsDuplicated()
 }
 
 //---------------------------------------------------------------------------
-//別ウィンドウのテキストビュアーのリストを取得
+//別ウィンドウのテキストビューアのリストを取得
 //---------------------------------------------------------------------------
 int get_ExViewerList(TStringList *lst)
 {
@@ -14561,7 +14526,7 @@ int get_ExViewerList(TStringList *lst)
 }
 
 //---------------------------------------------------------------------------
-//別ウィンドウのテキストビュアーがあればフォーカスを移す
+//別ウィンドウのテキストビューアがあればフォーカスを移す
 //---------------------------------------------------------------------------
 bool focus_ExViewer()
 {
@@ -14571,7 +14536,7 @@ bool focus_ExViewer()
 	return ok;
 }
 //---------------------------------------------------------------------------
-//別ウィンドウのすべてのテキストビュアーを閉じる
+//別ウィンドウのすべてのテキストビューアを閉じる
 //---------------------------------------------------------------------------
 void close_all_ExViewer(
 	TForm *frm)		//除外するフォーム

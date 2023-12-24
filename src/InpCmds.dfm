@@ -31,8 +31,6 @@ object InpCmdsDlg: TInpCmdsDlg
     Cancel = True
     ModalResult = 2
     TabOrder = 2
-    ExplicitLeft = 428
-    ExplicitHeight = 4
   end
   object ModePanel: TPanel
     Left = 0
@@ -44,8 +42,6 @@ object InpCmdsDlg: TInpCmdsDlg
     BevelOuter = bvNone
     BorderWidth = 6
     TabOrder = 1
-    ExplicitTop = 40
-    ExplicitWidth = 428
     object ModeTabControl: TTabControl
       Left = 6
       Top = 6
@@ -57,13 +53,12 @@ object InpCmdsDlg: TInpCmdsDlg
       TabOrder = 0
       Tabs.Strings = (
         #12288#12501#12449#12452#12521#12540#12288
-        #12486#12461#12473#12488#12499#12517#12450#12540
-        #12452#12513#12540#12472#12499#12517#12450#12540
+        #12486#12461#12473#12488#12499#12517#12540#12450
+        #12452#12513#12540#12472#12499#12517#12540#12450
         #12525#12464#12454#12451#12531#12489#12454)
       TabIndex = 0
       OnChange = ModeTabControlChange
       OnDrawTab = ModeTabControlDrawTab
-      ExplicitWidth = 416
     end
   end
   object MainPanel: TPanel
@@ -75,7 +70,6 @@ object InpCmdsDlg: TInpCmdsDlg
     BevelOuter = bvNone
     BorderWidth = 6
     TabOrder = 0
-    ExplicitWidth = 428
     DesignSize = (
       432
       36)
@@ -95,7 +89,6 @@ object InpCmdsDlg: TInpCmdsDlg
       OnClick = SubComboBoxClick
       OnCloseUp = SubComboBoxCloseUp
       OnDrawItem = SubComboBoxDrawItem
-      ExplicitWidth = 322
     end
     object MigemoCheckBox: TCheckBox
       Left = 348
@@ -106,7 +99,6 @@ object InpCmdsDlg: TInpCmdsDlg
       Caption = '&Migemo'
       TabOrder = 2
       OnClick = MigemoCheckBoxClick
-      ExplicitLeft = 344
     end
     object CmdsComboBox: TComboBox
       Left = 8
@@ -122,7 +114,6 @@ object InpCmdsDlg: TInpCmdsDlg
       OnKeyDown = CmdsComboBoxKeyDown
       OnKeyPress = CmdsComboBoxKeyPress
       OnSelect = CmdsComboBoxSelect
-      ExplicitWidth = 322
     end
   end
 end

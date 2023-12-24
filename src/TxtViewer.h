@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------//
 // NyanFi																//
-//  テキストビュアー													//
+//  テキストビューア													//
 //----------------------------------------------------------------------//
 #ifndef TxtViewerH
 #define TxtViewerH
@@ -10,12 +10,12 @@
 #include "Global.h"
 
 //---------------------------------------------------------------------------
-//単語マッチ用正規表現
-#define WORD_MATCH_PTN	"\\w+|[一-龠]+|[ぁ-ん]+|[ァ-ヴー]+|[ａ-ｚＡ-Ｚ０-９]+|[ｦ-ﾟ]+|#[0-9a-fA-F]{3,6}"
-
 //リンク先検索の正規表現
 #define LINK_MATCH_PTN	"(https?://[\\w/:%#$&?()~.=+-]+)|(file:///[^*?\"<>|)）]+\\.[a-zA-Z0-9]+)|(mailto:[a-zA-Z0-9]+[\\w.-]*@[\\w.-]+)"
-	
+
+//単語マッチ用正規表現
+#define WORD_MATCH_PTN	LINK_MATCH_PTN "|\\w+|[一-龠]+|[ぁ-ん]+|[ァ-ヴー]+|[ａ-ｚＡ-Ｚ０-９]+|[ｦ-ﾟ]+|#[0-9a-fA-F]{3,6}"
+
 #define MAX_BIN_HCH_X	67
 #define MARK_WIDTH		8
 
@@ -30,13 +30,14 @@ struct line_rec {
 	WideChar topQch;
 	int  RemPos0;			//コメント開始位置
 	int  RemPos1;			//コメント終了位置
+	int  IndentN;			//インデントガイド数
 };
 
 //---------------------------------------------------------------------------
 class TTxtViewer
 {
 private:
-	TPaintBox	*ViewBox;			//ビュアー描画用PaintBox
+	TPaintBox	*ViewBox;			//ビューア描画用PaintBox
 	TCanvas		*ViewCanvas;
 	TScrollBar	*ScrBar;
 	UsrScrollPanel *ScrPanel;
@@ -254,15 +255,17 @@ public:
 	TColor color_fgSelItem;		//選択項目の文字色
 	TColor color_Folder;		//ディレクトリの文字色
 	TColor color_Error;			//エラーの文字色
-	TColor color_bgView;		//テキストビュアーの背景色
-	TColor color_fgView;		//テキストビュアーの文字色
-	TColor color_Margin;		//テキストビュアーの余白白
-	TColor color_bgLineNo;		//テキストビュアーの行番号背景色
-	TColor color_LineNo;		//テキストビュアーの行番号文字色
-	TColor color_Mark;			//テキストビュアーのマーク
+	TColor color_bgView;		//テキストビューアの背景色
+	TColor color_fgView;		//テキストビューアの文字色
+	TColor color_Margin;		//テキストビューアの余白白
+	TColor color_bgLineNo;		//テキストビューアの行番号背景色
+	TColor color_LineNo;		//テキストビューアの行番号文字色
+	TColor color_Mark;			//テキストビューアのマーク
 	TColor color_bgRuler;		//ルーラの背景色
 	TColor color_fgRuler;		//ルーラの目盛色
 	TColor color_bdrLine;		//行番号の境界線
+	TColor color_Indent;		//インデントガイド
+	TColor color_Indent2;		//インデントガイド(交互)
 	TColor color_bdrFold;		//折り返し境界線
 	TColor color_bdrFixed;		//固定長表示の縦罫線
 	TColor color_Comment;		//コメントの文字色
@@ -342,7 +345,8 @@ public:
 	TStringDynArray __fastcall GetCsvHdrList();
 
 	void __fastcall SelectAll();
-	UnicodeString __fastcall GetCurWord(bool select = false, UnicodeString ptn = EmptyStr, int *p_s = NULL, int *p_e = NULL);
+	UnicodeString __fastcall GetCurWord(UnicodeString ptn = EmptyStr, int *p_s = NULL, int *p_e = NULL);
+	void __fastcall SelCurWord(bool append = false);
 	void __fastcall SelLine(bool cr = false);
 
 	void __fastcall saveDef_CodePage(int code_page);

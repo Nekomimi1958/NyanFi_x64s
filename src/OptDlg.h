@@ -146,7 +146,6 @@ __published:	// IDE で管理されるコンポーネント
 	TButton *RefEtcEdt1Btn;
 	TButton *RefExeBtn;
 	TButton *RefExtColBtn;
-	TButton *RefExtTxViewerBtn;
 	TButton *RefFontBtn;
 	TButton *RefHomeWorkBtn;
 	TButton *RefImgEdtBtn;
@@ -339,6 +338,7 @@ __published:	// IDE で管理されるコンポーネント
 	TCheckBox *ShowHeaderCheckBox;
 	TCheckBox *ShowIconCheckBox;
 	TCheckBox *ShowImgPrvCheckBox;
+	TCheckBox *ShowIndentCheckBox;
 	TCheckBox *ShowKeyHintCheckBox;
 	TCheckBox *ShowLnCsrCheckBox;
 	TCheckBox *ShowLnNoCheckBox;
@@ -451,7 +451,6 @@ __published:	// IDE で管理されるコンポーネント
 	TEdit *BinaryEditorEdit;
 	TEdit *DlgMoveEdit;
 	TEdit *DlgSizeEdit;
-	TEdit *ExtTxViewerEdit;
 	TEdit *FoldWdEdit;
 	TEdit *HomeWorkListEdit;
 	TEdit *ImageEditorEdit;
@@ -485,7 +484,6 @@ __published:	// IDE で管理されるコンポーネント
 	TGroupBox *EtcWarnGroupBox;
 	TGroupBox *ExeCmdLineGroupBox;
 	TGroupBox *ExtColGroupBox;
-	TGroupBox *ExtTxViewerGroupBox;
 	TGroupBox *FileEditGroupBox;
 	TGroupBox *FileInfoGroupBox;
 	TGroupBox *FileListGroupBox;
@@ -581,7 +579,6 @@ __published:	// IDE で管理されるコンポーネント
 	TLabeledEdit *EtcEditorEdit;
 	TLabeledEdit *EventCmdsEdit;
 	TLabeledEdit *ExtColorEdit;
-	TLabeledEdit *ExtTxViewerFmtEdit;
 	TLabeledEdit *FExt7zDllEdit;
 	TLabeledEdit *FExtEtcEdit;
 	TLabeledEdit *FExtExeFileEdit;
@@ -764,6 +761,7 @@ __published:	// IDE で管理されるコンポーネント
 	TTabSheet *NotifySheet;
 	TTabSheet *StartupSheet;
 	TTabSheet *TxtViewerSheet;
+	TTimer *Timer1;
 	TVirtualImageList *IconVImgListP;
 
 	void __fastcall FormCreate(TObject *Sender);
@@ -932,6 +930,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall OkActionExecute(TObject *Sender);
 	void __fastcall OkActionUpdate(TObject *Sender);
 	void __fastcall CanButtonClick(TObject *Sender);
+	void __fastcall Timer1Timer(TObject *Sender);
 
 
 private:	// ユーザー宣言
@@ -991,6 +990,8 @@ private:	// ユーザー宣言
 	bool __fastcall CheckDuplAliasMsg(UnicodeString alias, TCheckListBox *lp);
 
 	void __fastcall ChangeStdCmdList(bool add);
+
+	void __fastcall FindCore();
 
 	void __fastcall WmDropped(TMessage &msg);
 

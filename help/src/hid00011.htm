@@ -3,7 +3,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
-  <title>オプション設定 - テキストビュアー</title>
+  <title>オプション設定 - テキストビューア</title>
   <link rel="stylesheet" type="text/css" href="help.css">
   <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
 	<param name="Keyword" value="CSV">
@@ -20,13 +20,13 @@
 	<param name="Keyword" value="ShowLineNo">
 	<param name="Keyword" value="ShowRuler">
 	<param name="Keyword" value="TSV">
+	<param name="Keyword" value="インデントガイド">
 	<param name="Keyword" value="スティッキー表示">
-	<param name="Keyword" value="テキストビュアー">
+	<param name="Keyword" value="テキストビューア">
 	<param name="Keyword" value="バイナリ・ダンプ表示">
 	<param name="Keyword" value="メモリマップドファイル">
 	<param name="Keyword" value="リッチテキスト">
 	<param name="Keyword" value="ルーラ">
-	<param name="Keyword" value="外部ビュアー">
 	<param name="Keyword" value="強調表示">
 	<param name="Keyword" value="青空文庫">
   </object>
@@ -34,13 +34,12 @@
 
 <body>
 
-  <h1>オプション設定 - テキストビュアー</h1>
+  <h1>オプション設定 - テキストビューア</h1>
 
-  <p><a href="hid00006.htm">テキストビュアー</a>に関する設定を行います。</p>
+  <p><a href="hid00006.htm">テキストビューア</a>に関する設定を行います。</p>
 
   <p class="link_box">
-    <a href="#FoldWidth">折り返し幅</a> ／ <a href="#Emphasis">強調表示</a> ／ <a href="#HtmlToText">HTML→テキスト変換</a> ／ <a
-      href="#External">外部ビュアー</a>
+    <a href="#FoldWidth">折り返し幅</a> ／ <a href="#Emphasis">強調表示</a> ／ <a href="#HtmlToText">HTML→テキスト変換</a>
   </p>
   <br>
 
@@ -49,7 +48,7 @@
     <dd>テキスト表示の場合の折り返し幅を設定します。<br>
       <img src="radio.png" alt=""> <b>ウィンドウの幅に合わせる</b> または <img src="radio.png" alt=""> <b>指定(半角単位)</b>
       のいずれかを選択できます。<br>
-      テキストビュアーで<b>ルーラ</b>を表示している場合は、任意の位置をダブルクリックして設定することもできます(0以前の位置ではウィンドウ幅)。<br>
+      テキストビューアで<b>ルーラ</b>を表示している場合は、任意の位置をダブルクリックして設定することもできます(0以前の位置ではウィンドウ幅)。<br>
       <a href="hid00006.htm#SetWidth">→ SetWidth</a><br>
       <hr><br>
     </dd>
@@ -61,7 +60,12 @@
     </dd>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> 情報ヘッダを下部に表示</dt>
-    <dd>ビュアーの情報ヘッダを下部(ステータスバーの上)に移動します。</dd>
+    <dd>ビューアの情報ヘッダを下部(ステータスバーの上)に移動します。</dd>
+
+    <dt class="no_bg"><img src="chkbox.png" alt=""> インデントガイドを表示</dt>
+    <dd>タブストップ位置にインデントガイドを表示します。配色の設定で、交互に色を変えることもできます。<br>
+      <a href="hid00006.htm#ShowIndent">→ ShowIndent</a><br>
+    </dd>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> 行番号を表示</dt>
     <dd>テキスト表示の際に、行番号を表示します。<br>
@@ -73,8 +77,8 @@
     <dd>現在行にラインカーソルを表示します。</dd>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> 行位置を復元</dt>
-    <dd>前回ビュアーを閉じたときのカーソルの行位置を復元します。<br>
-      ビュアーの履歴数は、<b>NyanFi</b> 起動中は無制限ですが、終了時に保存されるのは最大50です。
+    <dd>前回ビューアを閉じたときのカーソルの行位置を復元します。<br>
+      ビューアの履歴数は、<b>NyanFi</b> 起動中は無制限ですが、終了時に保存されるのは最大50です。
     </dd>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> スクロールバーを折り返し位置に表示</dt>
@@ -82,7 +86,8 @@
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> 関数/見出し等をスティッキー表示</dt>
     <dd>
-      ビュアーの最上行位置に、関数の先頭行や見出し(<a href="hid00006.htm#FunctionList">FunctionList</a> コマンドで表示される項目)をスティッキー表示します。表示部は、ビュアー背景色の明度を加減した色になります。<br>
+      ビューアの最上行位置に、関数の先頭行や見出し(<a href="hid00006.htm#FunctionList">FunctionList</a>
+      コマンドで表示される項目)をスティッキー表示します。表示部は、ビューア背景色の明度を加減した色になります。<br>
       スティッキーをクリックすると、その行にカーソルが移動します(<a href="hid00006.htm#JumpLine">JumpLine_ST</a> コマンドでも可能)。<br>
     </dd>
 
@@ -112,7 +117,7 @@
     <dd>タブストップを4で表示するファイルの拡張子を指定します。拡張子は <b>.</b> (ピリオド)で区切って複数指定できます。<br>
       <a href="hid00006.htm#SetTab">→ SetTab</a> (一時変更)。<br>
     </dd>
-    
+
     <dt class="no_bg">タブストップ <img src="edit.png" alt=""> 拡張子 <img src="edit.png" alt=""></dt>
     <dd>任意のタブストップ幅で表示するファイルの拡張子を指定します。拡張子は <b>.</b> (ピリオド)で区切って複数指定できます。<br>
       <a href="hid00006.htm#SetTab">→ SetTab</a> (一時変更)。<br>
@@ -144,7 +149,7 @@
     <dt class="no_bg"><img src="chkbox.png" alt=""> ダブルクリックでURLを開く</dt>
     <dd>チェックすると、その行にURLが含まれていた場合にそれを開きます。チェックを外すと、URLをダブルクリックした場合、それが選択されます(<a
         href="hid00006.htm#SelCurWord">SelCurWord</a> に相当)。<br>
-      なお、行末より後の部分をダブルクリックしたときはテキストビュアーを閉じます。<br>
+      なお、行末より後の部分をダブルクリックしたときはテキストビューアを閉じます。<br>
       <br>
     </dd>
 
@@ -224,7 +229,7 @@
     <dd><b>xd2txlib.dll</b> がインストールされている場合、チェックすると、各種バイナリ文書からテキストを抽出して表示します。<br>
       <div class="note_text">
         <b>.docx</b>、<b>.pptx</b>、<b>.xlsx</b> ファイルは実態がZIPファイルであるため、<a href="hid00005.htm#OpenStandard">OpenStandard</a>
-        コマンドに対してはデフォルトでアーカイブとして認識されますので注意してください。テキストビュアーで開きたい場合は、これらの拡張子に対して <a href="hid00019.htm#OpenStandard">オプション設定
+        コマンドに対してはデフォルトでアーカイブとして認識されますので注意してください。テキストビューアで開きたい場合は、これらの拡張子に対して <a href="hid00019.htm#OpenStandard">オプション設定
           - コマンド - OpenStandard</a> - 「<b>コマンドへの関連付け</b>」を設定するか、<a href="hid00005.htm#TextViewer">TextViewer</a>
         コマンドを使用してください。<br>
       </div>
@@ -248,7 +253,7 @@
         フォントによってはこの文字がない場合があります。
       </div>
       この設定は、テキストプレビューや<a href="hid00073.htm">一覧ダイアログ</a>での表示にも適用されます。<br>
-      テキストビュアーでの表示については、<a href="hid00084.htm">構文強調表示定義ファイル</a>で <b>AltBackSlash</b> キーによって個別に設定を変えることも可能です。<br>
+      テキストビューアでの表示については、<a href="hid00084.htm">構文強調表示定義ファイル</a>で <b>AltBackSlash</b> キーによって個別に設定を変えることも可能です。<br>
     </dd>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> .dfm ファイルの文字列値をデコード</dt>
@@ -287,20 +292,10 @@
     </dd>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> メモリマップドファイルとして開く</dt>
-    <dd>チェックすると、バイナリ・ダンプ表示の場合メモリマップドファイルとして開きます。先頭アドレスから<b>バイナリ最大読込サイズ</b>までの範囲をメモリマッピングして参照するため、読込サイズを大きく設定しても、先頭アドレスの変更などが高速でメモリ使用量も少なくてすみます。閲覧中は、ファイルを開いたままになります。<br>
+    <dd>
+      チェックすると、バイナリ・ダンプ表示の場合メモリマップドファイルとして開きます。先頭アドレスから<b>バイナリ最大読込サイズ</b>までの範囲をメモリマッピングして参照するため、読込サイズを大きく設定しても、先頭アドレスの変更などが高速でメモリ使用量も少なくてすみます。閲覧中は、ファイルを開いたままになります。<br>
       チェックを外すと、最大読込サイズまで実際にメモリ上に読み込んで処理します。ファイルは読み込み時にのみ開かれます。<br>
       なお何らかの理由によりメモリマップドファイルとして開けなかった場合、最大読込サイズを8MB以下に一時変更してメモリに読み込みます。<br>
-      <br>
-    </dd>
-
-    <dt id="External"><img src="grpbox.png" alt=""> 外部ビュアー</dt>
-    <dd>内部テキストビュアーの代わりに外部ビュアーを用いたい場合は、ここで指定してください。<br>
-      ただし、リッチテキストやバイナリ・ダンプ表示、現在のログ閲覧(<a href="hid00005.htm#ViewLog">ViewLog</a>)、末尾の閲覧(<a
-        href="hid00005.htm#ViewTail">ViewTail</a>)の場合は、内部テキストビュアーが用いられます。<br>
-      <br>
-      パラメータとして以下の書式文字列を使えます。<br>
-      　<b>$F</b> : パス付ファイル名<br>
-      　<b>$L</b> : 行番号<br>
       <br>
     </dd>
 

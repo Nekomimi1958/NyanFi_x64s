@@ -115,9 +115,9 @@ void set_CmdList(
 		"F:ForwardDirHist=ディレクトリ履歴を進む\n"
 		"F:GetHash=ファイルのハッシュ値を取得\n"
 		"F:GitDiff=カーソル位置ファイルの差分を表示\n"
-		"F:GitViewer=Gitビュアー\n"
+		"F:GitViewer=Gitビューア\n"
 		"F:HideSizeTime=サイズと更新日時を隠す\n"
-		"F:ImageViewer=イメージビュアーで開く\n"
+		"F:ImageViewer=イメージビューアで開く\n"
 		"F:InputDir=入力したディレクトリに変更\n"
 		"F:InputPathMask=パスマスクを入力\n"
 		"F:InsSeparator=ワークリストにセパレータを挿入\n"
@@ -125,7 +125,7 @@ void set_CmdList(
 		"F:ItemTmpMove=選択項目を一時的にカーソル位置に移動\n"
 		"F:ItemTmpUp=項目を一時的に1つ上に移動\n"
 		"F:JoinText=テキストファイルの結合\n"
-		"F:JsonViewer=JSONビュアー\n"
+		"F:JsonViewer=JSONビューア\n"
 		"F:JumpTo=指定したファイル位置へ\n"
 		"F:Library=ライブラリへ\n"
 		"F:LinkToOpp=リンク先を反対側に開く\n"
@@ -218,12 +218,12 @@ void set_CmdList(
 		"F:ShareList=共有フォルダ一覧\n"
 		"F:ShowByteSize=ファイルサイズをバイト単位で表示\n"
 		"F:ShowHideAtr=隠しファイルを表示\n"
-		"F:ShowIcon=アイコンの表示/非表示\n"
-		"F:ShowLogWin=ログウィンドウーの表示/非表示\n"
-		"F:ShowPreview=イメージプレビューの表示/非表示\n"
-		"F:ShowProperty=ファイル情報の表示/非表示\n"
+		"F:ShowIcon=アイコンの表示\n"
+		"F:ShowLogWin=ログウィンドウーの表示\n"
+		"F:ShowPreview=イメージプレビューの表示\n"
+		"F:ShowProperty=ファイル情報の表示\n"
 		"F:ShowSystemAtr=システムファイルを表示\n"
-		"F:ShowTabBar=タブバーの表示/非表示\n"
+		"F:ShowTabBar=タブバーの表示\n"
 		"F:SimilarSort=名前の類似性によるソート\n"
 		"F:SoloTab=他のタブをすべて削除\n"
 		"F:SpecialDirList=特殊フォルダ一覧\n"
@@ -234,8 +234,8 @@ void set_CmdList(
 		"F:TabDlg=タブの設定ダイアログ\n"
 		"F:TabHome=タブのホームへ\n"
 		"F:TestArchive=アーカイブの正当性を検査\n"
-		"F:TextViewer=テキストビュアーで開く\n"
-		"F:ToExViewer=別ウィンドウのテキストビュアーへ\n"
+		"F:TextViewer=テキストビューアで開く\n"
+		"F:ToExViewer=別ウィンドウのテキストビューアへ\n"
 		"F:ToLog=ログウィンドウへ\n"
 		"F:ToNextOnRight=右ファイルリストで次のNyanFiへ\n"
 		"F:ToOpposite=反対側のファイルリストへ\n"
@@ -264,7 +264,7 @@ void set_CmdList(
 		"F:WorkItemDown=ワークリストの項目を1つ下に移動\n"
 		"F:WorkItemMove=選択ワークリスト項目をカーソル位置に移動\n"
 		"F:WorkItemUP=ワークリストの項目を1つ上に移動\n"
-		"F:XmlViewer=XMLビュアー\n"
+		"F:XmlViewer=XMLビューア\n"
 		"FI:AddTag=項目にタグを追加\n"
 		"FI:DelTag=項目のタグを削除\n"
 		"FI:HomeWorkList=ホームワークリストを開く\n"
@@ -288,7 +288,7 @@ void set_CmdList(
 		"FI:SetInterpolation=縮小・拡大アルゴリズムを設定\n"
 		"FI:SetTag=項目にタグを設定\n"
 		"FI:SortDlg=ソートダイアログ\n"
-		"FI:SubViewer=サブビュアーの表示/非表示\n"
+		"FI:SubViewer=サブビューアの表示\n"
 		"FI:TagSelect=指定タグを含む項目を選択\n"
 		"FI:UseTrash=削除にごみ箱を使う/使わない\n"
 		"FI:WorkList=ワークリスト\n"
@@ -299,7 +299,7 @@ void set_CmdList(
 		"FL:TaskMan=タスクマネージャ\n"
 		"FL:ToLeft=左ファイルリストへ\n"
 		"FL:ToRight=右ファイルリストへ\n"
-		"FL:ViewLog=ログをテキストビュアーで表示\n"
+		"FL:ViewLog=ログをテキストビューアで表示\n"
 		"FS:ClearAll=すべての選択状態を解除\n"
 		"FSI:Select=選択/解除\n"
 		"FSVIL:HelpContents=ヘルプの目次/索引を表示\n"
@@ -311,23 +311,24 @@ void set_CmdList(
 		"FV:EditHighlight=構文強調表示定義ファイルの編集\n"
 		"FV:EditHistory=最近編集したファイル一覧\n"
 		"FV:Grep=文字列検索(GREP)\n"
-		"FV:HtmlToText=テキストビュアーでHTML→テキスト変換表示\n"
+		"FV:HtmlToText=テキストビューアでHTML→テキスト変換表示\n"
 		"FV:IncSearch=インクリメンタルサーチ\n"
 		"FV:FindTagName=tags からタグ名検索\n"
-		"FV:FixedLen=テキストビュアーでCSV/TSVを固定長表示\n"
+		"FV:FixedLen=テキストビューアでCSV/TSVを固定長表示\n"
 		"FV:PageDownSel=選択しながら1ページ下に移動\n"
 		"FV:PageUpSel=選択しながら1ページ上に移動\n"
 		"FV:RegExChecker=正規表現チェッカー\n"
-		"FV:SetColor=テキストビュアーの配色\n"
+		"FV:SetColor=テキストビューアの配色\n"
 		"FV:SetFontSize=フォントサイズを変更\n"
-		"FV:SetMargin=テキストビュアーの左側余白を設定\n"
-		"FV:SetTab=テキストビュアーのタブストップ幅を設定\n"
-		"FV:SetWidth=テキストビュアーの折り返し幅を設定\n"
-		"FV:ShowCR=テキストビュアーで改行を表示/非表示\n"
-		"FV:ShowLineNo=テキストビュアーの行番号を表示/非表示\n"
-		"FV:ShowRuby=テキストビュアーでルビを表示/非表示\n"
-		"FV:ShowRuler=テキストビュアーのルーラを表示/非表示\n"
-		"FV:ShowTAB=テキストビュアーでタブを表示/非表示\n"
+		"FV:SetMargin=テキストビューアの左側余白を設定\n"
+		"FV:SetTab=テキストビューアのタブストップ幅を設定\n"
+		"FV:SetWidth=テキストビューアの折り返し幅を設定\n"
+		"FV:ShowCR=テキストビューアで改行を表示\n"
+		"FV:ShowIndent=テキストビューアのインデントガイドを表示\n"
+		"FV:ShowLineNo=テキストビューアの行番号を表示\n"
+		"FV:ShowRuby=テキストビューアでルビを表示\n"
+		"FV:ShowRuler=テキストビューアのルーラを表示\n"
+		"FV:ShowTAB=テキストビューアでタブを表示\n"
 		"FV:ViewHistory=最近閲覧したファイル一覧\n"
 		"FV:WebSearch=Webで検索\n"
 		"FV:ZoomReset=ズームを解除\n"
@@ -353,7 +354,7 @@ void set_CmdList(
 		"FVI:ListLog=ログを一覧で表示\n"
 		"FVI:Mark=栞マーク/解除\n"
 		"FVI:MarkList=栞マーク一覧\n"
-		"FVI:MenuBar=メニューバーの表示/非表示\n"
+		"FVI:MenuBar=メニューバーの表示\n"
 		"FVI:NextNyanFi=次のNyanFiをアクティブに\n"
 		"FVI:PopupMainMenu=メインメニューをポップアップ表示\n"
 		"FVI:PrevNyanFi=前のNyanFiをアクティブに\n"
@@ -361,8 +362,8 @@ void set_CmdList(
 		"FVI:ScrollDown=下にスクロール\n"
 		"FVI:ScrollUp=上にスクロール\n"
 		"FVI:ShowFileInfo=ファイル情報を強制的に表示\n"
-		"FVI:ShowFKeyBar=ファンクションキーバーの表示/非表示\n"
-		"FVI:ShowStatusBar=ステータスバーの表示/非表示\n"
+		"FVI:ShowFKeyBar=ファンクションキーバーの表示\n"
+		"FVI:ShowStatusBar=ステータスバーの表示\n"
 		"FVI:ShowToolBar=ツールバーを表示\n"
 		"FVI:ToolBarDlg=ツールバーの設定\n"
 		"FVI:WebMap=画像のGPS情報や指定地点の地図を開く\n"
@@ -380,9 +381,9 @@ void set_CmdList(
 		"I:FlipVert=上下反転\n"
 		"I:FullScreen=全画面表示\n"
 		"I:GrayScale=グレースケール表示\n"
-		"I:Histogram=ヒストグラムの表示/非表示\n"
+		"I:Histogram=ヒストグラムの表示\n"
 		"I:JumpIndex=指定したインデックスに移動\n"
-		"I:Loupe=ルーペの表示/非表示\n"
+		"I:Loupe=ルーペの表示\n"
 		"I:NextPage=サムネイルの次ページに移動\n"
 		"I:PageBind=見開き表示の綴じ方向を設定\n"
 		"I:PrevPage=サムネイルの前ページに移動\n"
@@ -392,11 +393,11 @@ void set_CmdList(
 		"I:ScrollLeft=左にスクロール\n"
 		"I:ScrollRight=右にスクロール\n"
 		"I:SendToWorkList=ワークリストに送る\n"
-		"I:ShowGrid=画像分割グリッドの表示/非表示\n"
-		"I:ShowSeekBar=シークバーの表示/非表示\n"
-		"I:Sidebar=サイドバーの表示/非表示\n"
+		"I:ShowGrid=画像分割グリッドの表示\n"
+		"I:ShowSeekBar=シークバーの表示\n"
+		"I:Sidebar=サイドバーの表示\n"
 		"I:SimilarImage=画像の類似性によるソート\n"
-		"I:Thumbnail=サムネイルの表示/非表示\n"
+		"I:Thumbnail=サムネイルの表示\n"
 		"I:ThumbnailEx=サムネイルの全面表示/通常表示\n"
 		"I:TopFile=先頭ファイルに移動\n"
 		"I:WarnHighlight=白飛び警告\n"
@@ -410,15 +411,15 @@ void set_CmdList(
 		"S:MigemoMode=Migemoモードの切り換え\n"
 		"S:NormalMode=通常のサーチモードに戻る\n"
 		"S:SelectDown=選択/解除後、下方向に検索\n"
-		"V:BackViewHist=テキストビュアーの履歴を戻る\n"
-		"V:BitmapView=ビットマップビューの表示/非表示\n"
+		"V:BackViewHist=テキストビューアの履歴を戻る\n"
+		"V:BitmapView=ビットマップビューの表示\n"
 		"V:BoxSelMode=箱形選択モードの開始/解除\n"
 		"V:ChangeCodePage=文字コード変更\n"
 		"V:ChangeViewMode=テキスト/バイナリ表示の切り換え\n"
-		"V:CharInfo=文字情報の表示/非表示\n"
+		"V:CharInfo=文字情報の表示\n"
 		"V:CsvCalc=CSV/TSV項目の集計\n"
 		"V:CsvGraph=CSV/TSV項目のグラフ\n"
-		"V:CsvRecord=CSV/TSVレコードの表示/非表示\n"
+		"V:CsvRecord=CSV/TSVレコードの表示\n"
 		"V:CursorLeft=カーソルを左に移動\n"
 		"V:CursorLeftSel=選択しながらカーソルを左に移動\n"
 		"V:CursorRight=カーソルを右に移動\n"
@@ -436,7 +437,7 @@ void set_CmdList(
 		"V:FunctionList=関数一覧\n"
 		"V:HelpCurWord=カーソル位置の単語を指定ヘルプで検索\n"
 		"V:Highlight=マッチ語を強調表示\n"
-		"V:Inspector=インスペクタの表示/非表示\n"
+		"V:Inspector=インスペクタの表示\n"
 		"V:ImgPreview=イメージプレビュー\n"
 		"V:JumpLine=指定行番号に移動\n"
 		"V:LineEnd=行末に移動\n"
@@ -462,8 +463,8 @@ void set_CmdList(
 		"V:SwitchSrcHdr=ヘッダ/ソースファイルの切り換え\n"
 		"V:TagJump=エディタでタグジャンプ\n"
 		"V:TagJumpDirect=エディタでダイレクトタグジャンプ\n"
-		"V:TagView=ビュアーでタグジャンプ\n"
-		"V:TagViewDirect=ビュアーでダイレクトタグジャンプ\n"
+		"V:TagView=ビューアでタグジャンプ\n"
+		"V:TagViewDirect=ビューアでダイレクトタグジャンプ\n"
 		"V:TextEnd=最後尾に移動\n"
 		"V:TextEndSel=選択しながら最後尾に移動\n"
 		"V:TextTop=先頭に移動\n"
@@ -963,6 +964,9 @@ void get_PrmList(
 			_T("CP : カーソル位置のリストファイルでカレント側を選択\n")
 			_T("OP : カーソル位置のリストファイルで反対側を選択\n"));
 	}
+	else if (SameText(cmd, "SelCurWord")) {
+		params = "\nEX : 選択範囲を拡張\n";
+	}
 	else if (SameText(cmd, "Select") && (id_idx==0 || id_idx==3)) {
 		if (cp) cp->Style = csDropDown;
 		params = "\n";
@@ -1160,8 +1164,8 @@ void get_PrmList(
 		_T("FileListOnly|HideSizeTime|LockTextPreview|MenuBar|MuteVolume|")
 		_T("ShowByteSize|ShowFKeyBar|ShowHideAtr|ShowIcon|ShowPreview|ShowProperty|ShowStatusBar|ShowSystemAtr|ShowTabBar|")
 		_T("PauseAllTask|Suspend|SyncLR|UseTrash|")
-		_T("BitmapView|CharInfo|CsvRecord|Highlight|HtmlToText|Inspector|ShowCR|ShowLineNo|ShowRuby|ShowRuler|ShowTAB|FixedLen|")
-		_T("DoublePage|FullScreen|SubViewer|GrayScale|Histogram|Loupe|ShowGrid|ShowSeekBar|Sidebar|")
+		_T("BitmapView|CharInfo|CsvRecord|Highlight|HtmlToText|Inspector|ShowCR|ShowIndent|ShowLineNo|ShowRuby|ShowRuler|ShowTAB|")
+		_T("FixedLen|DoublePage|FullScreen|SubViewer|GrayScale|Histogram|Loupe|ShowGrid|ShowSeekBar|Sidebar|")
 		_T("Thumbnail|ThumbnailEx|WarnHighlight"),
 		cmd))
 	{
@@ -1186,8 +1190,8 @@ void get_PrmList(
 			_T("MO : マウス操作\n")
 			_T("DS : デザイン\n")
 			_T("FC : フォント・配色\n")
-			_T("TV : テキストビュアー\n")
-			_T("IV : イメージビュアー\n")
+			_T("TV : テキストビューア\n")
+			_T("IV : イメージビューア\n")
 			_T("ED : エディタ\n")
 			_T("KY : キー設定\n")
 			_T("KYO : キー設定(単独表示)\n")
