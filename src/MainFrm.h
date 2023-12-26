@@ -49,6 +49,7 @@
 #include "usr_hintwin.h"
 #include "Global.h"
 #include "task_thread.h"
+#include "grep_thread.h"
 
 //---------------------------------------------------------------------------
 #define EXTMENU_BASE	1000
@@ -1944,6 +1945,10 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall IS_LoopActionUpdate(TObject *Sender);
 	void __fastcall IS_Match1ActionExecute(TObject *Sender);
 	void __fastcall IS_Match1ActionUpdate(TObject *Sender);
+	void __fastcall ResultListBoxData(TWinControl *Control, int Index, UnicodeString &Data);
+	void __fastcall ResultListBoxDataObject(TWinControl *Control, int Index, TObject *&DataObject);
+
+
 
 private:	// ユーザー宣言
 	TIdFTP *IdFTP1;
@@ -2041,6 +2046,8 @@ private:	// ユーザー宣言
 	bool fromMenuFile;					//メニューファイルから実行された
 	bool fromFlToWork;					//ファイルリストからワークリストを開いた
 
+	TGrepThread *GrepThread[MAX_GREP_THREAD];	//GREPスレッド
+
 	UnicodeString GrepPath;				//GREP 対象パス
 	UnicodeString GrepKeyword;			//  検索語
 	UnicodeString GrepResultMsg;		//  検索結果メッセージ
@@ -2054,6 +2061,9 @@ private:	// ユーザー宣言
 	bool GrepWorkList;					//対象がワークリスト
 
 	bool fromViewer;					//テキストビューアから
+
+	int GrepMatchFileCnt;				//マッチしたファイル数
+	int GrepMatchLineCnt;				//マッチした行数
 
 	SttProgressBar *SttPrgBar;			//Grep用プログレスバー
 	UsrHintWindow *MsgHint;				//メッセージ、警告のヒント表示ウィンドウ
@@ -2134,6 +2144,8 @@ private:	// ユーザー宣言
 	void __fastcall WmNyanFiClpCopied(TMessage &msg);
 	void __fastcall WmNyanFiThumbnail(TMessage &msg);
 	void __fastcall WmNyanFiLockKey(TMessage &msg);
+	void __fastcall WmNyanFiGrepEnd(TMessage &msg);
+
 	void __fastcall MmMciNotify(TMessage &msg);
 	void __fastcall WmDropped(TMessage &msg);
 
@@ -2664,6 +2676,7 @@ public:		// ユーザー宣言
 		VCL_MESSAGE_HANDLER(WM_NYANFI_THUMBNAIL,TMessage,			WmNyanFiThumbnail)
 		VCL_MESSAGE_HANDLER(WM_NYANFI_CLPCOPIED,TMessage,			WmNyanFiClpCopied)
 		VCL_MESSAGE_HANDLER(WM_NYANFI_LOCKKEY,	TMessage,			WmNyanFiLockKey)
+		VCL_MESSAGE_HANDLER(WM_NYANFI_GREP_END,	TMessage,			WmNyanFiGrepEnd)
 	END_MESSAGE_MAP(TForm)
 };
 //---------------------------------------------------------------------------

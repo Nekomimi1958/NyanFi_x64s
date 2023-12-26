@@ -121,6 +121,7 @@ int  ListBoxInitialSearch(TListBox *lp, UnicodeString kptn, bool fnam_sw = false
 UnicodeString InfListBoxGetDir(TListBox *lp);
 UnicodeString ListBoxGetURL(TListBox *lp);
 void set_ListBox_ItemNo(TListBox *lp);
+void set_Strings_ItemNo(TStringList *lst);
 int get_CheckListCount(TCheckListBox *lp);
 
 void GridCursorLeft(TStringGrid *gp);

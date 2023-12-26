@@ -568,8 +568,10 @@ TStringList *DistrDefList;				//振り分け正義リスト
 
 TStringList *GrepPathList;				//GREP 対象パスのリスト
 TStringList *GrepFileList; 				//GREP 対象ファイルリスト
+TStringList *GrepResultBuff;			//GREP 結果リスト表示用バッファ
 TStringList *GrepResultList;			//GREP の結果リスト
-TStringList *GrepResultBuff;			//GREP 結果の退避バッファ
+TStringList *GrepStashBuff;				//GREP 結果の退避バッファ
+TStringList *GrepUnsortBuff;			//GREP ソート前バッファ
 
 TStringList *ViewFileList;				//イメージビューアでのファイル名リスト
 bool isViewIcon   = false;				//イメージビューアでアイコンを表示中
@@ -822,6 +824,7 @@ TColor col_TAB;			//タブ表示色
 TColor col_CR;			//改行表示色
 TColor col_HR;			//罫線の色
 TColor col_Ctrl;		//コントロールコード
+TColor col_fgPair;		//対応する括弧の文字色
 
 TColor col_bgImage;		//画像の背景色
 TColor col_bgDblPg;		//見開き表示の余白色
@@ -1314,8 +1317,10 @@ void InitializeGlobal()
 	DistrDefList	  = CreStringList();
 	GrepPathList	  = CreStringList();
 	GrepFileList	  = CreStringList();
-	GrepResultList	  = CreStringList();
 	GrepResultBuff	  = CreStringList();
+	GrepResultList	  = CreStringList();
+	GrepStashBuff	  = CreStringList();
+	GrepUnsortBuff	  = CreStringList();
 	KeyFuncList 	  = CreStringList();
 	FKeyLabelList	  = CreStringList();
 	HotKeyList		  = CreStringList();
@@ -1904,7 +1909,7 @@ void InitializeGlobal()
 		{_T("G:OutAppName=\"\""),			(TObject*)&GrepAppName},
 		{_T("G:OutAppParam=\"\""),			(TObject*)&GrepAppParam},
 		{_T("G:OutAppDir=\"\""),			(TObject*)&GrepAppDir},
-		{_T("GrepAppEnabled=true"),			(TObject*)&GrepAppEnabled},
+		{_T("G:GrepAppEnabled=true"),		(TObject*)&GrepAppEnabled},
 		{_T("G:GrepAppend=true"),			(TObject*)&GrepAppend},
 		{_T("G:FileFmt=\"$F $L:\""),		(TObject*)&GrepFileFmt},
 		{_T("G:InsStrW=\"\""),				(TObject*)&GrepInsStrW},
@@ -10437,6 +10442,7 @@ void set_col_from_ColorList()
 		{&col_CR,		_T("CR"),			clPurple},
 		{&col_HR,		_T("HR"),			clDkGray},
 		{&col_Ctrl,		_T("Ctrl"),			clFuchsia},
+		{&col_fgPair,	_T("fgPair"),		col_None},
 		{&col_bdrThumb,	_T("bdrThumb"),		clBtnFace},
 		{&col_ThumbExif,_T("ThumbExif"),	clWhite},
 		{&col_ImgGrid,	_T("ImgGrid"),		clGray},

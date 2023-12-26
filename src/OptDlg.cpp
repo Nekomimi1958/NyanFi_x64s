@@ -189,6 +189,7 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 		"CR=改行表示色\n"
 		"HR=罫線の色\n"
 		"Ctrl=コントロールコード\n"
+		"fgPair=対応する括弧の文字色\n"
 		"bgImage=|画像の背景色\n"
 		"bgDblPg=見開き表示の余白色\n"
 		"bgWMF=メタファイルの背景色\n"
@@ -1729,7 +1730,7 @@ void __fastcall TOptionDlg::DisableColActionUpdate(TObject *Sender)
 			"bgList|bgList2|fgList|Splitter|fgSelItem|Protect|Compress|frScrKnob|bgActKnob|lnScrHit|lnScrSel|"
 			"bgTabBar|bgListHdr|fgListHdr|bgDirInf|fgDirInf|bgDirRel|bgDirRel|fgDirRel|fgDirRel|bgDrvInf|fgDrvInf|"
 			"bgInf|fgInf|bgTxtPrv|fgTxtPrv|bgLog|fgLog|bgTask|"
-			"frmTab|bgView|fgView|bdrLine|Indent2|bdrFold|bdrFixed|TlBorder|bgTlBar1|bgTlBar2|fgTlBar|bgInfHdr|fgInfHdr",
+			"frmTab|bgView|fgView|bdrLine|Indent2|bdrFold|bdrFixed|fgPair|TlBorder|bgTlBar1|bgTlBar2|fgTlBar|bgInfHdr|fgInfHdr",
 			col_id);
 }
 //---------------------------------------------------------------------------

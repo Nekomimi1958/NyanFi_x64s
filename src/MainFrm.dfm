@@ -504,7 +504,7 @@ object NyanFiForm: TNyanFiForm
         Top = 130
         Width = 716
         Height = 373
-        Style = lbOwnerDrawFixed
+        Style = lbVirtualOwnerDraw
         Align = alLeft
         Anchors = [akLeft, akTop, akRight, akBottom]
         BorderStyle = bsNone
@@ -515,6 +515,8 @@ object NyanFiForm: TNyanFiForm
         TabOrder = 1
         StyleElements = [seBorder]
         OnClick = ResultListBoxClick
+        OnData = ResultListBoxData
+        OnDataObject = ResultListBoxDataObject
         OnDblClick = ResultListBoxDblClick
         OnDrawItem = ResultListBoxDrawItem
         OnExit = ResultListBoxExit
@@ -5045,7 +5047,7 @@ object NyanFiForm: TNyanFiForm
     Enabled = False
     Interval = 500
     OnTimer = WatchDirTimerTimer
-    Left = 544
+    Left = 552
     Top = 87
   end
   object MsgHintTimer: TTimer
@@ -5144,7 +5146,7 @@ object NyanFiForm: TNyanFiForm
     Enabled = False
     Interval = 500
     OnTimer = BlinkTimerTimer
-    Left = 544
+    Left = 552
     Top = 149
   end
   object DrivePopupMenu: TPopupMenu
@@ -5340,7 +5342,7 @@ object NyanFiForm: TNyanFiForm
   object WatchTailTimer: TTimer
     Enabled = False
     OnTimer = WatchTailTimerTimer
-    Left = 635
+    Left = 643
     Top = 87
   end
   object TrayIcon1: TTrayIcon
@@ -5503,7 +5505,7 @@ object NyanFiForm: TNyanFiForm
   object WaitTimer: TTimer
     Enabled = False
     OnTimer = WaitTimerTimer
-    Left = 634
+    Left = 642
     Top = 147
   end
   object MainMenu1: TMainMenu

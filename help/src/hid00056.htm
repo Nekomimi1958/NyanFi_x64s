@@ -8,6 +8,7 @@
   <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
 	<param name="Keyword" value="FileEdit">
 	<param name="Keyword" value="GREP">
+	<param name="Keyword" value="Migemo">
 	<param name="Keyword" value="ReturnList">
 	<param name="Keyword" value="TextViewer">
 	<param name="Keyword" value="xd2txlib.dll">
@@ -28,6 +29,11 @@
       href="hid00060.htm">ワークリスト</a>も可)のテキストファイルに対する <b>文字列検索(GREP)</b> 画面が開きます。<br>
     <b>xd2txlib.dll</b> がインストールされていると、PDF、WORD、EXCEL、一太郎などの各種バイナリ文書も検索可能です。
   </p>
+
+  <div class="info_text">
+    検索はマルチスレッドで行われます。スレッドはファイル単位で作られ(最大4スレッド)、結果が取得される毎にリストに追加されていきます。そのためファイルの順序が前後する場合がありますが、完了時にはパス/行番号順にソート表示されます。<br>
+  </div>
+ 
   <p>
     上部のタブを切り替えることにより、<b>文字列検索</b>および<a href="hid00061.htm">文字列置換</a>を行えます。<br>
   </p>
@@ -94,7 +100,7 @@
         除外</b>」で、結果リストを絞り込めます。キーワードは、空白で区切って複数指定可能。その場合、抽出ではいずれかを含むものが、除外ではいずれも含まないものが残ります。大小文字は区別されません。「<b>絞り込みの解除</b>」で、絞り込みを解除できます。「<b>絞り込みを確定</b>」で、絞り込みによって表示から除外された項目を結果リストから削除します。<br>
 
       <div class="spc_box">
-        「<b>行内容でソート</b>」では、マッチ行(次行部分は無視)の内容に基づいて結果リストをソートをできます。なお、絞り込みが行われた状態でソートを解除すると、絞り込みも解除されます。<br>
+        「<b>行内容でソート</b>」では、マッチ行(次行部分は無視)の内容に基づいて結果リストをソートをできます。<br>
       </div>
 
       <div class="spc_box">

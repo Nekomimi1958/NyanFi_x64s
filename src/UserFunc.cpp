@@ -1055,6 +1055,20 @@ void set_ListBox_ItemNo(TListBox *lp)
 
 	lp->Invalidate();
 }
+//---------------------------------------------------------------------------
+void set_Strings_ItemNo(TStringList *lst)
+{
+	int itm_no	 = 0;
+	int last_tag = -1;
+	for (int i=0; i<lst->Count; i++) {
+		int tag = (int)lst->Objects[i];
+		if (last_tag!=tag) {
+			itm_no++;
+			last_tag = tag;
+		}
+		lst->Objects[i] = (TObject*)(NativeInt)itm_no;
+	}
+}
 
 //---------------------------------------------------------------------------
 //TCheckListBox でチェックされている項目数を取得

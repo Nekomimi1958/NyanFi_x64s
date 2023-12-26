@@ -350,6 +350,9 @@ void __fastcall TTxtViewer::Clear()
 
 	SetColor();
 	TabLength = 0;
+
+	PairPos1 = PairPos2 = Point(-1, -1);
+	PairChanged = false;
 }
 
 //---------------------------------------------------------------------------
@@ -410,6 +413,7 @@ void __fastcall TTxtViewer::SetColor(TStringList *lst)
 	color_CR		= read_ColorList(_T("CR"),			col_CR,			lst);
 	color_HR		= read_ColorList(_T("HR"),			col_HR,			lst);
 	color_Ctrl		= read_ColorList(_T("Ctrl"),		col_Ctrl,		lst);
+	color_fgPair	= read_ColorList(_T("fgPair"),		col_fgPair,		lst);
 
 	if (lst!=ColBufList) ColBufList->Assign(lst);
 }
@@ -2251,6 +2255,12 @@ void __fastcall TTxtViewer::PaintText()
 					}
 				}
 
+				//対応する括弧
+				if (color_fgPair!=col_None) {
+					if (i==PairPos1.y && PairPos1.x<lbuf_len) curFgCol[PairPos1.x + 1] = color_fgPair;
+					if (i==PairPos2.y && PairPos2.x<lbuf_len) curFgCol[PairPos2.x + 1] = color_fgPair;
+				}
+
 				//文字列描画
 				if (color_fgSelItem!=col_None) {
 					for (int j=1; j<=lbuf_len; j++)
@@ -2485,7 +2495,7 @@ void __fastcall TTxtViewer::onStickyPaint(TObject *Sender)
 				}
 			}
 		}
-	
+
 		//関数名強調
 		std::unique_ptr<TStringList> elist(new TStringList());
 		if (!FuncNamPtn.IsEmpty()) {
@@ -2704,6 +2714,10 @@ void __fastcall TTxtViewer::UpdatePos(
 
 	set_CurCsvCol();
 	if (CurTop!=last_top) UpdateSticky();
+
+	UpdatePairPos();
+	if (PairChanged) force = true;
+
 	Repaint(force);
 
 	//イメージプレビュー
@@ -3083,6 +3097,8 @@ void __fastcall TTxtViewer::onMouseDown(int x, int y)
 		SetPosFromPt(x, y);
 		to_Lead_if_Trail();
 
+		UpdatePairPos();
+
 		IniSelected(true);
 		Repaint(true);
 		SetSttInf();
@@ -3350,14 +3366,18 @@ void __fastcall TTxtViewer::ScrollAdjust()
 	//カーソルを常に可視領域に
 	if (TvCursorVisible) {
 		if (CurPos.y < CurTop-1)
-			CurPos.y = CurTop -1;
+			CurPos.y = CurTop - 1;
 		else if (CurPos.y > CurBottom-1)
 			CurPos.y = CurBottom - 1;
 	}
 
 	SetSttInf();
 	if (CurTop!=last_top) UpdateSticky();
-	Repaint();
+
+	if (StickyPanel->Visible && CurPos.y==CurTop-1) CurPos.y++;
+
+	UpdatePairPos();
+	Repaint(PairChanged);
 }
 
 //---------------------------------------------------------------------------
@@ -4305,6 +4325,80 @@ bool __fastcall TTxtViewer::SearchSel(
 }
 
 //---------------------------------------------------------------------------
+//カーソル位置の対応する括弧を設定
+//---------------------------------------------------------------------------
+bool __fastcall TTxtViewer::UpdatePairPos()
+{
+	UnicodeString br_str = "（〔［｛〈《「『【({[｢";
+	UnicodeString kt_str = "）〕］｝〉》」』】)}]｣";
+
+	WideChar bk_ch = get_CurChar();
+	int p_b = br_str.Pos(bk_ch);
+	int p_k = kt_str.Pos(bk_ch);
+	bool found = false;
+
+	TPoint lst_pos1 = PairPos1;
+	TPoint lst_pos2 = PairPos2;
+
+	//括弧開き → 括弧閉じ
+	if (p_b>0) {
+		PairPos1 = CurPos;
+		WideChar b_ch = bk_ch;
+		WideChar k_ch = kt_str[p_b];
+		int lvl = 0;
+		for (int i=CurPos.y; !found && i<MaxDispLine; i++) {
+			UnicodeString lbuf = get_DispLine(i);
+			int p = (i==CurPos.y)? CurPos.x + 2 : 1;
+			for (int j=p; !found && j<lbuf.Length(); j++) {
+				if (lbuf[j]==k_ch) {
+					if (lvl==0) {
+						PairPos2 = Point(j - 1, i);
+						found  = true;
+					}
+					else {
+						lvl--;
+					}
+				}
+				else if (lbuf[j]==b_ch) {
+					lvl++;
+				}
+			}
+		}
+	}
+	//括弧閉じ → 括弧開き
+	else if (p_k>0) {
+		PairPos2 = CurPos;
+		WideChar b_ch = br_str[p_k];
+		WideChar k_ch = bk_ch;
+		int lvl = 0;
+		for (int i=CurPos.y; !found && i>=0; i--) {
+			UnicodeString lbuf = get_DispLine(i);
+			int p = (i==CurPos.y)? CurPos.x : lbuf.Length();
+			for (int j=p; !found && j>0; j--) {
+				if (lbuf[j]==b_ch) {
+					if (lvl==0) {
+						PairPos1 = Point(j - 1, i);
+						found = true;
+					}
+					else {
+						lvl--;
+					}
+				}
+				else if (lbuf[j]==k_ch) {
+					lvl++;
+				}
+			}
+		}
+	}
+	else {
+		PairPos1 = PairPos2 = Point(-1, -1);
+	}
+
+	PairChanged = (lst_pos1!=PairPos1 || lst_pos2!=PairPos2);
+	return found;
+}
+
+//---------------------------------------------------------------------------
 //対応する行要素を検索
 //---------------------------------------------------------------------------
 bool __fastcall TTxtViewer::SearchPairCore(UnicodeString bgn_ptn, UnicodeString end_ptn)
@@ -4365,62 +4459,9 @@ bool __fastcall TTxtViewer::SearchPairCore(UnicodeString bgn_ptn, UnicodeString 
 bool __fastcall TTxtViewer::SearchPair(
 	UnicodeString prm)	// "/開始正規表現/;/終了正規表現/"
 {
-	UnicodeString br_str = "（〔［｛〈《「『【({[｢";
-	UnicodeString kt_str = "）〕］｝〉》」』】)}]｣";
-
-	WideChar bk_ch = get_CurChar();
-	int p_b = br_str.Pos(bk_ch);
-	int p_k = kt_str.Pos(bk_ch);
-
-	bool found = false;
-	//括弧開き → 括弧閉じ
-	if (p_b>0) {
-		WideChar b_ch = bk_ch;
-		WideChar k_ch = kt_str[p_b];
-		int lvl = 0;
-		for (int i=CurPos.y; !found && i<MaxDispLine; i++) {
-			UnicodeString lbuf = get_DispLine(i);
-			int p = (i==CurPos.y)? CurPos.x + 2 : 1;
-			for (int j=p; !found && j<lbuf.Length(); j++) {
-				if (lbuf[j]==k_ch) {
-					if (lvl==0) {
-						CurPos = Point(j - 1, i);
-						found  = true;
-					}
-					else {
-						lvl--;
-					}
-				}
-				else if (lbuf[j]==b_ch) {
-					lvl++;
-				}
-			}
-		}
-	}
-	//括弧閉じ → 括弧開き
-	else if (p_k>0) {
-		WideChar b_ch = br_str[p_k];
-		WideChar k_ch = bk_ch;
-		int lvl = 0;
-		for (int i=CurPos.y; !found && i>=0; i--) {
-			UnicodeString lbuf = get_DispLine(i);
-			int p = (i==CurPos.y)? CurPos.x : lbuf.Length();
-			for (int j=p; !found && j>0; j--) {
-				if (lbuf[j]==b_ch) {
-					if (lvl==0) {
-						CurPos = Point(j - 1, i);
-						found = true;
-					}
-					else {
-						lvl--;
-					}
-				}
-				else if (lbuf[j]==k_ch) {
-					lvl++;
-				}
-			}
-		}
-	}
+	//括弧
+	bool found = UpdatePairPos();
+	if (found) CurPos = (PairPos2==CurPos)? PairPos1 : PairPos2;
 
 	//HTML ブロック
 	if (!found && test_HtmlExt(get_extension(FileName)) && !isHtm2Txt) {

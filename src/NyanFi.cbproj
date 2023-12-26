@@ -78,10 +78,11 @@
         <SanitizedProjectName>NyanFi</SanitizedProjectName>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1041</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=2画面ファイラー NyanFi (x64 VCL Style);FileVersion=16.1.0.0;InternalName=NyanFi;LegalCopyright=2023 by Nekomimi;LegalTrademarks=;OriginalFilename=NyanFi.exe;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=NyanFi;ProductVersion=16.1.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=2画面ファイラー NyanFi (x64 VCL Style);FileVersion=16.1.1.0;InternalName=NyanFi;LegalCopyright=2023 by Nekomimi;LegalTrademarks=;OriginalFilename=NyanFi.exe;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=NyanFi;ProductVersion=16.1.1.0;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>16</VerInfo_MajorVer>
         <Custom_Styles>&quot;Aqua Light Slate|VCLSTYLE|$(BDSCOMMONDIR)\Styles\AquaLightSlate.vsf&quot;;Glow|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Glow.vsf;&quot;Iceberg Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\IcebergClassico.vsf&quot;;&quot;Lavender Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\LavenderClassico.vsf&quot;;Sky|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Sky.vsf;&quot;Slate Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\SlateClassico.vsf&quot;;&quot;Tablet Dark|VCLSTYLE|$(BDSCOMMONDIR)\Styles\TabletDark.vsf&quot;;&quot;Tablet Light|VCLSTYLE|$(BDSCOMMONDIR)\Styles\TabletLight.vsf&quot;;Windows10|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10.vsf;&quot;Windows10 Blue|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Blue.vsf&quot;;&quot;Windows10 Charcoal|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10_Charcoal.vsf&quot;;&quot;Windows10 Dark|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Dark.vsf&quot;;&quot;Windows10 Green|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Green.vsf&quot;;&quot;Windows10 Purple|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Purple.vsf&quot;;&quot;Windows10 SlateGray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10SlateGray.vsf&quot;;&quot;Windows11 Modern Dark|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows11_Modern_Dark.vsf&quot;;&quot;Windows11 Modern Light|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows11_Modern_Light.vsf&quot;;&quot;Windows11 Polar Dark|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows11_Polar_Dark.vsf&quot;;&quot;Windows11 Polar Light|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows11_Polar_Light.vsf&quot;</Custom_Styles>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
+        <VerInfo_Release>1</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <PackageImports>adortl;appanalytics;bcbie;bcbsmp;bindcomp;bindcompdbx;bindcompfmx;bindcompvcl;bindengine;CodeSiteExpressPkg;CustomIPTransport;dbexpress;dbrtl;dbxcds;DbxClientDriver;DbxCommonDriver;DBXInterBaseDriver;DBXMySQLDriver;DBXSqliteDriver;dsnap;dsnapcon;dsnapxml;FireDACADSDriver;FireDACCommonODBC;FireDACMSAccDriver;FireDACMySQLDriver;FireDACPgDriver;fmx;fmxase;fmxdae;fmxFireDAC;fmxobj;FMXTee;FmxTeeUI;IndyCore;IndyIPClient;IndyIPCommon;IndyIPServer;IndyProtocols;IndySystem;inetdb;inetdbxpress;rtl;svn;Tee;TeeDB;TeeUI;tethering;vcl;vclactnband;vcldb;vcldsnap;vclFireDAC;vclie;vclimg;VCLRESTComponents;VclSmp;vcltouch;vclwinx;vclx;xmlrtl;$(PackageImports)</PackageImports>
@@ -150,7 +151,6 @@
         <DynamicRTL>false</DynamicRTL>
         <UsePackages>false</UsePackages>
         <LinkPackageStatics>rtl.lib;vcl.lib;vclimg.lib;vclx.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;xmlrtl.lib;vclwinx.lib;bindengine.lib</LinkPackageStatics>
-        <Debugger_RunParams>-Idefault.ini</Debugger_RunParams>
     </PropertyGroup>
     <ItemGroup>
         <CppCompile Include="About.cpp">
@@ -417,6 +417,9 @@
             <FormType>dfm</FormType>
             <DependentOn>GrepOptDlg.h</DependentOn>
             <BuildOrder>45</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="grep_thread.cpp">
+            <BuildOrder>116</BuildOrder>
         </CppCompile>
         <CppCompile Include="HistDlg.cpp">
             <Form>DirHistoryDlg</Form>
@@ -762,6 +765,7 @@
         <FormResources Include="NewDlg.dfm"/>
         <FormResources Include="XmlView.dfm"/>
         <FormResources Include="UserMdl.dfm"/>
+        <FormResources Include="KeyDlg.dfm"/>
         <FormResources Include="DiffDlg.dfm"/>
         <FormResources Include="DirDlg.dfm"/>
         <FormResources Include="DistrDlg.dfm"/>
@@ -790,16 +794,15 @@
         <FormResources Include="CmdListDlg.dfm"/>
         <FormResources Include="ChInfFrm.dfm"/>
         <FormResources Include="ChmodDlg.dfm"/>
+        <FormResources Include="HistFrm.dfm"/>
         <FormResources Include="GrepOptDlg.dfm"/>
         <FormResources Include="HistDlg.dfm"/>
-        <FormResources Include="HistFrm.dfm"/>
+        <FormResources Include="InspectFrm.dfm"/>
         <FormResources Include="JoinDlg.dfm"/>
         <FormResources Include="JsonView.dfm"/>
-        <FormResources Include="KeyDlg.dfm"/>
-        <FormResources Include="InspectFrm.dfm"/>
+        <FormResources Include="InpExDlg.dfm"/>
         <FormResources Include="InpCmds.dfm"/>
         <FormResources Include="InpDir.dfm"/>
-        <FormResources Include="InpExDlg.dfm"/>
         <FormResources Include="GraphFrm.dfm"/>
         <FormResources Include="FindDlg.dfm"/>
         <FormResources Include="FindKey.dfm"/>

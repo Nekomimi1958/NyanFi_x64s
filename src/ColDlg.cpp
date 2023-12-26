@@ -59,6 +59,7 @@ void __fastcall TColorDlg::FormCreate(TObject *Sender)
 		"CR=改行表示色\n"
 		"HR=横罫線の色\n"
 		"Ctrl=コントロールコード\n"
+		"fgPair=対応する括弧の文字色\n"
 		"Folder=ディレクトリの文字色\n"
 		"Error=エラーの文字色\n";
 
@@ -253,6 +254,6 @@ void __fastcall TColorDlg::DisableColActionUpdate(TObject *Sender)
 {
 	TListBox *lp = ColorListBox;
 	UnicodeString col_id = (lp->ItemIndex!=-1)? lp->Items->Names[lp->ItemIndex] : EmptyStr;
-	((TAction*)Sender)->Enabled = contained_wd_i("fgSelItem|bdrLine|Indent2|bdrFold|bdrFixed", col_id);
+	((TAction*)Sender)->Enabled = contained_wd_i("fgSelItem|bdrLine|Indent2|bdrFold|bdrFixed|fgPair", col_id);
 }
 //---------------------------------------------------------------------------

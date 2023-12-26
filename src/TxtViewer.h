@@ -222,6 +222,10 @@ public:
 	TPoint CurPos;					//カーソル位置(文字単位 0ベース)
 	TPoint SelStart, SelEnd;		//通常選択範囲(文字単位)
 	TPoint BoxStart, BoxEnd;		//箱形選択範囲(半角単位)
+
+	TPoint PairPos1, PairPos2;		//対応する括弧の位置
+	bool PairChanged;
+
 	int  MaxFoldWd;					//最大折り返し幅
 	int  CsvCol;					//CSV列(固定長表示モード時)
 
@@ -286,6 +290,7 @@ public:
 	TColor color_CR;			//改行表示色
 	TColor color_HR;			//罫線の色
 	TColor color_Ctrl;			//コントロールコード
+	TColor color_fgPair;		//対応する括弧の文字色
 
 	TTxtViewer(TForm *frm, TPaintBox *viewbox, TScrollBar *scrbar, UsrScrollPanel *sp,
 				TStatusBar *stthdr, TPaintBox *ruler, TPaintBox *mgn_box = NULL);
@@ -364,6 +369,7 @@ public:
 	bool __fastcall SearchUpBytes(UnicodeString kwd, bool case_sw, bool reg_sw);
 	bool __fastcall SearchSel(bool up_sw, bool em_sw);
 
+	bool __fastcall UpdatePairPos();
 	bool __fastcall SearchPairCore(UnicodeString bgn_ptn, UnicodeString end_ptn);
 	bool __fastcall SearchPair(UnicodeString prm);
 

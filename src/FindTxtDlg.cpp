@@ -306,4 +306,3 @@ void __fastcall TFindTextDlg::FindNextActionUpdate(TObject *Sender)
 		= CBTAG_HISTORY | (FindComboBox->Focused()? CBTAG_RGEX_V : 0) | (RegExCheckBox->Checked? CBTAG_RGEX_E : 0);
 }
 //---------------------------------------------------------------------------
-

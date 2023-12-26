@@ -43,6 +43,7 @@
 #define WM_NYANFI_PLAYLIST	(WM_APP + 104)	//プレイリスト通知
 #define WM_NYANFI_LOCKKEY	(WM_APP + 105)	//LockKeyMouse 動作中のキー処理
 #define WM_NYANFI_CLSEDITM	(WM_APP + 106)	//設定項目の編集ダイアログを閉じた
+#define WM_NYANFI_GREP_END	(WM_APP + 110)	//GREP完了
 
 //---------------------------------------------------------------------------
 //WM_COPYDATA メッセージの識別番号
@@ -753,8 +754,10 @@ extern TStringList *DistrDefList;
 
 extern TStringList *GrepPathList;
 extern TStringList *GrepFileList;
-extern TStringList *GrepResultList;
 extern TStringList *GrepResultBuff;
+extern TStringList *GrepResultList;
+extern TStringList *GrepStashBuff;
+extern TStringList *GrepUnsortBuff;
 
 extern TStringList *ViewFileList;
 extern bool isViewIcon;
@@ -1088,6 +1091,7 @@ extern TColor col_TAB;
 extern TColor col_CR;
 extern TColor col_HR;
 extern TColor col_Ctrl;
+extern TColor col_fgPair;
 
 extern TColor col_bdrThumb;
 extern TColor col_ThumbExif;

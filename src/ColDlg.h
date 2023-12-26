@@ -15,9 +15,9 @@
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Graphics.hpp>
 #include <Vcl.ActnList.hpp>
+#include <Vcl.Imaging.pngimage.hpp>
 #include "usr_swatch.h"
 #include "TxtViewer.h"
-#include <Vcl.Imaging.pngimage.hpp>
 
 //---------------------------------------------------------------------------
 class TColorDlg : public TForm

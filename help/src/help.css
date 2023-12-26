@@ -151,12 +151,13 @@ PRE {
 
 .note_text {
     margin-Top: 0.25em;
-    padding-left: 0.5em;
+    padding-left: 1em;
     background-color: #fee;
 }
 
 .info_text {
     margin-Top: 0.25em;
+    padding-left: 1em;
     background-color: #eff;
 }
 
