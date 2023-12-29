@@ -771,6 +771,13 @@ void __fastcall TUserModule::EditPopupMenuCPopup(TObject *Sender)
 	RegExpItem->Visible = (tag & CBTAG_RGEX_V);
 	RegExpItem->Enabled = (tag & CBTAG_RGEX_E);
 
+	if (RegExpItem->Visible) {
+		for (int i=0; i<RegExpItem->Count; i++) {
+			TMenuItem *mp = RegExpItem->Items[i];
+			if (SameStr(get_tkn(mp->Caption, ' '), "\\d")) mp->Visible = !(tag & CBTAG_RGEX_P);
+		}
+	}
+
 	EditItemItem->Visible = (cp && (StartsStr(". ‚Å‹æØ‚Á‚Ä", cp->Hint) || StartsStr("; ‚Å‹æØ‚Á‚Ä", cp->Hint)));
 	EditItemItem->Enabled = EditItemItem->Visible;
 

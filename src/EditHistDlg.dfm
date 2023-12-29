@@ -30,6 +30,7 @@ object EditHistoryDlg: TEditHistoryDlg
     Cancel = True
     ModalResult = 2
     TabOrder = 0
+    TabStop = False
   end
   object EditHistHeader: THeaderControl
     Left = 0

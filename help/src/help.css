@@ -289,3 +289,7 @@ PRE {
     font-weight: normal;
     color: #333;
 }
+
+hr.light {
+	border-top: 1px solid #ccc;
+}

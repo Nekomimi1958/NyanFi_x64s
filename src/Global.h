@@ -89,7 +89,7 @@ extern  FUNC_GetFontResourceInfo	lpfGetFontResourceInfo;
 
 //---------------------------------------------------------------------------
 //検索用オプション
-enum SeaOpt {soMigemo, soRegEx, soAndOr, soFuzzy, soCaseSens, soCSV, soTSV, soTree};
+enum SeaOpt {soMigemo, soRegEx, soAndOr, soFuzzy, soCaseSens, soGitGrep, soCSV, soTSV, soTree};
 typedef Set <SeaOpt, soMigemo, soTree> SearchOption;
 
 //---------------------------------------------------------------------------
@@ -596,6 +596,8 @@ extern int  FindPathWidth;
 extern bool FindTagsColumn;
 extern int  FindTagsWidth;
 
+extern bool GrepNotUpdList;
+extern bool RepNotUpdList;
 extern bool GrepShowItemNo;
 extern bool GrepFileItemNo;
 extern bool GrepShowSubDir;
@@ -1036,8 +1038,10 @@ extern TColor col_bgDirInf;
 extern TColor col_fgDirInf;
 extern TColor col_bgDirRel;
 extern TColor col_fgDirRel;
+extern TColor col_bdrDirB;
 extern TColor col_bgDrvInf;
 extern TColor col_fgDrvInf;
+extern TColor col_bdrDrvT;
 extern TColor col_bgInf;
 extern TColor col_fgInf;
 extern TColor col_fgInfNam;
@@ -2231,6 +2235,7 @@ bool GitShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst,
 bool GitShellExe(UnicodeString prm, UnicodeString wdir, TMemoryStream *o_ms, DWORD *exit_cd = NULL);
 bool GitShellExe(UnicodeString prm, UnicodeString wdir);
 void split_GitWarning(TStringList *o_lst, TStringList *w_lst = NULL);
+UnicodeString save_GitRevAsTemp(UnicodeString id, UnicodeString fnam, UnicodeString wdir);
 
 int  get_BusyTaskCount();
 int  get_MaxTaskCount();

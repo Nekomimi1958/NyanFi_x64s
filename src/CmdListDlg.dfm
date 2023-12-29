@@ -29,6 +29,7 @@ object CmdFileListDlg: TCmdFileListDlg
     Cancel = True
     ModalResult = 2
     TabOrder = 1
+    TabStop = False
   end
   object MainPanel: TPanel
     Left = 0

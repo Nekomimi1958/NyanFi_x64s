@@ -174,7 +174,7 @@ __published:	// IDE で管理されるコンポーネント
 	TToolButton *GuiBtn;
 	TToolButton *ResetBtn;
 	TToolButton *ToolButton1;
-	TToolButton *ToolButton2;
+	TToolButton *StashBtn;
 	TToolButton *UpdateBtn;
 	TAction *StashAction;
 	TToolButton *FindSpcBtn2;
@@ -191,6 +191,9 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *CopyPathItem;
 	TMenuItem *Sep_d_3;
 	TTimer *WaitTimer;
+	TToolButton *GrepBtn;
+	TToolButton *FindSpcBtn3;
+	TAction *GrepAction;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -296,6 +299,8 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall StashApplyActionExecute(TObject *Sender);
 	void __fastcall StashDropActionExecute(TObject *Sender);
 	void __fastcall StashPopActionUpdate(TObject *Sender);
+	void __fastcall GrepActionExecute(TObject *Sender);
+	void __fastcall GrepActionUpdate(TObject *Sender);
 
 private:	// ユーザー宣言
 	UnicodeString RefHEAD;
@@ -329,7 +334,6 @@ private:	// ユーザー宣言
 	UnicodeString   __fastcall GitExeStr(UnicodeString prm);
 	TStringDynArray __fastcall GitExeStrArray(UnicodeString prm);
 	bool __fastcall GitExeList(UnicodeString prm, TStringList *o_lst = NULL, UnicodeString hint = EmptyStr);
-	UnicodeString   __fastcall SaveRevAsTemp(UnicodeString id, UnicodeString fnam);
 
 	git_rec * __fastcall cre_GitRec(UnicodeString msg = EmptyStr);
 	void __fastcall ClearCommitList();
@@ -380,14 +384,6 @@ private:	// ユーザー宣言
 	}
 
 	UnicodeString __fastcall GetCurBranchName(bool lc_only = false, bool br_only = false, bool av_only = true);
-
-	void __fastcall ShowMsgHint(UnicodeString msg, TWinControl *cp = NULL)
-	{
-		if (msg.IsEmpty()) return;
-		if (!cp) cp = Screen->ActiveControl;
-		if (!cp) cp = this;
-		MsgHint->ActivateHintEx("\r\n" + msg + "\r\n", ScaledInt(480), ScaledInt(240), cp, col_bgHint);
-	}
 
 	void __fastcall WmFormShowed(TMessage &msg);
 

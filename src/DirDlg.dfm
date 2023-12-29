@@ -45,7 +45,7 @@ object RegDirDlg: TRegDirDlg
       ExplicitLeft = 432
     end
     object UpButton: TButton
-      Left = 224
+      Left = 216
       Top = 37
       Width = 30
       Height = 26
@@ -53,7 +53,7 @@ object RegDirDlg: TRegDirDlg
       TabOrder = 8
     end
     object DowButton: TButton
-      Left = 256
+      Left = 250
       Top = 37
       Width = 30
       Height = 26
@@ -61,7 +61,7 @@ object RegDirDlg: TRegDirDlg
       TabOrder = 9
     end
     object EditButton: TButton
-      Left = 79
+      Left = 72
       Top = 37
       Width = 60
       Height = 26
@@ -69,7 +69,7 @@ object RegDirDlg: TRegDirDlg
       TabOrder = 6
     end
     object AddButton: TButton
-      Left = 16
+      Left = 8
       Top = 37
       Width = 60
       Height = 26
@@ -77,7 +77,7 @@ object RegDirDlg: TRegDirDlg
       TabOrder = 5
     end
     object DelButton: TButton
-      Left = 142
+      Left = 136
       Top = 37
       Width = 60
       Height = 26
@@ -85,7 +85,7 @@ object RegDirDlg: TRegDirDlg
       TabOrder = 7
     end
     object DescEdit: TEdit
-      Left = 59
+      Left = 53
       Top = 8
       Width = 163
       Height = 23
@@ -94,7 +94,7 @@ object RegDirDlg: TRegDirDlg
       TabOrder = 1
     end
     object DirEdit: TEdit
-      Left = 224
+      Left = 220
       Top = 8
       Width = 124
       Height = 23
@@ -104,7 +104,7 @@ object RegDirDlg: TRegDirDlg
       TabOrder = 2
     end
     object RefDirBtn: TButton
-      Left = 350
+      Left = 348
       Top = 8
       Width = 36
       Height = 22
@@ -114,7 +114,7 @@ object RegDirDlg: TRegDirDlg
       OnClick = RefDirBtnClick
     end
     object KeyEdit: TEdit
-      Left = 16
+      Left = 8
       Top = 8
       Width = 41
       Height = 23
@@ -131,7 +131,7 @@ object RegDirDlg: TRegDirDlg
       TabOrder = 10
     end
     object RefSpBtn: TButton
-      Left = 387
+      Left = 388
       Top = 8
       Width = 55
       Height = 22
@@ -158,6 +158,7 @@ object RegDirDlg: TRegDirDlg
     Cancel = True
     ModalResult = 2
     TabOrder = 1
+    TabStop = False
   end
   object RegDirHeader: THeaderControl
     Left = 0

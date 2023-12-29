@@ -37,7 +37,7 @@ object JsonViewer: TJsonViewer
       end>
     UseSystemFont = False
   end
-  object Button1: TButton
+  object HiddenCanBtn: TButton
     Left = 0
     Top = 351
     Width = 592

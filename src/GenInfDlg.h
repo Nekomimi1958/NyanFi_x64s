@@ -145,7 +145,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall ViewListActionUpdate(TObject *Sender);
 	void __fastcall ViewFileActionExecute(TObject *Sender);
 	void __fastcall EditFileActionExecute(TObject *Sender);
-	void __fastcall OpenFileActionUpdate(TObject *Sender);
+	void __fastcall EditFileActionUpdate(TObject *Sender);
 	void __fastcall ShowFileInfoActionExecute(TObject *Sender);
 	void __fastcall PropertyActionExecute(TObject *Sender);
 	void __fastcall PropertyActionUpdate(TObject *Sender);
@@ -172,6 +172,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall PlayNextActionExecute(TObject *Sender);
 	void __fastcall PlayPrevActionExecute(TObject *Sender);
 	void __fastcall PlayActionUpdate(TObject *Sender);
+	void __fastcall ViewFileActionUpdate(TObject *Sender);
 
 private:	// ユーザー宣言
 	int  MaxNameWidth;
@@ -228,6 +229,8 @@ public:		// ユーザー宣言
 	bool isTail;		//末尾表示
 	bool isReverse;		//逆順表示
 	bool fromGitView;	//GitViewerから表示
+	bool isNonFile;		//ファイルは存在しない
+	bool fromPopWnd;	//ポップアップ画面から表示
 	bool ErrOnly;		//エラー部分のみ(ログ)
 	bool ToEnd;			//最後に移動
 	bool ToFilter;		//フィルタ欄にフォーカス
@@ -236,6 +239,7 @@ public:		// ユーザー宣言
 
 	UnicodeString FileName;
 	UnicodeString RetStr;
+	int  LineIndex;				//行インデックス(0ベース)
 	int  TailLine;				//末尾表示行数
 	int  CodePage;				//コードページ
 	bool HasBOM;				//BOM

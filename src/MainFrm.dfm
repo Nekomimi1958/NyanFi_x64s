@@ -1742,11 +1742,22 @@ object NyanFiForm: TNyanFiForm
             BevelOuter = bvNone
             TabOrder = 1
             StyleElements = [seBorder]
+            object HdrBdrShape: TShape
+              Left = 0
+              Top = 21
+              Width = 720
+              Height = 1
+              Align = alBottom
+              Visible = False
+              ExplicitLeft = 32
+              ExplicitTop = 8
+              ExplicitWidth = 65
+            end
             object L_TopPanel: TPanel
               Left = 0
               Top = 0
               Width = 320
-              Height = 22
+              Height = 21
               Align = alLeft
               Alignment = taLeftJustify
               BevelOuter = bvNone
@@ -1756,7 +1767,7 @@ object NyanFiForm: TNyanFiForm
                 Left = 0
                 Top = 0
                 Width = 16
-                Height = 22
+                Height = 21
                 Align = alLeft
                 Flat = True
                 Layout = blGlyphTop
@@ -1767,7 +1778,7 @@ object NyanFiForm: TNyanFiForm
                 Left = 16
                 Top = 0
                 Width = 304
-                Height = 22
+                Height = 21
                 Align = alClient
                 Alignment = taLeftJustify
                 BevelOuter = bvNone
@@ -1783,7 +1794,7 @@ object NyanFiForm: TNyanFiForm
               Left = 368
               Top = 0
               Width = 352
-              Height = 22
+              Height = 21
               Align = alClient
               Alignment = taLeftJustify
               BevelOuter = bvNone
@@ -1794,7 +1805,7 @@ object NyanFiForm: TNyanFiForm
                 Left = 0
                 Top = 0
                 Width = 16
-                Height = 22
+                Height = 21
                 Align = alLeft
                 Flat = True
                 Layout = blGlyphTop
@@ -1806,7 +1817,7 @@ object NyanFiForm: TNyanFiForm
                 Left = 16
                 Top = 0
                 Width = 336
-                Height = 22
+                Height = 21
                 Align = alClient
                 Alignment = taLeftJustify
                 BevelOuter = bvNone
@@ -1820,7 +1831,7 @@ object NyanFiForm: TNyanFiForm
               Left = 320
               Top = 0
               Width = 48
-              Height = 22
+              Height = 21
               Align = alLeft
               BevelOuter = bvNone
               ParentBackground = False
@@ -1830,7 +1841,7 @@ object NyanFiForm: TNyanFiForm
                 Left = 0
                 Top = 0
                 Width = 48
-                Height = 22
+                Height = 21
                 Align = alClient
                 OnPaint = RelPaintBoxPaint
                 ExplicitLeft = 1
@@ -3227,6 +3238,12 @@ object NyanFiForm: TNyanFiForm
       OnExecute = GitDiffActionExecute
       OnUpdate = GitViewerActionUpdate
     end
+    object GitGrepAction1: TAction
+      Category = 'Command'
+      Caption = 'Git GREP '#12434#38283#12367'...'
+      OnExecute = GitGrepAction1Execute
+      OnUpdate = GitGrepAction1Update
+    end
     object GitViewerAction: TAction
       Category = 'Command'
       Caption = 'Git'#12499#12517#12540#12450'...'
@@ -4538,6 +4555,18 @@ object NyanFiForm: TNyanFiForm
       OnExecute = GrepSelDirActionExecute
       OnUpdate = GrepSelDirActionUpdate
     end
+    object GrepNotUpdListAction: TAction
+      Category = 'Grep'
+      Caption = #26908#32034#20013#12395#32080#26524#12522#12473#12488#12434#26356#26032#12375#12394#12356
+      OnExecute = GrepNotUpdListActionExecute
+      OnUpdate = GrepNotUpdListActionUpdate
+    end
+    object RepNotUpdListAction: TAction
+      Category = 'Grep'
+      Caption = #19968#25324#32622#25563#20013#12395#32080#26524#12522#12473#12488#12434#26356#26032#12375#12394#12356
+      OnExecute = RepNotUpdListActionExecute
+      OnUpdate = RepNotUpdListActionUpdate
+    end
     object GrepShowItemNoAction: TAction
       Category = 'Grep'
       Caption = #32080#26524#12522#12473#12488#12395#38917#30446#30058#21495#12434#34920#31034
@@ -5146,7 +5175,7 @@ object NyanFiForm: TNyanFiForm
     Enabled = False
     Interval = 500
     OnTimer = BlinkTimerTimer
-    Left = 552
+    Left = 544
     Top = 149
   end
   object DrivePopupMenu: TPopupMenu
@@ -5278,7 +5307,13 @@ object NyanFiForm: TNyanFiForm
     object Pop_g_5: TMenuItem
       Caption = '-'
     end
-    object PopGrepItemNoItem: TMenuItem
+    object PopGrepNotUpdListItem: TMenuItem
+      Action = GrepNotUpdListAction
+    end
+    object PopRepNotUpdListItem: TMenuItem
+      Action = RepNotUpdListAction
+    end
+    object PopGrepShowItemNoItem: TMenuItem
       Action = GrepShowItemNoAction
     end
     object PopGrepFileItemNoItem: TMenuItem
@@ -5290,7 +5325,7 @@ object NyanFiForm: TNyanFiForm
     object PopGrepTrimTopItem: TMenuItem
       Action = GrepTrimTopAction
     end
-    object PopGrepOmitItem: TMenuItem
+    object PopGrepOmitTopItem: TMenuItem
       Action = GrepOmitTopAction
     end
     object PopGrepEmFilterItem: TMenuItem
@@ -5505,7 +5540,7 @@ object NyanFiForm: TNyanFiForm
   object WaitTimer: TTimer
     Enabled = False
     OnTimer = WaitTimerTimer
-    Left = 642
+    Left = 634
     Top = 147
   end
   object MainMenu1: TMainMenu
@@ -5810,6 +5845,12 @@ object NyanFiForm: TNyanFiForm
       end
       object HideSizeTimeItem: TMenuItem
         Action = HideSizeTimeAction
+      end
+      object GrepNotUpdListItem: TMenuItem
+        Action = GrepNotUpdListAction
+      end
+      object RepNotUpdListItem: TMenuItem
+        Action = RepNotUpdListAction
       end
       object GrepShowItemNoItem: TMenuItem
         Action = GrepShowItemNoAction

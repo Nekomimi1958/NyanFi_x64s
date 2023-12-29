@@ -39,8 +39,7 @@ object GraphForm: TGraphForm
     Cancel = True
     ModalResult = 2
     TabOrder = 0
-    ExplicitTop = 288
-    ExplicitWidth = 422
+    TabStop = False
   end
   object PopupMenu1: TPopupMenu
     Left = 64

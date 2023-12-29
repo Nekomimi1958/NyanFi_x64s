@@ -18,7 +18,7 @@
 class TAboutBox : public TForm
 {
 __published:
-	TButton *CancelBtn;
+	TButton *HeddenCanBtn;
 	TButton *ListNyanBtn;
 	TButton *OKButton;
 	TLabel *Copyright;

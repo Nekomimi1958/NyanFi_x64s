@@ -414,6 +414,8 @@ int  FindPathWidth;				//「場所」の最小列幅
 bool FindTagsColumn;			//結果リストに「タグ」列を表示
 int  FindTagsWidth;				//「タグ」の最小列幅
 
+bool GrepNotUpdList;			//GREP検索中に結果リストを更新しない
+bool RepNotUpdList;				//一括置換中に結果リストを更新しない
 bool GrepShowItemNo;			//GREP結果に項目番号を表示
 bool GrepFileItemNo;			//項目番号をファイル単位で表示
 bool GrepShowSubDir;			//GREP結果にサブディレクトリ名を表示
@@ -777,8 +779,10 @@ TColor col_bgDirInf;	//ディレクトリ情報の背景色
 TColor col_fgDirInf;	//ディレクトリ情報の文字色
 TColor col_bgDirRel;	//ディレクトリ関係の背景色
 TColor col_fgDirRel;	//ディレクトリ関係の文字色
+TColor col_bdrDirB;		//ディレクトリ情報の下境界線
 TColor col_bgDrvInf;	//ドライブ情報の背景色
 TColor col_fgDrvInf;	//ドライブ情報の文字色
+TColor col_bdrDrvT;		//ドライブ情報の上境界線
 TColor col_bgInf;		//ファイル情報の背景色
 TColor col_fgInf;		//ファイル情報の文字色
 TColor col_fgInfNam;	//ファイル情報の項目名文字色
@@ -1925,6 +1929,8 @@ void InitializeGlobal()
 		{_T("G:SaveReplaceLog=false"),		(TObject*)&SaveReplaceLog},
 		{_T("G:ReplaceAppend=false"),		(TObject*)&ReplaceAppend},
 		{_T("G:OpenReplaceLog=false"),		(TObject*)&OpenReplaceLog},
+		{_T("G:GrepNotUpdList=false"),		(TObject*)&GrepNotUpdList},
+		{_T("G:RepNotUpdList=false"),		(TObject*)&RepNotUpdList},
 		{_T("G:ShowItemNo=false"),			(TObject*)&GrepShowItemNo},
 		{_T("G:FileItemNo=false"),			(TObject*)&GrepFileItemNo},
 		{_T("G:ShowSubDir=true"),			(TObject*)&GrepShowSubDir},
@@ -6834,7 +6840,9 @@ HICON get_folder_icon(UnicodeString dnam)
 		fnam = to_absolute_name(get_actual_name(FolderIconList->ValueFromIndex[idx]));
 	}
 	FldIcoRWLock->EndWrite();
-	if (idx==-1) {
+
+	//desktop.ini からの取得を試みる
+	if (idx==-1 && !StartsStr("\\\\", dnam)) {
 		UnicodeString dt_nam = IncludeTrailingPathDelimiter(dnam) + "desktop.ini";
 		if (file_exists(dt_nam)) {
 			std::unique_ptr<UsrIniFile> dt_ini(new UsrIniFile(dt_nam));
@@ -10391,8 +10399,10 @@ void set_col_from_ColorList()
 		{&col_fgDirInf,	_T("fgDirInf"),		col_None},
 		{&col_bgDirRel,	_T("bgDirRel"),		col_None},
 		{&col_fgDirRel,	_T("fgDirRel"),		col_None},
+		{&col_bdrDirB,	_T("bdrDirB"),		col_None},
 		{&col_bgDrvInf,	_T("bgDrvInf"),		col_None},
 		{&col_fgDrvInf,	_T("fgDrvInf"),		col_None},
+		{&col_bdrDrvT,	_T("bdrDrvT"),		col_None},
 		{&col_bgInf,	_T("bgInf"),		clBlack},
 		{&col_fgInf,	_T("fgInf"),		clWhite},
 		{&col_fgInfNam,	_T("fgInfNam"),		clWhite},
@@ -10965,7 +10975,9 @@ int get_MatchWordList(
 				if (!ptn.IsEmpty()) {
 					TMatchCollection mts = TRegEx::Matches(lbuf, ptn, x_opt);
 					and_ok = (mts.Count>0);
-					if (and_ok) for (int j=0; j<mts.Count; j++) tmp_lst->Add(mts.Item[j].Value);
+					if (and_ok) {
+						for (int j=0; j<mts.Count; j++) if (mts.Item[j].Success) tmp_lst->Add(mts.Item[j].Value);
+					}
 				}
 			}
 
@@ -10982,13 +10994,35 @@ int get_MatchWordList(
 			UnicodeString ptn = opt.Contains(soRegEx)? kwd : usr_Migemo->GetRegExPtn(opt.Contains(soMigemo), kwd);
 			if (!ptn.IsEmpty()) {
 				TMatchCollection mts = TRegEx::Matches(lbuf, ptn, x_opt);
-				for (int i=0; i<mts.Count; i++) lst->Add(mts.Item[i].Value);
+				for (int i=0; i<mts.Count; i++) if (mts.Item[i].Success) lst->Add(mts.Item[i].Value);
 			}
 		}
 		//あいまい検索
 		else if (opt.Contains(soFuzzy)) {
 			TMatchCollection mts = TRegEx::Matches(lbuf, get_fuzzy_ptn(kwd), x_opt);
-			for (int i=0; i<mts.Count; i++) lst->Add(mts.Item[i].Value);
+			for (int i=0; i<mts.Count; i++) if (mts.Item[i].Success) lst->Add(mts.Item[i].Value);
+		}
+		//GitGrep
+		else if (opt.Contains(soGitGrep)) {
+			TStringDynArray s_lst = SplitString(Trim(kwd), " ");
+			bool is_ptn = false;
+			for (int i=0; i<s_lst.Length; i++) {
+				UnicodeString s = s_lst[i];
+				if (SameStr(s, "--and") || SameStr(s, "--or") || SameStr(s, "--not")) {
+					is_ptn = false;
+				}
+				else if (SameStr(s, "-e")) {
+					is_ptn = true;
+				}
+				else if (is_ptn) {
+					TMatchCollection mts = TRegEx::Matches(lbuf, s, x_opt);
+					for (int j=0; j<mts.Count; j++) if (mts.Item[j].Success) lst->Add(mts.Item[j].Value);
+					is_ptn = false;
+				}
+				else {
+					is_ptn = false;
+				}
+			}
 		}
 		//AND/OR(' ')
 		else {
@@ -10998,7 +11032,7 @@ int get_MatchWordList(
 				UnicodeString ptn = TRegEx::Escape(klst->Strings[i]);
 				if (!ptn.IsEmpty()) {
 					TMatchCollection mts = TRegEx::Matches(lbuf, ptn, x_opt);
-					for (int j=0; j<mts.Count; j++) lst->Add(mts.Item[j].Value);
+					for (int j=0; j<mts.Count; j++) if (mts.Item[j].Success) lst->Add(mts.Item[j].Value);
 				}
 			}
 		}
@@ -12946,6 +12980,55 @@ void split_GitWarning(
 		else {
 			i++;
 		}
+	}
+}
+//---------------------------------------------------------------------------
+//指定リビジョンのファイルを一時ディレクトリに保存
+//---------------------------------------------------------------------------
+UnicodeString save_GitRevAsTemp(UnicodeString id, UnicodeString fnam, UnicodeString wdir)
+{
+	try {
+		//ファイルイメージの取得
+		UnicodeString src_nam = id + ":" + fnam;
+		UnicodeString prm;
+		prm.sprintf(_T("cat-file -p %s"), src_nam.c_str());
+		std::unique_ptr<TMemoryStream> o_ms(new TMemoryStream());
+		DWORD exit_code;
+		if (!GitShellExe(prm, wdir, o_ms.get(), &exit_code) || exit_code!=0) UserAbort(USTR_FaildProc);
+
+		//コードページのチェック
+		bool has_bom;
+		int code_page = get_MemoryCodePage(o_ms.get(), &has_bom);
+		if (code_page<=0) UserAbort(USTR_NotText);
+
+		//改行コードのチェック
+		std::unique_ptr<TStringList> o_lst(new TStringList());
+		std::unique_ptr<TEncoding> enc(TEncoding::GetEncoding(code_page));
+		UnicodeString line_brk = get_StreamLineBreak(o_ms.get(), code_page);
+		if		(SameStr(line_brk, "CR")) o_lst->LineBreak = "\r";
+		else if (SameStr(line_brk, "LF")) o_lst->LineBreak = "\n";
+		else o_lst->LineBreak = "\r\n";
+		//必要なら変換
+		if (!SameStr(o_lst->LineBreak, "\r\n")) {
+			std::unique_ptr<TStringList> o_lst(new TStringList());
+			DWORD exit_code;
+			if (GitShellExe("config --get core.autocrlf", wdir, o_lst.get(), &exit_code)) {
+				if (SameText(Trim(o_lst->Text), "true")) o_lst->LineBreak = "\r\n";
+			}
+		}
+		//リストに読み込み
+		o_ms->Seek(0, soFromBeginning);
+		o_lst->LoadFromStream(o_ms.get(), enc.get());
+
+		//保存
+		o_lst->WriteBOM = has_bom;
+		UnicodeString tmp_nam = TempPathA + id.SubString(1, 8) + "_" + ReplaceStr(fnam, "/", "_");
+		if (!saveto_TextFile(tmp_nam, o_lst.get(), enc.get())) UserAbort(USTR_FaildProc);
+		return tmp_nam;
+	}
+	catch (EAbort &e) {
+		msgbox_ERR(e.Message);
+		return EmptyStr;
 	}
 }
 

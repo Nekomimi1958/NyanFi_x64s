@@ -17,7 +17,7 @@
 class TInpCmdsDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
-	TButton *CancelBtn;
+	TButton *HiddenCanBtn;
 	TCheckBox *MigemoCheckBox;
 	TComboBox *CmdsComboBox;
 	TComboBox *SubComboBox;

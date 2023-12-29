@@ -99,7 +99,7 @@ object AboutBox: TAboutBox
     ModalResult = 1
     TabOrder = 1
   end
-  object CancelBtn: TButton
+  object HeddenCanBtn: TButton
     Left = 0
     Top = 222
     Width = 354
@@ -108,6 +108,7 @@ object AboutBox: TAboutBox
     Cancel = True
     ModalResult = 2
     TabOrder = 3
+    TabStop = False
   end
   object ListNyanBtn: TButton
     Left = 240

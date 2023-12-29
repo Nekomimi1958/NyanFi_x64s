@@ -115,6 +115,7 @@ void set_CmdList(
 		"F:ForwardDirHist=ディレクトリ履歴を進む\n"
 		"F:GetHash=ファイルのハッシュ値を取得\n"
 		"F:GitDiff=カーソル位置ファイルの差分を表示\n"
+		"F:GitGrep=Git GREP を開く\n"
 		"F:GitViewer=Gitビューア\n"
 		"F:HideSizeTime=サイズと更新日時を隠す\n"
 		"F:ImageViewer=イメージビューアで開く\n"

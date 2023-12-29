@@ -76,6 +76,7 @@
 #include "JsonView.h"
 #include "XmlView.h"
 #include "GitView.h"
+#include "GitGrep.h"
 #include "ShareDlg.h"
 #include "FindTag.h"
 #include "RegExChk.h"
@@ -2041,21 +2042,34 @@ void __fastcall TNyanFiForm::WmNyanFiLockKey(TMessage &msg)
 void __fastcall TNyanFiForm::WmNyanFiGrepEnd(TMessage &msg)
 {
 	static unsigned int start_cnt = 0;
+	static bool tm_out = false;
+	static int  rq_cnt = 0;
 
 	int id  = msg.WParam;
 	int cnt = msg.LParam;
 	if (id>=0 && id<MAX_GREP_THREAD) {
+		if (!tm_out) tm_out = ((GetTickCount() - start_cnt)>REFRESH_INTERVAL);
+		bool rq_upd = false;
+
 		if (cnt>0) {
 			GrepMatchFileCnt++;
 			GrepMatchLineCnt += cnt;
+			GrepStatusBar->Panels->Items[2]->Text =
+				UnicodeString().sprintf(_T("%u/%uファイルで %u行発見"),
+					GrepMatchFileCnt, GrepFileList->Count, GrepMatchLineCnt);
+			if (tm_out) rq_upd = true; else rq_cnt++;
+		}
+		else if (rq_cnt>0 && tm_out) {
+			rq_upd = true;
+		}
 
-			if ((GetTickCount() - start_cnt)>REFRESH_INTERVAL) {
-				start_cnt = GetTickCount();
+		if (rq_upd) {
+			tm_out = false;
+			rq_cnt = 0;
+			start_cnt = GetTickCount();
+			if (!GrepNotUpdList) {
 				set_Strings_ItemNo(GrepResultBuff);
 				assign_FileListBox(ResultListBox, GrepResultBuff, -1, ResultScrPanel);
-				GrepStatusBar->Panels->Items[2]->Text =
-					UnicodeString().sprintf(_T("%u/%uファイルで %u行発見"),
-						GrepMatchFileCnt, GrepFileList->Count, GrepMatchLineCnt);
 			}
 		}
 
@@ -3548,13 +3562,9 @@ void __fastcall TNyanFiForm::DrawDrivePanel(TPanel *pp)
 			out_TextEx(cv.get(), x, y, split_pre_tab(lbuf));
 
 			//上部境界線
-			if (lst_stt->is_IncSea || lst_stt->is_Filter || pp->Tag==SHOW_WARN_TAG
-					|| (lst_stt->sel_d_cnt>0 || lst_stt->sel_f_cnt>0))
-			{
-				cv->Pen->Color = get_SplitterCol();
-				cv->MoveTo(rc.Left,  rc.Top);
-				cv->LineTo(rc.Right, rc.Top);
-			}
+			cv->Pen->Color = (col_bdrDrvT!=col_None)? col_bdrDrvT : pp->Color;
+			cv->MoveTo(rc.Left,  rc.Top);
+			cv->LineTo(rc.Right, rc.Top);
 
 			//疑似キャレット
 			if (lst_stt->is_IncSea && pp->Tag!=SHOW_WARN_TAG && (UserModule->BlinkTimer->Tag>0)) {
@@ -4733,6 +4743,15 @@ void __fastcall TNyanFiForm::SetupDesign(
 	LoupeDockPanel->Color     = col_bgImage;
 	HistDockPanel->Color      = col_bgImage;
 
+	if (col_bdrDirB!=col_None) {
+		HdrBdrShape->Brush->Color = col_bdrDirB;
+		HdrBdrShape->Pen->Color   = col_bdrDirB;
+		HdrBdrShape->Visible      = true;
+	}
+	else {
+		HdrBdrShape->Visible = false;
+	}
+
 	setup_ToolBar(LoupeForm->MagToolBar);
 
 	SttPrgBar->BgColor  = col_bgPrgBar;
@@ -5505,7 +5524,7 @@ TMainMenu * __fastcall TNyanFiForm::GetDummyMenu(bool disabled)
 {
 	DummyMenu->Items->Clear();
 	for (int i=0; i<MainMenu1->Items->Count; i++) {
-		TMenuItem *mp = MainMenu1->Items->Items[i]; 
+		TMenuItem *mp = MainMenu1->Items->Items[i];
 		TMenuItem *dp = new TMenuItem(DummyMenu->Items);
 		dp->Caption = mp->Caption;
 		dp->Visible = mp->Visible;
@@ -6814,7 +6833,7 @@ void __fastcall TNyanFiForm::PopSelectItemDrawItem(TObject *Sender, TCanvas *ACa
 		const TRect &ARect, bool Selected)
 {
 	TMenuItem *mp = (TMenuItem*)Sender;
-	ACanvas->Brush->Color = TStyleManager::ActiveStyle->GetSystemColor(Selected? clMenuHighlight : clMenu); 
+	ACanvas->Brush->Color = TStyleManager::ActiveStyle->GetSystemColor(Selected? clMenuHighlight : clMenu);
 	ACanvas->FillRect(ARect);
 
 	UnicodeString lbuf = mp->Caption;
@@ -12955,7 +12974,7 @@ bool __fastcall TNyanFiForm::ExeCommandsCore(
 						XCMD_SaveBuffer(to_absolute_name(XCMD_prm, XCMD_cur_path), wtBOM);
 					}
 					break;
-	
+
 				//Buffer を追記保存
 				case XCMDID_AppendBuffer:
 					{
@@ -19135,6 +19154,31 @@ void __fastcall TNyanFiForm::GitDiffActionExecute(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+// Git GREP を開く
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::GitGrepAction1Execute(TObject *Sender)
+{
+	try {
+		if (!IsCurFList()) UserAbort(USTR_CantOperate);
+		if (get_GitTopPath(CurPath[CurListTag]).IsEmpty()) UserAbort(USTR_NotRepository);
+
+		if (!GitGrepForm) GitGrepForm = new TGitGrepForm(this);	//初回に動的作成
+		GitGrepForm->WorkDir = CurPath[CurListTag];
+		GitGrepForm->ShowModal();
+	}
+	catch (EAbort &e) {
+		SetActionAbort(e.Message);
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::GitGrepAction1Update(TObject *Sender)
+{
+	TAction *ap = (TAction*)Sender;
+	ap->Visible = ScrMode==SCMD_FLIST && GitExists;
+	ap->Enabled = ap->Visible;
+}
+
+//---------------------------------------------------------------------------
 //Gitビューア
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::GitViewerActionExecute(TObject *Sender)
@@ -20661,7 +20705,7 @@ void __fastcall TNyanFiForm::ListExpFuncActionExecute(TObject *Sender)
 						TEST_DEL_ActParam("SN")? 3 : 0;
 
 		bool list_mode = FextInActionParam(".csv")? 1 : FextInActionParam(".tsv")? 2 : 0;
-		bool ok = get_DllExpFunc(cfp->is_virtual? cfp->tmp_name : cfp->f_name, 
+		bool ok = get_DllExpFunc(cfp->is_virtual? cfp->tmp_name : cfp->f_name,
 									r_lst.get(), sort_mode, list_mode);
 		if (!ok) set_LogErrMsg(msg);
 		AddLogCr(); AddLog(msg);
@@ -21107,7 +21151,7 @@ void __fastcall TNyanFiForm::GetHashActionExecute(TObject *Sender)
 
 		UnicodeString s;
 		if (input_query_ex(_T("文字列のハッシュ値"), null_TCHAR, &s, 0, false,
-			"マルチバイト文字はUTF-8として処理") && !s.IsEmpty()) 
+			"マルチバイト文字はUTF-8として処理") && !s.IsEmpty())
 		{
 			UnicodeString idstr = def_if_empty(ActionParam, "MD5");
 			UnicodeString msg   = make_LogHdr(idstr, "\"" + s + "\"");
@@ -22222,7 +22266,7 @@ void __fastcall TNyanFiForm::OpenByAppActionExecute(TObject *Sender)
 				UnicodeString app = get_MenuItemStr(get_AssociatedApps(get_extension(fnam)));
 				if (!app.IsEmpty()){
 					if (SameStr(app, "SKIP")) SkipAbort();
-					if (starts_AT(app) || remove_top_text(app, "ExeCommands_") || starts_Dollar(app)) 
+					if (starts_AT(app) || remove_top_text(app, "ExeCommands_") || starts_Dollar(app))
 						TextAbort(_T("アプリケーション以外の関連付けには対応していません。"));
 					if (!Execute_demote(app, add_quot_if_spc(cfp->f_name), cfp->p_name)) GlobalAbort();
 				}
@@ -29979,9 +30023,8 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 	UnicodeString f_ext  = get_extension(f_nam);
 	UnicodeString f_lno  = split_pre_tab(itmstr);
 
-	if (!f_lno.IsEmpty()) {
-		if (SameStr(f_lno, "-")) f_lno = "   "; else f_lno = UnicodeString().sprintf(_T("(%s)"), f_lno.c_str());
-	}
+	bool same_prv = SameText(p_nam, (Index>0)? get_pre_tab(lp->Items->Strings[Index - 1]) : EmptyStr);
+	bool same_nxt = SameText(p_nam, (Index<lp->Count-1)? get_pre_tab(lp->Items->Strings[Index + 1]) : EmptyStr);
 
 	UnicodeString ln_str = itmstr;
 	if (!NextLineCheckBox->Checked) ln_str = get_tkn(ln_str, '\n');
@@ -30005,6 +30048,7 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 	int yp	 = tmp_rc.Top;
 	int dx	 = 0;
 	int x_mg = SCALED_THIS(2);
+	int x_1  = tmp_rc.Left;
 
 	//項目番号
 	if (GrepShowItemNo) {
@@ -30016,33 +30060,50 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 		}
 		LineNoOut(tmp_cv, tmp_rc, idx);
 		tmp_cv->Brush->Color = get_ListBgCol();
-		dx = tmp_rc.Left;
+		dx = x_1 = tmp_rc.Left;
 	}
 	//ディレクトリ名
 	if (GrepShowSubDir && !CurStt->is_Work && !d_nam.IsEmpty()) {
-		tmp_cv->Font->Color = col_Folder;
 		int xp = xp_L + dx;
-		PathNameOut(d_nam, tmp_cv, xp, yp);
+		if (!same_prv) {
+			tmp_cv->Font->Color = col_Folder;
+			PathNameOut(d_nam, tmp_cv, xp, yp);
+		}
+		else {
+			xp += tmp_cv->TextWidth(d_nam);
+		}
 		dx = xp - xp_L + x_mg;
 	}
 	//ファイル名
-	tmp_cv->Font->Color = f_lno.IsEmpty()? col_Error : get_ExtColor(f_ext);
-	tmp_cv->TextOut(xp_L + dx, yp, f_nam);
+	if (!same_prv) {
+		tmp_cv->Font->Color = f_lno.IsEmpty()? col_Error : get_ExtColor(f_ext);
+		tmp_cv->TextOut(xp_L + dx, yp, f_nam);
+	}
 	dx += (tmp_cv->TextWidth(f_nam) + x_mg);
 
 	//行番号
-	if (!f_lno.IsEmpty()) {
-		tmp_cv->Font->Color = col_LineNo;
-		tmp_cv->TextOut(xp_L + dx, yp, f_lno);
-		dx += (tmp_cv->TextWidth(f_lno) + x_mg);
-	}
-
+	if (!f_lno.IsEmpty()) dx += tmp_cv->TextWidth("000000 ");
 	int cwd = abs(tmp_cv->Font->Height);
 	int wdn = 16;
 	for (;;) {
 		if (dx<cwd*wdn) { dx = cwd*wdn;  break; }
 		wdn += 4;
 		if (cwd*wdn > ClientWidth/2) break;
+	}
+	int x_2 = dx;
+	if (!f_lno.IsEmpty()) {
+		tmp_rc.Left = xp_L + dx - tmp_cv->TextWidth("000000 ");
+		LineNoOut(tmp_cv, tmp_rc, f_lno);
+		tmp_cv->Brush->Color = get_ListBgCol();
+	}
+
+	//ファイル境界
+	if (!same_nxt) {
+		tmp_cv->Pen->Style = psSolid;
+		tmp_cv->Pen->Width = ScaledInt(1);
+		tmp_cv->Pen->Color = col_bgLineNo;
+		tmp_cv->MoveTo(x_1, tmp_rc.Bottom - 1);
+		tmp_cv->LineTo(x_2, tmp_rc.Bottom - 1);
 	}
 
 	//エラー表示
@@ -30670,7 +30731,7 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 	//---------------------------
 	//検索終了
 	//---------------------------
-	float res_cnt = (GetTickCount() - start_cnt)/1000.0;
+	double res_cnt = (GetTickCount() - start_cnt)/1000.0;
 	FindBusy = false;
 	if (UnInitializing) return;
 
@@ -30742,7 +30803,8 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 	}
 
 	SttPrgBar->End(GrepResultMsg);
-	GrepStatusBar->Panels->Items[1]->Text = tmp.sprintf(_T("%s %5.1f秒"), (FindAborted? _T("中断") : _T("終了")), res_cnt);
+	GrepStatusBar->Panels->Items[1]->Text =
+		tmp.sprintf(_T("%s %5.1f秒"), (FindAborted? _T("中断") : _T("終了")), (GetTickCount() - start_cnt)/1000.0);
 }
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::GrepStartActionUpdate(TObject *Sender)
@@ -30751,9 +30813,9 @@ void __fastcall TNyanFiForm::GrepStartActionUpdate(TObject *Sender)
 	if (ScrMode==SCMD_GREP && GrepPageControl->ActivePage==FindSheet) {
 		UnicodeString kwd = Trim(GrepFindComboBox->Text);
 		bool reg_ng = RegExCheckBox->Checked && !kwd.IsEmpty() && !chk_RegExPtn(kwd);
-		bool kwd_ok = RegExCheckBox->Checked? (!kwd.IsEmpty() && !reg_ng) : !kwd.IsEmpty();
 		ErrMarkList->SetErrFrame(this, GrepFindComboBox, reg_ng);
-		ap->Enabled = !FindBusy && kwd_ok && !(GrepMaskComboBox->Enabled && GrepMaskComboBox->Text.IsEmpty());
+		ap->Enabled = !FindBusy && !kwd.IsEmpty() && !reg_ng 
+						&& !(GrepMaskComboBox->Enabled && GrepMaskComboBox->Text.IsEmpty());
 
 		AndCheckBox->Enabled   = !RegExCheckBox->Checked;
 		SubDirNUpDown->Enabled = SubDirCheckBox->Checked;
@@ -31102,6 +31164,37 @@ void __fastcall TNyanFiForm::GrepSelDirActionUpdate(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
+//検索中に結果リストを更新しない
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::GrepNotUpdListActionExecute(TObject *Sender)
+{
+	GrepNotUpdList = !GrepNotUpdList;
+}
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::GrepNotUpdListActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction*)Sender;
+	ap->Visible = ScrMode==SCMD_GREP && GrepPageControl->ActivePage==FindSheet;
+	ap->Enabled = ap->Visible;
+	ap->Checked = GrepNotUpdList;
+}
+//---------------------------------------------------------------------------
+//一括置換中に結果リストを更新しない
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::RepNotUpdListActionExecute(TObject *Sender)
+{
+	RepNotUpdList = !RepNotUpdList;
+}
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::RepNotUpdListActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction*)Sender;
+	ap->Visible = ScrMode==SCMD_GREP && GrepPageControl->ActivePage==ReplaceSheet;
+	ap->Enabled = ap->Visible;
+	ap->Checked = RepNotUpdList;
+}
+
+//---------------------------------------------------------------------------
 //GREP結果リストに項目番号を表示
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::GrepShowItemNoActionExecute(TObject *Sender)
@@ -31396,7 +31489,7 @@ void __fastcall TNyanFiForm::ReplaceStartActionExecute(TObject *Sender)
 					start_p = org_p + rep_len;		//検索位置を更新
 					tmp.sprintf(_T("%s\t%u\t"), fnam.c_str(), lp + 1);
 					GrepResultBuff->AddObject(tmp + lbuf, (TObject*)(NativeInt)idx_tag);
-					assign_FileListBox(ResultListBox, GrepResultBuff, -1, ResultScrPanel);
+					if (ask_rep || !RepNotUpdList) assign_FileListBox(ResultListBox, GrepResultBuff, -1, ResultScrPanel);
 				}
 				else {
 					start_p = org_p + match_len;	//検索位置を更新
@@ -31460,6 +31553,7 @@ void __fastcall TNyanFiForm::ReplaceStartActionExecute(TObject *Sender)
 	FindBusy = false;
 
 	GrepResultList->Assign(GrepResultBuff);
+	assign_FileListBox(ResultListBox, GrepResultBuff, -1, ResultScrPanel);
 
 	if (rep_cnt>0) {
 		//検索、置換文字列を履歴に追加
@@ -34224,7 +34318,7 @@ void __fastcall TNyanFiForm::TempTopThumbnailGrid(
 	InhDrawImg++;
 	ThumbnailGrid->Col = 0;
 	ThumbnailGrid->Row = 0;
-	if (sw_repaint) ThumbnailGrid->Repaint(); 
+	if (sw_repaint) ThumbnailGrid->Repaint();
 	InhDrawImg--;
 }
 
@@ -34431,7 +34525,7 @@ void __fastcall TNyanFiForm::EndFileActionExecute(TObject *Sender)
 	}
 	else {
 		SetActionAbort();
-	}	
+	}
 }
 
 //---------------------------------------------------------------------------
@@ -35307,7 +35401,7 @@ void __fastcall TNyanFiForm::TopFileActionExecute(TObject *Sender)
 	}
 	else {
 		SetActionAbort();
-	}	
+	}
 }
 
 //---------------------------------------------------------------------------

@@ -9,6 +9,7 @@
 #include "GitTag.h"
 #include "GenInfDlg.h"
 #include "InpExDlg.h"
+#include "GitGrep.h"
 #include "GitView.h"
 
 //---------------------------------------------------------------------------
@@ -226,7 +227,7 @@ TStringDynArray __fastcall TGitViewer::GitExeStrArray(UnicodeString prm)
 //---------------------------------------------------------------------------
 bool __fastcall TGitViewer::GitExeList(UnicodeString prm, TStringList *o_lst, UnicodeString hint)
 {
-	if (!hint.IsEmpty()) ShowMsgHint(hint);
+	if (!hint.IsEmpty()) MsgHint->ShowMsgHint(hint, this, col_bgHint);
 
 	GitBusy = true;
 	DWORD exit_code;
@@ -235,56 +236,6 @@ bool __fastcall TGitViewer::GitExeList(UnicodeString prm, TStringList *o_lst, Un
 
 	if (!hint.IsEmpty()) MsgHint->ReleaseHandle();
 	return res;
-}
-
-//---------------------------------------------------------------------------
-//指定リビジョンのファイルを一時ディレクトリに保存
-//---------------------------------------------------------------------------
-UnicodeString __fastcall TGitViewer::SaveRevAsTemp(UnicodeString id, UnicodeString fnam)
-{
-	try {
-		//ファイルイメージの取得
-		UnicodeString src_nam = id + ":" + fnam;
-		UnicodeString prm;
-		prm.sprintf(_T("cat-file -p %s"), src_nam.c_str());
-		std::unique_ptr<TMemoryStream> o_ms(new TMemoryStream());
-		ShowMsgHint("ファイル抽出中...");
-		GitBusy  = true;
-		DWORD exit_code;
-		bool res = (GitShellExe(prm, WorkDir, o_ms.get(), &exit_code) && exit_code==0);
-		GitBusy  = false;
-		MsgHint->ReleaseHandle();
-		if (!res) UserAbort(USTR_FaildProc);
-
-		//コードページのチェック
-		bool has_bom;
-		int code_page = get_MemoryCodePage(o_ms.get(), &has_bom);
-		if (code_page<=0) UserAbort(USTR_NotText);
-
-		//改行コードのチェック
-		std::unique_ptr<TStringList> o_lst(new TStringList());
-		std::unique_ptr<TEncoding> enc(TEncoding::GetEncoding(code_page));
-		UnicodeString line_brk = get_StreamLineBreak(o_ms.get(), code_page);
-		if		(SameStr(line_brk, "CR")) o_lst->LineBreak = "\r";
-		else if (SameStr(line_brk, "LF")) o_lst->LineBreak = "\n";
-		else o_lst->LineBreak = "\r\n";
-		//必要なら変換
-		if (!SameStr(o_lst->LineBreak, "\r\n") && AutoCrlf) o_lst->LineBreak = "\r\n";
-
-		//リストに読み込み
-		o_ms->Seek(0, soFromBeginning);
-		o_lst->LoadFromStream(o_ms.get(), enc.get());
-
-		//保存
-		o_lst->WriteBOM = has_bom;
-		UnicodeString tmp_nam = TempPathA + CommitID.SubString(1, 8) + "_" + ReplaceStr(fnam, "/", "_");
-		if (!saveto_TextFile(tmp_nam, o_lst.get(), enc.get())) UserAbort(USTR_FaildProc);
-		return tmp_nam;
-	}
-	catch (EAbort &e) {
-		msgbox_ERR(e.Message);
-		return EmptyStr;
-	}
 }
 
 //---------------------------------------------------------------------------
@@ -343,7 +294,7 @@ void __fastcall TGitViewer::UpdateCommitList(
 	CommitScrPanel->HitLines->Clear();
 
 	TListBox *c_lp = CommitListBox;
-	ShowMsgHint("取得中...", c_lp);
+	MsgHint->ShowMsgHint("ファイル抽出中...", c_lp, col_bgHint);
 	GitBusy = true;
 
 	std::unique_ptr<TStringList> c_lst(new TStringList());
@@ -1096,7 +1047,6 @@ void __fastcall TGitViewer::DiffListBoxKeyDown(TObject *Sender, WORD &Key, TShif
 
 	Key = 0;
 }
-
 //---------------------------------------------------------------------------
 void __fastcall TGitViewer::GitListBoxKeyPress(TObject *Sender, System::WideChar &Key)
 {
@@ -1651,9 +1601,11 @@ void __fastcall TGitViewer::ViewFileActionExecute(TObject *Sender)
 		}
 
 		if (ok) {
-			GeneralInfoDlg->Caption = UnicodeString().sprintf(_T("ファイル内容 - %s"), fnam.c_str());
+			GeneralInfoDlg->Caption     = UnicodeString().sprintf(_T("ファイル内容 - %s"), fnam.c_str());
+			GeneralInfoDlg->FileName    = fnam;
+			GeneralInfoDlg->isNonFile   = !gp->is_work;
 			GeneralInfoDlg->fromGitView = true;
-			GeneralInfoDlg->FileName = ExtractFileName(fnam);
+			GeneralInfoDlg->fromPopWnd  = true;
 			GeneralInfoDlg->GenInfoList->Assign(o_lst.get());
 			GeneralInfoDlg->ShowModal();
 		}
@@ -1873,6 +1825,23 @@ void __fastcall TGitViewer::DiffActionUpdate(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
+//Git GREP を開く
+//---------------------------------------------------------------------------
+void __fastcall TGitViewer::GrepActionExecute(TObject *Sender)
+{
+	if (!GitGrepForm) GitGrepForm = new TGitGrepForm(this);	//初回に動的作成
+	GitGrepForm->WorkDir  = WorkDir;
+	GitGrepForm->CommitID = CommitID;
+	GitGrepForm->ShowModal();
+}
+//---------------------------------------------------------------------------
+void __fastcall TGitViewer::GrepActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction*)Sender;
+	ap->Enabled = GetCurCommitPtr();
+}
+
+//---------------------------------------------------------------------------
 //git-guiを起動
 //---------------------------------------------------------------------------
 void __fastcall TGitViewer::GuiActionExecute(TObject *Sender)
@@ -1909,15 +1878,17 @@ void __fastcall TGitViewer::EditFileActionExecute(TObject *Sender)
 {
 	git_rec *gp = GetCurCommitPtr();		if (!gp) return;
 	UnicodeString fnam = GetDiffFileName();	if (fnam.IsEmpty()) return;
-
 	fnam = get_GitDiffFile2(fnam);
-	if (gp->is_work)
+	if (gp->is_work) {
 		fnam = IncludeTrailingPathDelimiter(WorkDir) + slash_to_yen(fnam);
-	else if (gp->is_index)
-		fnam = SaveRevAsTemp(EmptyStr, fnam);
-	else
-		fnam = SaveRevAsTemp(CommitID, fnam);
-
+	}
+	else {
+		MsgHint->ShowMsgHint("ファイル抽出中...", this, col_bgHint);
+		GitBusy  = true;
+		fnam = save_GitRevAsTemp(gp->is_index? EmptyStr : CommitID, fnam, WorkDir);
+		GitBusy  = false;
+		MsgHint->ReleaseHandle();
+	}
 	if (!fnam.IsEmpty() && !open_by_TextEditor(fnam)) msgbox_ERR(GlobalErrMsg);
 }
 //---------------------------------------------------------------------------

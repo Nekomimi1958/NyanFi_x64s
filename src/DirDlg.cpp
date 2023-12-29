@@ -162,7 +162,7 @@ void __fastcall TRegDirDlg::FormShow(TObject *Sender)
 
 	set_EditColor(FilterEdit, !ToFilter);
 
-	::PostMessage(Handle, WM_FORM_SHOWED, 0, 0);
+	if (use_VclStyle()) ::PostMessage(Handle, WM_FORM_SHOWED, 0, 0);
 }
 //---------------------------------------------------------------------------
 void __fastcall TRegDirDlg::WmFormShowed(TMessage &msg)

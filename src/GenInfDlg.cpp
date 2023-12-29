@@ -34,17 +34,20 @@ void __fastcall TGeneralInfoDlg::FormCreate(TObject *Sender)
 	isVarList	 = isLog = isGit = isDirs = isTree = isCmdHistory = isFileList = isPlayList = false;
 	isTail		 = isReverse = isFTP = false;
 	fromGitView	 = false;
+	isNonFile	 = false;
+	fromPopWnd	 = false;
 	ToFilter	 = ToEnd = false;
-	KeyHandled	 = false;
 	ErrOnly 	 = false;
 	isFiltered	 = false;
+	KeyHandled	 = false;
 
-	CodePage	 = 0;
-	HasBOM		 = false;
+	CodePage     = 0;
+	HasBOM       = false;
 	MaxNameWidth = 0;
-	LastIndex	 = 0;
+	LastIndex    = 0;
 	LastTopIndex = 0;
-	TailLine	 = 100;
+	TailLine     = 100;
+	LineIndex    = -1;
 }
 //---------------------------------------------------------------------------
 void __fastcall TGeneralInfoDlg::FormShow(TObject *Sender)
@@ -183,7 +186,11 @@ void __fastcall TGeneralInfoDlg::FormShow(TObject *Sender)
 	int idx = -1;
 	int top = -1;
 	if (lp->Count>0) {
-		if (isLog || isCmdHistory || ToEnd) {
+		if (LineIndex!=-1) {
+			idx = LineIndex;
+			top = std::max(idx - 3, 0);
+		}
+		else if (isLog || isCmdHistory || ToEnd) {
 			idx = lp->Count - 1;
 		}
 		else if (isPlayList) {
@@ -253,6 +260,8 @@ void __fastcall TGeneralInfoDlg::FormClose(TObject *Sender, TCloseAction &Action
 	isVarList	 = isLog = isGit = isDirs = isTree = isCmdHistory = isFileList = isPlayList = false;
 	isTail		 = isReverse = isFTP = false;
 	fromGitView	 = false;
+	isNonFile	 = false;
+	fromPopWnd	 = false;
 	ToFilter	 = ToEnd = false;
 	ErrOnly 	 = false;
 	isFiltered	 = false;
@@ -261,10 +270,11 @@ void __fastcall TGeneralInfoDlg::FormClose(TObject *Sender, TCloseAction &Action
 	Caption 	 = EmptyStr;
 	ErrMsg		 = EmptyStr;
 
-	CodePage	 = 0;
-	HasBOM		 = false;
+	CodePage     = 0;
+	HasBOM       = false;
 	LineBreakStr = EmptyStr;
-	HdrLnStr	 = EmptyStr;
+	HdrLnStr     = EmptyStr;
+	LineIndex    = -1;
 }
 //---------------------------------------------------------------------------
 void __fastcall TGeneralInfoDlg::FormDestroy(TObject *Sender)
@@ -296,7 +306,7 @@ void __fastcall TGeneralInfoDlg::GenListWndProc(TMessage &msg)
 //---------------------------------------------------------------------------
 void __fastcall TGeneralInfoDlg::WmFormShowed(TMessage &msg)
 {
-	GenListBox->Invalidate();
+	GenListBox->Repaint();
 	Application->ProcessMessages();
 }
 
@@ -1290,7 +1300,7 @@ void __fastcall TGeneralInfoDlg::ViewListActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;
 	ap->Visible = FileName.IsEmpty();
-	ap->Enabled = (GenListBox->Count>0) && !fromGitView;
+	ap->Enabled = (GenListBox->Count>0) && !fromPopWnd;
 }
 //---------------------------------------------------------------------------
 //ファイルをテキストビューアで開く
@@ -1305,6 +1315,13 @@ void __fastcall TGeneralInfoDlg::ViewFileActionExecute(TObject *Sender)
 	ModalResult = mrOk;
 }
 //---------------------------------------------------------------------------
+void __fastcall TGeneralInfoDlg::ViewFileActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction*)Sender;
+	ap->Visible = !FileName.IsEmpty() && !isNonFile && !fromPopWnd;
+	ap->Enabled = Active && ap->Visible;
+}
+//---------------------------------------------------------------------------
 //ファイルをテキストエディタで開く
 //---------------------------------------------------------------------------
 void __fastcall TGeneralInfoDlg::EditFileActionExecute(TObject *Sender)
@@ -1317,10 +1334,10 @@ void __fastcall TGeneralInfoDlg::EditFileActionExecute(TObject *Sender)
 	ModalResult = mrOk;
 }
 //---------------------------------------------------------------------------
-void __fastcall TGeneralInfoDlg::OpenFileActionUpdate(TObject *Sender)
+void __fastcall TGeneralInfoDlg::EditFileActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;
-	ap->Visible = !FileName.IsEmpty();
+	ap->Visible = !FileName.IsEmpty() && !isNonFile;
 	ap->Enabled = Active && ap->Visible;
 }
 
@@ -1596,4 +1613,3 @@ void __fastcall TGeneralInfoDlg::PlayActionUpdate(TObject *Sender)
 	ap->Enabled = isPlayList;
 }
 //---------------------------------------------------------------------------
-

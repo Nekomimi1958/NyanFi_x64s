@@ -3,7 +3,7 @@ object GitViewer: TGitViewer
   Top = 0
   BorderIcons = [biSystemMenu]
   ClientHeight = 448
-  ClientWidth = 710
+  ClientWidth = 790
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -28,40 +28,44 @@ object GitViewer: TGitViewer
   object R_Panel: TPanel
     Left = 189
     Top = 0
-    Width = 521
+    Width = 601
     Height = 448
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 521
     object DiffSplitter: TSplitter
       Left = 0
       Top = 251
-      Width = 521
+      Width = 601
       Height = 4
       Cursor = crVSplit
       Align = alBottom
+      ExplicitWidth = 521
     end
     object RL_Panel: TPanel
       Left = 0
       Top = 255
-      Width = 521
+      Width = 601
       Height = 193
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitWidth = 521
       object DiffPanel: TPanel
         Left = 0
         Top = 0
-        Width = 521
+        Width = 601
         Height = 172
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
         OnResize = DiffPanelResize
+        ExplicitWidth = 521
         object DiffListBox: TListBox
           Left = 0
           Top = 0
-          Width = 521
+          Width = 601
           Height = 172
           Style = lbOwnerDrawFixed
           Align = alLeft
@@ -77,12 +81,13 @@ object GitViewer: TGitViewer
           OnKeyDown = DiffListBoxKeyDown
           OnKeyPress = GitListBoxKeyPress
           OnMouseDown = GitListBoxMouseDown
+          ExplicitWidth = 521
         end
       end
       object DiffBar: TToolBar
         Left = 0
         Top = 172
-        Width = 521
+        Width = 601
         Height = 21
         Align = alBottom
         AutoSize = True
@@ -93,6 +98,7 @@ object GitViewer: TGitViewer
         List = True
         AllowTextButtons = True
         TabOrder = 1
+        ExplicitWidth = 521
         object AddBtn: TToolButton
           Left = 0
           Top = 0
@@ -171,24 +177,26 @@ object GitViewer: TGitViewer
     object RU_Panel: TPanel
       Left = 0
       Top = 0
-      Width = 521
+      Width = 601
       Height = 251
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitWidth = 521
       object CommitPanel: TPanel
         Left = 0
         Top = 0
-        Width = 521
+        Width = 601
         Height = 230
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
         OnResize = CommitPanelResize
+        ExplicitWidth = 521
         object CommitListBox: TListBox
           Left = 0
           Top = 0
-          Width = 521
+          Width = 601
           Height = 230
           Style = lbOwnerDrawFixed
           Align = alLeft
@@ -207,12 +215,13 @@ object GitViewer: TGitViewer
           OnKeyDown = CommitListBoxKeyDown
           OnKeyPress = GitListBoxKeyPress
           OnMouseDown = GitListBoxMouseDown
+          ExplicitWidth = 521
         end
       end
       object FindBar: TToolBar
         Left = 0
         Top = 230
-        Width = 521
+        Width = 601
         Height = 21
         Align = alBottom
         AutoSize = True
@@ -278,7 +287,7 @@ object GitViewer: TGitViewer
           Action = UpdateLogAction
           Style = tbsTextButton
         end
-        object ToolButton2: TToolButton
+        object StashBtn: TToolButton
           Left = 296
           Top = 0
           Action = StashAction
@@ -292,14 +301,28 @@ object GitViewer: TGitViewer
           ImageIndex = 0
           Style = tbsSeparator
         end
-        object ConsoleBtn: TToolButton
+        object GrepBtn: TToolButton
           Left = 363
+          Top = 0
+          Action = GrepAction
+          Style = tbsTextButton
+        end
+        object FindSpcBtn3: TToolButton
+          Left = 402
+          Top = 0
+          Width = 8
+          Caption = 'FindSpcBtn3'
+          ImageIndex = 0
+          Style = tbsSeparator
+        end
+        object ConsoleBtn: TToolButton
+          Left = 410
           Top = 0
           Action = ConsoleAction
           Style = tbsTextButton
         end
         object GuiBtn: TToolButton
-          Left = 417
+          Left = 464
           Top = 0
           Action = GuiAction
           Style = tbsTextButton
@@ -308,7 +331,7 @@ object GitViewer: TGitViewer
     end
   end
   object HiddenCanBtn: TButton
-    Left = 710
+    Left = 790
     Top = 0
     Width = 0
     Height = 448
@@ -317,6 +340,7 @@ object GitViewer: TGitViewer
     ModalResult = 2
     TabOrder = 1
     TabStop = False
+    ExplicitLeft = 710
   end
   object BranchPanel: TPanel
     Left = 0
@@ -558,15 +582,20 @@ object GitViewer: TGitViewer
       Caption = #26356#26032'(&U)'
       OnExecute = UpdateLogActionExecute
     end
-    object GuiAction: TAction
-      Caption = '&GUI'
-      OnExecute = GuiActionExecute
-      OnUpdate = GuiActionUpdate
+    object GrepAction: TAction
+      Caption = 'GRE&P'
+      OnExecute = GrepActionExecute
+      OnUpdate = GrepActionUpdate
     end
     object ConsoleAction: TAction
       Caption = '&Console'
       OnExecute = ConsoleActionExecute
       OnUpdate = ConsoleActionUpdate
+    end
+    object GuiAction: TAction
+      Caption = '&GUI'
+      OnExecute = GuiActionExecute
+      OnUpdate = GuiActionUpdate
     end
     object FindDownAction: TAction
       Caption = #9660

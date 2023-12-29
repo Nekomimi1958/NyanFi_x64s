@@ -6,24 +6,27 @@
   <title>Git の利用について</title>
   <link rel="stylesheet" type="text/css" href="help.css">
   <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-    <param name="Keyword" value="blame">
-    <param name="Keyword" value="FileEdit">
-    <param name="Keyword" value="Git">
-    <param name="Keyword" value="Git for Windows">
-    <param name="Keyword" value="git.exe">
-    <param name="Keyword" value="git-bash.exe">
-    <param name="Keyword" value="git-gui.exe">
-    <param name="Keyword" value="GitViewer">
-    <param name="Keyword" value="Gitビューア">
-    <param name="Keyword" value="OpenGitURL">
-    <param name="Keyword" value="Pack">
-    <param name="Keyword" value="RepositoryList">
-    <param name="Keyword" value="SelGitChanged">
-    <param name="Keyword" value="ShowFileInfo">
-    <param name="Keyword" value="コミット履歴">
-    <param name="Keyword" value="ファイル情報">
-    <param name="Keyword" value="リポジトリ一覧">
-    <param name="Keyword" value="一覧ダイアログ">
+	<param name="Keyword" value="blame">
+	<param name="Keyword" value="FileEdit">
+	<param name="Keyword" value="Git">
+	<param name="Keyword" value="Git for Windows">
+	<param name="Keyword" value="git grep">
+	<param name="Keyword" value="git.exe">
+	<param name="Keyword" value="git-bash.exe">
+	<param name="Keyword" value="GitGrep">
+	<param name="Keyword" value="git-gui.exe">
+	<param name="Keyword" value="GitViewer">
+	<param name="Keyword" value="Gitビューア">
+	<param name="Keyword" value="OpenGitURL">
+	<param name="Keyword" value="Pack">
+	<param name="Keyword" value="RepositoryList">
+	<param name="Keyword" value="SelGitChanged">
+	<param name="Keyword" value="ShowFileInfo">
+	<param name="Keyword" value="コミット履歴">
+	<param name="Keyword" value="ファイル情報">
+	<param name="Keyword" value="リポジトリ一覧">
+	<param name="Keyword" value="一覧ダイアログ">
+	<param name="Keyword" value="正規表現">
   </object>
 </head>
 
@@ -31,7 +34,7 @@
 
   <h1>Git の利用について</h1>
   <p>
-    <b>git.exe</b> (Git for Windows) がインストールされてると、後述の Git 関連機能を利用できます。<br>
+    <b>git.exe</b> (Git for Windows) がインストールされていると、後述の Git 関連機能を利用できます。<br>
     標準的な場所(%PROGRAMFILES%\Git\cmd など)にインストールされている場合は自動的に検出されますが、そうでない場合は <a href="hid00024.htm#Other">オプション設定 - 一般2 -
       その他</a> で設定してください。<br>
   </p>
@@ -103,7 +106,7 @@
 
   <h3 id="GitViewer">Gitビューア</h3>
   <div class="spc_box_p">
-    Gitの作業ディレクトリ内で <a href="hid00005.htm#GitViewer">GitViewer</a> コマンドを実行すると、<b>Gitビューア</b>が表示されます。<br>
+    Git作業ディレクトリ内で <a href="hid00005.htm#GitViewer">GitViewer</a> コマンドを実行すると、<b>Gitビューア</b>が表示されます。<br>
   </div>
   <div class="spc_box_p info_text">
     Gitビューアから git.exe やその他のツールを実行する際の作業ディレクトリは、Git作業ディレクトリのトップ(直下に .git があるディレクトリ)になります。
@@ -138,6 +141,19 @@
         <dt class="no_bg"><span class="btn_frame">待避</span></dt>
         <dd>現在の作業内容をメッセージ付きで待避します(git stash save)。<br>
           待避した内容はコミット履歴の先頭に表示され、右クリックメニューから復帰や削除を行えます(git stash pop/apply/drop)。<br>
+        </dd>
+
+        <hr class="light">
+
+        <dt class="no_bg" id="GitGrep"><span class="btn_frame">GREP</span></dt>
+        <dd><b>Git GREP</b> ウィンドウを開き、選択中のリビジョンに対して <b>git grep</b> を実行できます。<br>
+          <b>検索文字列</b> 欄には、通常の文字列の他に -e hege --and -e nyan のようなパターンも指定できます。UTF-8のファイルのファイルの場合、日本語の検索も可能です｡<br>
+          <img src="chkbox.png" alt=""> <b>正規表現</b> をチェックしていると、拡張正規表現(POSIX)になります。NyanFi が利用する Perl互換正規表現(PCRE)とは一部異なりますので注意してくださ(例: \d は使用不可)。<br>
+          実行したコマンドの内容は、ステータスバーで確認できます。<br>
+          <a href="hid00056.htm">文字列検索(GREP)</a>のように細かな出力設定はできませんが、ほぼ同様の操作が可能です。また、かなり高速です。<br>
+          <div class="info_text">
+          このウィンドウは、ファイラーからGit作業ディレクトリ内で <a href="hid00005.htm#GitGrep">GitGrep</a> コマンドを実行することによっても開けます。その場合、ファイラーのカレントが作業ディレクトリとなります。<br>
+          </div>
         </dd>
 
         <dt class="no_bg"><span class="btn_frame">Console</span></dt>
@@ -181,10 +197,15 @@
           なお右クリックメニューの「<b>このファイルの内容を表示</b>」(<a href="hid00005.htm#TextViewer">TextViewer</a> コマンドのキーでも可)によって、内容を<a
             href="hid00073.htm">一覧ダイアログ</a>で表示することも可能。<br>
         </dd>
+        <hr class="light">
         <dt class="no_bg"><span class="btn_frame">Diff Tool</span></dt>
-        <dd>親コミットからの差分を、git に設定されている外部Diffツールで表示します。</dd>
+        <dd>
+          親コミットからの差分を、git に設定されている外部Diffツールで表示します。
+        </dd>
         <dt class="no_bg"><span class="btn_frame">Blame</span></dt>
-        <dd>親コミットに対する blame を <b>Git Gui</b> で表示します。</dd>
+        <dd>
+          親コミットに対する blame を <b>Git Gui</b> で表示します。
+        </dd>
       </dl>
       右クリックメニューからは、「<b>すべての新規作成・変更・削除を追加</b> (git add -A)」/「<b>すべての変更・削除を追加</b> (git add
       -u)」(作業ツリーのみ)、「<b>すべてのステージングを取り消し</b>」(インデックスのみ)などを行えます(コミット履歴の右クリックメニューでも可)。<br>

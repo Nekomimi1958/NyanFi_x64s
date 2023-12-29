@@ -38,7 +38,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *FindUpAction;
 	TAction *OpenUrlAction;
 	TActionList *ActionList1;
-	TButton *Button1;
+	TButton *HiddenCanBtn;
 	TButton *ColBtn;
 	TButton *ExpBtn;
 	TButton *FindDownBtn;

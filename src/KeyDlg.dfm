@@ -111,6 +111,7 @@ object KeyListDlg: TKeyListDlg
     Cancel = True
     ModalResult = 2
     TabOrder = 3
+    TabStop = False
   end
   object KeyListHeader: THeaderControl
     Left = 0

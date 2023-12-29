@@ -142,8 +142,10 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 		"fgDirInf=ディレクトリ情報の文字色\n"
 		"bgDirRel=ディレクトリ関係の背景色\n"
 		"fgDirRel=ディレクトリ関係の文字色\n"
+		"bdrDirB=ディレクトリ情報の下境界線\n"
 		"bgDrvInf=ドライブ情報の背景色\n"
 		"fgDrvInf=ドライブ情報の文字色\n"
+		"bdrDrvT=ドライブ情報の上境界線\n"
 		"bgInf=|ファイル情報の背景色\n"
 		"fgInf=ファイル情報の文字色\n"
 		"fgInfNam=ファイル情報の項目名文字色\n"
@@ -1728,7 +1730,7 @@ void __fastcall TOptionDlg::DisableColActionUpdate(TObject *Sender)
 	((TAction*)Sender)->Enabled
 		= contained_wd_i(
 			"bgList|bgList2|fgList|Splitter|fgSelItem|Protect|Compress|frScrKnob|bgActKnob|lnScrHit|lnScrSel|"
-			"bgTabBar|bgListHdr|fgListHdr|bgDirInf|fgDirInf|bgDirRel|bgDirRel|fgDirRel|fgDirRel|bgDrvInf|fgDrvInf|"
+			"bgTabBar|bgListHdr|fgListHdr|bgDirInf|fgDirInf|bgDirRel|bgDirRel|fgDirRel|fgDirRel|bdrDirB|bgDrvInf|fgDrvInf|bdrDrvT|"
 			"bgInf|fgInf|bgTxtPrv|fgTxtPrv|bgLog|fgLog|bgTask|"
 			"frmTab|bgView|fgView|bdrLine|Indent2|bdrFold|bdrFixed|fgPair|TlBorder|bgTlBar1|bgTlBar2|fgTlBar|bgInfHdr|fgInfHdr",
 			col_id);

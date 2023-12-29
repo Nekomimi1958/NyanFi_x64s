@@ -58,3 +58,11 @@ void __fastcall UsrHintWindow::ActivateHintEx(
 	Repaint();
 }
 //---------------------------------------------------------------------------
+void __fastcall UsrHintWindow::ShowMsgHint(UnicodeString msg, TWinControl *cp, TColor bg_col)
+{
+	if (msg.IsEmpty()) return;
+	if (!cp) cp = Screen->ActiveControl;
+	if (!cp) return;
+	ActivateHintEx("\r\n" + msg + "\r\n", ScaledInt(480), ScaledInt(240), cp, bg_col);
+}
+//---------------------------------------------------------------------------

@@ -348,13 +348,13 @@ object GeneralInfoDlg: TGeneralInfoDlg
     object ViewFileAction: TAction
       Caption = #12501#12449#12452#12523#12434#12486#12461#12473#12488#12499#12517#12540#12450#12391#38283#12367'(&V)'
       OnExecute = ViewFileActionExecute
-      OnUpdate = OpenFileActionUpdate
+      OnUpdate = ViewFileActionUpdate
     end
     object EditFileAction: TAction
       Caption = #12501#12449#12452#12523#12434#12486#12461#12473#12488#12456#12487#12451#12479#12391#38283#12367'(&E)'
       ShortCut = 32837
       OnExecute = EditFileActionExecute
-      OnUpdate = OpenFileActionUpdate
+      OnUpdate = EditFileActionUpdate
     end
     object ShowLineNoAction: TAction
       Caption = #34892#30058#21495#12434#34920#31034'(&N)'

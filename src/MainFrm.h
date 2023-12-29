@@ -228,6 +228,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *FunctionListAction;
 	TAction *GetHashAction;
 	TAction *GitDiffAction;
+	TAction *GitGrepAction1;
 	TAction *GitViewerAction;
 	TAction *GrayScaleAction;
 	TAction *GrepAbortAction;
@@ -240,6 +241,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *GrepExtractAction;
 	TAction *GrepFileItemNoAction;
 	TAction *GrepLineCopyAction;
+	TAction *GrepNotUpdListAction;
 	TAction *GrepOmitTopAction;
 	TAction *GrepOpenUrlAction;
 	TAction *GrepOptionAction;
@@ -683,6 +685,7 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *FtpDisconItem;
 	TMenuItem *FullScreenItem;
 	TMenuItem *FunctionListItem;
+	TMenuItem *G1;
 	TMenuItem *GrayScaleItem;
 	TMenuItem *GrepClipCopyItem;
 	TMenuItem *GrepConfirmItem;
@@ -774,15 +777,16 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *PopGrepExceptItem;
 	TMenuItem *PopGrepExtractItem;
 	TMenuItem *PopGrepFileItemNoItem;
-	TMenuItem *PopGrepItemNoItem;
 	TMenuItem *PopGrepLineCopyItem;
-	TMenuItem *PopGrepOmitItem;
+	TMenuItem *PopGrepNotUpdListItem;
+	TMenuItem *PopGrepOmitTopItem;
 	TMenuItem *PopGrepOpenUrlItem;
 	TMenuItem *PopGrepOrgOrderItem;
 	TMenuItem *PopGrepReleaseItem;
 	TMenuItem *PopGrepSaveAsItem;
 	TMenuItem *PopGrepSelDirItem;
 	TMenuItem *PopGrepSelResItem;
+	TMenuItem *PopGrepShowItemNoItem;
 	TMenuItem *PopGrepSortLineItem;
 	TMenuItem *PopGrepSubDirItem;
 	TMenuItem *PopGrepTrimTopItem;
@@ -1062,6 +1066,7 @@ __published:	// IDE で管理されるコンポーネント
 	TRichEdit *ViewMemo;
 	TScrollBar *TextScrollBar;
 	TScrollBox *ImgScrollBox;
+	TShape *HdrBdrShape;
 	TSpeedButton *DelTabBtn;
 	TSpeedButton *HideSeekBtn;
 	TSpeedButton *L_SelDrvBtn;
@@ -1114,7 +1119,10 @@ __published:	// IDE で管理されるコンポーネント
 	TVirtualImageList *IconVImgListI;
 	TVirtualImageList *IconVImgListP;
 	TVirtualImageList *IconVImgListV;
-	TMenuItem *G1;
+	TMenuItem *GrepNotUpdListItem;
+	TAction *RepNotUpdListAction;
+	TMenuItem *PopRepNotUpdListItem;
+	TMenuItem *RepNotUpdListItem;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -1947,8 +1955,12 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall IS_Match1ActionUpdate(TObject *Sender);
 	void __fastcall ResultListBoxData(TWinControl *Control, int Index, UnicodeString &Data);
 	void __fastcall ResultListBoxDataObject(TWinControl *Control, int Index, TObject *&DataObject);
-
-
+	void __fastcall GitGrepAction1Execute(TObject *Sender);
+	void __fastcall GitGrepAction1Update(TObject *Sender);
+	void __fastcall GrepNotUpdListActionExecute(TObject *Sender);
+	void __fastcall GrepNotUpdListActionUpdate(TObject *Sender);
+	void __fastcall RepNotUpdListActionExecute(TObject *Sender);
+	void __fastcall RepNotUpdListActionUpdate(TObject *Sender);
 
 private:	// ユーザー宣言
 	TIdFTP *IdFTP1;

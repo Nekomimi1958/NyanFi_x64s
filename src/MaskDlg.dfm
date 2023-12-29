@@ -30,6 +30,7 @@ object PathMaskDlg: TPathMaskDlg
     Cancel = True
     ModalResult = 2
     TabOrder = 3
+    TabStop = False
   end
   object OptPanel: TPanel
     Left = 0

@@ -22,7 +22,7 @@ object InpCmdsDlg: TInpCmdsDlg
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   TextHeight = 15
-  object CancelBtn: TButton
+  object HiddenCanBtn: TButton
     Left = 432
     Top = 36
     Width = 0
@@ -31,6 +31,7 @@ object InpCmdsDlg: TInpCmdsDlg
     Cancel = True
     ModalResult = 2
     TabOrder = 2
+    TabStop = False
   end
   object ModePanel: TPanel
     Left = 0

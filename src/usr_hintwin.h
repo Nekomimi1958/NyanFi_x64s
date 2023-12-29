@@ -20,6 +20,8 @@ public:
 
 	void __fastcall ActivateHintEx(UnicodeString msg, int max_w, int min_w,
 		TControl *cp, TColor bg_col);
+
+	void __fastcall ShowMsgHint(UnicodeString msg, TWinControl *cp, TColor bg_col);
 };
 //---------------------------------------------------------------------------
 #endif

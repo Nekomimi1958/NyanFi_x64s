@@ -78,11 +78,11 @@
         <SanitizedProjectName>NyanFi</SanitizedProjectName>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1041</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=2画面ファイラー NyanFi (x64 VCL Style);FileVersion=16.1.1.0;InternalName=NyanFi;LegalCopyright=2023 by Nekomimi;LegalTrademarks=;OriginalFilename=NyanFi.exe;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=NyanFi;ProductVersion=16.1.1.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=2画面ファイラー NyanFi (x64 VCL Style);FileVersion=16.1.2.0;InternalName=NyanFi;LegalCopyright=2023 by Nekomimi;LegalTrademarks=;OriginalFilename=NyanFi.exe;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=NyanFi;ProductVersion=16.1.2.0;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>16</VerInfo_MajorVer>
         <Custom_Styles>&quot;Aqua Light Slate|VCLSTYLE|$(BDSCOMMONDIR)\Styles\AquaLightSlate.vsf&quot;;Glow|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Glow.vsf;&quot;Iceberg Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\IcebergClassico.vsf&quot;;&quot;Lavender Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\LavenderClassico.vsf&quot;;Sky|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Sky.vsf;&quot;Slate Classico|VCLSTYLE|$(BDSCOMMONDIR)\Styles\SlateClassico.vsf&quot;;&quot;Tablet Dark|VCLSTYLE|$(BDSCOMMONDIR)\Styles\TabletDark.vsf&quot;;&quot;Tablet Light|VCLSTYLE|$(BDSCOMMONDIR)\Styles\TabletLight.vsf&quot;;Windows10|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10.vsf;&quot;Windows10 Blue|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Blue.vsf&quot;;&quot;Windows10 Charcoal|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10_Charcoal.vsf&quot;;&quot;Windows10 Dark|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Dark.vsf&quot;;&quot;Windows10 Green|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Green.vsf&quot;;&quot;Windows10 Purple|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Purple.vsf&quot;;&quot;Windows10 SlateGray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10SlateGray.vsf&quot;;&quot;Windows11 Modern Dark|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows11_Modern_Dark.vsf&quot;;&quot;Windows11 Modern Light|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows11_Modern_Light.vsf&quot;;&quot;Windows11 Polar Dark|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows11_Polar_Dark.vsf&quot;;&quot;Windows11 Polar Light|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows11_Polar_Light.vsf&quot;</Custom_Styles>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
-        <VerInfo_Release>1</VerInfo_Release>
+        <VerInfo_Release>2</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <PackageImports>adortl;appanalytics;bcbie;bcbsmp;bindcomp;bindcompdbx;bindcompfmx;bindcompvcl;bindengine;CodeSiteExpressPkg;CustomIPTransport;dbexpress;dbrtl;dbxcds;DbxClientDriver;DbxCommonDriver;DBXInterBaseDriver;DBXMySQLDriver;DBXSqliteDriver;dsnap;dsnapcon;dsnapxml;FireDACADSDriver;FireDACCommonODBC;FireDACMSAccDriver;FireDACMySQLDriver;FireDACPgDriver;fmx;fmxase;fmxdae;fmxFireDAC;fmxobj;FMXTee;FmxTeeUI;IndyCore;IndyIPClient;IndyIPCommon;IndyIPServer;IndyProtocols;IndySystem;inetdb;inetdbxpress;rtl;svn;Tee;TeeDB;TeeUI;tethering;vcl;vclactnband;vcldb;vcldsnap;vclFireDAC;vclie;vclimg;VCLRESTComponents;VclSmp;vcltouch;vclwinx;vclx;xmlrtl;$(PackageImports)</PackageImports>
@@ -389,6 +389,12 @@
             <FormType>dfm</FormType>
             <DependentOn>GenInfDlg.h</DependentOn>
             <BuildOrder>41</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="GitGrep.cpp">
+            <Form>GitGrepForm</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>GitGrep.h</DependentOn>
+            <BuildOrder>117</BuildOrder>
         </CppCompile>
         <CppCompile Include="GitTag.cpp">
             <Form>SetGitTagDlg</Form>
@@ -741,31 +747,31 @@
             <DependentOn>XmlView.h</DependentOn>
             <BuildOrder>68</BuildOrder>
         </CppCompile>
-        <FormResources Include="Splash.dfm"/>
-        <FormResources Include="SrtModDlg.dfm"/>
         <FormResources Include="ShareDlg.dfm"/>
+        <FormResources Include="Splash.dfm"/>
+        <FormResources Include="SameDlg.dfm"/>
+        <FormResources Include="PrnImgDlg.dfm"/>
         <FormResources Include="RegExChk.dfm"/>
         <FormResources Include="RenDlg.dfm"/>
-        <FormResources Include="SameDlg.dfm"/>
+        <FormResources Include="TabDlg.dfm"/>
         <FormResources Include="TagDlg.dfm"/>
         <FormResources Include="TaskDlg.dfm"/>
-        <FormResources Include="TabDlg.dfm"/>
-        <FormResources Include="SubView.dfm"/>
         <FormResources Include="SyncDlg.dfm"/>
-        <FormResources Include="PrnImgDlg.dfm"/>
+        <FormResources Include="SrtModDlg.dfm"/>
+        <FormResources Include="SubView.dfm"/>
+        <FormResources Include="PreSameDlg.dfm"/>
+        <FormResources Include="MaskDlg.dfm"/>
         <FormResources Include="MaskSelDlg.dfm"/>
         <FormResources Include="MemoFrm.dfm"/>
-        <FormResources Include="ModalScr.dfm"/>
-        <FormResources Include="MaskDlg.dfm"/>
+        <FormResources Include="KeyDlg.dfm"/>
         <FormResources Include="LoupeFrm.dfm"/>
         <FormResources Include="MainFrm.dfm"/>
         <FormResources Include="OptDlg.dfm"/>
         <FormResources Include="PackDlg.dfm"/>
-        <FormResources Include="PreSameDlg.dfm"/>
+        <FormResources Include="ModalScr.dfm"/>
         <FormResources Include="NewDlg.dfm"/>
         <FormResources Include="XmlView.dfm"/>
         <FormResources Include="UserMdl.dfm"/>
-        <FormResources Include="KeyDlg.dfm"/>
         <FormResources Include="DiffDlg.dfm"/>
         <FormResources Include="DirDlg.dfm"/>
         <FormResources Include="DistrDlg.dfm"/>
@@ -794,6 +800,7 @@
         <FormResources Include="CmdListDlg.dfm"/>
         <FormResources Include="ChInfFrm.dfm"/>
         <FormResources Include="ChmodDlg.dfm"/>
+        <FormResources Include="ExpCsv.dfm"/>
         <FormResources Include="HistFrm.dfm"/>
         <FormResources Include="GrepOptDlg.dfm"/>
         <FormResources Include="HistDlg.dfm"/>
@@ -804,19 +811,19 @@
         <FormResources Include="InpCmds.dfm"/>
         <FormResources Include="InpDir.dfm"/>
         <FormResources Include="GraphFrm.dfm"/>
-        <FormResources Include="FindDlg.dfm"/>
         <FormResources Include="FindKey.dfm"/>
         <FormResources Include="FindTag.dfm"/>
-        <FormResources Include="FileInfDlg.dfm"/>
-        <FormResources Include="ExpCsv.dfm"/>
+        <FormResources Include="FindTxtDlg.dfm"/>
+        <FormResources Include="FindDlg.dfm"/>
         <FormResources Include="ExTViewer.dfm"/>
         <FormResources Include="FileExtDlg.dfm"/>
+        <FormResources Include="FileInfDlg.dfm"/>
         <FormResources Include="GitTag.dfm"/>
         <FormResources Include="GitView.dfm"/>
-        <FormResources Include="GenInfDlg.dfm"/>
-        <FormResources Include="FindTxtDlg.dfm"/>
+        <FormResources Include="GitGrep.dfm"/>
         <FormResources Include="FtpDlg.dfm"/>
         <FormResources Include="FuncDlg.dfm"/>
+        <FormResources Include="GenInfDlg.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

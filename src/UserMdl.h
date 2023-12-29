@@ -27,7 +27,8 @@
 //コンボボックスのオプションタグ
 #define CBTAG_RGEX_V	0x01000000		//正規表現参照を表示
 #define CBTAG_RGEX_E	0x02000000		//正規表現参照を有効
-#define CBTAG_HISTORY	0x04000000		//履歴を持つ
+#define CBTAG_RGEX_P	0x04000000		//正規表現参照はPOSIX
+#define CBTAG_HISTORY	0x08000000		//履歴を持つ
 #define CBTAG_NO_CALC	0x10000000		//電卓を表示しない
 #define CBTAG_HAS_POP	0x40000000		//ポップアップが割り当てられている
 
