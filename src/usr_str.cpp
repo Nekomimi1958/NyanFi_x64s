@@ -401,8 +401,14 @@ TStringDynArray split_strings_tab(UnicodeString s)
 	return SplitString(s, "\t");
 }
 //---------------------------------------------------------------------------
-TStringDynArray split_strings_semicolon(UnicodeString s)
+TStringDynArray split_strings_semicolon(UnicodeString s,
+	bool del_empty)		//EmptyStr ÇèúäO	(default = false)
 {
+	if (del_empty) {
+		remove_top_s(s, ";");
+		remove_end_s(s, ";");
+		s = ReplaceStr(s, ";;", ";");
+	}
 	return SplitString(s, ";");
 }
 

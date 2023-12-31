@@ -217,6 +217,12 @@ PRE {
     font-weight: normal;
 }
 
+.app_text {
+    color: #333;
+    font-size: 90%;
+    font-weight: normal;
+}
+
 .mono_text {
     font-family: monospace;
 }

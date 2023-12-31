@@ -1658,11 +1658,8 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
 
     <dt id="GitGrep">GitGrep</dt>
     <dd>Gitの作業ディレクトリにいる場合、<a href="hid00090.htm#GitGrep">Git GREP</a> ウィンドウを開き、作業ツリーに対して指定した条件で <b>git grep</b> を実行できます。この場合、ファイラーのカレントがそのまま作業ディレクトリとなります。リビジョンに対して実行したい場合は、<a href="hid00090.htm#GitViewer">Gitビューア</a>から開いてください。<br>
-      <p class="info_text">
-      バージョン管理のために Git を利用していない場合でも、頻繁に検索する場所をリポジトリにしておくと、これを利用できて便利かもしれません。制約はありますが、<b>NyanFi</b> の <a href="hid00056.htm">文字列検索(GREP)</a> よりもかなり高速です。
-      </p>
       <a href="hid00090.htm#GitGrep">→ Git の利用について - GREP</a><br>
-      <a href="#GitViewer">→ GitViewer</a>　<a href="#Grep">→ Grep</a>
+      <a href="#GitViewer">→ GitViewer</a>　<a href="#Grep">→ Grep</a>　<a href="#Grep2">→ Grep2</a>
     </dd>
 
     <dt id="GitViewer">GitViewer<span class="pram_text">[_N履歴制限数(デフォルト=100)][;CP]</span></dt>
@@ -1689,7 +1686,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       カレントパス以下のテキストファイルに対して、文字列検索を行います。<br>
       またタブを切り替えることにより、<a href="hid00061.htm">文字列置換</a>もできます。<br>
       <a href="hid00052.htm">ファイル名検索</a>の結果リストや<a href="hid00060.htm">ワークリスト</a>に対しても実行可能。<br>
-      なお、カレントで選択している項目がある場合は、それらが検索対象となります(マスク指定は無視)。<br>
+      なお、カレントで選択している項目がある場合は、それらが検索対象となります(ファイルのみ選択の場合、マスク指定は無視)。<br>
       パラメータに<b>検索文字列</b>を指定すると、文字列検索にしてそれを設定します。<br>
 
       <div class="spc_box">
@@ -1699,11 +1696,26 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 </pre>
       </div>
 
-      <a href="hid00089.htm">→ 起動時オプション</a><br>
+      <a href="#Grep2">→ Grep2</a><br>
       <small>補助コマンド</small> <a href="hid00063.htm#GrepSetMask">→ GrepSetMask</a>　<a href="hid00063.htm#GrepStart">→
-        GrepStart</a>
+        GrepStart</a><br>
+      <a href="hid00089.htm">→ 起動時オプション</a><br>
     </dd>
 
+    <dt id="Grep2">Grep2<span class="pram_text">[_検索文字列]</span></dt>
+    <dd><a href="#Grep">Grep</a> コマンドと同様に <a href="hid00056.htm">文字列検索(GREP)</a>を開きますが、検索処理には外部の <b>grep.exe</b> を使用します。<br>
+      <b>Git for Windows</b> をインストールしていると、<b>grep.exe</b> も利用できるはずです。標準的な場所にインストールされている場合は自動的に検出されますが、そうでない場合はコマンド実行時に <b>grep.exe</b> の選択ダイアログが表示されますので指定してください。<br>
+      <div class="spc_box">
+      正規表現検索などは <a href="#Grep">Grep</a> に比べてかなり高速ですが、以下のような制約があります。<br>
+      ・<b>AND</b>、<b>タグ除外</b>、<b>次行表示</b> オプションは無効です。<br>
+      ・<b>1マッチ</b> では行番号や行内容は取得されません。ファイル名だけが表示されます。<br>
+      ・ディレクトリの深さは指定できません。<br>
+      ・UTF-8 以外のファイルでは、日本語を検索できません。<br>
+      ・検索の進捗状況は表示されず、中断もできません。<br>
+      ・正規表現はPerl互換(PCRE)ではなく、拡張正規表現(POSIX)になります(\d については内部で [0-9] に変換)。<br>
+      </div>
+    </dd>
+    
     <dt id="HelpContents">HelpContents<span class="pram_text">[_{CI|FI|CH}]</span></dt>
     <dd>ヘルプの目次を表示します。<br>
       パラメータに <b>CI</b> を指定すると「コマンドの索引(アルファベット順)」を、<b>FI</b> を指定すると「コマンドの索引(機能別)」を、<b>CH</b> を指定すると「変更履歴」のページを表示します。<br>

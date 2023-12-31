@@ -137,6 +137,7 @@ __published:	// IDE で管理されるコンポーネント
 	TButton *RefBgImg2Btn;
 	TButton *RefBinEdtBtn;
 	TButton *RefCmdGitExeBtn;
+	TButton *RefCmdGrepExeBtn;
 	TButton *RefCmdPrmBtn;
 	TButton *RefCmdsBtn;
 	TButton *RefCmdsT1Btn;
@@ -562,6 +563,7 @@ __published:	// IDE で管理されるコンポーネント
 	TLabeledEdit *CellAlphaEdit;
 	TLabeledEdit *ClockFmtEdit;
 	TLabeledEdit *CmdGitExeEdit;
+	TLabeledEdit *CmdGrepExeEdit;
 	TLabeledEdit *CmpDelOwCntEdit;
 	TLabeledEdit *CursorAlphaEdit;
 	TLabeledEdit *CursorWidthEdit;
@@ -931,6 +933,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall OkActionUpdate(TObject *Sender);
 	void __fastcall CanButtonClick(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
+	void __fastcall RefCmdGrepExeBtnClick(TObject *Sender);
 
 
 private:	// ユーザー宣言

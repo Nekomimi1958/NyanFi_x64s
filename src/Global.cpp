@@ -65,6 +65,7 @@ int   StartedCount;				//実行開始カウント(m秒)
 int   NyanFiIdNo = 0;			//多重 NyanFi 識別ID
 bool  IsPrimary  = true;		//最初に起動された
 bool  GitExists  = false;		//Git がインストールされている
+bool  GrepExists = false;		//grep.exe がインストールされている
 bool  IsMuted	 = false;		//音量ミュート
 
 int   ScrMode  = SCMD_FLIST;	//画面モード
@@ -944,6 +945,8 @@ UnicodeString CmdGitExe;		//git.exe
 UnicodeString GitBashExe;		//git-bash.exe
 UnicodeString GitGuiExe;		//git-gui.exe
 
+UnicodeString CmdGrepExe;		//grep.exe
+
 //サウンド
 UnicodeString SoundTaskFin;		//タスク終了時の通知音
 UnicodeString SoundFindFin;		//検索終了時の通知音
@@ -1438,6 +1441,7 @@ void InitializeGlobal()
 		{_T("CmdGitExer=\"\""),						(TObject*)&CmdGitExe},
 		{_T("GitBashExe=\"\""),						(TObject*)&GitBashExe},
 		{_T("GitGuiExe=\"\""),						(TObject*)&GitGuiExe},
+		{_T("CmdGrepExe=\"\""),						(TObject*)&CmdGrepExe},
 		{_T("FExtViewTab4=\".cpp.cxx.c.h\""),		(TObject*)&FExtViewTab4},
 		{_T("FExtViewTabX=\"\""),					(TObject*)&FExtViewTabX},
 		{_T("SoundTaskFin=\"\""),					(TObject*)&SoundTaskFin},
@@ -2022,6 +2026,17 @@ void InitializeGlobal()
 		}
 	}
 	GitExists = file_exists(CmdGitExe);
+
+	GrepExists = file_exists(CmdGrepExe);
+	if (!GrepExists) {
+		if (GitExists && !GitBashExe.IsEmpty()) {
+			UnicodeString xnam = ExtractFilePath(GitBashExe) + "usr\\bin\\grep.exe";
+			if (file_exists(xnam)) {
+				CmdGrepExe = xnam;
+				GrepExists = true;
+			}
+		}
+	}
 
 	//ツールチップの表示
 	Application->ShowHint = ShowTooltip;
@@ -2798,6 +2813,11 @@ void filter_List(
 	UnicodeString kwd,	//検索語
 	SearchOption opt)	//検索オプション
 {
+	auto get_item = [](UnicodeString s, SearchOption o) { 
+		if (o.Contains(soGrep) || o.Contains(soGrepS)) s = get_tkn(get_tkn_r(get_tkn_r(s, "\t"), "\t"), "\n");
+		return s;
+	};
+
 	o_lst->Clear();
 
 	//AND/OR検索
@@ -2822,8 +2842,7 @@ void filter_List(
 		//検索
 		if (ptn_lst->Count>0) {
 			for (int i=0; i<i_lst->Count; i++) {
-				UnicodeString lbuf = i_lst->Strings[i];
-
+				UnicodeString lbuf = get_item(i_lst->Strings[i], opt);
 				bool ok = false;
 				if (opt.Contains(soTree) && i==0) {
 					ok = true;
@@ -2843,7 +2862,7 @@ void filter_List(
 				if (ok) {
 					int idx = (int)i_lst->Objects[i];
 					if (idx==0) idx = i;
-					o_lst->AddObject(lbuf, (TObject*)(NativeInt)idx);
+					o_lst->AddObject(i_lst->Strings[i], (TObject*)(NativeInt)idx);
 				}
 			}
 
@@ -2854,13 +2873,13 @@ void filter_List(
 	else if (opt.Contains(soFuzzy)) {
 		if (!kwd.IsEmpty()) {
 			for (int i=0; i<i_lst->Count; i++) {
-				UnicodeString lbuf = i_lst->Strings[i];
+				UnicodeString lbuf = get_item(i_lst->Strings[i], opt);
 				if ((opt.Contains(soTree) && i==0) ||
 					contains_fuzzy_word(get_SearchStr(lbuf, opt), kwd, opt.Contains(soCaseSens)))
 				{
 					int idx = (int)i_lst->Objects[i];
 					if (idx==0) idx = i;
-					o_lst->AddObject(lbuf, (TObject*)(NativeInt)idx);
+					o_lst->AddObject(i_lst->Strings[i], (TObject*)(NativeInt)idx);
 				}
 			}
 		}
@@ -2870,11 +2889,11 @@ void filter_List(
 		UnicodeString ptn = opt.Contains(soMigemo)? usr_Migemo->GetRegExPtn(true, kwd) : kwd;
 		if (!ptn.IsEmpty()) {
 			for (int i=0; i<i_lst->Count; i++) {
-				UnicodeString lbuf = i_lst->Strings[i];
+				UnicodeString lbuf = get_item(i_lst->Strings[i], opt);
 				if ((opt.Contains(soTree) && i==0) || is_SearchMatch(get_SearchStr(lbuf, opt), ptn, opt)) {
 					int idx = (int)i_lst->Objects[i];
 					if (idx==0) idx = i;
-					o_lst->AddObject(lbuf, (TObject*)(NativeInt)idx);
+					o_lst->AddObject(i_lst->Strings[i], (TObject*)(NativeInt)idx);
 				}
 			}
 		}
@@ -8619,7 +8638,7 @@ void get_FileNamePathInf(UnicodeString fnam, TStringList *lst, bool get_app)
 
 	if (file_exists(fnam)) {
 		lst->Add(get_FileInfStr(fnam));
-		if (get_app) get_AppInf(fnam, lst, false);
+		if (get_app) get_AppInf(fnam, lst);
 	}
 	else {
 		add_PropLine(_T("エラー"), LoadUsrMsg(USTR_NotFound), lst, LBFLG_ERR_FIF);
@@ -11005,23 +11024,28 @@ int get_MatchWordList(
 		//GitGrep
 		else if (opt.Contains(soGitGrep)) {
 			TStringDynArray s_lst = SplitString(Trim(kwd), " ");
-			bool is_ptn = false;
-			for (int i=0; i<s_lst.Length; i++) {
-				UnicodeString s = s_lst[i];
-				if (SameStr(s, "--and") || SameStr(s, "--or") || SameStr(s, "--not")) {
-					is_ptn = false;
+			if (TRegEx::IsMatch(kwd, "^(-e)\\s[^- ]+")) {
+				bool is_ptn = false;
+				for (int i=0; i<s_lst.Length; i++) {
+					UnicodeString s = s_lst[i];
+					if (SameStr(s, "--and") || SameStr(s, "--or") || SameStr(s, "--not")) {
+						is_ptn = false;
+					}
+					else if (SameStr(s, "-e")) {
+						is_ptn = true;
+					}
+					else if (is_ptn) {
+						TMatchCollection mts = TRegEx::Matches(lbuf, s, x_opt);
+						for (int j=0; j<mts.Count; j++) if (mts.Item[j].Success) lst->Add(mts.Item[j].Value);
+						is_ptn = false;
+					}
+					else {
+						is_ptn = false;
+					}
 				}
-				else if (SameStr(s, "-e")) {
-					is_ptn = true;
-				}
-				else if (is_ptn) {
-					TMatchCollection mts = TRegEx::Matches(lbuf, s, x_opt);
-					for (int j=0; j<mts.Count; j++) if (mts.Item[j].Success) lst->Add(mts.Item[j].Value);
-					is_ptn = false;
-				}
-				else {
-					is_ptn = false;
-				}
+			}
+			else {
+				for (int i=0; i<s_lst.Length; i++) lst->Add(s_lst[i]);
 			}
 		}
 		//AND/OR(' ')
@@ -11469,7 +11493,8 @@ void PathNameOut(
 	UnicodeString sbuf;
 	for (int i=1; i<=s_len; i++) {
 		WideChar c = s[i];
-		if (FgCol[i]!=cv->Font->Color || BgCol[i]!=cv->Brush->Color || EndsStr('\\', sbuf)) {
+		if (i==s_len) sbuf.cat_sprintf(_T("%c"), c);
+		if (FgCol[i]!=cv->Font->Color || BgCol[i]!=cv->Brush->Color || EndsStr('\\', sbuf) || i==s_len) {
 			if (!sbuf.IsEmpty()) {
 				bool flag = remove_end_s(sbuf, '\\');
 				int w = cv->TextWidth(sbuf);
@@ -11485,28 +11510,12 @@ void PathNameOut(
 					if (mgn_sw && i>3) x += s_mg;
 				}
 			}
-			sbuf = c;
+			if (i<s_len) sbuf = c;
 			cv->Font->Color  = FgCol[i];
 			cv->Brush->Color = BgCol[i];
 		}
 		else {
 			sbuf.cat_sprintf(_T("%c"), c);
-		}
-	}
-
-	if (!sbuf.IsEmpty()) {
-		bool flag = remove_end_s(sbuf, '\\');
-		int w = cv->TextWidth(sbuf);
-		if (w>0) {
-			cv->TextRect(Rect(x, y, x + w, yh), x, y, sbuf);
-			x += w;
-		}
-		if (flag) {
-			if (cv->Font->Color!=col_fgEmp) cv->Font->Color = fg_sep;
-			if (mgn_sw) x += s_mg;
-			cv->TextRect(Rect(x, y, x + s_wd, yh), x, y, DirDelimiter);
-			x += s_wd;
-			if (mgn_sw) x += s_mg;
 		}
 	}
 
@@ -11533,7 +11542,8 @@ void PathNameOut(
 	UnicodeString sbuf;
 	for (int i=1; i<=s_len; i++) {
 		WideChar c = s[i];
-		if (EndsStr('\\', sbuf)) {
+		if (i==s_len) sbuf.cat_sprintf(_T("%c"), c);
+		if (EndsStr('\\', sbuf) || i==s_len) {
 			if (!sbuf.IsEmpty()) {
 				bool flag = remove_end_s(sbuf, '\\');
 				int w = cv->TextWidth(sbuf);
@@ -11548,25 +11558,10 @@ void PathNameOut(
 					x += s_wd;
 				}
 			}
-			sbuf = c;
+			if (i<s_len) sbuf = c;
 		}
 		else {
 			sbuf.cat_sprintf(_T("%c"), c);
-		}
-	}
-
-	if (!sbuf.IsEmpty()) {
-		bool flag = remove_end_s(sbuf, '\\');
-		int w = cv->TextWidth(sbuf);
-		if (w>0) {
-			cv->Font->Color = fg_org;
-			cv->TextRect(Rect(x, y, x + w, yh), x, y, sbuf);
-			x += w;
-		}
-		if (flag) {
-			cv->Font->Color = fg_sep;
-			cv->TextRect(Rect(x, y, x + s_wd, yh), x, y, DirDelimiter);
-			x += s_wd;
 		}
 	}
 }
@@ -12721,7 +12716,6 @@ bool Execute_ex(
 		else {
 			UnicodeString cmdln = add_quot_if_spc(cmd);
 			if (!prm.IsEmpty()) cmdln.cat_sprintf(_T(" %s"), prm.c_str());
-			AddDebugLog("Execute", cmdln, wdir_str);
 			if (!Execute_cmdln(cmdln, wdir, opt, exit_code, o_lst)) Abort();
 		}
 		return true;
@@ -12740,6 +12734,8 @@ bool Execute_cmdln(
 {
 	GlobalErrMsg  = EmptyStr;
 	if (cmdln.IsEmpty()) return false;
+
+	AddDebugLog("Execute", cmdln, wdir);
 
 	try {
 		HANDLE hRead  = NULL;
@@ -13030,6 +13026,25 @@ UnicodeString save_GitRevAsTemp(UnicodeString id, UnicodeString fnam, UnicodeStr
 		msgbox_ERR(e.Message);
 		return EmptyStr;
 	}
+}
+
+//---------------------------------------------------------------------------
+//grep.exe を実行
+//---------------------------------------------------------------------------
+bool GrepShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst,
+	DWORD *exit_cd) 		//終了コード	(default = NULL)
+{
+	if (!GrepExists) return false;
+
+	wdir = ExcludeTrailingPathDelimiter(wdir);
+	UnicodeString cmdln = add_quot_if_spc(CmdGrepExe);
+	if (!prm.IsEmpty()) cmdln.cat_sprintf(_T(" %s"), prm.c_str());
+
+	DWORD exit_code = 0;
+	bool res = Execute_cmdln(cmdln, wdir, "HWO", &exit_code, o_lst);
+	if (exit_cd) *exit_cd = exit_code;
+
+	return res;
 }
 
 //---------------------------------------------------------------------------
@@ -14686,14 +14701,14 @@ void HtmlHelpTopic(
 	CloseHelpWnd();
 	UnicodeString prm = "ms-its:" + Application->HelpFile;
 	prm.cat_sprintf(_T("::/%s"), topic);
-	::ShellExecute(NULL, _T("open"), _T("hh.exe"), prm.c_str(), NULL, SW_SHOW); 
+	::ShellExecute(NULL, _T("open"), _T("hh.exe"), prm.c_str(), NULL, SW_SHOW);
 }
 //---------------------------------------------------------------------------
 void HtmlHelpContext(int idx)
 {
 	CloseHelpWnd();
 	::ShellExecute(NULL, _T("open"), _T("hh.exe"),
-		("-mapid " + IntToStr(idx) + " ms-its:" + Application->HelpFile).c_str(), NULL, SW_SHOW); 
+		("-mapid " + IntToStr(idx) + " ms-its:" + Application->HelpFile).c_str(), NULL, SW_SHOW);
 }
 //---------------------------------------------------------------------------
 void HtmlHelpKeyword(
@@ -15338,11 +15353,7 @@ int get_GitStatusList(
 		std::unique_ptr<TStringList> o_buf(new TStringList());
 		std::unique_ptr<TStringList> w_buf(new TStringList());
 		DWORD exit_code = 0;
-		if (!GitShellExe("status --porcelain", pnam, o_buf.get(), &exit_code, w_buf.get())
-			|| exit_code!=0)
-		{
-			Abort();
-		}
+		if (!GitShellExe("status --porcelain", pnam, o_buf.get(), &exit_code, w_buf.get()) || exit_code!=0) Abort();
 
 		lst->Clear();
 		for (int i=0; i<o_buf->Count; i++) {

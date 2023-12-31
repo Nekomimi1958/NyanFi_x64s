@@ -147,8 +147,10 @@
 
         <dt class="no_bg" id="GitGrep"><span class="btn_frame">GREP</span></dt>
         <dd><b>Git GREP</b> ウィンドウを開き、選択中のリビジョンに対して <b>git grep</b> を実行できます。<br>
-          <b>検索文字列</b> 欄には、通常の文字列の他に -e hege --and -e nyan のようなパターンも指定できます。UTF-8のファイルのファイルの場合、日本語の検索も可能です｡<br>
-          <img src="chkbox.png" alt=""> <b>正規表現</b> をチェックしていると、拡張正規表現(POSIX)になります。NyanFi が利用する Perl互換正規表現(PCRE)とは一部異なりますので注意してくださ(例: \d は使用不可)。<br>
+          <b>検索文字列</b> 欄には、通常の文字列の他に -e hege --and -e nyan のようなパターンも指定できます。<br>
+          空白で区切って複数の単語を入力すると内部で -e hoge --or -e nyan ～ に変換されOR検索になります。<br>
+          UTF-8のファイルのでは日本語の検索も可能です｡<br>
+          <img src="chkbox.png" alt=""> <b>正規表現</b> をチェックしていると、拡張正規表現(POSIX)になります。NyanFi が利用する Perl互換正規表現(PCRE)とは一部異なりますので注意してくださ。\d については内部で [0-9] に変換して渡されます。<br>
           実行したコマンドの内容は、ステータスバーで確認できます。<br>
           <a href="hid00056.htm">文字列検索(GREP)</a>のように細かな出力設定はできませんが、ほぼ同様の操作が可能です。また、かなり高速です。<br>
           <div class="info_text">
@@ -232,7 +234,7 @@
 
   <h3 id="GitCommand">Git 補助コマンドの利用</h3>
   <p>
-    <a href="hid00063.htm#Git">ExeCommands コマンドの Git 補助コマンド</a> を実行すると、カレントを作業ディレクトリとして、指定したコマンド/パラメータで git.exe
+    <a href="hid00063.htm#Git">ExeCommands コマンドの Git 補助コマンド</a> を実行すると、カレントを作業ディレクトリとして、指定したコマンド/パラメータで <b>git.exe</b>
     が実行されます。<br>
     これによって、コンソールを開かなくても <b>NyanFi</b> から直接 Git コマンドを利用できます。<br>
     結果は、ログおよび定義済み変数 <b>Buffer</b> に出力されます。<br>

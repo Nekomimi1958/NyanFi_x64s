@@ -51,15 +51,17 @@ private:
 	TColor EmFgC[MAX_EM_PTN];			//強調文字色
 	TColor EmBgC[MAX_EM_PTN];			//強調背景色
 
-	TPanel *ColorPanel;					//カーソル位置値のカラー表示
+	TPanel *ColorPanel;				//カーソル位置値のカラー表示
 
-	TPanel *StickyPanel;					//関数スティッキー表示
+	TPanel *StickyPanel;			//関数スティッキー
 	TPaintBox *StickyBox;
-	UnicodeString StickyStr;				//スティッキー表示内容
-	int  StickyLine;						//スティッキー行番号(1ベース)
-	UnicodeString FuncPtn;				//関数マッチパターン
-	UnicodeString FuncBrkPtn;			//関数ブレークパターン
-	UnicodeString FuncNamPtn;			//関数名強調パターン
+	UnicodeString StickyStr;		//スティッキー表示内容
+	int StickyLine;					//スティッキー行番号(1ベース)
+	int LastTopPos;
+
+	UnicodeString FuncPtn;			//関数マッチパターン
+	UnicodeString FuncBrkPtn;		//関数ブレークパターン
+	UnicodeString FuncNamPtn;		//関数名強調パターン
 
 	Graphics::TBitmap *ImgBuff;
 

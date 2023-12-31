@@ -69,12 +69,15 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *CopyBranchNameAction;
 	TAction *CopyCommitIDAction;
 	TAction *CopyFileHashAction;
+	TAction *CopyPathAction;
 	TAction *DelTagAction;
+	TAction *DescTagAction;
 	TAction *DiffDetailAction;
 	TAction *DiffToolAction;
 	TAction *EditFileAction;
 	TAction *FindDownAction;
 	TAction *FindUpAction;
+	TAction *GrepAction;
 	TAction *GuiAction;
 	TAction *LogThisCommitAction;
 	TAction *LogThisFileAction;
@@ -89,7 +92,12 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *ShowRBranchAction;
 	TAction *ShowRemoteAction;
 	TAction *ShowTagAction;
+	TAction *StashAction;
+	TAction *StashApplyAction;
+	TAction *StashDropAction;
+	TAction *StashPopAction;
 	TAction *UpdateLogAction;
+	TAction *ViewFileAction;
 	TActionList *ActionList1;
 	TButton *HiddenCanBtn;
 	TEdit *FindCommitEdit;
@@ -110,9 +118,11 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *CopyBranchNameItem;
 	TMenuItem *CopyCommitIDItem;
 	TMenuItem *CopyFileHashItem;
+	TMenuItem *CopyPathItem;
 	TMenuItem *CreBranchItem;
 	TMenuItem *DelBranchItem;
 	TMenuItem *DelTagItem;
+	TMenuItem *DescTagItem;
 	TMenuItem *DiffDetailItem;
 	TMenuItem *DiffToolItem;
 	TMenuItem *EditFileItem;
@@ -134,8 +144,10 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *Sep_c_2;
 	TMenuItem *Sep_c_3;
 	TMenuItem *Sep_c_4;
+	TMenuItem *Sep_c_5;
 	TMenuItem *Sep_d_1;
 	TMenuItem *Sep_d_2;
+	TMenuItem *Sep_d_3;
 	TMenuItem *SetTagItem;
 	TMenuItem *ShowAuthorItem;
 	TMenuItem *ShowBranchesItem;
@@ -143,6 +155,10 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *ShowRemoteItem;
 	TMenuItem *ShowTagItem;
 	TMenuItem *SoftResetItem;
+	TMenuItem *StashApplyItem;
+	TMenuItem *StashDropItem;
+	TMenuItem *StashPopItem;
+	TMenuItem *ViewFileItem;
 	TPanel *BranchPanel;
 	TPanel *CommitPanel;
 	TPanel *DiffPanel;
@@ -156,6 +172,7 @@ __published:	// IDE で管理されるコンポーネント
 	TSplitter *CommitSplitter;
 	TSplitter *DiffSplitter;
 	TSplitter *FindSplitter;
+	TTimer *WaitTimer;
 	TToolBar *DiffBar;
 	TToolBar *FindBar;
 	TToolButton *AddBtn;
@@ -170,30 +187,15 @@ __published:	// IDE で管理されるコンポーネント
 	TToolButton *FindBtn;
 	TToolButton *FindDownBtn;
 	TToolButton *FindSpcBtn;
+	TToolButton *FindSpcBtn2;
+	TToolButton *FindSpcBtn3;
 	TToolButton *FindUpBtn;
+	TToolButton *GrepBtn;
 	TToolButton *GuiBtn;
 	TToolButton *ResetBtn;
-	TToolButton *ToolButton1;
 	TToolButton *StashBtn;
+	TToolButton *ToolButton1;
 	TToolButton *UpdateBtn;
-	TAction *StashAction;
-	TToolButton *FindSpcBtn2;
-	TAction *StashPopAction;
-	TAction *StashApplyAction;
-	TAction *StashDropAction;
-	TMenuItem *StashApplyItem;
-	TMenuItem *StashPopItem;
-	TMenuItem *StashDropItem;
-	TMenuItem *Sep_c_5;
-	TAction *ViewFileAction;
-	TMenuItem *ViewFileItem;
-	TAction *CopyPathAction;
-	TMenuItem *CopyPathItem;
-	TMenuItem *Sep_d_3;
-	TTimer *WaitTimer;
-	TToolButton *GrepBtn;
-	TToolButton *FindSpcBtn3;
-	TAction *GrepAction;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -301,6 +303,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall StashPopActionUpdate(TObject *Sender);
 	void __fastcall GrepActionExecute(TObject *Sender);
 	void __fastcall GrepActionUpdate(TObject *Sender);
+	void __fastcall DescTagActionExecute(TObject *Sender);
 
 private:	// ユーザー宣言
 	UnicodeString RefHEAD;

@@ -768,16 +768,8 @@ void __fastcall TUserModule::EditPopupMenuCPopup(TObject *Sender)
 	TComboBox *cp = GetActiveComboBox();
 	int tag = (cp && !contained_wd_i(_T("OptionDlg|GrepExOptDlg"), Screen->ActiveForm->Name))? cp->Tag : 0;
 
-	RegExpItem->Visible = (tag & CBTAG_RGEX_V);
-	RegExpItem->Enabled = (tag & CBTAG_RGEX_E);
-
-	if (RegExpItem->Visible) {
-		for (int i=0; i<RegExpItem->Count; i++) {
-			TMenuItem *mp = RegExpItem->Items[i];
-			if (SameStr(get_tkn(mp->Caption, ' '), "\\d")) mp->Visible = !(tag & CBTAG_RGEX_P);
-		}
-	}
-
+	RegExpItem->Visible   = (tag & CBTAG_RGEX_V);
+	RegExpItem->Enabled   = (tag & CBTAG_RGEX_E);
 	EditItemItem->Visible = (cp && (StartsStr(". ‚Å‹æØ‚Á‚Ä", cp->Hint) || StartsStr("; ‚Å‹æØ‚Á‚Ä", cp->Hint)));
 	EditItemItem->Enabled = EditItemItem->Visible;
 

@@ -63,6 +63,7 @@ void __fastcall TGitViewer::FormShow(TObject *Sender)
 
 	ShowRBranchAction->Checked  = IniFile->ReadBoolGen(_T("GitViewShowRBranch"),true);
 	ShowTagAction->Checked      = IniFile->ReadBoolGen(_T("GitViewShowTag"),	true);
+	DescTagAction->Checked      = IniFile->ReadBoolGen(_T("GitViewDescTag"),	false);
 	ShowBranchesAction->Checked = IniFile->ReadBoolGen(_T("GitViewShowBranches"));
 	ShowRemoteAction->Checked   = IniFile->ReadBoolGen(_T("GitViewShowRemote"));
 	ShowAuthorAction->Checked   = IniFile->ReadBoolGen(_T("GitViewShowAuthor"));
@@ -105,6 +106,7 @@ void __fastcall TGitViewer::FormClose(TObject *Sender, TCloseAction &Action)
 	IniFile->WriteScaledIntGen(_T("GitViewFindWidth"),		FindCommitEdit->Width, this);
 	IniFile->WriteBoolGen(_T("GitViewShowRBranch"),		ShowRBranchAction);
 	IniFile->WriteBoolGen(_T("GitViewShowTag"),			ShowTagAction);
+	IniFile->WriteBoolGen(_T("GitViewDescTag"),			DescTagAction);
 	IniFile->WriteBoolGen(_T("GitViewShowBranches"),	ShowBranchesAction);
 	IniFile->WriteBoolGen(_T("GitViewShowRemote"),		ShowRemoteAction);
 	IniFile->WriteBoolGen(_T("GitViewShowAuthor"),		ShowAuthorAction);
@@ -151,13 +153,13 @@ void __fastcall TGitViewer::DiffPanelResize(TObject *Sender)
 //---------------------------------------------------------------------------
 UnicodeString __fastcall TGitViewer::GitExeStr(UnicodeString prm)
 {
-	GitBusy  = true;
+	GitBusy = true;
 	UnicodeString cmd = get_tkn(prm, ' ');
 	if (SameText("archive", cmd)) CommitListBox->Invalidate();
 	std::unique_ptr<TStringList> o_lst(new TStringList());
 	DWORD exit_code;
 	bool res = GitShellExe(prm, WorkDir, o_lst.get(), &exit_code);
-	GitBusy  = false;
+	GitBusy = false;
 
 	UnicodeString ret_str;
 	if (res) {
@@ -208,11 +210,11 @@ UnicodeString __fastcall TGitViewer::GitExeStr(UnicodeString prm)
 //---------------------------------------------------------------------------
 TStringDynArray __fastcall TGitViewer::GitExeStrArray(UnicodeString prm)
 {
-	GitBusy  = true;
+	GitBusy = true;
 	std::unique_ptr<TStringList> o_lst(new TStringList());
 	DWORD exit_code;
 	bool res = GitShellExe(prm, WorkDir, o_lst.get(), &exit_code);
-	GitBusy  = false;
+	GitBusy = false;
 
 	TStringDynArray ret_array;
 	if (res && exit_code==0) {
@@ -490,8 +492,9 @@ void __fastcall TGitViewer::UpdateBranchList()
 				UnicodeString lbuf = Trim(o_lst->Strings[i]);
 				bool is_hd = ContainsStr(lbuf, "/HEAD -> ");
 				if (is_hd) lbuf = get_tkn_r(lbuf, "/HEAD -> ");
-				if (lst->IndexOf(lbuf)==-1)
+				if (lst->IndexOf(lbuf)==-1) {
 					lst->AddObject(lbuf, (TObject *)(NativeInt)(GIT_FLAG_REMOTE | (is_hd? GIT_FLAG_HEAD : 0)));
+				}
 			}
 			b_lp->Items->AddStrings(lst.get());
 		}
@@ -499,7 +502,9 @@ void __fastcall TGitViewer::UpdateBranchList()
 	//タグ
 	if (ShowTagAction->Checked) {
 		o_lst->Clear();
-		if (GitShellExe("tag", WorkDir, o_lst.get(), NULL, WarnList)) {
+		UnicodeString prm = "tag --sort=";
+		prm += (DescTagAction->Checked? "-v:refname" : "v:refname"); 
+		if (GitShellExe(prm, WorkDir, o_lst.get(), NULL, WarnList)) {
 			//コミット一覧にあるタグのリストを作成
 			std::unique_ptr<TStringList> tag_lst(new TStringList());
 			for (int i=0; i<CommitListBox->Count; i++) {
@@ -1633,6 +1638,15 @@ void __fastcall TGitViewer::ShowTagActionExecute(TObject *Sender)
 	ShowTagAction->Checked = !ShowTagAction->Checked;
 	UpdateBranchList();
 }
+//---------------------------------------------------------------------------
+//タグを降順で表示
+//---------------------------------------------------------------------------
+void __fastcall TGitViewer::DescTagActionExecute(TObject *Sender)
+{
+	DescTagAction->Checked = !DescTagAction->Checked;
+	UpdateBranchList();
+}
+
 //---------------------------------------------------------------------------
 //他のブランチも表示
 //---------------------------------------------------------------------------

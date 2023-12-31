@@ -3177,6 +3177,11 @@ object NyanFiForm: TNyanFiForm
       OnExecute = FindFolderIconActionExecute
       OnUpdate = FindFolderIconActionUpdate
     end
+    object FindHardLinkAction: TAction
+      Category = 'Command'
+      OnExecute = FindHardLinkActionExecute
+      OnUpdate = MenuFActionUpdate
+    end
     object FindMarkAction: TAction
       Category = 'Command'
       OnExecute = FindMarkActionExecute
@@ -3256,6 +3261,12 @@ object NyanFiForm: TNyanFiForm
       HelpContext = 56
       OnExecute = GrepActionExecute
       OnUpdate = GrepActionUpdate
+    end
+    object Grep2Action: TAction
+      Category = 'Command'
+      Caption = #25991#23383#21015#26908#32034' (grep '#12501#12525#12531#12488#12456#12531#12489')...'
+      OnExecute = Grep2ActionExecute
+      OnUpdate = Grep2ActionUpdate
     end
     object HelpContentsAction: TAction
       Category = 'Command'
@@ -3389,11 +3400,6 @@ object NyanFiForm: TNyanFiForm
     object ListFileNameAction: TAction
       Category = 'Command'
       OnExecute = ListFileNameActionExecute
-      OnUpdate = MenuFActionUpdate
-    end
-    object FindHardLinkAction: TAction
-      Category = 'Command'
-      OnExecute = FindHardLinkActionExecute
       OnUpdate = MenuFActionUpdate
     end
     object ListLogAction: TAction
@@ -5312,6 +5318,9 @@ object NyanFiForm: TNyanFiForm
     end
     object PopRepNotUpdListItem: TMenuItem
       Action = RepNotUpdListAction
+    end
+    object Pop_g_6: TMenuItem
+      Caption = '-'
     end
     object PopGrepShowItemNoItem: TMenuItem
       Action = GrepShowItemNoAction

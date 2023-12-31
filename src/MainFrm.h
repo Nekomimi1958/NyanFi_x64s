@@ -231,6 +231,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *GitGrepAction1;
 	TAction *GitViewerAction;
 	TAction *GrayScaleAction;
+	TAction *Grep2Action;
 	TAction *GrepAbortAction;
 	TAction *GrepAction;
 	TAction *GrepAdjNextLnAction;
@@ -385,6 +386,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *ReloadListAction;
 	TAction *RenameDlgAction;
 	TAction *ReplaceStartAction;
+	TAction *RepNotUpdListAction;
 	TAction *RepositoryListAction;
 	TAction *RestartAction;
 	TAction *ReturnListAction;
@@ -694,6 +696,7 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *GrepExtractItem;
 	TMenuItem *GrepFileItemNoItem;
 	TMenuItem *GrepItem;
+	TMenuItem *GrepNotUpdListItem;
 	TMenuItem *GrepOmitTopItem;
 	TMenuItem *GrepOptionItem;
 	TMenuItem *GrepOrgOrderItem;
@@ -759,6 +762,7 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *Pop_g_3;
 	TMenuItem *Pop_g_4;
 	TMenuItem *Pop_g_5;
+	TMenuItem *Pop_g_6;
 	TMenuItem *PopAddTabItem;
 	TMenuItem *PopClrLogItem;
 	TMenuItem *PopCopyFileInfoItm;
@@ -794,6 +798,7 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *PopPopResultItem;
 	TMenuItem *PopPropertyItem;
 	TMenuItem *PopPushResultItem;
+	TMenuItem *PopRepNotUpdListItem;
 	TMenuItem *PopResultItem;
 	TMenuItem *PopSaveAsTabGroupItem;
 	TMenuItem *PopSaveDumpItem;
@@ -814,6 +819,7 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *RegExChkItem;
 	TMenuItem *RegSyncDlgItem;
 	TMenuItem *ReloadItem;
+	TMenuItem *RepNotUpdListItem;
 	TMenuItem *RepositoryListItem;
 	TMenuItem *RestartItem;
 	TMenuItem *ReternListItem;
@@ -1119,10 +1125,6 @@ __published:	// IDE で管理されるコンポーネント
 	TVirtualImageList *IconVImgListI;
 	TVirtualImageList *IconVImgListP;
 	TVirtualImageList *IconVImgListV;
-	TMenuItem *GrepNotUpdListItem;
-	TAction *RepNotUpdListAction;
-	TMenuItem *PopRepNotUpdListItem;
-	TMenuItem *RepNotUpdListItem;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -1359,10 +1361,14 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall FindTextActionExecute(TObject *Sender);
 	void __fastcall FixTabPathActionExecute(TObject *Sender);
 	void __fastcall GitDiffActionExecute(TObject *Sender);
+	void __fastcall GitGrepAction1Execute(TObject *Sender);
+	void __fastcall GitGrepAction1Update(TObject *Sender);
 	void __fastcall GitViewerActionExecute(TObject *Sender);
 	void __fastcall GitViewerActionUpdate(TObject *Sender);
 	void __fastcall GrepActionExecute(TObject *Sender);
 	void __fastcall GrepActionUpdate(TObject *Sender);
+	void __fastcall Grep2ActionExecute(TObject *Sender);
+	void __fastcall Grep2ActionUpdate(TObject *Sender);
 	void __fastcall HelpContentsActionExecute(TObject *Sender);
 	void __fastcall CmdIndexItemClick(TObject *Sender);
 	void __fastcall HelpHistoryItemClick(TObject *Sender);
@@ -1644,6 +1650,8 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall GrepPageControlChange(TObject *Sender);
 	void __fastcall GrepPageControlChanging(TObject *Sender, bool &AllowChange);
 	void __fastcall GrepSttSplitterMoved(TObject *Sender);
+	void __fastcall ResultListBoxData(TWinControl *Control, int Index, UnicodeString &Data);
+	void __fastcall ResultListBoxDataObject(TWinControl *Control, int Index, TObject *&DataObject);
 	void __fastcall ResultListBoxDrawItem(TWinControl *Control, int Index, TRect &Rect, TOwnerDrawState State);
 	void __fastcall ResultListBoxExit(TObject *Sender);
 	void __fastcall ResultListBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
@@ -1689,6 +1697,10 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall GrepSelResActionUpdate(TObject *Sender);
 	void __fastcall GrepSelDirActionExecute(TObject *Sender);
 	void __fastcall GrepSelDirActionUpdate(TObject *Sender);
+	void __fastcall GrepNotUpdListActionExecute(TObject *Sender);
+	void __fastcall GrepNotUpdListActionUpdate(TObject *Sender);
+	void __fastcall RepNotUpdListActionExecute(TObject *Sender);
+	void __fastcall RepNotUpdListActionUpdate(TObject *Sender);
 	void __fastcall GrepShowItemNoActionExecute(TObject *Sender);
 	void __fastcall GrepShowItemNoActionUpdate(TObject *Sender);
 	void __fastcall GrepFileItemNoActionExecute(TObject *Sender);
@@ -1953,14 +1965,6 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall IS_LoopActionUpdate(TObject *Sender);
 	void __fastcall IS_Match1ActionExecute(TObject *Sender);
 	void __fastcall IS_Match1ActionUpdate(TObject *Sender);
-	void __fastcall ResultListBoxData(TWinControl *Control, int Index, UnicodeString &Data);
-	void __fastcall ResultListBoxDataObject(TWinControl *Control, int Index, TObject *&DataObject);
-	void __fastcall GitGrepAction1Execute(TObject *Sender);
-	void __fastcall GitGrepAction1Update(TObject *Sender);
-	void __fastcall GrepNotUpdListActionExecute(TObject *Sender);
-	void __fastcall GrepNotUpdListActionUpdate(TObject *Sender);
-	void __fastcall RepNotUpdListActionExecute(TObject *Sender);
-	void __fastcall RepNotUpdListActionUpdate(TObject *Sender);
 
 private:	// ユーザー宣言
 	TIdFTP *IdFTP1;
@@ -2071,7 +2075,9 @@ private:	// ユーザー宣言
 	bool GrepFiltered;					//結果絞り込み中
 	bool GrepLnSorted;					//行内容でソート中
 	bool GrepWorkList;					//対象がワークリスト
+	bool GrepUseExe;					//grep.exe を利用
 
+	bool GrepSelFileOnly;				//ファイルのみ選択
 	bool fromViewer;					//テキストビューアから
 
 	int GrepMatchFileCnt;				//マッチしたファイル数
@@ -2113,6 +2119,15 @@ private:	// ユーザー宣言
 	bool FTPTryModTime;					//SetModTimeを試す
 	int  FTPLastWorkCnt;
 	int  FTPLastNoopCnt;
+
+	TPanel *GrepStickyPanel;			//GREPスティッキー
+	TPaintBox *GrepStickyBox;
+	int LastTopIndex;
+
+	void __fastcall UpdateGrepSticky();
+
+	void __fastcall onGrepStickyPaint(TObject *Sender);
+	void __fastcall onGrepStickyClick(TObject *Sender);
 
 	void __fastcall WmFormShowed(TMessage &msg);
 	void __fastcall WmDpiChanged(TMessage &msg);
@@ -2568,6 +2583,8 @@ private:	// ユーザー宣言
 	void __fastcall add_FTPLogMsg(UnicodeString msg = EmptyStr);
 	UnicodeString __fastcall DownloadFtpCore(file_rec *fp, UnicodeString dst_dir = EmptyStr);
 	bool __fastcall UploadFtpCore(file_rec *fp);
+
+	int  __fastcall ExeGrepCore(UnicodeString dnam, int &idx_tag);
 
 public:		// ユーザー宣言
 	//CurPath プロパティ

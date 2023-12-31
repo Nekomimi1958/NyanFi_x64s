@@ -59,7 +59,7 @@ int split_cmd_line(UnicodeString s, TStringList *lst);
 UnicodeString split_file_param(UnicodeString &s);
 
 TStringDynArray split_strings_tab(UnicodeString s);
-TStringDynArray split_strings_semicolon(UnicodeString s);
+TStringDynArray split_strings_semicolon(UnicodeString s, bool del_empty = false);
 
 bool remove_text(UnicodeString &s, UnicodeString w);
 bool remove_top_text(UnicodeString &s, UnicodeString w);

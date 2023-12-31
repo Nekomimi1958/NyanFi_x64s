@@ -6,26 +6,27 @@
   <title>オプション設定 - 一般2</title>
   <link rel="stylesheet" type="text/css" href="help.css">
   <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-    <param name="Keyword" value=".nyanfi">
-    <param name="Keyword" value="7z.dll">
-    <param name="Keyword" value="7-zip64.dll">
-    <param name="Keyword" value="Git for Windows">
-    <param name="Keyword" value="git.exe">
-    <param name="Keyword" value="NTFS">
-    <param name="Keyword" value="OpenStandard">
-    <param name="Keyword" value="ShowFileInfo">
-    <param name="Keyword" value="ShowPreview">
-    <param name="Keyword" value="thumbnail.jpg">
-    <param name="Keyword" value="Zone.Identifier">
-    <param name="Keyword" value="イメージプレビュー">
-    <param name="Keyword" value="タスク">
-    <param name="Keyword" value="タスクトレイ">
-    <param name="Keyword" value="テキストプレビュー">
-    <param name="Keyword" value="ファイル情報">
-    <param name="Keyword" value="ログ">
-    <param name="Keyword" value="一般2">
-    <param name="Keyword" value="呼び出しホットキー">
-    <param name="Keyword" value="代替データストリーム">
+	<param name="Keyword" value=".nyanfi">
+	<param name="Keyword" value="7z.dll">
+	<param name="Keyword" value="7-zip64.dll">
+	<param name="Keyword" value="Git for Windows">
+	<param name="Keyword" value="git.exe">
+	<param name="Keyword" value="grep.exe">
+	<param name="Keyword" value="NTFS">
+	<param name="Keyword" value="OpenStandard">
+	<param name="Keyword" value="ShowFileInfo">
+	<param name="Keyword" value="ShowPreview">
+	<param name="Keyword" value="thumbnail.jpg">
+	<param name="Keyword" value="Zone.Identifier">
+	<param name="Keyword" value="イメージプレビュー">
+	<param name="Keyword" value="タスク">
+	<param name="Keyword" value="タスクトレイ">
+	<param name="Keyword" value="テキストプレビュー">
+	<param name="Keyword" value="ファイル情報">
+	<param name="Keyword" value="ログ">
+	<param name="Keyword" value="一般2">
+	<param name="Keyword" value="呼び出しホットキー">
+	<param name="Keyword" value="代替データストリーム">
   </object>
 </head>
 
@@ -323,17 +324,24 @@
       <pre class="example_box">
  &gt;    LOAD 7-zip64.dll  v23.01 using 7z.dll
 </pre>
-      と表示されます(Ver.19.00.00.xx の場合)。
+      と表示されます(Ver.23.01.00.xx の場合)。
     </dd>
 
-    <dt class="no_bg_indent1">git.exe (Git for Windows) <img src="edit.png" alt="">　<span class="def_text">(デフォルト:
+    <dt class="no_bg_indent1">git.exe <img src="edit.png" alt="">　<span class="def_text">(デフォルト:
         自動検出)</span></dt>
     <dd>
-      Git 関連の処理で利用する <b>git.exe</b> の場所を指定します。<br>
-      標準的な場所にインストールされている場合は自動的に検出されますが、そうでない場合は手動で設定してください。<br>
+      Git 関連の処理で使用する <b>git.exe</b> の場所を指定します。<br>
+      Git for Windows が標準的な場所にインストールされている場合は自動的に検出されますが、そうでない場合は手動で設定してください。<br>
       <a href="hid00090.htm">→ Git の利用について</a>
     </dd>
-  </dl>
+    <dt class="no_bg_indent1">grep.exe <img src="edit.png" alt="">　<span class="def_text">(デフォルト:
+      自動検出)</span></dt>
+      <dd>
+        <a href="hid00005.htm#Grep2">Grep2</a> コマンドによる<a href="hid00056.htm">文字列検索(GREP)</a>で使用します。<br>
+        Git for Windows インストール時に一緒にインストールされます。自動検出されない場合は手動で設定してください。<br>
+        なお <b>GnuWin32</b> のものだと、うまく動作しないようです。
+      </dd>
+    </dl>
   <br><br>
 
 </body>

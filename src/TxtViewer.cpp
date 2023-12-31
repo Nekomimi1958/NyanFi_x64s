@@ -71,6 +71,7 @@ TTxtViewer::TTxtViewer(
 	StickyPanel->Visible    = false;
 	StickyPanel->Caption    = EmptyStr;
 	StickyPanel->BevelOuter = bvNone;
+	StickyPanel->ParentBackground = false;
 
 	StickyBox = new TPaintBox(OwnerForm);
 	StickyBox->Parent  = StickyPanel;
@@ -2348,6 +2349,8 @@ void __fastcall TTxtViewer::PaintText()
 			AlphaBlendCsvCol(ViewCanvas, fld_xp, csr_yp, LineHeight);
 	}
 
+	if (LastTop!=top_idx) UpdateSticky();
+
 	LastPos = CurPos;
 	LastTop = top_idx;
 	LastSel = (SelStart!=SelEnd);
@@ -2713,7 +2716,6 @@ void __fastcall TTxtViewer::UpdatePos(
 	if (changed) ScrBar->Position = CurTop;
 
 	set_CurCsvCol();
-	if (CurTop!=last_top) UpdateSticky();
 
 	UpdatePairPos();
 	if (PairChanged) force = true;
@@ -3372,7 +3374,6 @@ void __fastcall TTxtViewer::ScrollAdjust()
 	}
 
 	SetSttInf();
-	if (CurTop!=last_top) UpdateSticky();
 
 	if (StickyPanel->Visible && CurPos.y==CurTop-1) CurPos.y++;
 
@@ -3413,7 +3414,6 @@ void __fastcall TTxtViewer::MoveScroll(
 	CurBottom = CurTop + LineCount;
 	ScrBar->Position = CurTop;
 
-	if (CurTop!=last_top) UpdateSticky();
 	Repaint(true);
 }
 

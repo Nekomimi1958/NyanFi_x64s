@@ -23,8 +23,11 @@
 class TGitGrepForm : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
+	TAction *ClipCopyAction;
 	TAction *EditFileAction;
 	TAction *GrepStartAction;
+	TAction *LineCopyAction;
+	TAction *SaveAsAction;
 	TAction *ViewFileAction;
 	TActionList *ActionList1;
 	TButton *HiddenCanBtn;
@@ -36,7 +39,11 @@ __published:	// IDE で管理されるコンポーネント
 	TLabel *Label1;
 	TLabel *Label2;
 	TListBox *ResultListBox;
+	TMenuItem *ClipCopyItem;
 	TMenuItem *EdieFileItem;
+	TMenuItem *LineCopyItem;
+	TMenuItem *SaveAsItem;
+	TMenuItem *Sep_1;
 	TMenuItem *ViewFileItem;
 	TPanel *OptLeftPanel;
 	TPanel *OptPanel;
@@ -46,13 +53,6 @@ __published:	// IDE で管理されるコンポーネント
 	TPanel *TopRightPanel;
 	TPopupMenu *PopupMenu1;
 	TStatusBar *StatusBar1;
-	TAction *ClipCopyAction;
-	TAction *SaveAsAction;
-	TAction *LineCopyAction;
-	TMenuItem *ClipCopyItem;
-	TMenuItem *LineCopyItem;
-	TMenuItem *SaveAsItem;
-	TMenuItem *Sep_1;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -69,15 +69,15 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall ResultListBoxEnter(TObject *Sender);
 	void __fastcall ResultListBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall ResultListBoxKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall ClipCopyActionExecute(TObject *Sender);
+	void __fastcall LineCopyActionExecute(TObject *Sender);
+	void __fastcall SaveAsActionExecute(TObject *Sender);
+	void __fastcall ResultActionUpdate(TObject *Sender);
 	void __fastcall EditFileActionExecute(TObject *Sender);
 	void __fastcall EditFileActionUpdate(TObject *Sender);
 	void __fastcall ViewFileActionExecute(TObject *Sender);
 	void __fastcall ViewFileActionUpdate(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall ClipCopyActionExecute(TObject *Sender);
-	void __fastcall ResultActionUpdate(TObject *Sender);
-	void __fastcall SaveAsActionExecute(TObject *Sender);
-	void __fastcall LineCopyActionExecute(TObject *Sender);
 
 private:	// ユーザー宣言
 	bool DlgInitialized;

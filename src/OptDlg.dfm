@@ -871,7 +871,7 @@ object OptionDlg: TOptionDlg
         TabOrder = 11
         object PermitCmdsCheckBox: TCheckBox
           Left = 10
-          Top = 78
+          Top = 74
           Width = 253
           Height = 17
           Caption = '.nyanfi '#12391#12398#12467#12510#12531#12489#12501#12449#12452#12523#23455#34892#12434#35377#21487
@@ -879,7 +879,7 @@ object OptionDlg: TOptionDlg
         end
         object InheritDotCheckBox: TCheckBox
           Left = 10
-          Top = 51
+          Top = 47
           Width = 253
           Height = 17
           Caption = '.nyanfi '#12364#12394#12356#22580#21512#12289#19978#20301#12363#12425#32153#25215
@@ -887,7 +887,7 @@ object OptionDlg: TOptionDlg
         end
         object DotPerUserCheckBox: TCheckBox
           Left = 272
-          Top = 51
+          Top = 47
           Width = 155
           Height = 17
           Caption = #12518#12540#12470#21517#21029#12395#20316#25104
@@ -903,7 +903,7 @@ object OptionDlg: TOptionDlg
         end
         object FExt7zDllEdit: TLabeledEdit
           Left = 10
-          Top = 128
+          Top = 120
           Width = 413
           Height = 23
           EditLabel.Width = 204
@@ -913,25 +913,48 @@ object OptionDlg: TOptionDlg
           Text = ''
         end
         object CmdGitExeEdit: TLabeledEdit
-          Left = 10
-          Top = 175
-          Width = 374
+          Left = 59
+          Top = 153
+          Width = 324
           Height = 23
-          EditLabel.Width = 131
-          EditLabel.Height = 15
-          EditLabel.Caption = 'git.exe (Git for Windows)'
+          EditLabel.Width = 35
+          EditLabel.Height = 23
+          EditLabel.Caption = 'git.exe'
+          LabelPosition = lpLeft
           TabOrder = 5
           Text = ''
         end
         object RefCmdGitExeBtn: TButton
           Tag = 4
           Left = 387
-          Top = 175
+          Top = 153
           Width = 36
           Height = 22
           Caption = '...'
           TabOrder = 6
           OnClick = RefCmdGitExeBtnClick
+        end
+        object CmdGrepExeEdit: TLabeledEdit
+          Left = 59
+          Top = 180
+          Width = 324
+          Height = 23
+          EditLabel.Width = 45
+          EditLabel.Height = 23
+          EditLabel.Caption = 'grep.exe'
+          LabelPosition = lpLeft
+          TabOrder = 7
+          Text = ''
+        end
+        object RefCmdGrepExeBtn: TButton
+          Tag = 4
+          Left = 387
+          Top = 181
+          Width = 36
+          Height = 22
+          Caption = '...'
+          TabOrder = 8
+          OnClick = RefCmdGrepExeBtnClick
         end
       end
       object FileInfoGroupBox: TGroupBox

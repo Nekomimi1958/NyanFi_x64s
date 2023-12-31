@@ -33,7 +33,6 @@ object GitViewer: TGitViewer
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 521
     object DiffSplitter: TSplitter
       Left = 0
       Top = 251
@@ -51,7 +50,6 @@ object GitViewer: TGitViewer
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 521
       object DiffPanel: TPanel
         Left = 0
         Top = 0
@@ -61,7 +59,6 @@ object GitViewer: TGitViewer
         BevelOuter = bvNone
         TabOrder = 0
         OnResize = DiffPanelResize
-        ExplicitWidth = 521
         object DiffListBox: TListBox
           Left = 0
           Top = 0
@@ -81,7 +78,6 @@ object GitViewer: TGitViewer
           OnKeyDown = DiffListBoxKeyDown
           OnKeyPress = GitListBoxKeyPress
           OnMouseDown = GitListBoxMouseDown
-          ExplicitWidth = 521
         end
       end
       object DiffBar: TToolBar
@@ -98,7 +94,6 @@ object GitViewer: TGitViewer
         List = True
         AllowTextButtons = True
         TabOrder = 1
-        ExplicitWidth = 521
         object AddBtn: TToolButton
           Left = 0
           Top = 0
@@ -182,7 +177,6 @@ object GitViewer: TGitViewer
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 521
       object CommitPanel: TPanel
         Left = 0
         Top = 0
@@ -192,7 +186,6 @@ object GitViewer: TGitViewer
         BevelOuter = bvNone
         TabOrder = 0
         OnResize = CommitPanelResize
-        ExplicitWidth = 521
         object CommitListBox: TListBox
           Left = 0
           Top = 0
@@ -215,7 +208,6 @@ object GitViewer: TGitViewer
           OnKeyDown = CommitListBoxKeyDown
           OnKeyPress = GitListBoxKeyPress
           OnMouseDown = GitListBoxMouseDown
-          ExplicitWidth = 521
         end
       end
       object FindBar: TToolBar
@@ -340,7 +332,6 @@ object GitViewer: TGitViewer
     ModalResult = 2
     TabOrder = 1
     TabStop = False
-    ExplicitLeft = 710
   end
   object BranchPanel: TPanel
     Left = 0
@@ -423,6 +414,9 @@ object GitViewer: TGitViewer
     end
     object ShowTagItem: TMenuItem
       Action = ShowTagAction
+    end
+    object DescTagItem: TMenuItem
+      Action = DescTagAction
     end
   end
   object ActionList1: TActionList
@@ -525,6 +519,10 @@ object GitViewer: TGitViewer
     object ShowTagAction: TAction
       Caption = #12479#12464#12434#34920#31034'(&T)'
       OnExecute = ShowTagActionExecute
+    end
+    object DescTagAction: TAction
+      Caption = #12479#12464#12434#38477#38918#12391#34920#31034
+      OnExecute = DescTagActionExecute
     end
     object ShowBranchesAction: TAction
       Caption = #20182#12398#12502#12521#12531#12481#12418#34920#31034'(&B)'

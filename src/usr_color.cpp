@@ -1,5 +1,5 @@
-ï»¿//----------------------------------------------------------------------//
-// ã‚«ãƒ©ãƒ¼é–¢é€£é–¢æ•°														//
+//----------------------------------------------------------------------//
+// ƒJƒ‰[ŠÖ˜AŠÖ”														//
 //																		//
 //----------------------------------------------------------------------//
 #include "usr_color.h"
@@ -12,7 +12,7 @@ const TColor col_None = Graphics::clNone;
 const TColor col_Teal = clTeal;
 
 //---------------------------------------------------------------------------
-//è¼åº¦ã‚’å–å¾—(0ï½1.0)
+//‹P“x‚ğæ“¾(0`1.0)
 //---------------------------------------------------------------------------
 double GetLuminance(TColor col)
 {
@@ -21,7 +21,7 @@ double GetLuminance(TColor col)
 }
 
 //---------------------------------------------------------------------------
-//ã‚«ãƒ©ãƒ¼ã«å€ç‡ã‚’ã‹ã‘ã‚‹
+//ƒJƒ‰[‚É”{—¦‚ğ‚©‚¯‚é
 //---------------------------------------------------------------------------
 TColor RatioCol(TColor col, float rt)
 {
@@ -33,7 +33,7 @@ TColor RatioCol(TColor col, float rt)
 	return TColor(RGB(r, g, b));
 }
 //---------------------------------------------------------------------------
-//è¼åº¦ã«åŸºã¥ã„ã¦ã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«åŒ–
+//‹P“x‚ÉŠî‚Ã‚¢‚ÄƒOƒŒ[ƒXƒP[ƒ‹‰»
 //---------------------------------------------------------------------------
 TColor GrayCol(TColor col)
 {
@@ -43,7 +43,7 @@ TColor GrayCol(TColor col)
 }
 
 //---------------------------------------------------------------------------
-//è£œè‰²ã‚’å–å¾—
+//•âF‚ğæ“¾
 //---------------------------------------------------------------------------
 TColor ComplementaryCol(TColor col)
 {
@@ -56,7 +56,7 @@ TColor ComplementaryCol(TColor col)
 }
 
 //---------------------------------------------------------------------------
-//RGBâ†’HSL å¤‰æ›
+//RGB¨HSL •ÏŠ·
 //---------------------------------------------------------------------------
 void RgbToHsl(TColor col, int *h, int *s, int *l)
 {
@@ -91,7 +91,7 @@ void RgbToHsl(TColor col, int *h, int *s, int *l)
 	*l = (int)(l_f + 0.5);
 }
 //---------------------------------------------------------------------------
-//RGBâ†’HSV å¤‰æ›
+//RGB¨HSV •ÏŠ·
 //---------------------------------------------------------------------------
 void RgbToHsv(BYTE r, BYTE g, BYTE b, int *h, int *s, int *v)
 {
@@ -130,7 +130,7 @@ void RgbToHsv(TColor col, int *h, int *s, int *v)
 }
 
 //---------------------------------------------------------------------------
-//HSLâ†’RGB å¤‰æ›
+//HSL¨RGB •ÏŠ·
 //---------------------------------------------------------------------------
 TColor HslToCol(int h, int s, int l)
 {
@@ -185,11 +185,11 @@ TColor HslToCol(int h, int s, int l)
 }
 
 //---------------------------------------------------------------------------
-//èƒŒæ™¯ã®è¼åº¦ã‹ã‚‰ç™½ã¾ãŸã¯é»’ã‚’é¸æŠãƒ»åŠ æ¸›
+//”wŒi‚Ì‹P“x‚©‚ç”’‚Ü‚½‚Í•‚ğ‘I‘ğE‰ÁŒ¸
 //---------------------------------------------------------------------------
 TColor SelectWorB(
-	TColor col,		//èƒŒæ™¯è‰²
-	float  rt)		//åŠ æ¸›æŒ‡å®š  (default = 1.0)
+	TColor col,		//”wŒiF
+	float  rt)		//‰ÁŒ¸w’è  (default = 1.0)
 {
 	double v = GetLuminance(col);
 	if (rt<1.0)
@@ -198,24 +198,24 @@ TColor SelectWorB(
 		return (v>0.5)? clBlack : clWhite;
 }
 //---------------------------------------------------------------------------
-//è¼åº¦ã«åŸºã¥ã„ã¦æ˜æš—ã‚’åŠ æ¸›
+//‹P“x‚ÉŠî‚Ã‚¢‚Ä–¾ˆÃ‚ğ‰ÁŒ¸
 //---------------------------------------------------------------------------
 TColor AdjustColor(
-	TColor col,		//å…ƒã®è‰²
-	int adj)		//åŠ æ¸›å€¤	0ï½255
+	TColor col,		//Œ³‚ÌF
+	int adj)		//‰ÁŒ¸’l	0`255
 {
 	int cref = ColorToRGB(col);
 	int r = GetRValue(cref);
 	int g = GetGValue(cref);
 	int b = GetBValue(cref);
 
-	//æ˜â†’æš—
+	//–¾¨ˆÃ
 	if (GetLuminance(col)>0.5) {
 		r -= (adj * r / 255);
 		g -= (adj * g / 255);
 		b -= (adj * b / 255);
 	}
-	//æš—â†’æ˜
+	//ˆÃ¨–¾
 	else {
 		r += (adj * (255 - r) / 255);
 		g += (adj * (255 - g) / 255);
@@ -230,7 +230,7 @@ TColor AdjustColor(
 }
 
 //---------------------------------------------------------------------------
-//ï¼’è‰²æ··åˆ
+//‚QF¬‡
 //---------------------------------------------------------------------------
 TColor Mix2Colors(TColor col1, TColor col2)
 {
@@ -243,7 +243,7 @@ TColor Mix2Colors(TColor col1, TColor col2)
 }
 
 //---------------------------------------------------------------------------
-//æ–‡å­—åˆ—ã‹ã‚‰ã‚«ãƒ©ãƒ¼ã‚’è¨­å®š
+//•¶š—ñ‚©‚çƒJƒ‰[‚ğİ’è
 //---------------------------------------------------------------------------
 void str_to_Color(TColor &col, UnicodeString s)
 {
@@ -252,10 +252,10 @@ void str_to_Color(TColor &col, UnicodeString s)
 }
 
 //---------------------------------------------------------------------------
-//ã‚¹ã‚¿ã‚¤ãƒ«ã‚’è€ƒæ…®ã—ãŸè‰²ã®å–å¾—
+//ƒXƒ^ƒCƒ‹‚ğl—¶‚µ‚½F‚Ìæ“¾
 //---------------------------------------------------------------------------
 TColor get_WinColor(
-	bool is_inv)	//ç„¡åŠ¹ãªé …ç›®	(default = false)
+	bool is_inv)	//–³Œø‚È€–Ú	(default = false)
 {
 	TColor col = TStyleManager::ActiveStyle->GetSystemColor(clWindow);
 	if (is_inv) col = AdjustColor(col, ADJCOL_BGINV);
@@ -263,13 +263,13 @@ TColor get_WinColor(
 }
 //---------------------------------------------------------------------------
 TColor get_TextColor(
-	bool is_hl)	//ãƒã‚¤ãƒ©ã‚¤ãƒˆ	(default = false)
+	bool is_hl)	//ƒnƒCƒ‰ƒCƒg	(default = false)
 {
 	return TStyleManager::ActiveStyle->GetSystemColor(is_hl? clHighlightText : clWindowText);
 }
 //---------------------------------------------------------------------------
 TColor get_PanelColor(
-	bool is_inv)	//ç„¡åŠ¹ãªé …ç›®	(default = false)
+	bool is_inv)	//–³Œø‚È€–Ú	(default = false)
 {
 	TColor col = TStyleManager::ActiveStyle->GetSystemColor(clBtnFace);
 	if (is_inv) col = AdjustColor(col, ADJCOL_BGINV);
@@ -277,7 +277,7 @@ TColor get_PanelColor(
 }
 //---------------------------------------------------------------------------
 TColor get_LabelColor(
-	bool is_inv)	//ç„¡åŠ¹ãªé …ç›®	(default = false)
+	bool is_inv)	//–³Œø‚È€–Ú	(default = false)
 {
 	return TStyleManager::ActiveStyle->GetSystemColor(is_inv? clGrayText : clBtnText);
 }
@@ -285,7 +285,7 @@ TColor get_LabelColor(
 //---------------------------------------------------------------------------
 void set_EditColor(
 	TEdit *ep,
-	bool is_inv)	//ç„¡åŠ¹ãªé …ç›®	(default = false)
+	bool is_inv)	//–³Œø‚È€–Ú	(default = false)
 {
 	TColor col = TStyleManager::ActiveStyle->GetSystemColor(clWindow);
 	if (is_inv) col = AdjustColor(col, ADJCOL_BGINV);
@@ -310,7 +310,7 @@ void set_EditColor(TMaskEdit *ep, bool is_inv)
 }
 
 //---------------------------------------------------------------------------
-//ç©ºæ¬„ãªã‚‰ç„¡åŠ¹è‰²ã«
+//‹ó—“‚È‚ç–³ŒøF‚É
 //---------------------------------------------------------------------------
 void InvColIfEmpty(TLabeledEdit *ep)
 {
@@ -329,7 +329,7 @@ void InvColIfEmpty(TEdit *ep)
 }
 
 //---------------------------------------------------------------------------
-//ãƒã‚¤ãƒ©ã‚¤ãƒˆè‰²ã®è¨­å®š
+//ƒnƒCƒ‰ƒCƒgF‚Ìİ’è
 //---------------------------------------------------------------------------
 void SetHighlight(TCanvas *cv, bool hl)
 {

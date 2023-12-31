@@ -89,8 +89,9 @@ extern  FUNC_GetFontResourceInfo	lpfGetFontResourceInfo;
 
 //---------------------------------------------------------------------------
 //検索用オプション
-enum SeaOpt {soMigemo, soRegEx, soAndOr, soFuzzy, soCaseSens, soGitGrep, soCSV, soTSV, soTree};
-typedef Set <SeaOpt, soMigemo, soTree> SearchOption;
+enum SeaOpt {soMigemo, soRegEx, soAndOr, soFuzzy, soCaseSens, soCSV, soTSV, soTree, soGitGrep, soGrep, soGrepS, soGrepF};
+
+typedef Set <SeaOpt, soMigemo, soGrepF> SearchOption;
 
 //---------------------------------------------------------------------------
 #define DEF_WIN_WIDTH	800
@@ -240,6 +241,7 @@ extern DWORD  ProcessId;
 extern bool   IsAdmin;
 extern bool   IsPrimary;
 extern bool   GitExists;
+extern bool   GrepExists;
 extern bool   IsMuted;
 extern int    StartedCount;
 extern int    NyanFiIdNo;
@@ -641,6 +643,7 @@ extern UnicodeString CmdFilePath;
 extern UnicodeString CmdGitExe;
 extern UnicodeString GitBashExe;
 extern UnicodeString GitGuiExe;
+extern UnicodeString CmdGrepExe;
 
 extern int VersionNo;
 extern UnicodeString VersionStr;
@@ -2236,6 +2239,8 @@ bool GitShellExe(UnicodeString prm, UnicodeString wdir, TMemoryStream *o_ms, DWO
 bool GitShellExe(UnicodeString prm, UnicodeString wdir);
 void split_GitWarning(TStringList *o_lst, TStringList *w_lst = NULL);
 UnicodeString save_GitRevAsTemp(UnicodeString id, UnicodeString fnam, UnicodeString wdir);
+
+bool GrepShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst, DWORD *exit_cd = NULL);
 
 int  get_BusyTaskCount();
 int  get_MaxTaskCount();

@@ -38,8 +38,7 @@
   </p>
   <div class="spc_box_p">
     プログラムソース(.as .au3 .bat .c .cpp .fs .go .hs .hsp .java .js .jsx .kt .lua .pas .php .pl .ps1 .py .rb .rs .scala .sh
-    .st .swift .ts .v .vbs .vhd などに対応)の場合、コメント、文字列、予約語、シンボルを別色で強調表示できます(<span
-      class="note_text">厳密ではないため対応できない場合もあり</span>)。<a href="hid00084.htm">構文強調表示定義ファイル</a>を作成することによってユーザ定義も可能です。<br>
+    .st .swift .ts .v .vbs .vhd などに対応)の場合、コメント、文字列、予約語、シンボルを別色で強調表示できます(厳密ではないため対応できない場合もあり)。<a href="hid00084.htm">構文強調表示定義ファイル</a>を作成することによってユーザ定義も可能です。<br>
     強調表示の切り替えは <a href="hid00011.htm">オプション設定 - テキストビューア</a> の「<b>強調表示</b>」で、文字色は <a href="hid00023.htm">オプション設定 -
       フォント・配色</a> で指定してください。<br>
   </div>
@@ -498,7 +497,11 @@
     <dd><a href="hid00056.htm">文字列検索(GREP)</a>を開きます。<br>
       カレントパス以下のテキストファイルに対して、文字列検索を行います。<br>
       パラメータに検索文字列を指定すると、それを設定します。またパラメータ無指定で、選択中の文字列がある場合はそれを設定します。<br>
-      <a href="#FindText">→ FindText</a>　<a href="#FindSelDown">→ FindSelDown</a>　<a href="#FindSelUp">→ FindSelUp</a>
+      <a href="#Grep2">→ Grep2</a>　<a href="#FindText">→ FindText</a>　<a href="#FindSelDown">→ FindSelDown</a>　<a href="#FindSelUp">→ FindSelUp</a>
+    </dd>
+
+    <dt id="Grep2">Grep2<span class="pram_text">[_検索文字列]</span></dt>
+    <dd><a href="#Grep">Grep</a> コマンドと同様に<a href="hid00056.htm">文字列検索(GREP)</a>を開きますが、検索処理には外部の <b>grep.exe</b> を使用します。
     </dd>
 
     <dt id="HelpContents">HelpContents<span class="pram_text">[_{CI|FI}]</span></dt>

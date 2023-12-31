@@ -49,6 +49,7 @@ __published:	// IDE で管理されるコンポーネント
 	TButton *DowColBtn;
 	TButton *EditListBtn;
 	TButton *Fmt_A_Btn;
+	TButton *Fmt_DT_Btn;
 	TButton *Fmt_E_Btn;
 	TButton *Fmt_L_Btn;
 	TButton *Fmt_R_Btn;
@@ -110,6 +111,7 @@ __published:	// IDE で管理されるコンポーネント
 	TGroupBox *TimeGroupBox;
 	TLabel *CnvChLabel;
 	TLabel *DotLabel;
+	TLabel *Label1;
 	TLabel *ListErrLabel;
 	TLabel *mp3fextLabel;
 	TLabel *NameInfMLabel;
@@ -117,6 +119,7 @@ __published:	// IDE で管理されるコンポーネント
 	TLabel *SttInfLabel;
 	TLabeledEdit *AssExtEdit;
 	TLabeledEdit *IniSttWdEdit;
+	TLabeledEdit *PrvWaitEdit;
 	TListBox *CnvCharListBox;
 	TMaskEdit *TimeMaskEdit;
 	TMenuItem *DelItemItem;
@@ -137,12 +140,14 @@ __published:	// IDE で管理されるコンポーネント
 	TPanel *Opt1MainPanel;
 	TPanel *Opt2MainPanel;
 	TPanel *Opt2SubPanel;
+	TPanel *PreviewPanel;
 	TPanel *ReadOnlyPanel;
 	TPanel *ReplaceTopPanel;
 	TPanel *SerEditPanel;
 	TPanel *SerialTopPanel;
 	TPanel *SerLeftPanel;
 	TPanel *SerRightPanel;
+	TPanel *SglOpPanel;
 	TPanel *SysPanel;
 	TPopupMenu *FmtPopupMenu;
 	TRadioGroup *FbaseRadioGroup;
@@ -159,11 +164,6 @@ __published:	// IDE で管理されるコンポーネント
 	TTabSheet *ReplaceSheet;
 	TTabSheet *SerialSheet;
 	TTimer *Timer1;
-	TLabeledEdit *PrvWaitEdit;
-	TLabel *Label1;
-	TPanel *PreviewPanel;
-	TPanel *SglOpPanel;
-	TButton *Fmt_DT_Btn;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

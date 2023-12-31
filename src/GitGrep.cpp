@@ -112,15 +112,33 @@ void __fastcall TGitGrepForm::FindComboBoxKeyPress(TObject *Sender, System::Wide
 //---------------------------------------------------------------------------
 void __fastcall TGitGrepForm::GrepStartActionExecute(TObject *Sender)
 {
+	GitBusy = true;
+
 	Keyword = Trim(FindComboBox->Text);
 	UnicodeString prm = "grep -n";
+	UnicodeString kwd = Keyword;
 	if (!CaseCheckBox->Checked) prm += " -i";
-	if (RegExCheckBox->Checked) prm += " -E";
 
-	if (StartsStr("-e ", Keyword))
-		prm += (" " + Keyword);
-	else
-		prm += (" \"" + Keyword + "\"");
+	if (RegExCheckBox->Checked) {
+		prm += " -E";
+		kwd = TRegEx::Replace(kwd, "([^\\\\])?(\\\\d)", "\\1[0-9]");
+	}
+
+	if (StartsStr("-e ", kwd)) {
+		prm += (" " + kwd);
+	}
+	else {
+		std::unique_ptr<TStringList> wlst(new TStringList());
+		get_find_wd_list(kwd, wlst.get());
+		if (wlst->Count==1) {
+			prm.cat_sprintf(_T(" \"%s\""), wlst->Strings[0].c_str());
+		}
+		else {
+			for (int i=0; i<wlst->Count; i++) {
+				prm.cat_sprintf(_T(" -e %s"), wlst->Strings[i].c_str());
+			}
+		}
+	}
 
 	if (!CommitID.IsEmpty()) prm += (" " + CommitID);
 
@@ -135,11 +153,10 @@ void __fastcall TGitGrepForm::GrepStartActionExecute(TObject *Sender)
 	StatusBar1->Panels->Items[1]->Text = "git " + prm;
 	unsigned int start_cnt = GetTickCount();
 
-	GitBusy = true;
 	FindComboBox->Enabled = false;
+	UpdateActions();
 	bool ok = (GitShellExe(prm, WorkDir, ResultBuff));
 	FindComboBox->Enabled = true;
-	GitBusy = false;
 
 	if (ok) {
 		if (ResultBuff->Count) {
@@ -173,20 +190,20 @@ void __fastcall TGitGrepForm::GrepStartActionExecute(TObject *Sender)
 			beep_Warn();
 		}
 	}
+
+	GitBusy = false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TGitGrepForm::GrepStartActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction *)Sender;
 
-	FindComboBox->Tag = CBTAG_HISTORY |
-						(FindComboBox->Focused()? CBTAG_RGEX_V : 0) |
-						(RegExCheckBox->Checked? (CBTAG_RGEX_E | CBTAG_RGEX_P) : 0);
+	FindComboBox->Tag = CBTAG_HISTORY | (FindComboBox->Focused()? CBTAG_RGEX_V : 0) | (RegExCheckBox->Checked? CBTAG_RGEX_E : 0);
 
 	bool reg_ng = RegExCheckBox->Checked && !FindComboBox->Text.IsEmpty() && !chk_RegExPtn(FindComboBox->Text);
 	ErrMarkList->SetErrFrame(this, FindComboBox, reg_ng);
 
-	ap->Enabled = !FindComboBox->Text.IsEmpty() && !reg_ng;
+	ap->Enabled = !FindComboBox->Text.IsEmpty() && !reg_ng && !GitBusy;
 }
 //---------------------------------------------------------------------------
 void __fastcall TGitGrepForm::ResultListBoxData(TWinControl *Control, int Index, UnicodeString &Data)

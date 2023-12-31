@@ -312,6 +312,7 @@ void set_CmdList(
 		"FV:EditHighlight=構文強調表示定義ファイルの編集\n"
 		"FV:EditHistory=最近編集したファイル一覧\n"
 		"FV:Grep=文字列検索(GREP)\n"
+		"FV:Grep2=文字列検索(grep フロントエンド)\n"
 		"FV:HtmlToText=テキストビューアでHTML→テキスト変換表示\n"
 		"FV:IncSearch=インクリメンタルサーチ\n"
 		"FV:FindTagName=tags からタグ名検索\n"
@@ -514,7 +515,7 @@ void get_PrmList(
 			_T("AddTag|AppList|CalcDirSize|CalcDirSizeAll|Calculator|ChangeDir|ChangeOppDir|Clone|CloneToCurr|")
 			_T("ContextMenu|ConvertHtm2Txt|Copy|CopyTo|CountLines|CreateDir|CursorDown|CursorTop|CursorUp|DateSelect|")
 			_T("DebugCmdFile|Delete|DistributionDlg|ExeCommands|ExeMenuFile|FileEdit|FileRun|Filter|FindDown|")
-			_T("FindFileDirDlg|FindFileDlg|FindTag|FindUp|FTPChmod|FunctionList|GitDiff|GitViewer|Grep|HelpCurWord|")
+			_T("FindFileDirDlg|FindFileDlg|FindTag|FindUp|FTPChmod|FunctionList|GitDiff|GitViewer|Grep|Grep2|HelpCurWord|")
 			_T("HtmlToText|IncSearch|InputCommands|JumpIndex|JumpLine|JumpTo|ListArchive|ListDuration|ListExpFunc|")
 			_T("ListNyanFi|ListTail|ListText|ListTree|LoadBgImage|LoadResultList|LoadTabGroup|LoadWorkList|")
 			_T("LockKeyMouse|Mark|MaskFind|MaskSelect|MatchSelect|MonitorOff|Move|MoveTo|NameFromClip|NewTextFile|")

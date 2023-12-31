@@ -514,6 +514,7 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	MarkMemoEdit->Tag			= (NativeInt)&MarkImgMemo;
 	FExt7zDllEdit->Tag			= (NativeInt)&FExt7zDll;
 	CmdGitExeEdit->Tag			= (NativeInt)&CmdGitExe;
+	CmdGrepExeEdit->Tag			= (NativeInt)&CmdGrepExe;
 	AutoRenFmtEdit->Tag			= (NativeInt)&AutoRenFmt;
 	NoDirHistPathEdit->Tag		= (NativeInt)&NoDirHistPath;
 	FExtExeFileEdit->Tag		= (NativeInt)&FExtExeFile;
@@ -1474,13 +1475,22 @@ void __fastcall TOptionDlg::RefMigemoBtnClick(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-//git.ext 参照
+//git.exe 参照
 //---------------------------------------------------------------------------
 void __fastcall TOptionDlg::RefCmdGitExeBtnClick(TObject *Sender)
 {
 	UserModule->PrepareOpenDlg(_T("git.exe の指定"), F_FILTER_EXE, _T("git.exe"), cv_env_var("%PROGRAMFILES%"));
 	UnicodeString fnam;
 	if (UserModule->OpenDlgToStr(fnam)) CmdGitExeEdit->Text = fnam;
+}
+//---------------------------------------------------------------------------
+//grep.exe 参照
+//---------------------------------------------------------------------------
+void __fastcall TOptionDlg::RefCmdGrepExeBtnClick(TObject *Sender)
+{
+	UserModule->PrepareOpenDlg(_T("grep.exe の指定"), F_FILTER_EXE, _T("grep.exe"), cv_env_var("%PROGRAMFILES%"));
+	UnicodeString fnam;
+	if (UserModule->OpenDlgToStr(fnam)) CmdGrepExeEdit->Text = fnam;
 }
 
 //---------------------------------------------------------------------------

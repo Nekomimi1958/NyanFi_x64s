@@ -277,6 +277,7 @@ void __fastcall TRegDirDlg::UpdateSpDirList(bool reload)
 			if (!DownloadPath.IsEmpty())	SpDirList->Add(DownloadPath + "\tダウンロード");
 			if (usr_Migemo->Available)		SpDirList->Add(to_absolute_name(MigemoPath) + "\tMigemo");
 			if (!CmdGitExe.IsEmpty())		SpDirList->AddObject(CmdGitExe + "\tgit.exe", (TObject*)SPITM_EXE);
+			if (!CmdGrepExe.IsEmpty())		SpDirList->AddObject(CmdGrepExe + "\tgrep.exe", (TObject*)SPITM_EXE);
 
 			//エディタ
 			SpDirList->AddObject("\t-", (TObject*)6);
