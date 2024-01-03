@@ -4,6 +4,7 @@ object GitGrepForm: TGitGrepForm
   ClientHeight = 445
   ClientWidth = 630
   Color = clBtnFace
+  Constraints.MinWidth = 640
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -46,7 +47,7 @@ object GitGrepForm: TGitGrepForm
       BevelOuter = bvNone
       TabOrder = 1
       object CaseCheckBox: TCheckBox
-        Left = 101
+        Left = 95
         Top = 9
         Width = 89
         Height = 17
@@ -54,7 +55,7 @@ object GitGrepForm: TGitGrepForm
         TabOrder = 1
       end
       object RegExCheckBox: TCheckBox
-        Left = 8
+        Left = 0
         Top = 9
         Width = 89
         Height = 17
@@ -63,12 +64,20 @@ object GitGrepForm: TGitGrepForm
         OnClick = RegExCheckBoxClick
       end
       object StartBtn: TButton
-        Left = 200
-        Top = 5
-        Width = 66
+        Left = 258
+        Top = 4
+        Width = 48
         Height = 25
         Action = GrepStartAction
         Default = True
+        TabOrder = 3
+      end
+      object WordCheckBox: TCheckBox
+        Left = 186
+        Top = 9
+        Width = 60
+        Height = 17
+        Caption = #21336#35486
         TabOrder = 2
       end
     end

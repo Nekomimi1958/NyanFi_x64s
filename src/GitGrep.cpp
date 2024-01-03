@@ -42,6 +42,7 @@ void __fastcall TGitGrepForm::FormShow(TObject *Sender)
 	IniFile->LoadPosInfo(this, DialogCenter);
 	RegExCheckBox->Checked = IniFile->ReadBoolGen(_T("GitGrepRegEx"),	false);
 	CaseCheckBox->Checked  = IniFile->ReadBoolGen(_T("GitGrepCase"),	false);
+	WordCheckBox->Checked  = IniFile->ReadBoolGen(_T("GitGrepWord"),	false);
 
 	IniFile->LoadComboBoxItems(FindComboBox, RegExCheckBox->Checked? _T("GitGrepPtnHistory") : _T("GitGrepFindHistory"));
 	IniFile->LoadComboBoxItems(PathComboBox, _T("GitGrepPathHistory"));
@@ -60,6 +61,7 @@ void __fastcall TGitGrepForm::FormClose(TObject *Sender, TCloseAction &Action)
 	IniFile->SavePosInfo(this);
 	IniFile->WriteBoolGen(_T("GitGrepRegEx"),	RegExCheckBox);
 	IniFile->WriteBoolGen(_T("GitGrepCase"),	CaseCheckBox);
+	IniFile->WriteBoolGen(_T("GitGrepWord"),	WordCheckBox);
 
 	IniFile->SaveComboBoxItems(FindComboBox, RegExCheckBox->Checked? _T("GitGrepPtnHistory") : _T("GitGrepFindHistory"));
 	IniFile->SaveComboBoxItems(PathComboBox, _T("GitGrepPathHistory"));
@@ -118,6 +120,7 @@ void __fastcall TGitGrepForm::GrepStartActionExecute(TObject *Sender)
 	UnicodeString prm = "grep -n";
 	UnicodeString kwd = Keyword;
 	if (!CaseCheckBox->Checked) prm += " -i";
+	if (WordCheckBox->Checked)  prm += " -w";
 
 	if (RegExCheckBox->Checked) {
 		prm += " -E";

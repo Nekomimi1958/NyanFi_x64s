@@ -132,7 +132,8 @@ bool starts_ptn(UnicodeString ptn, UnicodeString s);
 UnicodeString get_fuzzy_ptn(UnicodeString kwd, bool sep_sw = false);
 
 void get_find_wd_list(UnicodeString wd, TStringList *lst);
-bool find_mlt(UnicodeString wd, UnicodeString s, bool and_sw = false, bool not_sw = false, bool case_sw = false);
+bool find_mlt(UnicodeString wd, UnicodeString s,
+		bool and_sw = false, bool not_sw = false, bool case_sw = false, bool word_sw = false);
 bool find_mlt_str(UnicodeString wd, UnicodeString s, TStringList *lst, bool case_sw);
 
 int get_line_count(UnicodeString s);
@@ -145,6 +146,8 @@ UnicodeString get_tsv_item(UnicodeString src, int idx);
 UnicodeString make_csv_str(UnicodeString s);
 UnicodeString make_csv_str(bool sw);
 UnicodeString make_csv_rec_str(TStringDynArray lst);
+UnicodeString make_csv_rec_str(std::initializer_list<UnicodeString> lst);
+
 int indexof_csv_list(TStringList *lst, UnicodeString s, int p);
 TStringDynArray record_of_csv_list(TStringList *lst, UnicodeString s, int p, int size);
 
@@ -170,6 +173,7 @@ bool equal_F1(UnicodeString s);
 
 bool is_separator(UnicodeString s);
 bool is_alnum_str(UnicodeString s);
+bool is_word(UnicodeString s, int p, int len);
 
 bool starts_tchs(UnicodeString lst, UnicodeString s);
 bool ends_tchs(UnicodeString lst, UnicodeString s);

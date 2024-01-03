@@ -8,6 +8,7 @@
 #include <shlwapi.h>
 #include <memory>
 #include <algorithm>
+#include <initializer_list>
 #include <VersionHelpers.h>
 #include <RegularExpressions.hpp>
 #include <System.Win.Registry.hpp>

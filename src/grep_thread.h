@@ -24,6 +24,7 @@ private:
 	bool opt_regex;
 	bool opt_and;
 	bool opt_case;
+	bool opt_word;
 	bool opt_one;
 	bool opt_xtag;
 
@@ -32,8 +33,8 @@ private:
 
 public:
 	__fastcall TGrepThread(bool CreateSuspended, int id,
-							int idx_tag, UnicodeString fnam, UnicodeString kwd,
-							bool sw_regex, bool sw_and, bool sw_case, bool sw_one, bool sw_xtag);
+						int idx_tag, UnicodeString fnam, UnicodeString kwd,
+						bool sw_regex, bool sw_and, bool sw_case, bool sw_word, bool sw_one, bool sw_xtag);
 };
 //---------------------------------------------------------------------------
 #endif

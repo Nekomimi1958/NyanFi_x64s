@@ -236,9 +236,9 @@ TColor Mix2Colors(TColor col1, TColor col2)
 {
 	int c1 = ColorToRGB(col1);
 	int c2 = ColorToRGB(col2);
-	int r = (GetRValue(c1) + GetRValue(c2)) / 2;
-	int g = (GetGValue(c1) + GetGValue(c2)) / 2;
-	int b = (GetBValue(c1) + GetBValue(c2)) / 2;
+	int r  = (GetRValue(c1) + GetRValue(c2)) / 2;
+	int g  = (GetGValue(c1) + GetGValue(c2)) / 2;
+	int b  = (GetBValue(c1) + GetBValue(c2)) / 2;
 	return TColor(RGB(r, g, b));
 }
 

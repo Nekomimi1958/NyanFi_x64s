@@ -1164,7 +1164,8 @@ bool find_mlt(
 	UnicodeString s,	//対象文字列
 	bool and_sw,		//AND検索			(default = false)
 	bool not_sw,		//NOT検索			(default = false)
-	bool case_sw)		//大小文字を区別	(default = false)
+	bool case_sw,		//大小文字を区別	(default = false)
+	bool word_sw)		//単語単位			(default = false)
 {
 	if (wd.IsEmpty()) return false;
 
@@ -1176,6 +1177,12 @@ bool find_mlt(
 	bool ret = and_sw;
 	for (int i=0; i<wlst->Count; i++) {
 		int p = case_sw? s.Pos(wlst->Strings[i]) : pos_i(wlst->Strings[i], s);
+
+		//単語
+		if (p>0 && word_sw) {
+			if (!is_word(s, p, wlst->Strings[i].Length())) p = 0;
+		}
+
 		if (!not_sw) {
 			//含む
 			if (p>0) {
@@ -1317,6 +1324,16 @@ UnicodeString make_csv_rec_str(TStringDynArray lst)
 }
 
 //---------------------------------------------------------------------------
+UnicodeString make_csv_rec_str(std::initializer_list<UnicodeString> lst)
+{
+	UnicodeString lbuf;
+    for (UnicodeString value : lst) {
+		if (!lbuf.IsEmpty()) lbuf += ",";
+		lbuf += make_csv_str(value);
+    }
+	return lbuf;
+}
+//---------------------------------------------------------------------------
 //CSVのリストから p 番目の項目が s のインデックスを取得
 //---------------------------------------------------------------------------
 int indexof_csv_list(TStringList *lst, UnicodeString s, int p)
@@ -1457,6 +1474,19 @@ bool is_alnum_str(UnicodeString s)
 	}
 
 	return true;
+}
+//---------------------------------------------------------------------------
+//英単語か?
+//---------------------------------------------------------------------------
+bool is_word(UnicodeString s, int p, int len)
+{
+    int flag = 0;
+    WideChar c = (p>1)? s[p - 1] : ' ';
+    if (!isalnum(c) && c!='_') flag++;
+    int p2 = p + len - 1;
+    c = (p2<s.Length())? s[p2 + 1] : ' ';
+    if (!isalnum(c) && c!='_') flag++;
+    return (flag==2);
 }
 
 //---------------------------------------------------------------------------

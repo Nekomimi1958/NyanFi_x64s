@@ -195,7 +195,7 @@ void __fastcall TPathMaskDlg::EditItemActionExecute(TObject *Sender)
 		lp->Items->Strings[idx] =
 			UnicodeString().sprintf(_T("%s,%s,%s"),
 				KeyEdit->Text.SubString(1, 1).UpperCase().c_str(),
-				make_csv_str(DescEdit->Text).c_str(),  make_csv_str(MaskEdit->Text).c_str());
+				make_csv_str(DescEdit->Text).c_str(), make_csv_str(MaskEdit->Text).c_str());
 		lp->Repaint();
 		lp->SetFocus();
 	}

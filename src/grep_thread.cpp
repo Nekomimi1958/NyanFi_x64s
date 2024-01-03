@@ -12,7 +12,7 @@
 //---------------------------------------------------------------------------
 __fastcall TGrepThread::TGrepThread(bool CreateSuspended, int id,
 		int idx_tag, UnicodeString fnam, UnicodeString kwd,
-		bool sw_regex, bool sw_and, bool sw_case, bool sw_one, bool sw_xtag)
+		bool sw_regex, bool sw_and, bool sw_case, bool sw_word, bool sw_one, bool sw_xtag)
 			: TThread(CreateSuspended)
 {
 	Priority		= tpNormal;
@@ -26,6 +26,7 @@ __fastcall TGrepThread::TGrepThread(bool CreateSuspended, int id,
 	opt_regex = sw_regex;
 	opt_and   = sw_and;
 	opt_case  = sw_case;
+	opt_word  = sw_word;
 	opt_one   = sw_one;
 	opt_xtag  = sw_xtag;
 
@@ -62,8 +63,17 @@ void __fastcall TGrepThread::Execute()
 			if (opt_xtag) lbuf = TRegEx::Replace(lbuf, "<[^<>]+>", EmptyStr);	//HTML文書のタグ部分を除外
 			if (lbuf.IsEmpty()) continue;
 
-			bool found = opt_regex ? TRegEx::IsMatch(lbuf, Keyword, opt)
-								   : find_mlt(Keyword, lbuf, opt_and, false, opt_case);
+			bool found = false;
+			if (opt_regex) {
+				TMatch mt = TRegEx::Match(lbuf, Keyword, opt);
+				if (mt.Success) {
+					found = opt_word? is_word(lbuf, mt.Index, mt.Length) : true;
+				}
+			}
+			else {
+				found = find_mlt(Keyword, lbuf, opt_and, false, opt_case, opt_word);
+			}
+
 			if (found) {
 				UnicodeString itmstr;	//ファイル名 [TAB] 行番号 [TAB] マッチ行\n次3行
 				itmstr.sprintf(_T("%s\t%u\t%s\n"), FileName.c_str(), lp + 1, lbuf.c_str());

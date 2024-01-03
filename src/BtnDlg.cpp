@@ -316,10 +316,7 @@ void __fastcall TToolBtnDlg::BtnListBoxClick(TObject *Sender)
 //---------------------------------------------------------------------------
 UnicodeString __fastcall TToolBtnDlg::MakeCsvItem()
 {
-	return UnicodeString().sprintf(_T("%s,%s,%s"),
-			make_csv_str(CaptionEdit->Text).c_str(),
-			make_csv_str(BtnCmdsComboBox->Text).c_str(),
-			make_csv_str(IconEdit->Text).c_str());
+	return make_csv_rec_str({CaptionEdit->Text, BtnCmdsComboBox->Text, IconEdit->Text});
 }
 
 //---------------------------------------------------------------------------

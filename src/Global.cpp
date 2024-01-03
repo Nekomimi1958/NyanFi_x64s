@@ -1211,12 +1211,14 @@ void InitializeGlobal()
 	mute_Volume("GET");	//ミュート状態を取得
 
 	//廃止セクション、キーの削除、修正
-	IniFile->DeleteKey( SCT_Option,  "ExtTxViewer");					//v16.10
-	IniFile->DeleteKey( SCT_Option,  "ExtTxViewerFrmt");				//v16.10
-	IniFile->DeleteKey( SCT_Option,  "MenuAutoHotkey");					//v16.08
-	IniFile->DeleteKey( SCT_Option,  "MenuAutoHotkey");					//v16.08
-	IniFile->DeleteKey( SCT_Option,  "FlatInfPanel");					//v16.00
-	IniFile->ReplaceKey(SCT_Option,  "RevTagCololr", "RevTagColor");	//v16.01
+	IniFile->ReplaceKey("Grep",		"CaseSenstive", "CaseSens");	//v16.14
+	IniFile->ReplaceKey("Grep",		"CaseReplace",  "CaseSensR");	//v16.14
+	IniFile->DeleteKey( SCT_Option,	"ExtTxViewer");					//v16.10
+	IniFile->DeleteKey( SCT_Option,	"ExtTxViewerFrmt");				//v16.10
+	IniFile->DeleteKey( SCT_Option,	"MenuAutoHotkey");				//v16.08
+	IniFile->DeleteKey( SCT_Option,	"MenuAutoHotkey");				//v16.08
+	IniFile->DeleteKey( SCT_Option,	"FlatInfPanel");				//v16.00
+	IniFile->ReplaceKey(SCT_Option,	"RevTagCololr", "RevTagColor");	//v16.01
 
 	CurStt = &ListStt[CurListTag];
 	OppStt = &ListStt[OppListTag];
@@ -2813,7 +2815,7 @@ void filter_List(
 	UnicodeString kwd,	//検索語
 	SearchOption opt)	//検索オプション
 {
-	auto get_item = [](UnicodeString s, SearchOption o) { 
+	auto get_item = [](UnicodeString s, SearchOption o) {
 		if (o.Contains(soGrep) || o.Contains(soGrepS)) s = get_tkn(get_tkn_r(get_tkn_r(s, "\t"), "\t"), "\n");
 		return s;
 	};
@@ -13043,7 +13045,6 @@ bool GrepShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst,
 	DWORD exit_code = 0;
 	bool res = Execute_cmdln(cmdln, wdir, "HWO", &exit_code, o_lst);
 	if (exit_cd) *exit_cd = exit_code;
-
 	return res;
 }
 

@@ -2381,11 +2381,8 @@ void __fastcall TOptionDlg::ChangeExtToolList(bool add)
 	int  idx = lp->ItemIndex;
 	bool chk = add? true : (idx!=-1)? lp->Checked[idx] : false;
 
-	UnicodeString lbuf;
-	lbuf.sprintf(_T("%s,%s,%s,%s,%s,%s"),
-		make_csv_str(ToolTitEdit->Text).c_str(),	make_csv_str(ToolExeEdit->Text).c_str(),
-		make_csv_str(ToolPrmEdit->Text).c_str(),	make_csv_str(ToolDirEdit->Text).c_str(),
-		make_csv_str(ToolAliasEdit->Text).c_str(),	make_csv_str(chk).c_str());
+	UnicodeString lbuf = make_csv_rec_str({
+		ToolTitEdit->Text, ToolExeEdit->Text, ToolPrmEdit->Text, ToolDirEdit->Text, ToolAliasEdit->Text, (chk? "1" : "0")});
 
 	//’Ç‰Á
 	if (add) {
@@ -2530,11 +2527,9 @@ void __fastcall TOptionDlg::ChangeExtMenuList(bool add)
 	int  idx = lp->ItemIndex;
 	bool chk = add? true : (idx!=-1)? lp->Checked[idx] : false;
 
-	UnicodeString lbuf;
-	lbuf.sprintf(_T("%s,%s,%s,%s,%s,%s"),
-		make_csv_str(MenuTitEdit->Text).c_str(), make_csv_str(get_tkn(MenuCmdComboBox->Text, ' ')).c_str(),
-		make_csv_str(MenuPrmEdit->Text).c_str(), make_csv_str(MenuAliasEdit->Text).c_str(),
-		make_csv_str(chk).c_str(), make_csv_str(MenuIconEdit->Text).c_str());
+	UnicodeString lbuf = make_csv_rec_str({
+		MenuTitEdit->Text, get_tkn(MenuCmdComboBox->Text, ' '),
+		MenuPrmEdit->Text, MenuAliasEdit->Text, (chk? "1" : "0"), MenuIconEdit->Text });
 
 	if (add) {
 		lp->Items->Add(lbuf);

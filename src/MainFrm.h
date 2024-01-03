@@ -232,7 +232,6 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *GitViewerAction;
 	TAction *GrayScaleAction;
 	TAction *Grep2Action;
-	TAction *GrepAbortAction;
 	TAction *GrepAction;
 	TAction *GrepAdjNextLnAction;
 	TAction *GrepClipCopyAction;
@@ -547,8 +546,6 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *ZoomResetAction;
 	TActionList *ActionList1;
 	TApplicationEvents *ApplicationEvents1;
-	TButton *AbortBtn;
-	TButton *AbortRBtn;
 	TButton *CanDlBtn;
 	TButton *GrepCanBtn;
 	TButton *GrepExOptBtn;
@@ -567,6 +564,8 @@ __published:	// IDE で管理されるコンポーネント
 	TCheckBox *RegExCheckBox;
 	TCheckBox *RegExRCheckBox;
 	TCheckBox *SubDirCheckBox;
+	TCheckBox *WordCheckBox;
+	TCheckBox *WordRCheckBox;
 	TComboBox *FilterComboBox;
 	TComboBox *GrepFindComboBox;
 	TComboBox *GrepMaskComboBox;
@@ -588,6 +587,7 @@ __published:	// IDE で管理されるコンポーネント
 	TImageCollection *ImgCollectionP;
 	TImageCollection *ImgCollectionV;
 	TLabel *GrepFindLabel;
+	TLabel *GrepMaskLabel;
 	TLabel *PreviewSizeLabel;
 	TLabel *PreviewSttLabel;
 	TLabel *ProgressLabel;
@@ -981,6 +981,7 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *ZoomInItem;
 	TMenuItem *ZoomOutItem;
 	TPageControl *GrepPageControl;
+	TPaintBox *GrepSelInfPaintBox;
 	TPaintBox *RelPaintBox;
 	TPaintBox *RelPaintBox2;
 	TPaintBox *TabBottomPaintBox;
@@ -991,6 +992,7 @@ __published:	// IDE で管理されるコンポーネント
 	TPaintBox *WorkProgressBox;
 	TPanel *GrepFilterPanel;
 	TPanel *GrepM1Panel;
+	TPanel *GrepM1sPanel;
 	TPanel *GrepM2Panel;
 	TPanel *GrepM3Panel;
 	TPanel *GrepMidPanel;
@@ -1650,6 +1652,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall GrepPageControlChange(TObject *Sender);
 	void __fastcall GrepPageControlChanging(TObject *Sender, bool &AllowChange);
 	void __fastcall GrepSttSplitterMoved(TObject *Sender);
+	void __fastcall GrepSelInfPaintBoxPaint(TObject *Sender);
 	void __fastcall ResultListBoxData(TWinControl *Control, int Index, UnicodeString &Data);
 	void __fastcall ResultListBoxDataObject(TWinControl *Control, int Index, TObject *&DataObject);
 	void __fastcall ResultListBoxDrawItem(TWinControl *Control, int Index, TRect &Rect, TOwnerDrawState State);
@@ -1672,8 +1675,6 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall GrepOptionActionUpdate(TObject *Sender);
 	void __fastcall GrepStartActionExecute(TObject *Sender);
 	void __fastcall GrepStartActionUpdate(TObject *Sender);
-	void __fastcall GrepAbortActionExecute(TObject *Sender);
-	void __fastcall GrepAbortActionUpdate(TObject *Sender);
 	void __fastcall GrepSaveAsActionExecute(TObject *Sender);
 	void __fastcall GrepClipCopyActionExecute(TObject *Sender);
 	void __fastcall GrepLineCopyActionExecute(TObject *Sender);
@@ -2504,6 +2505,7 @@ private:	// ユーザー宣言
 	TPoint __fastcall CurListItemPos();
 	void __fastcall SetSttBarGrepDir(UnicodeString dnam = EmptyStr);
 	void __fastcall SetSttBarGrepOpt();
+	void __fastcall SetGrepSelInf();
 	void __fastcall PrepareGrep();
 	UnicodeString __fastcall MakeGrepOutLine(int idx, bool rep_log = false);
 	void __fastcall MakeGrepOutList(TStringList *lst, bool rep_log = false);

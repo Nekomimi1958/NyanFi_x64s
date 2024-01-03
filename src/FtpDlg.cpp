@@ -184,14 +184,9 @@ UnicodeString __fastcall TFtpConnectDlg::MakeHostItem()
 	if (LastDirCheckBox->Checked) optstr += "LastDir;";
 	if (SyncLRCheckBox->Checked)  optstr += "SyncLR;";
 
-	return UnicodeString().sprintf(_T("%s,%s,%s,%s,%s,%s,%s"),
-			make_csv_str(HostNameEdit->Text).c_str(),
-			make_csv_str(HostAddrEdit->Text).c_str(),
-			make_csv_str(UserIdEdit->Text).c_str(),
-			make_csv_str(cipher(PassWdEdit->Text)).c_str(),
-			make_csv_str(HostDirEdit->Text).c_str(),
-			make_csv_str(LocalDirEdit->Text).c_str(),
-			make_csv_str(optstr).c_str());
+	return make_csv_rec_str({
+			HostNameEdit->Text, HostAddrEdit->Text, UserIdEdit->Text,
+			cipher(PassWdEdit->Text), HostDirEdit->Text, LocalDirEdit->Text, optstr});
 }
 
 //---------------------------------------------------------------------------

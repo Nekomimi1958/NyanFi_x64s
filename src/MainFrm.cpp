@@ -563,19 +563,20 @@ void __fastcall TNyanFiForm::FormCreate(TObject *Sender)
 	}
 
 	UnicodeString sct = "Grep";
-
 	SubDirCheckBox->Checked   = IniFile->ReadBool(   sct, "FindSubDir");
 	SubDirNUpDown->Position	  = IniFile->ReadInteger(sct, "SubDirN",	99);
 	SkipDirEdit->Hint		  = LoadUsrMsg(USTR_HintMltSepSC);
 	SkipDirEdit->Text		  = IniFile->ReadString( sct, "SkipDirs");
 	RegExCheckBox->Checked	  = IniFile->ReadBool(   sct, "RegExp");
 	AndCheckBox->Checked	  = IniFile->ReadBool(   sct, "AndSearch");
-	CaseCheckBox->Checked	  = IniFile->ReadBool(   sct, "CaseSenstive");
+	CaseCheckBox->Checked	  = IniFile->ReadBool(   sct, "CaseSens");
+	WordCheckBox->Checked	  = IniFile->ReadBool(   sct, "WholeWord");
 	ExclTagCheckBox->Checked  = IniFile->ReadBool(   sct, "ExcludeTag");
 	OneMatchCheckBox->Checked = IniFile->ReadBool(   sct, "OneMatch");
 	NextLineCheckBox->Checked = IniFile->ReadBool(   sct, "NextLine");
 	RegExRCheckBox->Checked   = IniFile->ReadBool(   sct, "RegExpR");
-	CaseRCheckBox->Checked	  = IniFile->ReadBool(   sct, "CaseReplace");
+	CaseRCheckBox->Checked	  = IniFile->ReadBool(   sct, "CaseSensR");
+	WordRCheckBox->Checked	  = IniFile->ReadBool(   sct, "WholeWordR");
 	AskRepCheckBox->Checked   = IniFile->ReadBool(   sct, "AskReplace");
 	AndOrCheckBox->Checked	  = IniFile->ReadBool(   sct, "FltAndOr");
 	set_MigemoCheckBox(MigemoCheckBox, _T("MigemoMode"), sct);
@@ -1128,12 +1129,14 @@ void __fastcall TNyanFiForm::FormClose(TObject *Sender, TCloseAction &Action)
 		IniFile->WriteString( sct, "SkipDirs",		SkipDirEdit);
 		IniFile->WriteBool(   sct, "RegExp",		RegExCheckBox);
 		IniFile->WriteBool(   sct, "AndSearch",		AndCheckBox);
-		IniFile->WriteBool(   sct, "CaseSenstive",	CaseCheckBox);
+		IniFile->WriteBool(   sct, "CaseSens",		CaseCheckBox);
+		IniFile->WriteBool(   sct, "WholeWord", 	WordCheckBox);
 		IniFile->WriteBool(   sct, "ExcludeTag",	ExclTagCheckBox);
 		IniFile->WriteBool(   sct, "OneMatch",		OneMatchCheckBox);
 		IniFile->WriteBool(   sct, "NextLine",		NextLineCheckBox);
 		IniFile->WriteBool(   sct, "RegExpR",		RegExRCheckBox);
-		IniFile->WriteBool(   sct, "CaseReplace",	CaseRCheckBox);
+		IniFile->WriteBool(   sct, "CaseSensR",		CaseRCheckBox);
+		IniFile->WriteBool(   sct, "WholeWordR",	WordRCheckBox);
 		IniFile->WriteBool(   sct, "AskReplace",	AskRepCheckBox);
 		IniFile->WriteBool(   sct, "FltAndOr",		AndOrCheckBox);
 		IniFile->WriteBool(   sct, "MigemoMode",	MigemoCheckBox);
@@ -3605,7 +3608,7 @@ void __fastcall TNyanFiForm::GrepPageControlDrawTab(TCustomTabControl *Control, 
 	TTabControl *tp = (TTabControl*)Control;
 	//背景
 	TCanvas *cv = tp->Canvas;
-	cv->Brush->Color = Active? col_bgOptTab : get_PanelColor();
+	cv->Brush->Color = Active? ((TabIndex==1)? ComplementaryCol(col_bgOptTab) : col_bgOptTab) : get_PanelColor();
 	cv->FillRect(Rect);
 	//輪郭
 	if (use_VclStyle() && !Active) {
@@ -3644,11 +3647,11 @@ void __fastcall TNyanFiForm::GrepStatusBarDrawPanel(TStatusBar *StatusBar, TStat
 void __fastcall TNyanFiForm::RepT1PanelResize(TObject *Sender)
 {
 	//検索・置換文字列入力欄の調整
-	int e_w = (RegExRCheckBox->Left - RepFindLabel->Width - RepStrLabel->Width - RepFindLabel->Left - 30) / 2;
+	int e_w = (RegExRCheckBox->Left - RepFindLabel->Width - RepStrLabel->Width - RepFindLabel->Left - SCALED_THIS(30)) / 2;
 	RepFindComboBox->Width = e_w;
 	RepStrComboBox->Width  = e_w;
-	RepStrComboBox->Left   = RepFindComboBox->Left + RepFindComboBox->Width + RepStrLabel->Width + 10;
-	RepStrLabel->Left	   = RepStrComboBox->Left - RepStrLabel->Width - 4;
+	RepStrComboBox->Left   = RepFindComboBox->Left + RepFindComboBox->Width + RepStrLabel->Width + SCALED_THIS(10);
+	RepStrLabel->Left	   = RepStrComboBox->Left - RepStrLabel->Width - SCALED_THIS(4);
 }
 //---------------------------------------------------------------------------
 //Grepパネルのリサイズ
@@ -3656,7 +3659,7 @@ void __fastcall TNyanFiForm::RepT1PanelResize(TObject *Sender)
 void __fastcall TNyanFiForm::GrepT11PanelResize(TObject *Sender)
 {
 	//※アンカーがずれる(?)現象の対策
-	GrepFindComboBox->Width = GrepT11Panel->Width - GrepFindComboBox->Left - 12;
+	GrepFindComboBox->Width = GrepT11Panel->Width - GrepFindComboBox->Left - SCALED_THIS(12);
 }
 //---------------------------------------------------------------------------
 //インターネットショートカットの作成
@@ -19277,6 +19280,7 @@ void __fastcall TNyanFiForm::GrepActionExecute(TObject *Sender)
 		}
 
 		GrepSelFileOnly = (CurStt->sel_f_cnt>0 && CurStt->sel_d_cnt==0);	//ファイルのみ選択中
+		SetGrepSelInf();
 
 		SetSttBarGrepOpt();
 		GrepOptionAction->Update();
@@ -30054,6 +30058,36 @@ void __fastcall TNyanFiForm::GrepSttSplitterMoved(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
+//GREP ファイル選択情報
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::GrepSelInfPaintBoxPaint(TObject *Sender)
+{
+	TPaintBox *pp = (TPaintBox*)Sender;
+	TCanvas *cv = pp->Canvas;
+	cv->Font->Assign(Font);
+	UnicodeString s;
+	s.sprintf(_T(" カレントで %d個のファイルを選択中 "), CurStt->sel_f_cnt);
+	pp->Width  = cv->TextWidth(s);
+	pp->Height = cv->TextHeight(s);
+	pp->Top    = (pp->Parent->ClientHeight - pp->Height)/2;
+	cv->Brush->Color = col_selItem;
+	cv->FillRect(pp->ClientRect);
+	cv->Font->Color = (col_fgSelItem!=col_None)? col_fgSelItem : get_ListFgCol();
+	cv->TextOut(0, 0, s);
+}
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::SetGrepSelInf()
+{
+	if (GrepSelFileOnly) {
+		GrepM1sPanel->Visible = true;
+		GrepM1sPanel->BringToFront();
+		GrepSelInfPaintBox->Repaint();
+	}
+	else {
+		GrepM1sPanel->Visible = false;
+	}
+}
+//---------------------------------------------------------------------------
 //GREPスティッキーを更新
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::UpdateGrepSticky()
@@ -30279,7 +30313,7 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 			//マッチ語のリストを作成
 			std::unique_ptr<TStringList> wlist(new TStringList());
 			SearchOption opt;
-			if (AndOrCheckBox->Checked)  opt << soAndOr;
+			if (AndOrCheckBox->Checked) opt << soAndOr;
 			//フィルタ
 			if (GrepEmFilter && !GrepFilterEdit->Text.IsEmpty()) {
 				if (MigemoCheckBox->Checked) opt << soMigemo;
@@ -30370,7 +30404,7 @@ void __fastcall TNyanFiForm::ResultListBoxKeyDown(TObject *Sender, WORD &Key, TS
 		UnicodeString prm	 = get_PrmStr(CmdStr);
 		CmdStr = get_CmdStr(CmdStr);
 
-		int cmd_id	= idx_of_word_i("ReturnList|TextViewer|FileEdit|MenuBar|Delete|OpenByApp|OpenByWin", CmdStr);
+		int cmd_id	= idx_of_word_i("ReturnList|TextViewer|FileEdit|MenuBar|Delete|OpenByApp|OpenByWin|SelAllFile", CmdStr);
 		ActionParam = EmptyStr;
 
 		if (FindBusy) {
@@ -30434,7 +30468,9 @@ void __fastcall TNyanFiForm::ResultListBoxKeyDown(TObject *Sender, WORD &Key, TS
 			case 6:	//Windowsの関連付けで開く
 				ExeCommandAction("OpenByWin", fnam);
 				break;
-
+			case 7:	//ヒットしたカレントのファイルを選択
+				GrepSelResAction->Execute();
+				break;
 			default:
 				if (ExeCmdListBox(lp, CmdStr)) {
 					ResultListBoxClick(lp);
@@ -30445,8 +30481,9 @@ void __fastcall TNyanFiForm::ResultListBoxKeyDown(TObject *Sender, WORD &Key, TS
 				//一時的に削除
 				else if (cmd_id==4 || equal_DEL(KeyStr)) {
 					int idx = lp->ItemIndex;
-					lp->Items->Delete(idx);
-					lp->ItemIndex = std::min(idx, lp->Count - 1);
+					GrepResultBuff->Delete(idx);
+					set_Strings_ItemNo(GrepResultBuff);
+					assign_FileListBox(ResultListBox, GrepResultBuff, std::min(idx, lp->Count - 1), ResultScrPanel);
 					SttPrgBar->End(UnicodeString().sprintf(_T("一時削除あり (%u/%u)"), lp->Count, GrepResultList->Count));
 					GrepFiltered = true;
 				}
@@ -30731,6 +30768,7 @@ void __fastcall TNyanFiForm::MakeGrepOutList(
 	for (int i=0; i<ResultListBox->Count; i++) lst->Add(MakeGrepOutLine(i, rep_log));
 }
 
+
 //---------------------------------------------------------------------------
 //文字列検索/置換の準備
 //---------------------------------------------------------------------------
@@ -30758,28 +30796,22 @@ void __fastcall TNyanFiForm::PrepareGrep()
 	GrepFileList->Clear();
 	
 	TStringList *lst = GetCurList(true);
-	if (GrepPageControl->ActivePage==FindSheet && GrepUseExe) {
-		//選択あり
-		if (GetSelCount(lst)>0) {
-			for (int i=0; i<lst->Count; i++) {
-				file_rec *fp = (file_rec*)lst->Objects[i];
-				if (!fp->selected) continue;
-				(fp->is_dir? GrepPathList : GrepFileList)->Add(fp->f_name);
-			}
+	int sel_cnt = GetSelCount(lst);
+	//選択あり
+	if (sel_cnt>0) {
+		for (int i=0; i<lst->Count; i++) {
+			file_rec *fp = (file_rec*)lst->Objects[i];
+			if (!fp->selected) continue;
+			(fp->is_dir? GrepPathList : GrepFileList)->Add(fp->f_name);
 		}
+	}
+
+	if (GrepPageControl->ActivePage==FindSheet && GrepUseExe) {
 		SttPrgBar->Begin(_T("grep 検索中..."));
 	}
 	else {
-		//選択あり
-		if (GetSelCount(lst)>0) {
-			for (int i=0; i<lst->Count; i++) {
-				file_rec *fp = (file_rec*)lst->Objects[i];
-				if (!fp->selected) continue;
-				(fp->is_dir? GrepPathList : GrepFileList)->Add(fp->f_name);
-			}
-		}
 		//選択なし
-		else {
+		if (sel_cnt==0) {
 			TStringDynArray skip_dir_lst = split_strings_semicolon(SkipDirEdit->Text, true);
 			for (int i=0; i<lst->Count; i++) {
 				file_rec *fp = (file_rec*)lst->Objects[i];
@@ -30847,7 +30879,7 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 	}
 
 	//オプション
-	UnicodeString prm = "-n";
+	UnicodeString prm = "-n -H -a";
 	UnicodeString kwd = GrepKeyword;
 
 	bool is_sub = (!is_top || GrepFileList->Count==0) && SubDirCheckBox->Checked;
@@ -30857,8 +30889,9 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 		prm += " -E";
 		kwd = TRegEx::Replace(kwd, "([^\\\\])?(\\\\d)", "\\1[0-9]");
 	}
-	if (!GrepCaseSenstive) prm += " -i";
 
+	if (!GrepCaseSenstive) prm += " -i";
+	if (WordCheckBox->Checked) prm += " -w";
 	if (OneMatchCheckBox->Checked) prm += " -l";
 
 	//キーワード
@@ -30880,7 +30913,7 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 		for (int i=0; i<GrepFileList->Count; i++) {
 			UnicodeString fnam = GrepFileList->Strings[i];
 			remove_top_text(fnam, GrepPath);
-			prm.cat_sprintf(_T(" %s"), fnam.c_str());
+			prm.cat_sprintf(_T(" %s"), add_quot_if_spc(fnam).c_str());
 		}
 	}
 	else if (is_sub) {
@@ -30938,6 +30971,9 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 					GrepMatchFileCnt++;
 					GrepMatchLineCnt++;
 				}
+				else if (!Trim(lbuf).IsEmpty()) {
+					OutDebugStr("!WARN: " + lbuf);
+				}
 			}
 			else {
 				TMatch mt = TRegEx::Match(lbuf, "^(?:\\./)?(.+/)?(.+):(\\d+):(.+)");
@@ -30956,6 +30992,9 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 					GrepResultBuff->AddObject(itmstr, (TObject*)(NativeInt)idx_tag);
 					GrepMatchLineCnt++;
 				}
+				else if (!Trim(lbuf).IsEmpty()) {
+					OutDebugStr("!WARN: " + lbuf);
+				}
 			}
 		}
 	}
@@ -30967,6 +31006,12 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 {
+	if (FindBusy) {
+		FindAborted = true;
+		UpdateActions();
+		return;
+	}
+
 	int start_cnt = GetTickCount();
 
 	PrepareGrep();
@@ -31005,7 +31050,7 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 					SttPrgBar->SetPosI(i, GrepFileList->Count);
 					GrepThread[id] = new TGrepThread(false,
 						id, idx_tag, GrepFileList->Strings[i++], GrepKeyword,
-						RegExCheckBox->Checked, AndCheckBox->Checked, GrepCaseSenstive,
+						RegExCheckBox->Checked, AndCheckBox->Checked, GrepCaseSenstive, WordCheckBox->Checked,
 						OneMatchCheckBox->Checked, ExclTagCheckBox->Checked);
 					idx_tag++;
 				}
@@ -31121,24 +31166,30 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 void __fastcall TNyanFiForm::GrepStartActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;
+
+	ap->Caption = (FindBusy && !GrepUseExe)? "中断" : "開始";
 	if (ScrMode==SCMD_GREP && GrepPageControl->ActivePage==FindSheet) {
 		UnicodeString kwd = Trim(GrepFindComboBox->Text);
 		bool reg_ng = RegExCheckBox->Checked && !kwd.IsEmpty() && !chk_RegExPtn(kwd);
 		ErrMarkList->SetErrFrame(this, GrepFindComboBox, reg_ng);
-		ap->Enabled = !FindBusy && !kwd.IsEmpty() && !reg_ng 
-						&& !(GrepMaskComboBox->Enabled && GrepMaskComboBox->Text.IsEmpty());
+		ap->Enabled = (!FindBusy && !kwd.IsEmpty() && !reg_ng 
+							&& !(GrepMaskComboBox->Enabled && GrepMaskComboBox->Text.IsEmpty()))
+						|| (FindBusy && !GrepUseExe && !FindAborted);
 
-		GrepMaskComboBox->Enabled = !GrepSelFileOnly;
-		SubDirCheckBox->Enabled   = !GrepSelFileOnly;
-		SubDirNUpDown->Enabled    = SubDirCheckBox->Checked && !GrepUseExe;
-		SubDirNEdit->Enabled      = SubDirCheckBox->Checked && !GrepUseExe;
-		SkipDirEdit->Enabled      = !GrepSelFileOnly;
+		GrepFindComboBox->Tag
+			= CBTAG_HISTORY | (GrepFindComboBox->Focused()? CBTAG_RGEX_V : 0) | (RegExCheckBox->Checked? CBTAG_RGEX_E : 0);
+
 		ExclTagCheckBox->Enabled  = !GrepUseExe;
 		NextLineCheckBox->Enabled = !GrepUseExe;
 		AndCheckBox->Enabled      = !RegExCheckBox->Checked && !GrepUseExe;
-		
-		GrepFindComboBox->Tag
-			= CBTAG_HISTORY | (GrepFindComboBox->Focused()? CBTAG_RGEX_V : 0) | (RegExCheckBox->Checked? CBTAG_RGEX_E : 0);
+
+		GrepMaskLabel->Visible	  = !GrepSelFileOnly;
+		GrepMaskComboBox->Enabled = !GrepSelFileOnly;
+		SubDirCheckBox->Enabled   = !GrepSelFileOnly;
+		SubDirNUpDown->Enabled    = !GrepSelFileOnly && !GrepUseExe;
+		SubDirNEdit->Enabled      = !GrepSelFileOnly && !GrepUseExe;
+		SubDirNEdit->Visible	  = !GrepSelFileOnly;
+		SkipDirEdit->Enabled      = !GrepSelFileOnly;
 	}
 	else {
 		ap->Enabled = false;
@@ -31147,17 +31198,6 @@ void __fastcall TNyanFiForm::GrepStartActionUpdate(TObject *Sender)
 
 //---------------------------------------------------------------------------
 //検索中断
-//---------------------------------------------------------------------------
-void __fastcall TNyanFiForm::GrepAbortActionExecute(TObject *Sender)
-{
-	if (FindBusy) FindAborted = true;
-}
-//---------------------------------------------------------------------------
-void __fastcall TNyanFiForm::GrepAbortActionUpdate(TObject *Sender)
-{
-	((TAction*)Sender)->Enabled = FindBusy && !GrepUseExe;
-}
-
 //---------------------------------------------------------------------------
 //検索結果に名前を付けて保存
 //---------------------------------------------------------------------------
@@ -31419,19 +31459,13 @@ void __fastcall TNyanFiForm::GrepSelResActionExecute(TObject *Sender)
 			cnt++;
 		}
 	}
+	GrepSelFileOnly = (cnt>0);
+	UpdateActions();
 
 	//情報表示を更新
 	SetDriveInfo();
 	SetSttBarInf();
-
-	if (cnt>0) msgbox_OK(UnicodeString().sprintf(_T("%u 個のファイルを選択しました。"), cnt));
-
-	bool sel_f_only = (cnt>0);
-	GrepMaskComboBox->Enabled = !sel_f_only;
-	SubDirCheckBox->Enabled   = !sel_f_only;
-	SubDirNUpDown->Enabled	  = !sel_f_only;
-	SubDirNEdit->Enabled	  = !sel_f_only;
-	SkipDirEdit->Enabled	  = !sel_f_only;
+	SetGrepSelInf();
 }
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::GrepSelResActionUpdate(TObject *Sender)
@@ -31678,6 +31712,12 @@ void __fastcall TNyanFiForm::GrepFilterEditChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::ReplaceStartActionExecute(TObject *Sender)
 {
+	if (FindBusy) {
+		FindAborted = true;
+		UpdateActions();
+		return;
+	}
+
 	PrepareGrep();
 	GrepResultPath = GrepPath;
 
@@ -31735,6 +31775,9 @@ void __fastcall TNyanFiForm::ReplaceStartActionExecute(TObject *Sender)
 					if (mt.Success) {
 						match_p   = mt.Index;
 						match_len = mt.Length;
+						if (WordRCheckBox->Checked) {
+							if (!is_word(tmp_buf, match_p, match_len)) match_p = 0;
+						}
 						x_rp_cnt++;
 					}
 					else {
@@ -31744,6 +31787,9 @@ void __fastcall TNyanFiForm::ReplaceStartActionExecute(TObject *Sender)
 				else {
 					match_p   = CaseRCheckBox->Checked? tmp_buf.Pos(swd) : pos_i(swd, tmp_buf);
 					match_len = swd.Length();
+					if (match_p>0 && WordRCheckBox->Checked) {
+						if (!is_word(tmp_buf, match_p, match_len)) match_p = 0;
+					}
 				}
 				if (match_p==0) break;
 
@@ -31929,11 +31975,20 @@ void __fastcall TNyanFiForm::ReplaceStartActionUpdate(TObject *Sender)
 		bool reg_ng = RegExRCheckBox->Checked && !kwd.IsEmpty() && !chk_RegExPtn(kwd);
 		bool kwd_ok = RegExRCheckBox->Checked? (!kwd.IsEmpty() && !reg_ng) : !kwd.IsEmpty();
 		ErrMarkList->SetErrFrame(this, RepFindComboBox, reg_ng);
-		ap->Enabled = !FindBusy && kwd_ok && !(GrepMaskComboBox->Enabled && GrepMaskComboBox->Text.IsEmpty());
+		ap->Enabled = (!FindBusy && kwd_ok && !(GrepMaskComboBox->Enabled && GrepMaskComboBox->Text.IsEmpty()))
+						|| (FindBusy && !GrepUseExe && !FindAborted);
 
 		RepFindComboBox->Tag
 			= CBTAG_HISTORY | (RepFindComboBox->Focused()? CBTAG_RGEX_V : 0) | (RegExRCheckBox->Checked? CBTAG_RGEX_E : 0);
 		RepStrComboBox->Tag = CBTAG_HISTORY;
+
+		GrepMaskLabel->Visible	  = !GrepSelFileOnly;
+		GrepMaskComboBox->Enabled = !GrepSelFileOnly;
+		SubDirCheckBox->Enabled   = !GrepSelFileOnly;
+		SubDirNUpDown->Enabled    = !GrepSelFileOnly && !GrepUseExe;
+		SubDirNEdit->Enabled      = !GrepSelFileOnly && !GrepUseExe;
+		SubDirNEdit->Visible	  = !GrepSelFileOnly;
+		SkipDirEdit->Enabled      = !GrepSelFileOnly;
 	}
 	else {
 		ap->Enabled = false;

@@ -53,6 +53,7 @@ __published:	// IDE で管理されるコンポーネント
 	TPanel *TopRightPanel;
 	TPopupMenu *PopupMenu1;
 	TStatusBar *StatusBar1;
+	TCheckBox *WordCheckBox;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
