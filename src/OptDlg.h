@@ -765,6 +765,7 @@ __published:	// IDE で管理されるコンポーネント
 	TTabSheet *TxtViewerSheet;
 	TTimer *Timer1;
 	TVirtualImageList *IconVImgListP;
+	TCheckBox *StdFindSetCheckBox;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

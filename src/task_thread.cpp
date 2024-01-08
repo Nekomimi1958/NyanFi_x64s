@@ -366,16 +366,7 @@ int __fastcall TTaskThread::GetFiles(
 			if (sr.Attr & faDirectory) continue;
 
 			//タイムスタンプによるフィルタリング
-			if (Config->FilterMode>0) {
-				TValueRelationship res = System::Dateutils::CompareDate(sr.TimeStamp, Config->FilterTime);
-				bool ok = false;
-				switch (Config->FilterMode) {
-				case 1: ok = (res==LessThanValue);		break;
-				case 2: ok = (res==EqualsValue);		break;
-				case 3: ok = (res==GreaterThanValue);	break;
-				}
-				if (!ok) continue;
-			}
+			if (Config->FilterMode>0 && !test_DateCond(Config->FilterMode, sr.TimeStamp, Config->FilterTime)) continue;
 
 			lst->Add(pnam + sr.Name);
 			fcnt++;
@@ -459,14 +450,7 @@ int __fastcall TTaskThread::GetFilesEx(
 
 				//タイムスタンプによるフィルタリング
 				if (dateSW && Config->FilterMode>0) {
-					TValueRelationship res = System::Dateutils::CompareDate(sr.TimeStamp, Config->FilterTime);
-					ok = false;
-					switch (Config->FilterMode) {
-					case 1: ok = (res==LessThanValue);		break;
-					case 2: ok = (res==EqualsValue);		break;
-					case 3: ok = (res==GreaterThanValue);	break;
-					}
-					if (!ok) continue;
+					if (!test_DateCond(Config->FilterMode, sr.TimeStamp, Config->FilterTime)) continue;
 				}
 
 				lst->Add(pnam + sr.Name); fcnt++;

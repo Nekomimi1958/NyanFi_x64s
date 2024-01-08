@@ -1367,6 +1367,7 @@ UnicodeString conv_esc_char(UnicodeString s)
 	s = ReplaceStr(s, "\\t",  "\t");	//タブ
 	s = ReplaceStr(s, "\\n",  "\r\n");	//改行
 	s = ReplaceStr(s, "\\s",  " ");		//NyanFi 固有
+	s = ReplaceStr(s, "\\0",  "");		//ヌル
 	s = ReplaceStr(s, "\f",   "\\");	//\\(\f) を \ に変換
 	return s;
 }
@@ -3218,33 +3219,36 @@ TDateTime str_to_DateTime(
 	UnicodeString ts,
 	bool sw_dt)			//数字を日付に変換	(default = false)
 {
-	if (TRegEx::IsMatch(ts, "^\\d{4}[-/]\\d{2}[-/]\\d{2}\\s\\d{2}:\\d{2}:\\d{2}\\b")) {
-		unsigned short y = ts.SubString(1, 4).ToIntDef(0);
-		unsigned short m = ts.SubString(6, 2).ToIntDef(0);
-		unsigned short d = ts.SubString(9, 2).ToIntDef(0);
-		unsigned short h = ts.SubString(12, 2).ToIntDef(0);
-		unsigned short n = ts.SubString(15, 2).ToIntDef(0);
-		unsigned short s = ts.SubString(18, 2).ToIntDef(0);
-		return TDateTime(y, m, d, h, n, s, 0);
+	TMatch mt = TRegEx::Match(ts, "^(\\d{4})[-/](\\d{2})[-/](\\d{2})(?:\\s(\\d{2}):(\\d{2}):(\\d{2}))?\\b");
+	if (mt.Success && (mt.Groups.Count==4 || mt.Groups.Count==7)) {
+		unsigned short y = mt.Groups.Item[1].Value.ToIntDef(0);
+		unsigned short m = mt.Groups.Item[2].Value.ToIntDef(0);
+		unsigned short d = mt.Groups.Item[3].Value.ToIntDef(0);
+		if (mt.Groups.Count==4) {
+			return TDateTime(y, m, d);
+		}
+		else {
+			unsigned short h = mt.Groups.Item[4].Value.ToIntDef(0);
+			unsigned short n = mt.Groups.Item[5].Value.ToIntDef(0);
+			unsigned short s = mt.Groups.Item[6].Value.ToIntDef(0);
+			return TDateTime(y, m, d, h, n, s, 0);
+		}
 	}
-	else if (TRegEx::IsMatch(ts, "^\\d{4}[-/]\\d{2}[-/]\\d{2}\\b")) {
-		unsigned short y = ts.SubString(1, 4).ToIntDef(0);
-		unsigned short m = ts.SubString(6, 2).ToIntDef(0);
-		unsigned short d = ts.SubString(9, 2).ToIntDef(0);
-		return TDateTime(y, m, d);
+
+	mt = TRegEx::Match(ts, "^(\\d{2}):(\\d{2})(?::(\\d{2}))?\\b");
+	if (mt.Success && (mt.Groups.Count==3 || mt.Groups.Count==4)) {
+		unsigned short h = mt.Groups.Item[1].Value.ToIntDef(0);
+		unsigned short n = mt.Groups.Item[2].Value.ToIntDef(0);
+		if (mt.Groups.Count==3) {
+			return TDateTime(h, n, 0, 0);
+		}
+		else {
+			unsigned short s = mt.Groups.Item[3].Value.ToIntDef(0);
+			return TDateTime(h, n, s, 0);
+		}
 	}
-	else if (TRegEx::IsMatch(ts, "^\\d{2}:\\d{2}:\\d{2}\\b")) {
-		unsigned short h = ts.SubString(1, 2).ToIntDef(0);
-		unsigned short n = ts.SubString(4, 2).ToIntDef(0);
-		unsigned short s = ts.SubString(7, 2).ToIntDef(0);
-		return TDateTime(h, n, s, 0);
-	}
-	else if (TRegEx::IsMatch(ts, "^\\d{2}:\\d{2}\\b")) {
-		unsigned short h = ts.SubString(1, 2).ToIntDef(0);
-		unsigned short n = ts.SubString(4, 2).ToIntDef(0);
-		return TDateTime(h, n, 0, 0);
-	}
-	else if (sw_dt && TRegEx::IsMatch(ts, "^\\d+$")) {
+
+	if (sw_dt && TRegEx::IsMatch(ts, "^\\d+$")) {
 		return TDate(ts.ToIntDef(0));
 	}
 	else {

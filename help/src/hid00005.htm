@@ -6,26 +6,26 @@
   <title>コマンド</title>
   <link rel="stylesheet" type="text/css" href="help.css">
   <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-    <param name="Keyword" value="2ストロークキー操作">
-    <param name="Keyword" value="Exif情報">
-    <param name="Keyword" value="fsutil">
-    <param name="Keyword" value="FTP">
-    <param name="Keyword" value="GPS情報">
-    <param name="Keyword" value="Markdown記法">
-    <param name="Keyword" value="xd2txlib.dll">
-    <param name="Keyword" value="キー割り当て一覧">
-    <param name="Keyword" value="コマンド">
-    <param name="Keyword" value="ツールバー">
-    <param name="Keyword" value="ツールバーの設定">
-    <param name="Keyword" value="パラメータ">
-    <param name="Keyword" value="ファイラー">
-    <param name="Keyword" value="プレイリスト">
-    <param name="Keyword" value="メニュー定義ファイル">
-    <param name="Keyword" value="ライブラリ">
-    <param name="Keyword" value="ライブラリファイル">
-    <param name="Keyword" value="ワークリスト">
-    <param name="Keyword" value="環境変数">
-    <param name="Keyword" value="代替データストリーム">
+	<param name="Keyword" value="2ストロークキー操作">
+	<param name="Keyword" value="Exif情報">
+	<param name="Keyword" value="fsutil">
+	<param name="Keyword" value="FTP">
+	<param name="Keyword" value="GPS情報">
+	<param name="Keyword" value="Markdown記法">
+	<param name="Keyword" value="xd2txlib.dll">
+	<param name="Keyword" value="キー割り当て一覧">
+	<param name="Keyword" value="コマンド">
+	<param name="Keyword" value="ツールバー">
+	<param name="Keyword" value="ツールバーの設定">
+	<param name="Keyword" value="パラメータ">
+	<param name="Keyword" value="ファイラー">
+	<param name="Keyword" value="プレイリスト">
+	<param name="Keyword" value="メニュー定義ファイル">
+	<param name="Keyword" value="ライブラリ">
+	<param name="Keyword" value="ライブラリファイル">
+	<param name="Keyword" value="ワークリスト">
+	<param name="Keyword" value="環境変数">
+	<param name="Keyword" value="代替データストリーム">
   </object>
 </head>
 
@@ -55,7 +55,7 @@
     <a href="#EditHighlight">E</a> <a href="#FileEdit">F</a> <a href="#GetHash">G</a> <a href="#HelpContents">H</a> <a
       href="#ImageViewer">I</a> <a href="#JoinText">J</a> <a href="#KeyList">K</a> <a href="#Library">L</a> <a
       href="#Mark">M</a> <a href="#NameFromClip">N</a> <a href="#OpenADS">O</a> <a href="#Pack">P</a> <a
-      href="#Reboot">R</a> <a href="#SaveAsResultList">S</a> <a href="#TabDlg">T</a> <a href="#UndoRename">U</a> <a
+      href="#Reboot">R</a> <a href="#SaveAsFindSet">S</a> <a href="#TabDlg">T</a> <a href="#UndoRename">U</a> <a
       href="#ViewHistory">V</a> <a href="#WatchTail">W</a> <a href="#XmlViewer">X</a> <a href="#ZoomIn">Z</a>　　<a
       href="#Appendix">付記</a>　　<a href="hid00100.htm#FL">→ コマンド索引</a> ／ <a href="hid00101.htm#FL">→ 機能別索引</a>
   </p>
@@ -601,16 +601,26 @@ NyanFi.exe -XCalculator_CB
       <div class="spc_box">
         パラメータで<b>日付条件</b>を指定すると、それに合うファイルだけがコピーされます。<br>
         他のパラメータとともに指定する場合は、<b>;</b> (セミコロン)で区切ってください。<br>
-        以下のように、現在の日付からの相対指定と、絶対指定が可能です。
+        以下のように、現在の日付からの相対/絶対指定、および年(月)の範囲指定が可能です。
         <div class="mono_text">
           　相対指定: {<b>&lt;</b>|<b>=</b>|<b>&gt;</b>}-n{<b>D</b>|<b>M</b>|<b>Y</b>}　　(D:日、M:月、Y:年)<br>
           　絶対指定: {<b>&lt;</b>|<b>=</b>|<b>&gt;</b>}yyyy/mm/dd<br>
           　　<b>&lt;</b> :指定日付より古い、　<b>=</b> :指定日付と同じ、　<b>&gt;</b> :指定日付より新しい<br>
         </div>
-        なお日付条件の指定は、バックグラウンド・タスクによる通常のファイルコピーでのみ有効です。<br>
+        <div class="note_text">
+          日付条件の指定は、バックグラウンド・タスクによる通常のファイルコピーでのみ有効です。<br>
+        </div>
         <b>例</b>:<br>
-        　Copy_&gt;-3D　　　　　　　3日前の日付より新しいファイルのみをコピー<br>
-        　Copy_TO;&lt;2017/01/01　　2017年1月1日よりも古いファイルのみを、入力ボックスで指定した場所にコピー
+        <table>
+          <tr>
+            <td>Copy_&gt;-3D</td>
+            <td>3日前の日付より新しいファイルのみをコピー</td>
+          </tr>
+          <tr>
+            <td>Copy_TO;&lt;2020/01/01</td>
+            <td>2020年1月1日よりも古いファイルのみを、入力ボックスで指定した場所にコピー</td>
+          </tr>
+        </table>
       </div>
       <br>
       <a href="hid00009.htm#Copy">→ オプション設定 - 一般 - コピー動作</a><br>
@@ -934,14 +944,22 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       DateSelect<span class="pram_text">_{TD|CP}</span>
     </dt>
     <dd>パラメータで指定した<b>日付条件</b>に合うファイルを選択します。<br>
-      以下のように、現在の日付からの相対指定と、絶対指定が可能です。
+      以下のように、現在の日付からの相対/絶対指定、および年(月)の範囲指定が可能です。
       <div class="mono_text">
         　相対指定: {<b>&lt;</b>|<b>=</b>|<b>&gt;</b>}-n{<b>D</b>|<b>M</b>|<b>Y</b>}　　(D:日、M:月、Y:年)<br>
         　絶対指定: {<b>&lt;</b>|<b>=</b>|<b>&gt;</b>}yyyy/mm/dd<br>
         　　<b>&lt;</b> :指定日付より古い、　<b>=</b> :指定日付と同じ、　<b>&gt;</b> :指定日付より新しい<br>
         <b>例</b>:<br>
-        　DateSelect_&lt;-14D　　　　　14日前の日付よりも古い<br>
-        　DateSelect_=2014/03/30　　2014年3月30日に一致
+        <table>
+          <tr>
+            <td>DateSelect_&lt;-14D</td>
+            <td>14日前の日付よりも古いファイルを選択</td>
+          </tr>
+          <tr>
+            <td>DateSelect_=2020/03/30</td>
+            <td>2020年3月30日のファイルを選択</td>
+          </tr>
+        </table>
       </div>
       <div class="spc_box">
         パラメータに <b>TD</b> を指定すると、今日付のファイルが選択されます。<br>
@@ -1272,7 +1290,8 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
 </pre>
       </div>
 
-      <a href="#ExPopupMenu">→ ExPopupMenu</a>　<a href="#ContextMenu">→ ContextMenu</a>
+      <a href="#ExPopupMenu">→ ExPopupMenu</a>　<a href="#ContextMenu">→ ContextMenu</a>　<a href="#OpenStandard">→
+        OpenStandard</a>
     </dd>
 
     <dt id="ExeToolBtn">ExeToolBtn<span class="pram_text">_ボタン番号</span></dt>
@@ -1427,7 +1446,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
     <dd>「<a href="hid00053.htm">ディレクトリ名検索」</a>」ダイアログを開きます。<br>
       マスク、日付、属性、内容の条件にマッチするファイルを検索できます。<br>
       <a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#FindFileDirDlg">→ FindFileDirDlg</a>　<a href="#MaskFind">→
-        MaskFind</a>
+        MaskFind</a>　<a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#LoadFindSet">→ LoadFindSet</a>
     </dd>
 
     <dt id="FindFileDirDlg">FindFileDirDlg<span class="pram_text">[_{NM|FK}][;R{0|1}][;NT]</span></dt>
@@ -1444,7 +1463,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       <div class="spc_box">
         複数のパラメータを指定する場合は <b>;</b> (セミコロン)で区切ってください。<br>
       </div>
-      <a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#MaskFind">→ MaskFind</a>
+      <a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#MaskFind">→ MaskFind</a>　<a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#LoadFindSet">→ LoadFindSet</a>
     </dd>
 
     <dt id="FindDuplDlg">FindDuplDlg<span class="pram_text">[_LR]</span></dt>
@@ -1500,7 +1519,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
         <b>例</b>: FindFileDlg_R1;X1;DirList.txt<br>
       </div>
       <a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDirDlg">→ FindFileDirDlg</a>　<a href="#MaskFind">→
-        MaskFind</a>
+        MaskFind</a>　<a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#LoadFindSet">→ LoadFindSet</a>
     </dd>
 
     <dt id="FindFolderIcon">FindFolderIcon</dt>
@@ -1657,7 +1676,9 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
     </dd>
 
     <dt id="GitGrep">GitGrep</dt>
-    <dd>Gitの作業ディレクトリにいる場合、<a href="hid00090.htm#GitGrep">Git GREP</a> ウィンドウを開き、作業ツリーに対して指定した条件で <b>git grep</b> を実行できます。この場合、ファイラーのカレントがそのまま作業ディレクトリとなります。リビジョンに対して実行したい場合は、<a href="hid00090.htm#GitViewer">Gitビューア</a>から開いてください。<br>
+    <dd>Gitの作業ディレクトリにいる場合、<a href="hid00090.htm#GitGrep">Git GREP</a> ウィンドウを開き、作業ツリーに対して指定した条件で <b>git grep</b>
+      を実行できます。この場合、ファイラーのカレントがそのまま作業ディレクトリとなります。リビジョンに対して実行したい場合は、<a
+        href="hid00090.htm#GitViewer">Gitビューア</a>から開いてください。<br>
       <a href="hid00090.htm#GitGrep">→ Git の利用について - GREP</a><br>
       <a href="#GitViewer">→ GitViewer</a>　<a href="#Grep">→ Grep</a>　<a href="#Grep2">→ Grep2</a>
     </dd>
@@ -1703,20 +1724,22 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
     </dd>
 
     <dt id="Grep2">Grep2<span class="pram_text">[_検索文字列]</span></dt>
-    <dd><a href="#Grep">Grep</a> コマンドと同様に <a href="hid00056.htm">文字列検索(GREP)</a>を開きますが、検索処理には外部の <b>grep.exe</b> を使用します。<br>
-      <b>Git for Windows</b> をインストールしていると、<b>grep.exe</b> も利用できるはずです。標準的な場所にインストールされている場合は自動的に検出されますが、そうでない場合はコマンド実行時に <b>grep.exe</b> の選択ダイアログが表示されますので指定してください。<br>
+    <dd><a href="#Grep">Grep</a> コマンドと同様に <a href="hid00056.htm">文字列検索(GREP)</a>を開きますが、検索処理には外部の <b>grep.exe</b>
+      を使用します。<br>
+      <b>Git for Windows</b> をインストールしていると、<b>grep.exe</b> も利用できるはずです。標準的な場所にインストールされている場合は自動的に検出されますが、そうでない場合はコマンド実行時に
+      <b>grep.exe</b> の選択ダイアログが表示されますので指定してください。<br>
       <div class="spc_box">
-      正規表現検索などは <a href="#Grep">Grep</a> に比べてかなり高速ですが、以下のような制約があります。<br>
-      ・<b>AND</b>、<b>タグ除外</b>、<b>次行表示</b> オプションは無効です。<br>
-      ・<b>1マッチ</b> では行番号や行内容は取得されません。ファイル名だけが表示されます。<br>
-      ・ディレクトリの深さは指定できません。<br>
-      ・UTF-8 以外のファイルでは、日本語を検索できません。<br>
-      ・検索の進捗状況は表示されず、中断もできません。<br>
-      ・正規表現はPerl互換(PCRE)ではなく、拡張正規表現(POSIX)になります(\d については内部で [0-9] に変換)。<br>
-      ・<b>xd2txlib.dll</b> によるバイナリ文書の検索はできません。<br>
+        正規表現検索などは <a href="#Grep">Grep</a> に比べてかなり高速ですが、以下のような制約があります。<br>
+        ・<b>AND</b>、<b>タグ除外</b>、<b>次行表示</b> オプションは無効です。<br>
+        ・<b>1マッチ</b> では行番号や行内容は取得されません。ファイル名だけが表示されます。<br>
+        ・ディレクトリの深さは指定できません。<br>
+        ・UTF-8 以外のファイルでは、日本語を検索できません。<br>
+        ・検索の進捗状況は表示されず、中断もできません。<br>
+        ・正規表現はPerl互換(PCRE)ではなく、拡張正規表現(POSIX)になります(\d については内部で [0-9] に変換)。<br>
+        ・<b>xd2txlib.dll</b> によるバイナリ文書の検索はできません。<br>
       </div>
     </dd>
-    
+
     <dt id="HelpContents">HelpContents<span class="pram_text">[_{CI|FI|CH}]</span></dt>
     <dd>ヘルプの目次を表示します。<br>
       パラメータに <b>CI</b> を指定すると「コマンドの索引(アルファベット順)」を、<b>FI</b> を指定すると「コマンドの索引(機能別)」を、<b>CH</b> を指定すると「変更履歴」のページを表示します。<br>
@@ -2140,14 +2163,33 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       <a href="#BgImgMode">→ BgImgMode</a>
     </dd>
 
+    <dt id="LoadFindSet">LoadFindSet<span class="pram_text">[_{ファイル名|*}]</span></dt>
+    <dd>
+    <dd><a href="#SaveAsFindSet">SaveAsFindSet</a> コマンドで保存しておいた検索設定ファイルを読み込み、その設定にしたがって検索を行います(<a href="hid00052.htm">ファイル(/ディレクトリ)名検索ダイアログ</a>は非表示)。<br>
+      パラメータで<b>ファイル名</b>を指定することも可能(ドライブ名がない場合は <b>NyanFi</b> ディレクトリからの相対指定)。<br>
+      まて、パラメータに <b>*</b> を指定すると、<b>NyanFi</b> ディレクトリ下(サブディレクトリを含む)にある検索設定ファイルをポップアップメニューで選択できます。<br>
+      パラメータを指定しない場合、ファイルの選択ダイアログが表示されます。<br>
+      <div class="spc_box">
+        <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>検索設定</b>」をチェックしていると <a
+          href="#OpenStandard">OpenStandard</a> コマンドでも実行できます。<br>
+      </div>
+      <a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#OpenStandard">→ OpenStandard</a>　<a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDirDlg">→ FindFileDirDlg</a>
+    </dd>
+
     <dt id="LoadResultList">LoadResultList<span class="pram_text">[_ファイル名]</span></dt>
     <dd><a href="#SaveAsResultList">SaveAsResultList</a> コマンドで保存しておいたファイルを読み込み、結果リストとして表示します。<br>
       パラメータで<b>ファイル名</b>を指定することも可能(ドライブ名がない場合は <b>NyanFi</b> ディレクトリからの相対指定)。<br>
+      パラメータを指定しない場合、ファイルの選択ダイアログが表示されます。<br>
       <div class="spc_box">
         読み込みの際に存在しない項目は自動的に削除されます(UNCパスが含まれる場合は要注意)。<br>
         表示されたリストは通常と同様に扱えますが、<a href="#ReloadList">ReloadList</a> コマンドによる再検索はできません(フォルダアイコン検索は除く)。<br>
       </div>
-      <a href="#SaveAsResultList">→ SaveAsResultList</a>　<a href="#SelByList">→ SelByList</a><br>
+      <div class="spc_box">
+        <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>結果リスト</b>」をチェックしていると <a
+          href="#OpenStandard">OpenStandard</a> コマンドでも開けます。<br>
+      </div>
+      <a href="#SaveAsResultList">→ SaveAsResultList</a>　<a href="#SelByList">→ SelByList</a>　<a href="#OpenStandard">→
+        OpenStandard</a>
     </dd>
 
     <dt id="LoadTabGroup">LoadTabGroup<span class="pram_text">[_{ファイル名|ディレクトリ名}]</span></dt>
@@ -2160,7 +2202,12 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       <div class="spc_box">
         なお、読み込む前に別のタブグループを用いていた場合、直前の状態が自動的に保存されますます。
       </div>
-      <a href="#SaveAsTabGroup">→ SaveAsTabGroup</a>　<a href="#SaveTabGroup">→ SaveTabGroup</a>
+      <div class="spc_box">
+        <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>タブグループ</b>」をチェックしていると <a
+          href="#OpenStandard">OpenStandard</a> コマンドでも開けます。<br>
+      </div>
+      <a href="#SaveAsTabGroup">→ SaveAsTabGroup</a>　<a href="#SaveTabGroup">→ SaveTabGroup</a>　<a
+        href="#OpenStandard">→ OpenStandard</a>
     </dd>
 
     <dt id="LoadWorkList">LoadWorkList<span class="pram_text">[_{ファイル名|ディレクトリ名}]</span></dt>
@@ -2172,7 +2219,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
         パラメータに<b>ディレクトリ名</b>を指定すると、そこにあるワークリストをポップアップメニューで選択できます。<br>
       </div>
       <a href="#SaveWorkList">→ SaveWorkList</a>　<a href="#SaveAsWorkList">→ SaveAsWorkList</a>　<a href="#NewWorkList">→
-        NewWorkList</a>
+        NewWorkList</a>　<a href="#OpenStandard">→ OpenStandard</a>
     </dd>
 
     <dt id="LockComputer">LockComputer<span class="pram_text">[_MO]</span></dt>
@@ -2253,7 +2300,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
     <dd>カレントパスまたは選択ディレクトリ以下で、指定マスクにマッチする項目を検索します。マスクの末尾が <b>\</b> の場合はディレクトリに、そうでない場合はファイルにマッチします。<a
         href="hid00052.htm">ファイル名検索</a>、<a href="hid00053.htm">ディレクトリ名検索</a>
       でマスクのみ指定した場合と同様になります。見つかるとカレント側に結果リストが表示されます。<br>
-      <a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#FindDirDlg">→ FindDirDlg</a>
+      <a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDirDlg">→ FindFileDirDlg</a>　<a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#LoadFindSet">→ LoadFindSet</a>
     </dd>
 
     <dt id="MaskSelect">MaskSelect<span class="pram_text">[_[!]マスク[\][;[!]マスク[\]...]]</span></dt>
@@ -2515,8 +2562,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       <a href="#OpenByWin">→ OpenByWin</a>　<a href="#OpenStandard">→ OpenStandard</a>
     </dd>
 
-    <dt id="OpenByExp">OpenByExp<span
-        class="pram_text">[_{ディレクトリ名|"CLSID"|"shell:コマンド"|/コマンドライン・オプション}]</span></dt>
+    <dt id="OpenByExp">OpenByExp<span class="pram_text">[_{ディレクトリ名|"CLSID"|"shell:コマンド"|/コマンドライン・オプション}]</span></dt>
     <dd>カーソル位置のディレクトリをエクスプローラで開きます。[..] の場合はカレントパスが開かれます。<br>
       カーソル位置がファイル場合は、カレントパスを開いて、そのファイルを選択状態にします。<br>
 
@@ -2574,8 +2620,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 
     <dt id="OpenCtrlPanel">OpenCtrlPanel<span class="pram_text">[_GM]</span></dt>
     <dd><a href="#OpenByExp">OpenByExp</a>_"shell:ControlPanelFolder" のエイリアス(別名)で、コントロールパネルを開きます。<br>
-      パラメータに <b>GM</b> を指定すると、<a
-        href="#OpenByExp">OpenByExp</a>_"shell:::{ED7BA470-8E54-465E-825C-99712043E01C}"
+      パラメータに <b>GM</b> を指定すると、<a href="#OpenByExp">OpenByExp</a>_"shell:::{ED7BA470-8E54-465E-825C-99712043E01C}"
       のエイリアスとなり、<b>GodMode</b> で開きます。<br>
       <a href="#OpenByExp">→ OpenByExp</a>
     </dd>
@@ -2610,6 +2655,9 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
         コマンドで開きます。<br>
         ・<a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>結果リスト</b>」をチェックしていると、結果リストファイル(一行目が
         ";[ResultList]") を <a href="#LoadResultList">LoadResultList</a> コマンドで開きます。<br>
+        ・<a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a>
+        で「<b>検索設定</b>」をチェックしていると、検索設定ファイル([FindSettings]セクションを持つINIファイル) を <a href="#LoadFindSet">LoadFindSet</a>
+        コマンドで開きます。<br>
         ・それ以外のファイルはビューアでテキストまたはバイナリ表示します。<br>
         ・<a href="hid00080.htm">FTP接続</a>時のリモート側では、ディレクトリの変更のみ可能です。<br>
       </div>
@@ -3063,11 +3111,28 @@ NyanFi.exe -XRegExChecker
       <a href="#ToParent">→ ToParent</a>
     </dd>
 
+
+    <dt id="SaveAsFindSet">SaveAsFindSet</dt>
+    <dd>
+      カレントが検索結果リストの場合、その検索設定に名前を付けて保存します。<br>
+      保存したファイルは、<a href="#LoadFindSet">LoadFindSet</a> コマンドで読み込んで検索を実行できます。<br>
+      <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>検索設定</b>」をチェックしていると、<a href="#OpenStandard">OpenStandard</a> コマンドでも実行できます。<br>
+
+      <div class="spc_box">
+        <b>検索設定ファイル</b>の内容は、[FindSettings]というセクションを持つINIファイルです。<br>
+        多数のファイルがある場合は、他のINIファイルに紛れないように、専用ディレクトリを作って保存するとよいかもしれません。<br>
+        <a href="#LoadFindSet">LoadFindSet</a>_* を実行すると、<b>NyanFi</b> ディレクトリ下(サブディレクトリを含む)にある検索設定ファイルをポップアップメニューで選択できます。<br>
+        検索設定ファイルは、指定した条件で検索した結果を集めて表示する仮想ディレクトリのように振る舞います。
+      </div>
+
+      <a href="#LoadFindSet">→ LoadFindSet</a>　<a href="#OpenStandard">→ OpenStandard</a>　<a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDirDlg">→ FindFileDirDlg</a>
+    </dd>
+
     <dt id="SaveAsResultList">SaveAsResultList</dt>
     <dd>カレントが検索結果リストの場合、それに名前を付けて保存します。<br>
       保存したファイルは、<a href="#LoadResultList">LoadResultList</a> コマンドで読み込んで再利用できます。<br>
       また <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>結果リスト</b>」をチェックしていると、<a
-        href="#OpenStandard">OpenStandard</a> コマンドでも開けます。<br>
+        href="#OpenStandard">OpenStandard</a> コマンドでも実行できます。<br>
       <div class="spc_box">
         ファイルの内容はワークリストと同様ですが、先頭に ";[ResultList]" という識別行が、その後に ";" で始まるコメントの形で検索情報が付加されます。<br>
         <a href="#LoadWorkList">LoadWorkList</a> コマンドでワークリストとして読み込むことも可能です。<br>

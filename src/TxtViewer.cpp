@@ -2736,7 +2736,7 @@ void __fastcall TTxtViewer::UpdateSticky()
 {
 	StickyStr  = EmptyStr;
 	StickyLine = 0;
-	if (isReady && ShowSticky && !FuncPtn.IsEmpty()) {
+	if (isReady && ShowSticky && !FuncPtn.IsEmpty() && CurTop>1) {
 		bool has_par = ContainsStr(FuncPtn, "\\(");
 		bool non_tab = StartsStr('^', FuncPtn) && !StartsStr("^\\s*", FuncPtn);
 		TRegExOptions opt; opt << roIgnoreCase;

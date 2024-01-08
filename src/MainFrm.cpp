@@ -5647,6 +5647,7 @@ void __fastcall TNyanFiForm::SetScrMode(
 		TxtViewPanel->Visible = false;
 		ImgViewPanel->Visible = false;
 		Application->ProcessMessages();
+		if (!CurStt->is_Find) CurStt->find_UseSet = false;
 		if (!CurStt->is_Find && !CurStt->is_FTP) ReloadList(tag); else RepaintList();
 		FileListBox[CurListTag]->SetFocus();
 		SetDriveFileInfo(CurListTag);
@@ -9447,7 +9448,11 @@ void __fastcall TNyanFiForm::ReloadList(
 
 			//カーソル位置を設定
 			if (!IsDiffList()) {
-				if (!fnam.IsEmpty() && i==CurListTag) {
+				if (lst_stt->last_fl_idx!=-1) {
+					if (i==CurListTag) ListBoxSetIndex(FileListBox[i], lst_stt->last_fl_idx);
+					lst_stt->last_fl_idx = -1;
+				}
+				else if (!fnam.IsEmpty() && i==CurListTag) {
 					IndexOfFileList(fnam, tag, top[i]);
 				}
 				else if (IndexOfFileList(lnam[i], i, top[i])==-1) {
@@ -9565,8 +9570,13 @@ void __fastcall TNyanFiForm::RecoverFileList(
 
 		//リストボックスに割り当て
 		update_FileListBox(FileList[tag], tag);
-		if (IndexOfFileList(last_fnam)==-1)
+		if (lst_stt->last_fl_idx!=-1) {
+			if (tag==CurListTag) ListBoxSetIndex(FileListBox[tag], lst_stt->last_fl_idx);
+			lst_stt->last_fl_idx = -1;
+		}
+		else if (IndexOfFileList(last_fnam)==-1) {
 			ListBoxSetIndex(lp, (DirHistCsrPos && h_buf.Length==3)? h_buf[1].ToIntDef(0) : 0);
+		}
 
 		if (MainPanel->Visible && tag==CurListTag) lp->SetFocus();
 
@@ -16213,13 +16223,7 @@ void __fastcall TNyanFiForm::DateSelectActionExecute(TObject *Sender)
 			if (!is_selectable(fp)) continue;
 			fp->selected = false;
 			if (fp->is_dir) continue;
-			//比較
-			TValueRelationship res = Dateutils::CompareDate(fp->f_time, dt);
-			switch (cnd) {
-			case 1: fp->selected = (res==LessThanValue);	break;
-			case 2: fp->selected = (res==EqualsValue);		break;
-			case 3: fp->selected = (res==GreaterThanValue);	break;
-			}
+			fp->selected = test_DateCond(cnd, fp->f_time, dt);
 			if (s_idx==-1 && fp->selected) s_idx = i;
 		}
 
@@ -17830,17 +17834,25 @@ void __fastcall TNyanFiForm::FilterComboBoxKeyPress(TObject *Sender, System::Wid
 //ファイル/ディレクトリ名検索
 //---------------------------------------------------------------------------
 int __fastcall TNyanFiForm::FindFileCore(
-	bool dir_sw,	//ディレクトリ検索 (default = false);
-	int tag)		//リストタグ	(default = -1 : CurListTag)
+	bool dir_sw,			//ディレクトリ検索	(default = false);
+	int tag,				//リストタグ		(default = -1 : CurListTag)
+	UnicodeString set_name)	//検索設定ファイル	(default = EmptyStr)
 {
 	FindBusy = true;
 	if (tag!=-1) FindTag = tag;
 
 	flist_stt *cur_stt = &ListStt[FindTag];
+	cur_stt->last_fl_idx = FileListBox[FindTag]->ItemIndex;
+
+	if (!set_name.IsEmpty() && !load_FindSettings(FindTag, set_name)) return -2;
+	cur_stt->find_UseSet = !set_name.IsEmpty();
 
 	UnicodeString msg;
-	StartLog(msg.sprintf(_T("検索開始  %s"), GetSrcPathStr().c_str()));
-	AddLog(msg.sprintf(_T("  マスク: %s"), cur_stt->find_Mask.c_str()));
+	StartLog(msg.sprintf(_T("検索開始  %s"), cur_stt->find_Path.c_str()));
+	if (cur_stt->find_UseSet)
+		AddLog(msg.sprintf(_T("  検索設定: %s"), to_relative_name(set_name).c_str()));
+	else
+		AddLog(msg.sprintf(_T("  マスク: %s"), cur_stt->find_Mask.c_str()));
 	if (!cur_stt->find_Keywd.IsEmpty()) AddLog(msg.sprintf(_T("  検索語: %s"), cur_stt->find_Keywd.c_str()));
 
 	ShowMessageHint(USTR_SearchingESC, col_bgHint, false, true);
@@ -17849,7 +17861,7 @@ int __fastcall TNyanFiForm::FindFileCore(
 	TStringList *r_lst = ResultList[FindTag];
 	std::unique_ptr<TStringList> o_lst(new TStringList());
 
-	if (dir_sw) cur_stt->is_narrow = false;
+	if (dir_sw || cur_stt->find_UseSet) cur_stt->is_narrow = false;
 
 	//絞り込みのために現在のリストをコピー
 	if (cur_stt->is_narrow) {
@@ -17921,7 +17933,7 @@ int __fastcall TNyanFiForm::FindFileCore(
 		int idx = lp->ItemIndex;
 		file_rec *cfp = (idx>=0 && idx<r_lst->Count-1)? (file_rec*)r_lst->Objects[idx] : NULL;
 		ApplySelMask(r_lst, FindTag);
-		cur_stt->find_PathSort = FindPathColumn;
+		if (!cur_stt->find_UseSet) cur_stt->find_PathSort = FindPathColumn;
 		SortList(r_lst, FindTag);
 		SetFlItemWidth(r_lst, FindTag);
 		update_FileListBox(r_lst, FindTag, (cfp? r_lst->IndexOfObject((TObject*)cfp) : 0));
@@ -18454,7 +18466,7 @@ void __fastcall TNyanFiForm::FindFileDlgExecute(
 		CurStt->find_Arc	 = FindFileDlg->ArcCheckBox->Checked;
 		CurStt->find_xTrash  = TEST_ActParam("NT");
 		CurStt->find_ResLink = FindFileDlg->ResLinkCheckBox->Checked;
-		CurStt->find_DirLink = both? FindFileDlg->DirLinkCheckBox->Checked : false;
+		CurStt->find_DirLink = FindFileDlg->FindBoth? FindFileDlg->DirLinkCheckBox->Checked : false;
 		CurStt->find_Mask	 = FindFileDlg->MaskComboBox->Text;
 		if (CurStt->find_Mask.IsEmpty()) CurStt->find_Mask = "*.*";
 		CurStt->find_Keywd	  = FindFileDlg->KeywordComboBox->Text;
@@ -18678,7 +18690,7 @@ void __fastcall TNyanFiForm::FindFileDlgActionExecute(TObject *Sender)
 		else {
 			if (CurStt->is_Arc || CurStt->is_ADS || CurStt->is_Work || CurStt->is_FTP) UserAbort(USTR_OpeNotSuported);
 			if (OppStt->is_Find) RecoverFileList(OppListTag);
-			CurStt->is_narrow = CurStt->is_Find;
+			CurStt->is_narrow = !CurStt->find_UseSet && CurStt->is_Find;
 			FindFileDlgExecute(false);
 		}
 	}
@@ -21280,6 +21292,55 @@ void __fastcall TNyanFiForm::LoadBgImageActionExecute(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
+//検索設定をファイルから読み込む
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::LoadFindSetActionExecute(TObject *Sender)
+{
+	try {
+		UnicodeString fnam;
+		if (!ActionParam.IsEmpty()) {
+			if (SameStr(ActionParam, "*")) {
+				//メニューの作成
+				std::unique_ptr<TStringList> l_lst(new TStringList());
+				std::unique_ptr<TStringList> m_buf(new TStringList());
+				get_files(ExePath, "*.ini", l_lst.get(), true);
+				for (int i=0,n=0; i<l_lst->Count; i++) {
+					UnicodeString inam = l_lst->Strings[i];
+					std::unique_ptr<UsrIniFile> set_file(new UsrIniFile(inam));
+					if (set_file->SectionExists("FindSettings")) {
+						m_buf->Add(make_MenuAccStr(n++).cat_sprintf(_T("%s\t%s"), get_base_name(inam).c_str(), inam.c_str()));
+					}
+				}
+				//選択
+				ExePopMenuList(m_buf.get(), true);
+				if (PopMenuIndex==-1) SkipAbort();
+				fnam = get_post_tab(m_buf->Strings[PopMenuIndex]);
+			}
+			else {
+				fnam = to_absolute_name(ActionParam);
+			}
+		}
+		else {
+			UserModule->PrepareOpenDlg(_T("検索設定を読み込む"), F_FILTER_INI, _T("*.ini"), FindSetPath);
+			fnam = UserModule->OpenDlgExecute();
+		}
+
+		int res = FindFileCore(CurStt->find_Dir, CurListTag, fnam);
+		if		(res==0)  SttBarWarnUstr(USTR_NotFound);
+		else if (res==-1) SttBarWarnUstr(USTR_Canceled);
+		else if (res==-2) TextAbort(_T("検索設定が読み込みません。"));
+		else {
+			play_sound(SoundFindFin);
+			//イベント: 検索結果リストが表示された直後
+			ExeEventCommand(OnFindOpend);
+		}
+	}
+	catch (EAbort &e) {
+		SetActionAbort(e.Message);
+	}
+}
+
+//---------------------------------------------------------------------------
 //結果リストをファイルから読み込む
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::LoadResultListActionExecute(TObject *Sender)
@@ -21402,7 +21463,7 @@ void __fastcall TNyanFiForm::LoadTabGroupActionExecute(TObject *Sender)
 				int i = 0;
 				while (i<lst->Count) {
 					std::unique_ptr<UsrIniFile> tg(new UsrIniFile(lst->Strings[i]));
-					if (tg->KeyExists("TabList", "Item1") && !tg->RectionExists("KeyFuncList") && !tg->RectionExists("Color"))
+					if (tg->KeyExists("TabList", "Item1") && !tg->SectionExists("KeyFuncList") && !tg->SectionExists("Color"))
 						i++;
 					else
 						lst->Delete(i);
@@ -22876,6 +22937,18 @@ void __fastcall TNyanFiForm::OpenStandardActionExecute(TObject *Sender)
 					fromFlToWork = true;
 					not_down	 = true;
 				}
+				//検索設定
+				else if (OpenStdFindSet && SameText(get_IniTypeStr(cfp), "検索設定")) {
+					int res = FindFileCore(CurStt->find_Dir, CurListTag, cfp->f_name);
+					if		(res==0)  SttBarWarnUstr(USTR_NotFound);
+					else if (res==-1) SttBarWarnUstr(USTR_Canceled);
+					else if (res==-2) TextAbort(_T("検索設定が読み込みません。"));
+					else {
+						play_sound(SoundFindFin);
+						//イベント: 検索結果リストが表示された直後
+						ExeEventCommand(OnFindOpend);
+					}
+				}
 				//タブグループ
 				else if (OpenStdTabGroup && SameText(get_IniTypeStr(cfp), "タブグループ")) {
 					ExeCommandAction("LoadTabGroup", cfp->f_name);
@@ -22945,8 +23018,10 @@ void __fastcall TNyanFiForm::OpenStandardActionExecute(TObject *Sender)
 					CurStt->arc_SubPath = EmptyStr;
 					CurStt->arc_DspPath = IncludeTrailingPathDelimiter(cfp->n_name);
 					if (UpdateTempArcList(CurListTag).IsEmpty()) UserAbort(USTR_CantMakeTmpDir);
+					CurStt->last_fl_idx = FileListBox[CurListTag]->ItemIndex;
 					SelMaskList[CurListTag]->Clear();
 					if (!ChangeArcFileListEx(CurStt->arc_Name, CurStt->arc_SubPath, CurListTag)) {
+						CurStt->last_fl_idx = -1;
 						InhReload++;
 						UserAbort(USTR_ArcNotOpen);
 					}
@@ -24346,6 +24421,31 @@ void __fastcall TNyanFiForm::ReturnListActionUpdate(TObject *Sender)
 {
 	((TAction*)Sender)->Visible = ScrMode!=SCMD_FLIST;
 	((TAction*)Sender)->Enabled = !FindBusy;
+}
+
+//---------------------------------------------------------------------------
+//検索設定に名前を付けて保存
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::SaveAsFindSetActionExecute(TObject *Sender)
+{
+	UserModule->PrepareSaveDlg(LoadUsrMsg(USTR_SaveAs, _T("検索設定")).c_str(), F_FILTER_INI, NULL, FindSetPath);
+	UnicodeString fnam = UserModule->SaveDlgExecute();
+	if (!fnam.IsEmpty()) {
+		if (save_FindSettings(FindTag, fnam)) {
+			FindSetPath = ExtractFilePath(fnam);
+			ShowHintAndStatus(UnicodeString().sprintf(_T("検索設定[%s]を保存しました。"), ExtractFileName(fnam).c_str()));
+		}
+		else {
+			SttBarWarnUstr(USTR_FaildSave);
+		}
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::SaveAsFindSetActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction*)Sender;
+	ap->Visible = ScrMode==SCMD_FLIST;
+	ap->Enabled = ap->Visible && CurStt->is_Find && !IsDiffList();
 }
 
 //---------------------------------------------------------------------------
@@ -30794,7 +30894,7 @@ void __fastcall TNyanFiForm::PrepareGrep()
 
 	GrepPathList->Clear();
 	GrepFileList->Clear();
-	
+
 	TStringList *lst = GetCurList(true);
 	int sel_cnt = GetSelCount(lst);
 	//選択あり
@@ -30889,6 +30989,9 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 		prm += " -E";
 		kwd = TRegEx::Replace(kwd, "([^\\\\])?(\\\\d)", "\\1[0-9]");
 	}
+	else {
+		kwd = TRegEx::Escape(kwd);
+	}
 
 	if (!GrepCaseSenstive) prm += " -i";
 	if (WordCheckBox->Checked) prm += " -w";
@@ -30904,8 +31007,8 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 		prm += " -E ";
 		UnicodeString s;
 		for (int i=0; i<wlst->Count; i++) {
-			if (!EndsStr(" ",prm)) prm += "|";
-			prm += TRegEx::Escape(wlst->Strings[i]);
+			if (!EndsStr(" ", prm)) prm += "|";
+			prm += wlst->Strings[i];
 		}
 	}
 
@@ -31172,7 +31275,7 @@ void __fastcall TNyanFiForm::GrepStartActionUpdate(TObject *Sender)
 		UnicodeString kwd = Trim(GrepFindComboBox->Text);
 		bool reg_ng = RegExCheckBox->Checked && !kwd.IsEmpty() && !chk_RegExPtn(kwd);
 		ErrMarkList->SetErrFrame(this, GrepFindComboBox, reg_ng);
-		ap->Enabled = (!FindBusy && !kwd.IsEmpty() && !reg_ng 
+		ap->Enabled = (!FindBusy && !kwd.IsEmpty() && !reg_ng
 							&& !(GrepMaskComboBox->Enabled && GrepMaskComboBox->Text.IsEmpty()))
 						|| (FindBusy && !GrepUseExe && !FindAborted);
 
@@ -37867,6 +37970,8 @@ void __fastcall TNyanFiForm::FTPConnectActionExecute(TObject *Sender)
 		if (dir_exists(itm_buf[5])) UpdateOppPath(itm_buf[5]);
 		FTPRstMask = PathMask[CurListTag];				//カレントのパスマスクを待避
 		PathMask[CurListTag] = PathMask[OppListTag];	//リモート側のパスマスクをローカル側に合わせる
+		CurStt->last_fl_idx  = FileListBox[CurListTag]->ItemIndex;
+
 		//ホスト開始ディレクトリ
 		TopFTPPath = nrm_ftp_path(itm_buf[4]);
 		if (!ChangeFtpFileList(CurListTag, TopFTPPath, "..")) {

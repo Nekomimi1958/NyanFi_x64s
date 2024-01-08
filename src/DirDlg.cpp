@@ -15,8 +15,8 @@
 TRegDirDlg *RegDirDlg = NULL;
 
 //---------------------------------------------------------------------------
-#define SPITM_EXE  100	//項目は実行ファイル (SpDirList->Objects)
-#define SPITM_PATH 200	//項目はPATH (SpDirList->Objects)
+#define SPITM_EXE  100	//項目は実行ファイル
+#define SPITM_PATH 200	//項目はPATH
 
 //---------------------------------------------------------------------------
 __fastcall TRegDirDlg::TRegDirDlg(TComponent* Owner)
@@ -512,6 +512,7 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 					lp->Tag &= 0x7fff0000;
 					lp->Tag |= xp;			//表示位置を Tag に設定
 					if (flag==SPITM_EXE) dnam = ExtractFilePath(dnam);
+					bool err = (!StartsStr("\\\\", dnam) && !StartsStr("shell:", dnam) && !dir_exists(dnam));
 					if (UseEnvVarAction->Checked) {
 						if (contained_wd_i("TEMP|TMP", itm_buf[1]))
 							dnam = "%" + itm_buf[1] + "%";
@@ -524,7 +525,7 @@ void __fastcall TRegDirDlg::RegDirListBoxDrawItem(TWinControl *Control, int Inde
 							xp += cv->TextWidth(envstr) + SCALED_THIS(2);
 						}
 					}
-					cv->Font->Color = (StartsStr("shell:", dnam))? adj_col : col_Folder;
+					cv->Font->Color = (StartsStr("shell:", dnam))? adj_col : err? col_Error : col_Folder;
 					PathNameOut(dnam, cv, xp, yp, rc.Right - xp - SCALED_THIS(4));
 					//区切り線
 					if (brk) draw_separateLine(cv, rc);

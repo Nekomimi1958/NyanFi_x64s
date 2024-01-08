@@ -579,6 +579,7 @@ extern bool DontClrSelWin;
 extern bool OpenStdTabGroup;
 extern bool OpenStdMenuFile;
 extern bool OpenStdResultList;
+extern bool OpenStdFindSet;
 extern bool DownAfterOpenStd;
 extern bool OpenStdOnResList;
 extern UnicodeString IniSeaShift;
@@ -638,6 +639,7 @@ extern UnicodeString DownloadPath;
 extern UnicodeString LibraryPath;
 extern UnicodeString WorkListPath;
 extern UnicodeString ResultListPath;
+extern UnicodeString FindSetPath;
 extern UnicodeString RefParamPath;
 extern UnicodeString CmdFilePath;
 extern UnicodeString CmdGitExe;
@@ -1336,6 +1338,7 @@ struct flist_stt {
 	int sel_f_cnt;				//選択ファイル数
 	int sel_d_cnt;				//選択ディレクトリ数
 	__int64 sel_size;			//選択サイズ
+	int last_fl_idx;			//ファイルリストに復帰した時のカーソル位置
 
 	bool show_f_d_cnt;			//ファイル、ディレクトリ数を表示
 	bool dir_graph;				//ディレクトリ容量をグラフ表示(対カレント)
@@ -1386,6 +1389,7 @@ struct flist_stt {
 	bool is_Find;				//検索結果リスト
 	bool is_narrow;				//絞り込み
 	bool find_Loaded;			//ファイルから読み込んだリスト
+	bool find_UseSet;			//検索設定ファイルを使用
 
 	bool find_Dir;				//ディレクトリ検索
 	bool find_Both;				//ファイル・ディレクトリ検索
@@ -1876,6 +1880,9 @@ void save_DirHistory(UsrIniFile *ini_file);
 bool save_TagGroup(UnicodeString fnam);
 
 void clear_FindStt(flist_stt *lst_stt);
+bool save_FindSettings(int tag, UnicodeString fnam);
+bool load_FindSettings(int tag, UnicodeString fnam);
+
 bool is_FindAll(flist_stt *lst_stt);
 UnicodeString get_FindInfStr(bool pnam_sw);
 

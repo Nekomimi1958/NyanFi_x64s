@@ -6,41 +6,44 @@
   <title>NyanFi が用いるファイル</title>
   <link rel="stylesheet" type="text/css" href="help.css">
   <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-    <param name="Keyword" value=".nyanfi">
-    <param name="Keyword" value="AGDATA.TXT">
-    <param name="Keyword" value="autorun.inf">
-    <param name="Keyword" value="Calculator.INI">
-    <param name="Keyword" value="DirHistory.INI">
-    <param name="Keyword" value="Distribute.INI">
-    <param name="Keyword" value="DriveLog.csv">
-    <param name="Keyword" value="ExeCommands">
-    <param name="Keyword" value="ExeMenuFile">
-    <param name="Keyword" value="favicon　">
-    <param name="Keyword" value="favicon.ico">
-    <param name="Keyword" value="FontSample.INI">
-    <param name="Keyword" value="Highlight.INI">
-    <param name="Keyword" value="LoadResultList">
-    <param name="Keyword" value="LoadTabGroup">
-    <param name="Keyword" value="NyanFi が用いるファイル">
-    <param name="Keyword" value="NyanFi.INI">
-    <param name="Keyword" value="OpenStandard">
-    <param name="Keyword" value="renamelog.txt">
-    <param name="Keyword" value="SaveAsResultList">
-    <param name="Keyword" value="SaveAsTabGroup">
-    <param name="Keyword" value="Swatchbook.INI">
-    <param name="Keyword" value="TAGDATA.TXT">
-    <param name="Keyword" value="tasklog.txt">
-    <param name="Keyword" value="thumbnail.jpg">
-    <param name="Keyword" value="thumbnail.txt">
-    <param name="Keyword" value="UndoRename">
-    <param name="Keyword" value="watchbook.INI">
-    <param name="Keyword" value="WebMap">
-    <param name="Keyword" value="WEBMAP.HTM">
-    <param name="Keyword" value="WORKLIST.nwl">
-    <param name="Keyword" value="タブグループ">
-    <param name="Keyword" value="フォルダアイコン">
-    <param name="Keyword" value="フォントのサンプル表示">
-    <param name="Keyword" value="色見本">
+	<param name="Keyword" value=".nyanfi">
+	<param name="Keyword" value="AGDATA.TXT">
+	<param name="Keyword" value="autorun.inf">
+	<param name="Keyword" value="Calculator.INI">
+	<param name="Keyword" value="DirHistory.INI">
+	<param name="Keyword" value="Distribute.INI">
+	<param name="Keyword" value="DriveLog.csv">
+	<param name="Keyword" value="ExeCommands">
+	<param name="Keyword" value="ExeMenuFile">
+	<param name="Keyword" value="favicon　">
+	<param name="Keyword" value="favicon.ico">
+	<param name="Keyword" value="FontSample.INI">
+	<param name="Keyword" value="Highlight.INI">
+	<param name="Keyword" value="LoadResultList">
+	<param name="Keyword" value="LoadTabGroup">
+	<param name="Keyword" value="NyanFi が用いるファイル">
+	<param name="Keyword" value="NyanFi.INI">
+	<param name="Keyword" value="OpenStandard">
+	<param name="Keyword" value="renamelog.txt">
+	<param name="Keyword" value="SaveAsResultList">
+	<param name="Keyword" value="SaveAsTabGroup">
+	<param name="Keyword" value="Swatchbook.INI">
+	<param name="Keyword" value="TAGDATA.TXT">
+	<param name="Keyword" value="tasklog.txt">
+	<param name="Keyword" value="thumbnail.jpg">
+	<param name="Keyword" value="thumbnail.txt">
+	<param name="Keyword" value="UndoRename">
+	<param name="Keyword" value="watchbook.INI">
+	<param name="Keyword" value="WebMap">
+	<param name="Keyword" value="WEBMAP.HTM">
+	<param name="Keyword" value="WORKLIST.nwl">
+	<param name="Keyword" value="コマンドファイル">
+	<param name="Keyword" value="タブグループ">
+	<param name="Keyword" value="タブグループ・ファイル">
+	<param name="Keyword" value="フォルダアイコン">
+	<param name="Keyword" value="フォントのサンプル表示">
+	<param name="Keyword" value="検索設定ファイル">
+	<param name="Keyword" value="色見本">
   </object>
 </head>
 
@@ -147,9 +150,17 @@
 
     <dt>xxxx.INI</dt>
     <dd>現在のタブバーの状態(ディレクトリ履歴を含む)を、<a href="hid00005.htm#SaveAsTabGroup">SaveAsTabGroup</a> コマンドでタブグループとして保存できます。<br>
+      <b>タブグループ・ファイル</b>には、[<b>TabList</b>] や [<b>DirHistory</b>～] セクションがあります。<br>
       保存したファイルは、<a href="hid00005.htm#LoadTabGroup">LoadTabGroup</a> コマンドで読み込んで復元できます。<br>
       また <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>タブグループ</b>」をチェックしていると、<a
         href="hid00005.htm#OpenStandard">OpenStandard</a> コマンドでも開けます。<br>
+    </dd>
+
+    <dt>xxxx.INI</dt>
+    <dd>
+      カレントが検索結果リストの場合、その検索設定を <a href="hid00005.htm#SaveAsFindSet">SaveAsFindSet</a> コマンドで保存できます。<br>
+      <b>検索設定ファイル</b>には、[<b>FindSettings</b>] セクションがあります。<br>
+      保存したファイルは、<a href="hid00005.htm#LoadFindSet">LoadFindSet</a> コマンドで読み込んで検索を実行できます。<br>
     </dd>
 
     <dt>.nyanfi[_ユーザ名]</dt>
@@ -164,13 +175,13 @@
     </dd>
 
     <dt>WORKLIST.nwl　<span class="small_nrm">(デフォルト)</span></dt>
-    <dd>ワークリストファイルです。ファイルやディレクトリの参照リストで、よく使うものを登録しておくと素早くアクセスできます。<br>
+    <dd><b>ワークリストファイル</b>です。ファイルやディレクトリの参照リストで、よく使うものを登録しておくと素早くアクセスできます。<br>
       ※任意の名前を使用可能。<br>
       <a href="hid00060.htm">→ ワークリスト</a><br>
     </dd>
 
     <dt>xxxx.nbt</dt>
-    <dd>一連の処理を記述したコマンドファイルです。制御文などを用いたバッチ処理も可能です。<br>
+    <dd>一連の処理を記述した<b>コマンドファイル</b>です。制御文などを用いたバッチ処理も可能です。<br>
       <a href="hid00063.htm">→ ExeCommands コマンド</a>　<a href="hid00067.htm">→ コマンドファイル一覧</a>
     </dd>
 

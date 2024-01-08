@@ -301,6 +301,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *ListTextAction;
 	TAction *ListTreeAction;
 	TAction *LoadBgImageAction;
+	TAction *LoadFindSetAction;
 	TAction *LoadResultListAction;
 	TAction *LoadTabGroupAction;
 	TAction *LoadWorkListAction;
@@ -391,6 +392,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *ReturnListAction;
 	TAction *RotateLeftAction;
 	TAction *RotateRightAction;
+	TAction *SaveAsFindSetAction;
 	TAction *SaveAsResultListAction;
 	TAction *SaveAsTabGroupAction;
 	TAction *SaveAsWorkListAction;
@@ -1410,6 +1412,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall ListTreeActionExecute(TObject *Sender);
 	void __fastcall GetHashActionExecute(TObject *Sender);
 	void __fastcall LoadBgImageActionExecute(TObject *Sender);
+	void __fastcall LoadFindSetActionExecute(TObject *Sender);
 	void __fastcall LoadResultListActionExecute(TObject *Sender);
 	void __fastcall LoadTabGroupActionExecute(TObject *Sender);
 	void __fastcall LoadWorkListActionExecute(TObject *Sender);
@@ -1489,6 +1492,8 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall RestartActionUpdate(TObject *Sender);
 	void __fastcall ReturnListActionExecute(TObject *Sender);
 	void __fastcall ReturnListActionUpdate(TObject *Sender);
+	void __fastcall SaveAsFindSetActionExecute(TObject *Sender);
+	void __fastcall SaveAsFindSetActionUpdate(TObject *Sender);
 	void __fastcall SaveAsResultListActionExecute(TObject *Sender);
 	void __fastcall SaveAsResultListActionUpdate(TObject *Sender);
 	void __fastcall SaveAsTabGroupActionExecute(TObject *Sender);
@@ -2432,7 +2437,7 @@ private:	// ユーザー宣言
 	void __fastcall ClearViewImage();
 	void __fastcall SetSeekStat(int idx);
 	void __fastcall SetViewFileIdx();
-	int  __fastcall FindFileCore(bool dir_sw = false, int tag = -1);
+	int  __fastcall FindFileCore(bool dir_sw = false, int tag = -1, UnicodeString set_name = EmptyStr);
 	void __fastcall FindFileDlgExecute(bool both = false, UnicodeString lst_name = EmptyStr);
 	int  __fastcall FindHardLinkCore(UnicodeString fnam, int tag);
 	int  __fastcall FindMarkCore(int tag = -1);

@@ -458,8 +458,8 @@ UnicodeString format_DateTimeEx(UnicodeString fmt, TDateTime dt)
 //	  	  今日付: TD
 //  カーソル位置: CP (= ct)
 //
-//  戻り値 : 1: < より古い/ 2: = 同じ/ 3: > より新しい/ 0: 条件なし
-//			-1: エラー
+//  戻り値 : 1: < より古い/ 2: = 同じ/ 3: > より新しい 
+//			 0: 条件なし/ -1: エラー
 //---------------------------------------------------------------------------
 int get_DateCond(UnicodeString prm, TDateTime &dt, TDateTime ct)
 {
@@ -473,7 +473,7 @@ int get_DateCond(UnicodeString prm, TDateTime &dt, TDateTime ct)
 			if (cnd>0) {
 				prm.Delete(1, 1);
 				//絶対指定
-				if (prm.Length()==10 && prm[5]=='/' && prm[8]=='/') {
+				if (TRegEx::IsMatch(prm, "^\\d{4}/\\d{2}/\\d{2}$")) {
 					dt = str_to_DateTime(prm);
 				}
 				//相対指定
@@ -492,7 +492,9 @@ int get_DateCond(UnicodeString prm, TDateTime &dt, TDateTime ct)
 					}
 				}
 			}
-			else cnd = -1;
+			else {
+				cnd = -1;
+			}
 		}
 
 		return cnd;
@@ -500,6 +502,24 @@ int get_DateCond(UnicodeString prm, TDateTime &dt, TDateTime ct)
 	catch (...) {
 		return -1;
 	}
+}
+
+//---------------------------------------------------------------------------
+//日付条件のチェック
+//---------------------------------------------------------------------------
+bool test_DateCond(
+	int cnd,			//日付条件
+	TDateTime dt,		//チェック対象の日付
+	TDateTime dt_r)		//日付条件の日付
+{
+	bool ok = false;
+	TValueRelationship res = System::Dateutils::CompareDate(dt, dt_r);
+	switch (cnd) {
+	case 1: ok = (res==LessThanValue);		break;
+	case 2: ok = (res==EqualsValue);		break;
+	case 3: ok = (res==GreaterThanValue);	break;
+	}
+	return ok;
 }
 
 //---------------------------------------------------------------------------

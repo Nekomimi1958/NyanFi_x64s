@@ -770,6 +770,7 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	StdTabGroupCheckBox->Tag	= (NativeInt)&OpenStdTabGroup;
 	StdMenuFileCheckBox->Tag	= (NativeInt)&OpenStdMenuFile;
 	StdResultListCheckBox->Tag	= (NativeInt)&OpenStdResultList;
+	StdFindSetCheckBox->Tag		= (NativeInt)&OpenStdFindSet;
 	DowAfterStdCheckBox->Tag	= (NativeInt)&DownAfterOpenStd;
 	OpnStdResCheckBox->Tag		= (NativeInt)&OpenStdOnResList;
 	IncSeaCaseCheckBox->Tag 	= (NativeInt)&IncSeaCaseSens;

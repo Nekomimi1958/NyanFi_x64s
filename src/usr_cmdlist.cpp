@@ -140,6 +140,7 @@ void set_CmdList(
 		"F:ListTail=テキストファイルの末尾を一覧で表示\n"
 		"F:ListTree=ディレクトリ構造のツリー表示\n"
 		"F:LoadResultList=結果リストをファイルから読み込む\n"
+		"F:LoadFindSet=検索設定をファイルから読み込む\n"
 		"F:LoadTabGroup=タブグループをファイルから読み込む\n"
 		"F:LockComputer=コンピュータのロック\n"
 		"F:LockKeyMouse=キーボード/マウスのロック\n"
@@ -193,6 +194,7 @@ void set_CmdList(
 		"F:Restart=NyanFiの再起動\n"
 		"F:ReturnList=ファイルリスト表示に戻る\n"
 		"F:SaveAsResultList=結果リストに名前を付けて保存\n"
+		"F:SaveAsFindSet=検索設定に名前を付けて保存\n"
 		"F:SaveAsTabGroup=タブグループに名前を付けて保存\n"
 		"F:SaveTabGroup=タブグループを上書き保存\n"
 		"F:ScrollDownLog=ログを下にスクロール\n"
@@ -517,7 +519,7 @@ void get_PrmList(
 			_T("DebugCmdFile|Delete|DistributionDlg|ExeCommands|ExeMenuFile|FileEdit|FileRun|Filter|FindDown|")
 			_T("FindFileDirDlg|FindFileDlg|FindTag|FindUp|FTPChmod|FunctionList|GitDiff|GitViewer|Grep|Grep2|HelpCurWord|")
 			_T("HtmlToText|IncSearch|InputCommands|JumpIndex|JumpLine|JumpTo|ListArchive|ListDuration|ListExpFunc|")
-			_T("ListNyanFi|ListTail|ListText|ListTree|LoadBgImage|LoadResultList|LoadTabGroup|LoadWorkList|")
+			_T("ListNyanFi|ListTail|ListText|ListTree|LoadBgImage|LoadResultList|LoadFindSet|LoadTabGroup|LoadWorkList|")
 			_T("LockKeyMouse|Mark|MaskFind|MaskSelect|MatchSelect|MonitorOff|Move|MoveTo|NameFromClip|NewTextFile|")
 			_T("OpenByApp|OpenByExp|OpenByWin|OpenStandard|OpenURL|Pack|PackToCurr|PlayList|PropertyDlg|RegExChecker|")
 			_T("Restart|SaveAsTabGroup|ScrollCursorDown|ScrollCursorUp|ScrollDown|ScrollDownLog|ScrollDownText|")

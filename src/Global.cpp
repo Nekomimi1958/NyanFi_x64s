@@ -110,7 +110,7 @@ UnicodeString gCopyFmt = "\\N_\\SN(1)";
 
 int  OptionPageIndex = 0;		//オプション設定ダイアログのページインデックス
 
-bool SyncLR   = false;			//左右のディレクトリ変更を同期
+bool SyncLR = false;			//左右のディレクトリ変更を同期
 
 UnicodeString GlobalErrMsg;
 
@@ -395,6 +395,7 @@ bool DontClrSelWin;				//OpenByWin:  選択を解除しない
 bool OpenStdTabGroup;			//OpenStandard: タブグループを開く
 bool OpenStdMenuFile;			//OpenStandard: メニューファイルを開く
 bool OpenStdResultList;			//OpenStandard: 結果リストを開く
+bool OpenStdFindSet;			//OpenStandard: 検索設定を開く
 bool DownAfterOpenStd;			//OpenStandard: 実行後にカーソルを下に移動
 bool OpenStdOnResList;			//OpenStandard: 結果リストでも通常動作
 UnicodeString IniSeaShift;		//IniSearch:  頭文字サーチのシフトキー
@@ -458,6 +459,7 @@ UnicodeString DownloadPath;		//ダウンロード用
 UnicodeString LibraryPath;		//ライブラリ
 UnicodeString WorkListPath;		//ワークリスト参照パス
 UnicodeString ResultListPath;	//結果リスト参照パス
+UnicodeString FindSetPath;		//検索結果参照パス
 UnicodeString RefParamPath;		//パラメータ参照パス
 UnicodeString CmdFilePath;		//コマンドファイル参照パス
 
@@ -1284,13 +1286,14 @@ void InitializeGlobal()
 		sp->arc_TmpList   = CreStringList();
 
 		sp->find_SubList  = CreStringList();
+		sp->find_UseSet   = false;
 		sp->find_ResLink  = false;
 		sp->find_DirLink  = false;
 		sp->find_PathSort = false;
-		sp->is_IncSea	  = false;
-		sp->is_Migemo	  = false;
-		sp->is_Filter	  = false;
-		sp->is_Fuzzy	  = false;
+		sp->is_IncSea     = false;
+		sp->is_Migemo     = false;
+		sp->is_Filter     = false;
+		sp->is_Fuzzy      = false;
 		sp->filter_csns   = false;
 		clear_FindStt(sp);
 	}
@@ -1545,6 +1548,7 @@ void InitializeGlobal()
 		{_T("DownloadPath=\"%ExePath%\""),			(TObject*)&DownloadPath},
 		{_T("WorkListPath=\"%ExePath%\""),			(TObject*)&WorkListPath},
 		{_T("ResultListPath=\"%ExePath%\""),		(TObject*)&ResultListPath},
+		{_T("FindSetPath=\"%ExePath%\""),			(TObject*)&FindSetPath},
 		{_T("RefParamPath=\"%ExePath%\""),			(TObject*)&RefParamPath},
 		{_T("IconFilePath=\"%ExePath%\""),			(TObject*)&UserModule->IconFilePath},
 		{_T("SaveTxtPath=\"%ExePath%\""),			(TObject*)&SaveTxtPath},
@@ -1823,6 +1827,7 @@ void InitializeGlobal()
 		{_T("OpenStdTabGroup=false"),		(TObject*)&OpenStdTabGroup},
 		{_T("OpenStdMenuFile=false"),		(TObject*)&OpenStdMenuFile},
 		{_T("OpenStdResultList=false"),		(TObject*)&OpenStdResultList},
+		{_T("OpenStdFindSet=false"),		(TObject*)&OpenStdFindSet},
 		{_T("DownAfterOpenStd=false"),		(TObject*)&DownAfterOpenStd},
 		{_T("OpenStdOnResList=false"),		(TObject*)&OpenStdOnResList},
 		{_T("SyncLR=false"),				(TObject*)&SyncLR},
@@ -5128,9 +5133,10 @@ void clear_FindStt(flist_stt *lst_stt)
 	lst_stt->find_useProc = false;
 
 /*	結果リストの状態維持のため以下は初期化しない
-	lst_stt->find_ResLink = false;
-	lst_stt->find_DirLink = false;
-	lst_stt->find_PathSort= false;
+	lst_stt->find_UseSet
+	lst_stt->find_ResLink
+	lst_stt->find_DirLink
+	lst_stt->find_PathSort
 */
 
 	lst_stt->find_Path	  = EmptyStr;
@@ -5170,6 +5176,297 @@ void clear_FindStt(flist_stt *lst_stt)
 	lst_stt->find_TxtKwd   = EmptyStr;
 	lst_stt->find_ExifKwd  = EmptyStr;
 	lst_stt->find_LatLng   = EmptyStr;
+}
+
+//---------------------------------------------------------------------------
+//検索設定の保存
+//---------------------------------------------------------------------------
+bool save_FindSettings(int tag, UnicodeString fnam)
+{
+	if (tag==-1) tag = CurListTag;
+	flist_stt *lst_stt = &ListStt[tag];
+
+	std::unique_ptr<UsrIniFile> cfg_file(new UsrIniFile(fnam));
+	UnicodeString sct = "FindSettings";
+	cfg_file->WriteBool(   sct, "PathSort",	lst_stt->find_PathSort);
+	cfg_file->WriteBool(   sct, "ResLink",	lst_stt->find_ResLink);
+	cfg_file->WriteBool(   sct, "DirLink",	lst_stt->find_DirLink);
+
+	cfg_file->WriteString( sct, "Path", 	lst_stt->find_Path);
+	cfg_file->WriteString( sct, "DirList",	lst_stt->find_DirList);
+	cfg_file->WriteBool(   sct, "Dir",		lst_stt->find_Dir);
+	cfg_file->WriteBool(   sct, "Both",		lst_stt->find_Both);
+	cfg_file->WriteBool(   sct, "SubDir",	lst_stt->find_SubDir);
+	cfg_file->WriteBool(   sct, "Arc",		lst_stt->find_Arc);
+	cfg_file->WriteBool(   sct, "xTrash",	lst_stt->find_xTrash);
+	cfg_file->WriteBool(   sct, "ResLink",	lst_stt->find_ResLink);
+	cfg_file->WriteBool(   sct, "DirLink",	lst_stt->find_DirLink);
+	cfg_file->WriteString( sct, "Mask", 	lst_stt->find_Mask);
+	cfg_file->WriteString( sct, "Keywd", 	lst_stt->find_Keywd);
+	cfg_file->WriteBool(   sct, "RegEx",	lst_stt->find_RegEx);
+	cfg_file->WriteBool(   sct, "And",		lst_stt->find_And);
+	cfg_file->WriteBool(   sct, "Case",		lst_stt->find_Case);
+
+	if (lst_stt->find_DT_mode>0) {
+		cfg_file->WriteInteger(sct, "DT_mode",	lst_stt->find_DT_mode);
+		cfg_file->WriteString( sct, "DT_value", FormatDateTime("yyyy'/'mm'/'dd hh:nn:ss", lst_stt->find_DT_value));
+		cfg_file->WriteString( sct, "DT_str", 	lst_stt->find_DT_str);
+	}
+	if (lst_stt->find_SZ_mode>0) {
+		cfg_file->WriteInteger(sct, "SZ_mode",	lst_stt->find_SZ_mode);
+		cfg_file->WriteInt64(  sct, "SZ_value",	lst_stt->find_SZ_value);
+	}
+	if (lst_stt->find_AT_mode>0) {
+		cfg_file->WriteInteger(sct, "AT_mode",	lst_stt->find_AT_mode);
+		cfg_file->WriteInteger(sct, "AT_value",	lst_stt->find_AT_value);
+	}
+	if (lst_stt->find_TM_mode>0) {
+		cfg_file->WriteInteger(sct, "TM_mode",	lst_stt->find_TM_mode);
+		cfg_file->WriteString( sct, "TM_value", FormatDateTime("yyyy'/'mm'/'dd hh:nn:ss", lst_stt->find_TM_value));
+	}
+
+	if (lst_stt->find_RT_mode>0) {
+		cfg_file->WriteInteger(sct, "RT_mode",	lst_stt->find_RT_mode);
+		cfg_file->WriteInteger(sct, "RT_value",	lst_stt->find_RT_value);
+	}
+
+	cfg_file->WriteInteger(sct, "codepage",	lst_stt->find_codepage);
+	cfg_file->WriteString( sct, "LineBrk", 	lst_stt->find_LineBrk);
+	cfg_file->WriteInteger(sct, "BOM_mode",	lst_stt->find_BOM_mode);
+
+	if (lst_stt->find_FS_mode>0) {
+		cfg_file->WriteInteger(sct, "FS_mode",	lst_stt->find_FS_mode);
+		cfg_file->WriteInteger(sct, "FS_value",	lst_stt->find_FS_value);
+	}
+	if (lst_stt->find_FW_mode>0) {
+		cfg_file->WriteInteger(sct, "FW_mode",	lst_stt->find_FW_mode);
+		cfg_file->WriteInteger(sct, "FW_value",	lst_stt->find_FW_value);
+	}
+	if (lst_stt->find_FH_mode>0) {
+		cfg_file->WriteInteger(sct, "FH_mode",	lst_stt->find_FH_mode);
+		cfg_file->WriteInteger(sct, "FH_value",	lst_stt->find_FH_value);
+	}
+	if (lst_stt->find_IW_mode>0 || lst_stt->find_IH_mode>0) {
+		cfg_file->WriteInteger(sct, "IW_mode",	lst_stt->find_IW_mode);
+		cfg_file->WriteInteger(sct, "IW_value",	lst_stt->find_IW_value);
+		cfg_file->WriteInteger(sct, "IH_mode",	lst_stt->find_IH_mode);
+		cfg_file->WriteInteger(sct, "IH_value",	lst_stt->find_IH_value);
+		cfg_file->WriteInteger(sct, "IWH_max",	lst_stt->find_IWH_max);
+	}
+
+	cfg_file->WriteString( sct, "ExifKwd",	lst_stt->find_ExifKwd);
+	cfg_file->WriteBool(   sct, "ExifRegEx",lst_stt->find_ExifRegEx);
+	cfg_file->WriteBool(   sct, "ExifAnd",	lst_stt->find_ExifAnd);
+	cfg_file->WriteBool(   sct, "ExifCase", lst_stt->find_ExifCase);
+
+	if (!lst_stt->find_LatLng.IsEmpty()) {
+		cfg_file->WriteString( sct, "LatLng",	lst_stt->find_LatLng);
+		cfg_file->WriteInteger(sct, "GpsRange",	lst_stt->find_GpsRange);
+	}
+
+	if (lst_stt->find_SR_mode>0) {
+		cfg_file->WriteInteger(sct, "SR_mode",	lst_stt->find_SR_mode);
+		cfg_file->WriteInteger(sct, "SR_value",	lst_stt->find_SR_value);
+	}
+	cfg_file->WriteInteger(sct, "BT_mode",	lst_stt->find_BT_mode);
+	cfg_file->WriteInteger(sct, "CH_mode",	lst_stt->find_CH_mode);
+
+	cfg_file->WriteString( sct,	"PrpKwd",	lst_stt->find_PrpKwd);
+	cfg_file->WriteBool(   sct, "PrpRegEx",	lst_stt->find_PrpRegEx);
+	cfg_file->WriteBool(   sct, "PrpAnd",	lst_stt->find_PrpAnd);
+	cfg_file->WriteBool(   sct, "PrpCase",	lst_stt->find_PrpCase);
+
+	cfg_file->WriteString( sct,	"TxtKwd",	lst_stt->find_TxtKwd);
+	cfg_file->WriteBool(   sct, "TxtRegEx",	lst_stt->find_TxtRegEx);
+	cfg_file->WriteBool(   sct, "TxtAnd",	lst_stt->find_TxtAnd);
+	cfg_file->WriteBool(   sct, "TxtCase",	lst_stt->find_TxtCase);
+
+	if (lst_stt->find_IC_mode>0) {
+		cfg_file->WriteInteger(sct,	"IC_mode",	lst_stt->find_IC_mode);
+		cfg_file->WriteInteger(sct,	"IC_value",	lst_stt->find_IC_value);
+	}
+
+	cfg_file->WriteString( sct,	"Tags",	lst_stt->find_Tags);
+
+	if (lst_stt->find_HL_mode>0) {
+		cfg_file->WriteInteger(sct,	"HL_mode",	lst_stt->find_HL_mode);
+		cfg_file->WriteInteger(sct,	"HL_value",	lst_stt->find_HL_value);
+	}
+
+	cfg_file->WriteBool(   sct, "hasAds",	lst_stt->find_hasAds);
+	cfg_file->WriteBool(   sct, "useProc",	lst_stt->find_useProc);
+	cfg_file->WriteBool(   sct, "Warn",		lst_stt->find_Warn);
+
+	cfg_file->SaveListItems("FindSubList", lst_stt->find_SubList, 0);
+
+	return cfg_file->UpdateFile(true);
+}
+//---------------------------------------------------------------------------
+//検索設定の読込
+//---------------------------------------------------------------------------
+bool load_FindSettings(int tag, UnicodeString fnam)
+{
+	if (tag==-1) tag = CurListTag;
+	flist_stt *lst_stt = &ListStt[tag];
+
+	std::unique_ptr<UsrIniFile> cfg_file(new UsrIniFile(fnam));
+	UnicodeString sct = "FindSettings";
+	if (!cfg_file->SectionExists(sct)) return false;
+
+	clear_FindStt(lst_stt);
+	lst_stt->is_narrow     = false;
+	lst_stt->find_PathSort = cfg_file->ReadBool(   sct, "PathSort");
+	lst_stt->find_ResLink  = cfg_file->ReadBool(   sct, "ResLink");
+	lst_stt->find_DirLink  = cfg_file->ReadBool(   sct, "DirLink");
+
+	lst_stt->find_Path     = cfg_file->ReadString( sct, "Path");
+	lst_stt->find_DirList  = cfg_file->ReadString( sct, "DirList");
+	lst_stt->find_Dir      = cfg_file->ReadBool(   sct, "Dir");
+	lst_stt->find_Both     = cfg_file->ReadBool(   sct, "Both");
+	lst_stt->find_SubDir   = cfg_file->ReadBool(   sct, "SubDir");
+	lst_stt->find_Arc      = cfg_file->ReadBool(   sct, "Arc");
+	lst_stt->find_xTrash   = cfg_file->ReadBool(   sct, "xTrash");
+	lst_stt->find_ResLink  = cfg_file->ReadBool(   sct, "ResLink");
+	lst_stt->find_DirLink  = cfg_file->ReadBool(   sct, "DirLink");
+	lst_stt->find_Mask     = cfg_file->ReadString( sct, "Mask");
+	lst_stt->find_Keywd    = cfg_file->ReadString( sct, "Keywd");
+	lst_stt->find_RegEx    = cfg_file->ReadBool(   sct, "RegEx");
+	lst_stt->find_And      = cfg_file->ReadBool(   sct, "And");
+	lst_stt->find_Case     = cfg_file->ReadBool(   sct, "Case");
+
+	lst_stt->find_DT_mode = cfg_file->ReadInteger(sct, "DT_mode");
+	if (lst_stt->find_DT_mode>0) {
+		lst_stt->find_DT_str = cfg_file->ReadString( sct, "DT_str");
+		try {
+			lst_stt->find_DT_value = str_to_DateTime(cfg_file->ReadString(sct, "DT_value"));
+		}
+		catch (EConvertError &e) {
+			lst_stt->find_DT_value = 0;
+		}
+	}
+
+	lst_stt->find_SZ_mode = cfg_file->ReadInteger(sct, "SZ_mode");
+	if (lst_stt->find_SZ_mode>0) {
+		lst_stt->find_SZ_value = cfg_file->ReadInt64(  sct, "SZ_value");
+	}
+
+	lst_stt->find_AT_mode = cfg_file->ReadInteger(sct, "AT_mode");
+	if (lst_stt->find_AT_mode>0) {
+		lst_stt->find_AT_value = cfg_file->ReadInteger(sct, "AT_value");
+	}
+
+	lst_stt->find_TM_mode = cfg_file->ReadInteger(sct, "TM_mode");
+	if (lst_stt->find_TM_mode>0) {
+		try {
+			lst_stt->find_TM_value = str_to_DateTime(cfg_file->ReadString( sct, "TM_value"));
+		}
+		catch (EConvertError &e) {
+			lst_stt->find_TM_value = 0;
+		}
+	}
+
+	lst_stt->find_RT_mode = cfg_file->ReadInteger(sct, "RT_mode");
+	if (lst_stt->find_RT_mode>0) {
+		lst_stt->find_RT_value = cfg_file->ReadInteger(sct, "RT_value");
+	}
+
+	lst_stt->find_codepage  = cfg_file->ReadInteger(sct, "codepage");
+	lst_stt->find_LineBrk   = cfg_file->ReadString( sct, "LineBrk");
+	lst_stt->find_BOM_mode  = cfg_file->ReadInteger(sct, "BOM_mode");
+
+	lst_stt->find_FS_mode = cfg_file->ReadInteger(sct, "FS_mode");
+	if (lst_stt->find_FS_mode>0) {
+		lst_stt->find_FS_value = cfg_file->ReadInteger(sct, "FS_value");
+	}
+	lst_stt->find_FW_mode = cfg_file->ReadInteger(sct, "FW_mode");
+	if (lst_stt->find_FW_mode>0) {
+		lst_stt->find_FW_value = cfg_file->ReadInteger(sct, "FW_value");
+	}
+
+	lst_stt->find_FH_mode = cfg_file->ReadInteger(sct, "FH_mode");
+	if (lst_stt->find_FH_mode>0) {
+		lst_stt->find_FH_value = cfg_file->ReadInteger(sct, "FH_value");
+	}
+
+	lst_stt->find_IW_mode = cfg_file->ReadInteger(sct, "IW_mode");
+	lst_stt->find_IH_mode = cfg_file->ReadInteger(sct, "IH_mode");
+	if (lst_stt->find_IW_mode>0 || lst_stt->find_IH_mode>0) {
+		lst_stt->find_IW_value = cfg_file->ReadInteger(sct, "IW_value");
+		lst_stt->find_IH_value = cfg_file->ReadInteger(sct, "IH_value");
+		lst_stt->find_IWH_max  = cfg_file->ReadInteger(sct, "IWH_max");
+	}
+
+	lst_stt->find_ExifKwd   = cfg_file->ReadString( sct, "ExifKwd");
+	lst_stt->find_ExifRegEx = cfg_file->ReadBool(   sct, "ExifRegEx");
+	lst_stt->find_ExifAnd   = cfg_file->ReadBool(   sct, "ExifAnd");
+	lst_stt->find_ExifCase  = cfg_file->ReadBool(   sct, "ExifCase");
+
+	lst_stt->find_LatLng    = cfg_file->ReadString( sct, "LatLng");
+	if (!lst_stt->find_LatLng.IsEmpty()) {
+		try {
+			UnicodeString lbuf = lst_stt->find_LatLng;
+			if (lbuf.Pos(':')>0) lbuf = Trim(get_tkn_r(lbuf, ':'));
+			lst_stt->find_GpsLat   = Trim(split_tkn(lbuf, ',')).ToDouble();
+			lst_stt->find_GpsLng   = Trim(lbuf).ToDouble();
+			lst_stt->find_GpsRange = cfg_file->ReadInteger(sct, "GpsRange");
+			if (CurStt->find_GpsRange==0) Abort();
+		}
+		catch (...) {
+			CurStt->find_LatLng = EmptyStr;
+		}
+	}
+
+	lst_stt->find_SR_mode = cfg_file->ReadInteger(sct, "SR_mode");
+	if (lst_stt->find_SR_mode>0) {
+		lst_stt->find_SR_value = cfg_file->ReadInteger(sct, "SR_value");
+	}
+
+	lst_stt->find_BT_mode   = cfg_file->ReadInteger(sct, "BT_mode");
+	lst_stt->find_CH_mode   = cfg_file->ReadInteger(sct, "CH_mode");
+	lst_stt->find_PrpKwd    = cfg_file->ReadString( sct, "PrpKwd");
+	lst_stt->find_PrpRegEx  = cfg_file->ReadBool(   sct, "PrpRegEx");
+	lst_stt->find_PrpAnd    = cfg_file->ReadBool(   sct, "PrpAnd");
+	lst_stt->find_PrpCase   = cfg_file->ReadBool(   sct, "PrpCase");
+	lst_stt->find_TxtKwd    = cfg_file->ReadString( sct, "TxtKwd");
+	lst_stt->find_TxtRegEx  = cfg_file->ReadBool(   sct, "TxtRegEx");
+	lst_stt->find_TxtAnd    = cfg_file->ReadBool(   sct, "TxtAnd");
+	lst_stt->find_TxtCase   = cfg_file->ReadBool(   sct, "TxtCase");
+
+	lst_stt->find_IC_mode   = cfg_file->ReadInteger(sct, "IC_mode");
+	if (lst_stt->find_IC_mode>0) {
+		lst_stt->find_IC_value = cfg_file->ReadInteger(sct, "IC_value");
+	}
+
+	lst_stt->find_Tags      = cfg_file->ReadString( sct, "Tags");
+
+	lst_stt->find_HL_mode   = cfg_file->ReadInteger(sct, "HL_mode");
+	if (lst_stt->find_HL_mode>0) {
+		lst_stt->find_HL_value = cfg_file->ReadInteger(sct, "HL_value");
+	}
+
+	lst_stt->find_hasAds    = cfg_file->ReadBool(   sct, "hasAds");
+	lst_stt->find_useProc   = cfg_file->ReadBool(   sct, "useProc");
+	lst_stt->find_Warn      = cfg_file->ReadBool(   sct, "Warn");
+
+	if (!lst_stt->find_DirList.IsEmpty()) {
+		lst_stt->find_SubList->Clear();
+		std::unique_ptr<TStringList> fbuf(new TStringList());
+		load_text_ex(lst_stt->find_DirList, fbuf.get());
+		for (int i=0; i<fbuf->Count; i++) {
+			UnicodeString lbuf = get_pre_tab(fbuf->Strings[i]);
+			if (lbuf.IsEmpty() || StartsStr(';', lbuf)) continue;
+			UnicodeString dnam = cv_env_str(lbuf);
+			if (dir_exists(dnam)) lst_stt->find_SubList->Add(ExcludeTrailingPathDelimiter(dnam));
+		}
+	}
+	else {
+		cfg_file->LoadListItems("FindSubList", lst_stt->find_SubList, 0);
+		if (lst_stt->find_SubList->Count==0 && !lst_stt->find_Path.IsEmpty()) {
+			lst_stt->find_SubList->Add(lst_stt->find_Path);
+		}
+	}
+
+	return true;
 }
 
 //---------------------------------------------------------------------------
@@ -7444,7 +7741,7 @@ bool load_FontSample(UnicodeString fnam)
 		UnicodeString msg = make_LogHdr(_T("LOAD"), fnam);
 		std::unique_ptr<UsrIniFile> smpl_file(new UsrIniFile(fnam));
 		UnicodeString sct = "FontSample";
-		if (smpl_file->RectionExists(sct)) {
+		if (smpl_file->SectionExists(sct)) {
 			FontSampleSize	   = smpl_file->ReadInteger(sct, "Size", 20);
 			FontSampleBgCol    = xRRGGBB_to_col(smpl_file->ReadString(sct, "BgColor",	"000000"));
 			FontSampleFgCol    = xRRGGBB_to_col(smpl_file->ReadString(sct, "FgColor",	"FFFFFF"));
@@ -9447,16 +9744,19 @@ UnicodeString get_IniTypeStr(file_rec *fp)
 	}
 
 	std::unique_ptr<UsrIniFile> tmp_file(new UsrIniFile(fnam));
+	if (tmp_file->SectionExists("FindSettings"))
+			return "検索設定";
+
 	if (tmp_file->KeyExists("TabList", "Item1")
-		&& !tmp_file->RectionExists("KeyFuncList") && !tmp_file->RectionExists("Color"))
+		&& !tmp_file->SectionExists("KeyFuncList") && !tmp_file->SectionExists("Color"))
 			return "タブグループ";
 
-	if (tmp_file->RectionExists("Color")
-		&& !tmp_file->RectionExists("General") && !tmp_file->RectionExists("KeyFuncList"))
+	if (tmp_file->SectionExists("Color")
+		&& !tmp_file->SectionExists("General") && !tmp_file->SectionExists("KeyFuncList"))
 			return "配色設定";
 
-	if (tmp_file->RectionExists("KeyFuncList")
-		&& !tmp_file->RectionExists("General") && !tmp_file->RectionExists("Color"))
+	if (tmp_file->SectionExists("KeyFuncList")
+		&& !tmp_file->SectionExists("General") && !tmp_file->SectionExists("Color"))
 			return "キー設定";
 
 	return EmptyStr;

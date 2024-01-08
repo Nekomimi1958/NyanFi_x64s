@@ -1971,6 +1971,7 @@ object NyanFiForm: TNyanFiForm
                   Caption = '100 '#215' 100'
                   Transparent = True
                   Visible = False
+                  StyleElements = [seClient, seBorder]
                 end
                 object PreviewSttLabel: TLabel
                   Left = 4
@@ -1980,6 +1981,7 @@ object NyanFiForm: TNyanFiForm
                   Anchors = []
                   Transparent = True
                   Visible = False
+                  StyleElements = [seClient, seBorder]
                 end
                 object TxtPrvSplitter: TSplitter
                   Tag = 1
@@ -3443,6 +3445,12 @@ object NyanFiForm: TNyanFiForm
       OnExecute = LoadBgImageActionExecute
       OnUpdate = MenuFIActionUpdate
     end
+    object LoadFindSetAction: TAction
+      Category = 'Command'
+      Caption = #26908#32034#35373#23450#12434#12501#12449#12452#12523#12363#12425#35501#12415#36796#12416'...'
+      OnExecute = LoadFindSetActionExecute
+      OnUpdate = MenuFActionUpdate
+    end
     object LoadResultListAction: TAction
       Category = 'Command'
       Caption = #32080#26524#12522#12473#12488#12434#12501#12449#12452#12523#12363#12425#35501#12415#36796#12416'...'
@@ -3829,6 +3837,12 @@ object NyanFiForm: TNyanFiForm
       Caption = #12501#12449#12452#12523#12522#12473#12488#34920#31034#12395#25147#12427'(&R)'
       OnExecute = ReturnListActionExecute
       OnUpdate = ReturnListActionUpdate
+    end
+    object SaveAsFindSetAction: TAction
+      Category = 'Command'
+      Caption = #26908#32034#35373#23450#12395#21517#21069#12434#20184#12369#12390#20445#23384'...'
+      OnExecute = SaveAsFindSetActionExecute
+      OnUpdate = SaveAsFindSetActionUpdate
     end
     object SaveAsResultListAction: TAction
       Category = 'Command'

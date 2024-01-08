@@ -223,7 +223,7 @@ void __fastcall TDistributionDlg::AssignRegListBox()
 bool __fastcall TDistributionDlg::LoadDistrFile()
 {
 	std::unique_ptr<UsrIniFile> distr_file(new UsrIniFile(DistrFile));
-	if (distr_file->SectionList->Count==1 && distr_file->RectionExists("DistrDefList")) {
+	if (distr_file->SectionList->Count==1 && distr_file->SectionExists("DistrDefList")) {
 		DistrDefList->Clear();
 		distr_file->LoadListItems("DistrDefList", DistrDefList, 200, false);
 		RegEnabled = true;

@@ -13,8 +13,11 @@
 	<param name="Keyword" value="FLAC">
 	<param name="Keyword" value="GPS情報">
 	<param name="Keyword" value="ID3タグ">
+	<param name="Keyword" value="LoadFindSet">
 	<param name="Keyword" value="MP3">
 	<param name="Keyword" value="NTFS">
+	<param name="Keyword" value="OpenStandard">
+	<param name="Keyword" value="SaveAsFindSet">
 	<param name="Keyword" value="WAV">
 	<param name="Keyword" value="xd2txlib.dll">
 	<param name="Keyword" value="コードページ">
@@ -22,8 +25,10 @@
 	<param name="Keyword" value="ファイル/ディレクトリ名検索ダイアログ">
 	<param name="Keyword" value="ファイル名検索ダイアログ">
 	<param name="Keyword" value="ライブラリファイル">
+	<param name="Keyword" value="リストファイル">
 	<param name="Keyword" value="改行コード">
 	<param name="Keyword" value="拡張検索">
+	<param name="Keyword" value="検索設定ファイル">
 	<param name="Keyword" value="正規表現">
 	<param name="Keyword" value="正規表現チェッカー">
 	<param name="Keyword" value="代替データストリーム">
@@ -38,9 +43,18 @@
     また <a href="hid00005.htm#FindFileDirDlg">FindFileDirDlg</a> コマンドを実行するとファイル/ディレクトリ名検索ダイアログが開きます。<br>
     指定したマスク、検索語および、更新日付、サイズ、属性の条件にマッチするファイルをカレントパスで検索します。<br>
     ディレクトリが選択されている場合は、そのディレクトリが対象になります。またカレントにあるライブラリファイル(<b>.library-ms</b>)が選択されている場合も、ディレクトリの集合とみなして対象になります。<br>
-    <b>FindFileDlg</b> コマンドのパラメータでリストファイルが指定されている場合は、それに記述されているディレクトリが検索対象となります。<br>
+    <b>FindFileDlg</b> コマンドのパラメータで<b>リストファイル</b>が指定されている場合は、それに記述されているディレクトリが検索対象となります。<br>
     なおカレントが結果リストだった場合、再度 <b>FindFileDlg</b> コマンドを実行すると、ファイル名の絞り込み検索を行えます(ディレクトリは無視)。
   </p>
+
+  <p>
+    結果リストで <a href="hid00005.htm#SaveAsFindSet">SaveAsFindSet</a> コマンドを実行すると、現在の検索設定に名前を付けて保存できます。<br>
+    保存した<b>検索設定ファイル</b>は、<a href="hid00005.htm#LoadFindSet">LoadFindSet</a> コマンドで読み込んで検索を実行できます(ダイアログは非表示)。<br>
+    また <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>検索設定</b>」をチェックしていると、<a
+        href="hid00005.htm#OpenStandard">OpenStandard</a> コマンドでも実行できます。<br>
+  </p>
+
+  <hr class="light">
 
   <dl>
     <dt class="no_bg_indent1"><img src="combobox.png" alt=""> マスク</dt>
@@ -168,7 +182,7 @@
     </dd>
   </dl>
 
-  <hr>
+  <hr class="light">
   <p>
     検索条件で無効になっているものは、わかりやすいように背景がグレー表示になりす(<a href="hid00023.htm">オプション設定 - フォント・配色</a> 「無効な項目の背景色」で変更可能)。
   </p>
@@ -185,7 +199,7 @@
     WAVのファイルの再生、実行可能ファイルの実行のみ可能です。またメインメニュー、ツールバー、イベント、ログウィンドウでのコマンドはすべて無効になります。<br>
   </p>
 
-  <hr>
+  <hr class="light">
   <p>
     検索が終わると、カレント側に結果リストが表示されます。<br>
     <a href="hid00010.htm#FindPathCol">オプション設定 - デザイン - ファイルリスト - 「<b>結果リストに「場所」列を表示</b>」</a>
@@ -197,6 +211,7 @@
       href="hid00005.htm#OpenStandard">OpenStandard</a> と同じ動作になります(アーカイブ内ファイルは除く)。<br>
     その他、ファイル操作なども可能です。なお、アーカイブ内ファイルに対するファイル操作はできません(プレビュー、閲覧、編集、再生などは可能)。
   </p>
+
   <p>
     通常のファイルリスト表示に戻るには、<span class="btn_frame">ESC</span>キーを押すか、"<b>..</b>" で<span
       class="btn_frame">ENTER</span>キーを押してください。<br>

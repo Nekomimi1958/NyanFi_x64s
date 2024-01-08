@@ -336,12 +336,12 @@ object GrepExOptDlg: TGrepExOptDlg
         BevelOuter = bvNone
         TabOrder = 0
         object Label1: TLabel
-          Left = 149
+          Left = 107
           Top = 33
-          Width = 344
+          Width = 386
           Height = 15
           Alignment = taRightJustify
-          Caption = '$F '#12501#12449#12452#12523#21517'/  $B '#12497#12473#28961#12375#12501#12449#12452#12523#21517'/  $L '#34892#30058#21495'/  \t '#12479#12502'/  \n '#25913#34892
+          Caption = '$F '#12501#12449#12452#12523#21517'/  $B '#12497#12473#28961#12375#12501#12449#12452#12523#21517'/  $L '#34892#30058#21495'/  \t '#12479#12502'/  \n '#25913#34892'/ \0 '#12492#12523
         end
         object Label2: TLabel
           Left = 16

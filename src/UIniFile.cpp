@@ -197,7 +197,7 @@ void UsrIniFile::ReplaceKey(UnicodeString sct, UnicodeString s0, UnicodeString s
 //---------------------------------------------------------------------------
 //セクションが存在するか？
 //---------------------------------------------------------------------------
-bool UsrIniFile::RectionExists(UnicodeString sct)
+bool UsrIniFile::SectionExists(UnicodeString sct)
 {
 	return (SectionList->IndexOf(sct)!=-1);
 }
@@ -251,6 +251,11 @@ int UsrIniFile::ReadInteger(UnicodeString sct, UnicodeString key,
 	int def)	//デフォルト値	(default = 0)
 {
 	return StrToIntDef(ReadString(sct, key, EmptyStr), def);
+}
+//---------------------------------------------------------------------------
+int UsrIniFile::ReadInt64(UnicodeString sct, UnicodeString key, __int64 def)
+{
+	return StrToInt64Def(ReadString(sct, key, EmptyStr), def);
 }
 //---------------------------------------------------------------------------
 int UsrIniFile::ReadScaledInteger(UnicodeString sct, UnicodeString key,
@@ -398,6 +403,11 @@ void UsrIniFile::WriteInteger(UnicodeString sct, UnicodeString key, TComboBox *c
 void UsrIniFile::WriteInteger(UnicodeString sct, UnicodeString key, TRadioGroup *rp)
 {
 	WriteString(sct, key, UnicodeString(rp->ItemIndex));
+}
+//---------------------------------------------------------------------------
+void UsrIniFile::WriteInt64(UnicodeString sct, UnicodeString key, __int64 v)
+{
+	WriteString(sct, key, UnicodeString(v));
 }
 //---------------------------------------------------------------------------
 void UsrIniFile::WriteScaledInteger(UnicodeString sct, UnicodeString key, int v,
