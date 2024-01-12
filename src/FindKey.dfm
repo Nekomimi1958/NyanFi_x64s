@@ -74,4 +74,9 @@ object FindKeyDlg: TFindKeyDlg
       end
     end
   end
+  object ApplicationEvents1: TApplicationEvents
+    OnMessage = ApplicationEvents1Message
+    Left = 40
+    Top = 64
+  end
 end

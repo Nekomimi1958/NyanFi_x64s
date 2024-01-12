@@ -16,6 +16,7 @@ object GitGrepForm: TGitGrepForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
   OnResize = FormResize
   OnShow = FormShow
   TextHeight = 15
@@ -34,9 +35,9 @@ object GitGrepForm: TGitGrepForm
       Height = 34
       Align = alRight
       Cancel = True
-      ModalResult = 2
       TabOrder = 2
       TabStop = False
+      OnClick = HiddenCanBtnClick
     end
     object TopRightPanel: TPanel
       Left = 304
@@ -108,8 +109,6 @@ object GitGrepForm: TGitGrepForm
         Anchors = [akLeft, akTop, akRight]
         ImeMode = imClose
         TabOrder = 0
-        OnKeyDown = FindComboBoxKeyDown
-        OnKeyPress = FindComboBoxKeyPress
       end
     end
   end
@@ -228,7 +227,7 @@ object GitGrepForm: TGitGrepForm
   end
   object PopupMenu1: TPopupMenu
     Left = 144
-    Top = 92
+    Top = 86
     object ClipCopyItem: TMenuItem
       Action = ClipCopyAction
     end

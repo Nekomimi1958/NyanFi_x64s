@@ -106,6 +106,20 @@ object OptionDlg: TOptionDlg
           Height = 15
           Caption = 'm'#31186
         end
+        object Bevel1: TBevel
+          Left = 5
+          Top = 75
+          Width = 423
+          Height = 4
+          Shape = bsBottomLine
+        end
+        object Bevel2: TBevel
+          Left = 5
+          Top = 145
+          Width = 423
+          Height = 4
+          Shape = bsBottomLine
+        end
         object NopDtctTimeEdit: TLabeledEdit
           Left = 10
           Top = 116
@@ -192,56 +206,6 @@ object OptionDlg: TOptionDlg
           Height = 17
           Caption = #12479#12464#12434#12467#12500#12540
           TabOrder = 1
-        end
-        object BevelPanel1: TPanel
-          Left = 5
-          Top = 77
-          Width = 423
-          Height = 2
-          AutoSize = True
-          BevelOuter = bvNone
-          TabOrder = 8
-          object Shape1: TShape
-            Left = 0
-            Top = 0
-            Width = 423
-            Height = 1
-            Brush.Style = bsClear
-            Pen.Color = clBtnShadow
-          end
-          object Shape2: TShape
-            Left = 0
-            Top = 1
-            Width = 423
-            Height = 1
-            Brush.Style = bsClear
-            Pen.Color = clBtnHighlight
-          end
-        end
-        object BevelPanel2: TPanel
-          Left = 5
-          Top = 146
-          Width = 423
-          Height = 2
-          AutoSize = True
-          BevelOuter = bvNone
-          TabOrder = 9
-          object Shape3: TShape
-            Left = 0
-            Top = 0
-            Width = 423
-            Height = 1
-            Brush.Style = bsClear
-            Pen.Color = clBtnShadow
-          end
-          object Shape4: TShape
-            Left = 0
-            Top = 1
-            Width = 423
-            Height = 1
-            Brush.Style = bsClear
-            Pen.Color = clBtnHighlight
-          end
         end
       end
       object DeleteGroupBox: TGroupBox
@@ -6822,6 +6786,13 @@ object OptionDlg: TOptionDlg
           Anchors = [akRight, akBottom]
           Caption = #12467#12510#12531#12489
         end
+        object Bevel3: TBevel
+          Left = 6
+          Top = 313
+          Width = 423
+          Height = 4
+          Shape = bsBottomLine
+        end
         object FExtStdEdit: TLabeledEdit
           Left = 92
           Top = 201
@@ -6968,31 +6939,6 @@ object OptionDlg: TOptionDlg
           Anchors = [akLeft, akBottom]
           Caption = #12513#12491#12517#12540#23450#32681
           TabOrder = 11
-        end
-        object BevelPanel3: TPanel
-          Left = 5
-          Top = 314
-          Width = 423
-          Height = 2
-          AutoSize = True
-          BevelOuter = bvNone
-          TabOrder = 16
-          object Shape5: TShape
-            Left = 0
-            Top = 0
-            Width = 423
-            Height = 1
-            Brush.Style = bsClear
-            Pen.Color = clBtnShadow
-          end
-          object Shape6: TShape
-            Left = 0
-            Top = 1
-            Width = 423
-            Height = 1
-            Brush.Style = bsClear
-            Pen.Color = clBtnHighlight
-          end
         end
         object StdFindSetCheckBox: TCheckBox
           Left = 326

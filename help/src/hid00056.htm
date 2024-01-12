@@ -6,14 +6,17 @@
   <title>文字列検索(GREP)</title>
   <link rel="stylesheet" type="text/css" href="help.css">
   <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="ERE">
 	<param name="Keyword" value="FileEdit">
 	<param name="Keyword" value="GREP">
 	<param name="Keyword" value="grep.exe">
 	<param name="Keyword" value="Migemo">
+	<param name="Keyword" value="PCRE">
 	<param name="Keyword" value="ReturnList">
 	<param name="Keyword" value="TextViewer">
 	<param name="Keyword" value="xd2txlib.dll">
 	<param name="Keyword" value="タグジャンプ">
+	<param name="Keyword" value="フィルタ">
 	<param name="Keyword" value="環境変数">
 	<param name="Keyword" value="正規表現">
 	<param name="Keyword" value="正規表現チェッカー">
@@ -29,35 +32,36 @@
     <a href="hid00005.htm#Grep">Grep</a> コマンドを実行すると、カレント側ファイルリスト(<a href="hid00052.htm">ファイル名検索</a>の結果リストや<a
       href="hid00060.htm">ワークリスト</a>も可)のテキストファイルに対する <b>文字列検索(GREP)</b> 画面が開きます。<br>
   </p>
-    <p>検索はマルチスレッドで行われます。スレッドはファイル単位で作られ(最大4スレッド)、結果が取得される毎にリストに追加されていきます。そのためファイルの順序が前後する場合がありますが、完了時にはパス/行番号順にソート表示されます。<br></p>
+  <p>
+    検索はマルチスレッドで行われます。スレッドはファイル単位で作られ(最大4スレッド)、結果が取得される毎にリストに追加されていきます。そのためファイルの順序が前後する場合がありますが、完了時にはパス/行番号順にソート表示されます。<br>
+  </p>
 
-    <p><b>xd2txlib.dll</b> がインストールされていると、PDF、WORD、EXCEL、一太郎などの各種バイナリ文書も検索可能です。</p>
+  <p><b>xd2txlib.dll</b> がインストールされていると、PDF、WORD、EXCEL、一太郎などの各種バイナリ文書も検索可能です。</p>
 
   <hr class="light">
 
   <p>
     <a href="hid00005.htm#Grep2">Grep2</a> コマンドを実行してもこの画面が開きますが、検索処理には外部の <b>grep.exe</b> を利用します。<br>
-    <b>Git for Windows</b> をインストールしていると、<b>grep.exe</b> も利用できるはずです。標準的な場所にインストールされている場合は自動的に検出されますが、そうでない場合は <a href="hid00024.htm#Other">オプション設定 - 一般2 - その他</a> で設定してください。<br>
+    <b>Git for Windows</b> をインストールしていると、<b>grep.exe</b> も利用できるはずです。標準的な場所にインストールされている場合は自動的に検出されますが、そうでない場合は <a
+      href="hid00024.htm#Other">オプション設定 - 一般2 - その他</a> で設定してください。<br>
 
     正規表現検索などは <b>Grep</b> に比べてかなり高速ですが、以下のような制約があります。<br>
-    <ul>
-      <li><b>AND</b>、<b>タグ除外</b>、<b>次行表示</b> オプションは無効です。</li>
-      <li><b>1マッチ</b> では行番号や行内容は取得されません。ファイル名だけが表示されます。</li>
-      <li>ディレクトリの深さは指定できません。</li>
-      <li>UTF-8 以外のファイルでは、日本語を検索できません。</li>
-      <li>検索の進捗状況は表示されず、中断もできません。</li>
-      <li>正規表現はPerl互換(PCRE)ではなく、拡張正規表現(POSIX)になります(\d については内部で [0-9] に変換)。</li>
-      <li><b>xd2txlib.dll</b> によるバイナリ文書の検索はできません。</li>
-      </ul>
+  <ul>
+    <li><b>AND</b>、<b>タグ除外</b>、<b>次行表示</b> オプションは無効です。</li>
+    <li><b>1マッチ</b> では行番号や行内容は取得されません。ファイル名だけが表示されます。</li>
+    <li>ディレクトリの深さは指定できません。</li>
+    <li>UTF-8 以外のファイルでは、日本語を検索できません。</li>
+    <li>検索の進捗状況は表示されません。</li>
+    <li>正規表現はPerl互換(PCRE)ではなく、拡張正規表現(ERE)になります(\d については内部で [0-9] に変換)。</li>
+    <li><b>xd2txlib.dll</b> によるバイナリ文書の検索はできません。</li>
+    <li><b>フィルタ</b>による検索対象の絞り込みはできません。</li>
+  </ul>
   </p>
-  <hr clas="light">
+  <hr class="light">
 
   <p>検索場所が Git リポジトリの場合、<b>Git GREP</b> (<a href="hid00005.htm#GitGrep">GitGrep</a>)を利用できます。</p>
+  <p>上部のタブを切り替えることにより、<b>文字列検索</b>および<a href="hid00061.htm">文字列置換</a>を行えます。</p>
   <br>
-
-  <p>
-    上部のタブを切り替えることにより、<b>文字列検索</b>および<a href="hid00061.htm">文字列置換</a>を行えます。<br>
-  </p>
 
   <h2 id="Find">文字列検索</h2>
   <p>
@@ -67,6 +71,125 @@
       class="btn_frame">ESC</span>キーを押してください。<br>
     検索が終了すると、結果が下のリストに表示され、フォーカスが移ります。<br>
   </p>
+
+  <p>なお、以下のキーで互いにフォーカス移動が可能です。
+  <table>
+    <tr>
+      <td><span class="btn_frame">Ctrl</span>+<span class="btn_frame">F</span>/<span class="btn_frame">S</span></td>
+      <td>検索文字列欄へ</td>
+    </tr>
+    <tr>
+      <td><span class="btn_frame">Ctrl</span>+<span class="btn_frame">F</span></td>
+      <td>フィルタ欄へ</td>
+    </tr>
+    <tr>
+      <td><span class="btn_frame">Ctrl</span>+<span class="btn_frame">K</span></td>
+      <td>マスク欄へ</td>
+    </tr>
+    <tr>
+      <td><span class="btn_frame">Ctrl</span>+<span class="btn_frame">L</span></td>
+      <td>結果リストへ</td>
+    </tr>
+  </table>
+  </p>
+
+  <hr class="light">
+  <dl class="indent1">
+    <dt class="no_bg">検索文字列 <img src="edit.png" alt=""></dt>
+    <dd>検索文字列を指定します。半角または全角空白で区切って複数の語を指定することも可能です(AND または OR 検索)。<br>
+      先頭や末尾の半角空白は無視されます。このような場合、正規表現では <b>\x20</b> を用いてください。<br>
+      正規表現でない場合、<b>\s</b> は半角空白、<b>\t</b> はタブ文字とみなされます。<br>
+      <hr class="light">
+      <div class="spc_box">
+        <b>フィルタによる検索対象の絞り込み:</b><br>
+        <b>&gt;</b><span class="pram_text">フィルタ1[|フィルタ2...]</span><b>&gt;</b> <span class="pram_text">検索文字列</span><br>
+        という書式で<b>フィルタ</b>を指定することで、検索対象を絞り込めます(Grep2 では利用不可)。<br>
+        | で区切って複数のフィルタを指定すると、それらが順に適用されます。なお、フィルタ名の大文字・小文字は区別されません。<br>
+        今のところ、以下のフィルタを利用できます。<br>
+        <dl>
+          <dt class="no_bg">Head<span class="pram_text">(行数)</span></dt>
+          <dd>
+            ファイルの先頭から指定した行数だけを検索します。<br>
+          </dd>
+          <dt class="no_bg">Tail<span class="pram_text">(行数)</span></dt>
+          <dd>
+            ファイルの最後から指定した行数だけを検索します。<b>Head</b> と組み合わせることで範囲指定も可能です。<br>
+            <b>例</b>: 11～20行目で hoge を検索<br>
+            <span class="inp_box">&gt;Head(20)|Tail(10)&gt; hoge</span>
+          </dd>
+          <dt class="no_bg">HtmlHead</dt>
+          <dd>
+            HTML文書で、&lt;head&gt; を含む行から &lt;/head&gt; を含む行までを検索します。<br>
+          </dd>
+          <dt class="no_bg">SubStr<span class="pram_text">(位置[,長さ])</span></dt>
+          <dd>
+            行毎に、指定した開始位置(1～)と長さの範囲を検索します。長さを省略すると、開始位置から行末までが範囲になります。<br>
+            <b>例</b>: 先頭から20行で、10文字目から20文字の範囲を検索<br>
+            <span class="inp_box">&gt;Head(20)|SubStr(10,20)&gt; hoge</span>
+          </dd>
+        </dl>
+      </div>
+    </dd>
+
+    <dt class="no_bg" id="RegEx"><img src="chkbox.png" alt=""> 正規表現</dt>
+    <dd>検索に正規表現(Grep:Perl互換(PCRE)、Grep2:拡張正規表現(ERE))を用います。<br>
+      入力内容が正しくない場合、入力欄を囲むエラー色の枠が表示されて<span class="btn_frame">開始</span>ボタンを押せません。<br>
+      なお検索文字列欄の右クリックメニューから、正規表現を参照したり、<a href="hid00085.htm">正規表現チェッカー</a>を開いたりできます。<br>
+      チェックしていない場合でも <b>Grep2</b> では、デフォルトで基本正規表現(BRE)となるため、メタキャラクタはエスケープして渡しています。
+      <div class="spc_box">
+        結果リストでは、マッチ部分が強調表示されますが、グループがあるとその背景色が強調色の補色で表示されます(グループ1のみ)。
+      </div>
+    </dd>
+
+    <dt class="no_bg"><img src="chkbox.png" alt=""> AND <span class="app_text">(Grep2 では無効)</span></dt>
+    <dd>
+      検索語を複数指定している場合に、AND検索を行います。チェックを外すとOR検索になります。<br>
+      <b>Grep2</b> では、代わりに<b>フィルタ</b>を利用するか、「<b>ヒットしたカレントのファイルを選択</b>」してさらに検索を行ってください。
+    </dd>
+
+    <dt class="no_bg" id="CaseSens"><img src="chkbox.png" alt=""> 大小区別</dt>
+    <dd>大文字・小文字を区別して検索します。</dd>
+
+    <dt class="no_bg" id="Word"><img src="chkbox.png" alt=""> 単語</dt>
+    <dd>単語単位で検索します。検索文字列は英単語境界でのみ一致します。</dd>
+
+    <dd>
+      結果リスト以外にフォーカスがある場合、<span class="btn_frame">Ctrl</span>+<span class="btn_frame">R</span>で<b>正規表現</b>、<span class="btn_frame">Ctrl</span>+<span class="btn_frame">U</span>で<b>大小区別</b>、<span class="btn_frame">Ctrl</span>+<span class="btn_frame">W</span>で<b>単語</b>のチェック状態を切り替えられます。<br>
+    </dd>
+  
+    <dt class="no_bg"><img src="chkbox.png" alt=""> 1マッチ <span class="app_text">(Grep2 では無効)</span></dt>
+    <dd>そのファイルで一箇所マッチしたらそれ以降の検索を止め、次のファイルに移ります。</dd>
+
+    <dt class="no_bg"><img src="chkbox.png" alt=""> タグ除外 <span class="app_text">(Grep2 では無効)</span></dt>
+    <dd>ファイルがHTML文書の場合、HTMLタグ部分を除外して検索します。<br>
+      HTML文書以外のファイルに対しては機能しません。
+    </dd>
+
+    <dt class="no_bg"><img src="chkbox.png" alt=""> 次行表示 <span class="app_text">(Grep2 では無効)</span></dt>
+    <dd>結果リストに、マッチした行以降の3行(空行は除く)を改行マークで区切って表示します。<br>
+      検索終了後に変更した場合にも、表示が切り替わります。
+    </dd>
+
+    <dt class="no_bg">マスク <img src="edit.png" alt=""></dt>
+    <dd>検索するファイルのマスクを指定します。マスクは <b>;</b> (セミコロン)で区切って複数指定できます。<br>
+      <a href="hid00063.htm#GrepSetMask">GrepSetMask</a> 補助コマンドや、<a href="hid00075.htm">.nyanfi ファイルによる設定</a>も可能です。<br>
+      なおカレントで選択項目がある場合は、それらが検索対象となり、マスクは無視されます。<br>
+      入力欄の幅は、<b>除外ディレクトリ</b>欄との間にある境界線をドラッグすることで変更できます。<br>
+      <b>例</b>: <span class="inp_box">*.txt;*.cpp;*.c;*.h </span>
+    </dd>
+
+    <dt class="no_bg"><img src="chkbox.png" alt=""> サブディレクトリ</dt>
+    <dd>サブディレクトリも検索対象とします。ディレクトリの深さも指定できます(カレントは0、サブディレクトリが1、その下が2…)。<br>
+      なおカレントでディレクトリを選択している場合、チェックしていなくても、その中のファイル(深さ1)は対象となります。<br>
+    </dd>
+
+    <dt class="no_bg">除外ディレクトリ <img src="edit.png" alt=""></dt>
+    <dd>検索から除外するディレクトリのマスクを指定します。マスクは <b>;</b> (セミコロン)で区切って複数指定できます。<br>
+      なおカレントで選択されているディレクトリは除外されません。<br>
+      <b>例</b>: <span class="inp_box">__*;backup;test;temp </span>
+    </dd>
+  </dl>
+  <hr class="light">
 
   <dl>
     <dt class="no_bg">結果リストでのキー操作</dt>
@@ -92,27 +215,16 @@
     <dt class="no_bg" id="Filter">フィルタ</dt>
     <dd>
       検索を行った後で、<b>フィルタ</b> <img src="edit.png" alt=""> 欄に文字を入力すると、ファイル名や行番号を除いた行内容部分を対象として、結果リストを絞り込むことができます。
-      <img src="chkbox.png" alt=""> <b>Migemo</b> をチェックしていると、<b>Migemo</b> モードで絞り込みを行えます。<br>
+      <img src="chkbox.png" alt=""> <b>Migemo</b> をチェックしていると、<b>Migemo</b> モードで絞り込みを行えます(<span
+        class="btn_frame">Ctrl</span>+<span class="btn_frame">M</span>でも切り替え可能)。<br>
       <div class="note_text">
         ※<b>Migemo</b> モードだと処理が重くなります。フィルタ欄には日本語も入力できるので、項目数が多い場合は通常モードにした方がよいでしょう。<br>
       </div>
       <img src="chkbox.png" alt=""> <b>AND/OR</b> をチェックしていると、複数のキーワードを空白で区切って入力した場合にAND検索、"<b>|</b>"
       で区切るとOR検索で絞り込めます。区切りが混在しているその場合は、空白(AND)の方が | (OR)よりも優先順位が高くなります。<br>
       入力内容に大文字が含まれていると大文字・小文字が区別されます。そうでない場合は区別されません<br>
-      入力欄の幅は、状態表示との間にある境界線をドラッグすることで変更できます。<br>
-    </dd>
-
-    <dt class="no_bg">フォーカス移動など</dt>
-    <dd>
-      結果リストにフォーカスがある場合、<span class="btn_frame">Ctrl</span>+<span class="btn_frame">F</span>キーでフィルタ欄に、<span
-        class="btn_frame">Ctrl</span>+<span class="btn_frame">S</span>キーで検索文字列欄に移れます。また、別ウィンドウのテキストビューアがなければ、<span
-        class="btn_frame">TAB</span>キーでも移れます。<br>
-      フィルタ欄からは、<span class="btn_frame">Ctrl</span>+<span class="btn_frame">L</span>で結果リストに、<span
-        class="btn_frame">Ctrl</span>+<span class="btn_frame">F</span>(or <span class="btn_frame">Ctrl</span>+<span
-        class="btn_frame">S</span>)で検索文字列欄に移れます。また<span class="btn_frame">Ctrl</span>+<span class="btn_frame">M</span>で
-      Migemo モードを切り替えられます。<br>
       なお、フィルタが適用される際に、キーによる項目の一時的な削除や、絞り込み、行内容によるソートは解除されます。<br>
-      <br>
+      入力欄の幅は、状態表示との間にある境界線をドラッグすることで変更できます。<br>
     </dd>
 
     <dt class="no_bg">メニュー</dt>
@@ -128,7 +240,9 @@
         「<b>検索結果の退避</b>」で、現在表示されている結果リストの内容をバッファに退避できます。退避しておいた内容は、「<b>検索結果の復帰</b>」で結果リストに呼び戻せます。</div>
 
       <div class="spc_box">
-        「<b>ヒットしたカレントのファイルを選択</b>」では、結果リストに表示されているファイルのうち、カレントのファイルリストにあるものを選択状態にします。ファイラーで <a href="hid00005.htm#SelAllFile">SelAllFile</a> コマンドが割り当てられているキーでも選択できます。この後でさらに検索を行った場合、選択されているファイルが検索対象となります。<br>
+        「<b>ヒットしたカレントのファイルを選択</b>」では、結果リストに表示されているファイルのうち、カレントのファイルリストにあるものを選択状態にします。ファイラーで <a
+          href="hid00005.htm#SelAllFile">SelAllFile</a>
+        コマンドが割り当てられているキーでも選択できます。この後でさらに検索を行った場合、選択されているファイルが検索対象となります。<br>
         「<b>ヒットしたファイルを含むディレクトリを選択</b>」では、結果リストのファイルを含んでいるカレントのディレクトリを選択状態にします。この後でさらに検索を行った場合、選択されているディレクトリが検索対象となります。<br>
       </div>
 
@@ -157,69 +271,8 @@
       </div>
     </dd>
   </dl>
-  <br>
-
-  <hr size="1">
-  <dl class="indent1">
-    <dt class="no_bg">検索文字列 <img src="edit.png" alt=""></dt>
-    <dd>検索文字列を指定します。半角または全角空白で区切って複数の語を指定することも可能です(AND または OR 検索)。<br>
-      先頭や末尾の半角空白は無視されます。このような場合、正規表現では <b>\x20</b> を用いてください。<br>
-      正規表現でない場合、<b>\s</b> は半角空白、<b>\t</b> はタブ文字とみなされます。<br>
-    </dd>
-
-    <dt class="no_bg">マスク <img src="edit.png" alt=""></dt>
-    <dd>検索するファイルのマスクを指定します。マスクは <b>;</b> (セミコロン)で区切って複数指定できます。<br>
-      <a href="hid00063.htm#GrepSetMask">GrepSetMask</a> 補助コマンドや、<a href="hid00075.htm">.nyanfi ファイルによる設定</a>も可能です。<br>
-      なおカレントで選択項目がある場合は、それらが検索対象となり、マスクは無視されます。<br>
-      入力欄の幅は、<b>除外ディレクトリ</b>欄との間にある境界線をドラッグすることで変更できます。<br>
-      <b>例</b>: <span class="inp_box">*.txt;*.cpp;*.c;*.h </span>
-    </dd>
-
-    <dt class="no_bg"><img src="chkbox.png" alt=""> サブディレクトリ</dt>
-    <dd>サブディレクトリも検索対象とします。ディレクトリの深さも指定できます(カレントは0、サブディレクトリが1、その下が2…)。<br>
-      なおカレントでディレクトリを選択している場合、チェックしていなくても、その中のファイル(深さ1)は対象となります。<br>
-    </dd>
-
-    <dt class="no_bg">除外ディレクトリ <img src="edit.png" alt=""></dt>
-    <dd>検索から除外するディレクトリのマスクを指定します。マスクは <b>;</b> (セミコロン)で区切って複数指定できます。<br>
-      なおカレントで選択されているディレクトリは除外されません。<br>
-      <b>例</b>: <span class="inp_box">__*;backup;test;temp </span>
-    </dd>
-
-    <dt class="no_bg"><img src="chkbox.png" alt=""> 正規表現</dt>
-    <dd>検索に正規表現(Grep:PCRE、Grep2:POSIX)を用います。<br>
-      入力内容が正しくない場合、入力欄を囲むエラー色の枠が表示されて<span class="btn_frame">開始</span>ボタンを押せません。<br>
-      なお検索文字列欄の右クリックメニューから、正規表現を参照したり、<a href="hid00085.htm">正規表現チェッカー</a>を開いたりできます。<br>
-    </dd>
-
-    <dt class="no_bg"><img src="chkbox.png" alt=""> AND <span class="app_text">(Grep2 では無効)</span></dt>
-    <dd>
-      検索語を複数指定している場合に、AND検索を行います。チェックを外すとOR検索になります。<br>
-      <b>Grep2</b> では、代わりに<b>フィルタ</b>を利用するか、「<b>ヒットしたカレントのファイルを選択</b>」してさらに検索を行ってください。
-    </dd>
-
-    <dt class="no_bg"><img src="chkbox.png" alt=""> 大小区別</dt>
-    <dd>大文字・小文字を区別して検索します。</dd>
-
-    <dt class="no_bg"><img src="chkbox.png" alt=""> 単語</dt>
-    <dd>単語単位で検索します。検索文字列は英単語境界でのみ一致します。</dd>
-
-    <dt class="no_bg"><img src="chkbox.png" alt=""> 1マッチ <span class="app_text">(Grep2 では無効)</span></dt>
-    <dd>そのファイルで一箇所マッチしたらそれ以降の検索を止め、次のファイルに移ります。</dd>
-
-    <dt class="no_bg"><img src="chkbox.png" alt=""> タグ除外 <span class="app_text">(Grep2 では無効)</span></dt>
-    <dd>ファイルがHTML文書の場合、HTMLタグ部分を除外して検索します。<br>
-      HTML文書以外のファイルに対しては機能しません。
-    </dd>
-
-    <dt class="no_bg"><img src="chkbox.png" alt=""> 次行表示 <span class="app_text">(Grep2 では無効)</span></dt>
-    <dd>結果リストに、マッチした行以降の3行(空行は除く)を改行マークで区切って表示します。<br>
-      検索終了後に変更した場合にも、表示が切り替わります。
-    </dd>
-  </dl>
-  <br>
-
   <hr>
+  <br>
 
   <p id="Option">
     <span class="btn_frame">拡張設定</span>ボタンを押すと、<b>拡張設定</b>ダイアログが開きます(二重起動した <b>NyanFi</b> では開けません)。<br>

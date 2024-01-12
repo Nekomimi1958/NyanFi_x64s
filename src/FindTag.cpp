@@ -177,17 +177,19 @@ void __fastcall TFindTagForm::TagsListBoxDrawItem(TWinControl *Control, int Inde
 		SearchOption opt;  opt << soAndOr;
 		if (IsMigemo) opt << soMigemo;
 		if (contains_upper(IncSeaWord)) opt << soCaseSens;
-		get_MatchWordList(lbuf, IncSeaWord, opt, wlist.get());
-		EmphasisTextOut(lbuf, wlist.get(), cv, xp, yp, opt.Contains(soCaseSens));
+		get_MatchWordListEx(lbuf, IncSeaWord, opt, wlist.get());
+		EmphasisTextOutEx(lbuf, wlist.get(), cv, xp, yp);
 	}
 	else {
 		cv->TextOut(xp, yp, lbuf);
 	}
 
 	TStringList *lst = (TStringList *)lp->Items->Objects[Index];
-	lbuf = IntToStr(lst->Count);
-	xp = (MaxTagWidth + cv->TextWidth("__9999") - cv->TextWidth(lbuf));
-	cv->TextOut(xp, yp, lbuf);
+	if (lst) {
+		lbuf = IntToStr(lst->Count);
+		xp = (MaxTagWidth + cv->TextWidth("__9999") - cv->TextWidth(lbuf));
+		cv->TextOut(xp, yp, lbuf);
+	}
 
 	//ƒJ[ƒ\ƒ‹
 	draw_ListCursor2(lp, Rect, Index, State);
@@ -201,7 +203,7 @@ void __fastcall TFindTagForm::TagsListBoxData(TWinControl *Control, int Index, U
 void __fastcall TFindTagForm::TagsListBoxDataObject(TWinControl *Control, int Index,
 	TObject *&DataObject)
 {
-	DataObject = ResListBuf->Objects[Index];
+	DataObject = (Index>=0 && Index<ResListBuf->Count)? ResListBuf->Objects[Index] : NULL;
 }
 
 //---------------------------------------------------------------------------

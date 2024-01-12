@@ -769,7 +769,8 @@ void get_PrmList(
 				_T("X0 : 「拡張検索」オフ\n")
 				_T("X1 : 「拡張検索」オン\n")
 				_T("A0 : 「アーカイブ内も検索」オフ\n")
-				_T("A1 : 「アーカイブ内も検索」オン\n"));
+				_T("A1 : 「アーカイブ内も検索」オン\n")
+				_T("* : リストファイルの選択ダイアログを表示\n"));
 		}
 	}
 	else if (SameText(cmd, "FindHardLink")) {
@@ -873,6 +874,9 @@ void get_PrmList(
 	}
 	else if (SameText(cmd, "ListTail")) {
 		params = "\nTE : 最後尾に移動r\nFF : フィルタ欄にフォーカス\n";
+	}
+	else if (SameText(cmd, "LoadFindSet")) {
+		params = "\n* : 検索設定ファイルをポップアップメニューで選択\n";
 	}
 	else if (SameText(cmd, "LockComputer")) {
 		params = "\nMO : ディスプレイの電源を切る\n";

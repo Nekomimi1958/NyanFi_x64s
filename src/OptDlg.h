@@ -707,9 +707,6 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *Frmt_X_Item;
 	TPageControl *PageControl1;
 	TPanel *AsoPanel;
-	TPanel *BevelPanel1;
-	TPanel *BevelPanel2;
-	TPanel *BevelPanel3;
 	TPanel *BottomPanel;
 	TPanel *ExtMenuPanel;
 	TPanel *ExtToolPanel;
@@ -739,12 +736,6 @@ __published:	// IDE で管理されるコンポーネント
 	TRadioGroup *L_IniSortRadioGroup;
 	TRadioGroup *PrtDirRadioGroup;
 	TRadioGroup *R_IniSortRadioGroup;
-	TShape *Shape1;
-	TShape *Shape2;
-	TShape *Shape3;
-	TShape *Shape4;
-	TShape *Shape5;
-	TShape *Shape6;
 	TSpeedButton *RefToolFmtBtn;
 	TTabControl *KeyTabControl;
 	TTabSheet *AssoSheet;
@@ -766,6 +757,9 @@ __published:	// IDE で管理されるコンポーネント
 	TTimer *Timer1;
 	TVirtualImageList *IconVImgListP;
 	TCheckBox *StdFindSetCheckBox;
+	TBevel *Bevel1;
+	TBevel *Bevel2;
+	TBevel *Bevel3;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

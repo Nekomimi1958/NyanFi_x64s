@@ -414,7 +414,7 @@ void __fastcall TInpCmdsDlg::Filter()
 	}
 
 	//i‚è‚İ
-	if (lst->Count>0 && !contained_wd_i("*|?| ", kwd)) {
+	if (lst->Count>0 && ((SubComboBox->Tag==0 && !contained_wd_i("*|?| ", kwd)) || SubComboBox->Tag==1)) {
 		UnicodeString ptn = (isFuzzy && !MigemoCheckBox->Checked)?
 			get_fuzzy_ptn(kwd, true) :
 			usr_Migemo->GetRegExPtn(MigemoCheckBox->Checked, kwd, (SubComboBox->Tag==1)? 1 : 0);

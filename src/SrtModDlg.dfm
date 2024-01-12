@@ -28,7 +28,6 @@ object SortModeDlg: TSortModeDlg
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 350
     object BtnPanel: TPanel
       Left = 0
       Top = 309
@@ -37,7 +36,6 @@ object SortModeDlg: TSortModeDlg
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitTop = 308
       object OkButton: TButton
         Left = 40
         Top = 9
@@ -193,8 +191,6 @@ object SortModeDlg: TSortModeDlg
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 248
-    ExplicitHeight = 350
     object AccDtoTCheckBox: TCheckBox
       Left = 8
       Top = 236
@@ -282,7 +278,7 @@ object SortModeDlg: TSortModeDlg
     end
   end
   object ActionList1: TActionList
-    Left = 166
+    Left = 182
     Top = 176
     object ExOptAction: TAction
       Caption = #25313#24373#35373#23450
@@ -293,5 +289,10 @@ object SortModeDlg: TSortModeDlg
       Caption = 'OK'
       OnUpdate = OkActionUpdate
     end
+  end
+  object ApplicationEvents1: TApplicationEvents
+    OnMessage = ApplicationEvents1Message
+    Left = 88
+    Top = 176
   end
 end

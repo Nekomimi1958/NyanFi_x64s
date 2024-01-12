@@ -218,11 +218,19 @@ extern TCursor crTmpPrev;	//カーソルのプレビュー用
 
 //---------------------------------------------------------------------------
 extern UnicodeString KeyStr_SELECT;
+
 extern UnicodeString KeyStr_Copy;
 extern UnicodeString KeyStr_Cut;
 extern UnicodeString KeyStr_Migemo;
-extern UnicodeString KeyStr_Filter;
+extern UnicodeString KeyStr_RegEx;
+extern UnicodeString KeyStr_Word;
+extern UnicodeString KeyStr_Case;
+
+extern UnicodeString KeysStr_Filter;
 extern UnicodeString KeysStr_ToList;
+extern UnicodeString KeysStr_ToKeywd;
+extern UnicodeString KeysStr_ToMask;
+
 extern UnicodeString KeysStr_CsrDown;
 extern UnicodeString KeysStr_CsrUp;
 extern UnicodeString KeysStr_PgDown;
@@ -321,6 +329,8 @@ extern int  FindCount;
 
 extern bool CalcAborted;
 extern int  CalcTag;
+
+extern bool GitGrepAborted;
 
 //---------------------------------------------------------------------------
 extern bool MultiInstance;
@@ -639,6 +649,7 @@ extern UnicodeString DownloadPath;
 extern UnicodeString LibraryPath;
 extern UnicodeString WorkListPath;
 extern UnicodeString ResultListPath;
+extern UnicodeString ListFilePath;
 extern UnicodeString FindSetPath;
 extern UnicodeString RefParamPath;
 extern UnicodeString CmdFilePath;
@@ -2150,10 +2161,13 @@ void out_TextEx(TCanvas *cv, int &x, int y, UnicodeString s, TColor fg = col_Non
 void out_TextRect(TCanvas *cv, TRect &rc, UnicodeString s, TColor fg = col_None, TColor bg = col_None);
 
 int  get_MatchWordList(UnicodeString lbuf, UnicodeString kwd, SearchOption opt, TStringList *lst);
+int  get_MatchWordListEx(UnicodeString lbuf, UnicodeString kwd, SearchOption opt, TStringList *lst);
 
-void EmphasisTextOut(UnicodeString s, TStringList *kw_lst, TCanvas *cv, int &x, int y,
-	bool case_sns = false, bool only_top = false, TColor fg = col_fgEmp, TColor bg = col_bgEmp);
-void EmphasisTextOut(UnicodeString s, UnicodeString kwd, TCanvas *cv, int &x, int y,
+void EmphasisTextOut(UnicodeString s, TStringList *kw_lst, TCanvas *cv, int &x, int y, bool case_sns = false);
+
+void EmphasisTextOutEx(UnicodeString s, TStringList *kw_lst, TCanvas *cv, int &x, int y,
+	bool only_top = false, TColor fg = col_fgEmp, TColor bg = col_bgEmp);
+void EmphasisTextOutEx(UnicodeString s, UnicodeString kwd, TCanvas *cv, int &x, int y,
 	bool case_sns = false, bool only_top = false, TColor fg = col_fgEmp, TColor bg = col_bgEmp);
 
 void draw_TAB(TCanvas *cv, int x, int y, int w, int h);
@@ -2237,17 +2251,18 @@ void ini_HtmConv_def(HtmConv *htmcnv, UnicodeString fnam = EmptyStr, UnicodeStri
 bool Execute_ex(UnicodeString cmd, UnicodeString prm = EmptyStr, UnicodeString wdir = EmptyStr,
 		UnicodeString opt = EmptyStr, DWORD *exit_code = NULL, TStringList *o_lst = NULL);
 bool Execute_cmdln(UnicodeString cmdln, UnicodeString wdir = EmptyStr,
-		UnicodeString opt = EmptyStr, DWORD *exit_code = NULL, TStringList *o_lst = NULL, TMemoryStream *o_ms = NULL);
+		UnicodeString opt = EmptyStr, DWORD *exit_code = NULL, TStringList *o_lst = NULL, TMemoryStream *o_ms = NULL,
+			bool *rq_abort = NULL);
 bool Execute_demote(UnicodeString cmd, UnicodeString prm = EmptyStr, UnicodeString wdir = EmptyStr);
 
-bool GitShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst,
-		DWORD *exit_cd = NULL, TStringList *w_lst = NULL);
+bool GitShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst, DWORD *exit_cd = NULL, 
+		TStringList *w_lst = NULL, bool *rq_abort = NULL);
 bool GitShellExe(UnicodeString prm, UnicodeString wdir, TMemoryStream *o_ms, DWORD *exit_cd = NULL);
 bool GitShellExe(UnicodeString prm, UnicodeString wdir);
 void split_GitWarning(TStringList *o_lst, TStringList *w_lst = NULL);
 UnicodeString save_GitRevAsTemp(UnicodeString id, UnicodeString fnam, UnicodeString wdir);
 
-bool GrepShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst, DWORD *exit_cd = NULL);
+bool GrepShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst, DWORD *exit_cd = NULL, bool *rq_abort = NULL);
 
 int  get_BusyTaskCount();
 int  get_MaxTaskCount();

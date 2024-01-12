@@ -43,15 +43,23 @@ TCursor crTmpPrev = (TCursor)10;	//カーソルのプレビュー用
 
 //---------------------------------------------------------------------------
 UnicodeString KeyStr_SELECT   = "SELECT+";
-UnicodeString KeyStr_Copy	  = "Ctrl+C";
-UnicodeString KeyStr_Cut	  = "Ctrl+X";
+
+UnicodeString KeyStr_Copy     = "Ctrl+C";
+UnicodeString KeyStr_Cut      = "Ctrl+X";
 UnicodeString KeyStr_Migemo   = "Ctrl+M";
-UnicodeString KeyStr_Filter   = "Ctrl+F";
+UnicodeString KeyStr_RegEx    = "Ctrl+R";
+UnicodeString KeyStr_Word     = "Ctrl+W";
+UnicodeString KeyStr_Case     = "Ctrl+U";
+
+UnicodeString KeysStr_Filter  = "Ctrl+F";
 UnicodeString KeysStr_ToList  = "Ctrl+L";
+UnicodeString KeysStr_ToKeywd = "Ctrl+F|Ctrl+S";
+UnicodeString KeysStr_ToMask  = "Ctrl+K";
+
 UnicodeString KeysStr_CsrDown = "DOWN|Ctrl+X";
 UnicodeString KeysStr_CsrUp   = "UP|Ctrl+E";
 UnicodeString KeysStr_PgDown  = "PGDN|Ctrl+C";
-UnicodeString KeysStr_PgUp	  = "PGUP|Ctrl+R";
+UnicodeString KeysStr_PgUp    = "PGUP|Ctrl+R";
 UnicodeString KeysStr_Popup   = "APP|Shift+F10";
 
 //---------------------------------------------------------------------------
@@ -132,6 +140,8 @@ int  FindCount;					//マッチ数
 
 bool CalcAborted;				//計算中断要求
 int  CalcTag;
+
+bool GitGrepAborted = false;	//GitGrep の中断要求
 
 bool MultiInstance;				//二重起動を許す
 bool CloseOthers;				//他のNyanFiを終了
@@ -459,6 +469,7 @@ UnicodeString DownloadPath;		//ダウンロード用
 UnicodeString LibraryPath;		//ライブラリ
 UnicodeString WorkListPath;		//ワークリスト参照パス
 UnicodeString ResultListPath;	//結果リスト参照パス
+UnicodeString ListFilePath;		//リストファイル参照パス
 UnicodeString FindSetPath;		//検索結果参照パス
 UnicodeString RefParamPath;		//パラメータ参照パス
 UnicodeString CmdFilePath;		//コマンドファイル参照パス
@@ -1548,6 +1559,7 @@ void InitializeGlobal()
 		{_T("DownloadPath=\"%ExePath%\""),			(TObject*)&DownloadPath},
 		{_T("WorkListPath=\"%ExePath%\""),			(TObject*)&WorkListPath},
 		{_T("ResultListPath=\"%ExePath%\""),		(TObject*)&ResultListPath},
+		{_T("ListFilePath=\"%ExePath%\""),			(TObject*)&ListFilePath},
 		{_T("FindSetPath=\"%ExePath%\""),			(TObject*)&FindSetPath},
 		{_T("RefParamPath=\"%ExePath%\""),			(TObject*)&RefParamPath},
 		{_T("IconFilePath=\"%ExePath%\""),			(TObject*)&UserModule->IconFilePath},
@@ -2867,9 +2879,10 @@ void filter_List(
 				}
 
 				if (ok) {
-					int idx = (int)i_lst->Objects[i];
-					if (idx==0) idx = i;
-					o_lst->AddObject(i_lst->Strings[i], (TObject*)(NativeInt)idx);
+					if (i_lst->Objects[i])
+						o_lst->AddObject(i_lst->Strings[i], i_lst->Objects[i]);
+					else
+						o_lst->AddObject(i_lst->Strings[i], (TObject*)(NativeInt)i);
 				}
 			}
 
@@ -2884,9 +2897,10 @@ void filter_List(
 				if ((opt.Contains(soTree) && i==0) ||
 					contains_fuzzy_word(get_SearchStr(lbuf, opt), kwd, opt.Contains(soCaseSens)))
 				{
-					int idx = (int)i_lst->Objects[i];
-					if (idx==0) idx = i;
-					o_lst->AddObject(i_lst->Strings[i], (TObject*)(NativeInt)idx);
+					if (i_lst->Objects[i])
+						o_lst->AddObject(i_lst->Strings[i], i_lst->Objects[i]);
+					else
+						o_lst->AddObject(i_lst->Strings[i], (TObject*)(NativeInt)i);
 				}
 			}
 		}
@@ -2898,9 +2912,10 @@ void filter_List(
 			for (int i=0; i<i_lst->Count; i++) {
 				UnicodeString lbuf = get_item(i_lst->Strings[i], opt);
 				if ((opt.Contains(soTree) && i==0) || is_SearchMatch(get_SearchStr(lbuf, opt), ptn, opt)) {
-					int idx = (int)i_lst->Objects[i];
-					if (idx==0) idx = i;
-					o_lst->AddObject(i_lst->Strings[i], (TObject*)(NativeInt)idx);
+					if (i_lst->Objects[i])
+						o_lst->AddObject(i_lst->Strings[i], i_lst->Objects[i]);
+					else
+						o_lst->AddObject(i_lst->Strings[i], (TObject*)(NativeInt)i);
 				}
 			}
 		}
@@ -5421,18 +5436,18 @@ bool load_FindSettings(int tag, UnicodeString fnam)
 		lst_stt->find_SR_value = cfg_file->ReadInteger(sct, "SR_value");
 	}
 
-	lst_stt->find_BT_mode   = cfg_file->ReadInteger(sct, "BT_mode");
-	lst_stt->find_CH_mode   = cfg_file->ReadInteger(sct, "CH_mode");
-	lst_stt->find_PrpKwd    = cfg_file->ReadString( sct, "PrpKwd");
-	lst_stt->find_PrpRegEx  = cfg_file->ReadBool(   sct, "PrpRegEx");
-	lst_stt->find_PrpAnd    = cfg_file->ReadBool(   sct, "PrpAnd");
-	lst_stt->find_PrpCase   = cfg_file->ReadBool(   sct, "PrpCase");
-	lst_stt->find_TxtKwd    = cfg_file->ReadString( sct, "TxtKwd");
-	lst_stt->find_TxtRegEx  = cfg_file->ReadBool(   sct, "TxtRegEx");
-	lst_stt->find_TxtAnd    = cfg_file->ReadBool(   sct, "TxtAnd");
-	lst_stt->find_TxtCase   = cfg_file->ReadBool(   sct, "TxtCase");
+	lst_stt->find_BT_mode  = cfg_file->ReadInteger(sct, "BT_mode");
+	lst_stt->find_CH_mode  = cfg_file->ReadInteger(sct, "CH_mode");
+	lst_stt->find_PrpKwd   = cfg_file->ReadString( sct, "PrpKwd");
+	lst_stt->find_PrpRegEx = cfg_file->ReadBool(   sct, "PrpRegEx");
+	lst_stt->find_PrpAnd   = cfg_file->ReadBool(   sct, "PrpAnd");
+	lst_stt->find_PrpCase  = cfg_file->ReadBool(   sct, "PrpCase");
+	lst_stt->find_TxtKwd   = cfg_file->ReadString( sct, "TxtKwd");
+	lst_stt->find_TxtRegEx = cfg_file->ReadBool(   sct, "TxtRegEx");
+	lst_stt->find_TxtAnd   = cfg_file->ReadBool(   sct, "TxtAnd");
+	lst_stt->find_TxtCase  = cfg_file->ReadBool(   sct, "TxtCase");
 
-	lst_stt->find_IC_mode   = cfg_file->ReadInteger(sct, "IC_mode");
+	lst_stt->find_IC_mode  = cfg_file->ReadInteger(sct, "IC_mode");
 	if (lst_stt->find_IC_mode>0) {
 		lst_stt->find_IC_value = cfg_file->ReadInteger(sct, "IC_value");
 	}
@@ -5444,9 +5459,9 @@ bool load_FindSettings(int tag, UnicodeString fnam)
 		lst_stt->find_HL_value = cfg_file->ReadInteger(sct, "HL_value");
 	}
 
-	lst_stt->find_hasAds    = cfg_file->ReadBool(   sct, "hasAds");
-	lst_stt->find_useProc   = cfg_file->ReadBool(   sct, "useProc");
-	lst_stt->find_Warn      = cfg_file->ReadBool(   sct, "Warn");
+	lst_stt->find_hasAds  = cfg_file->ReadBool(   sct, "hasAds");
+	lst_stt->find_useProc = cfg_file->ReadBool(   sct, "useProc");
+	lst_stt->find_Warn    = cfg_file->ReadBool(   sct, "Warn");
 
 	if (!lst_stt->find_DirList.IsEmpty()) {
 		lst_stt->find_SubList->Clear();
@@ -8797,7 +8812,7 @@ void draw_InfListBox(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 	}
 	else if (flag & LBFLG_DEBUG) {
 		if (!use_fgsel && ContainsStr(lbuf, "終了")) cv->Font->Color = col_Error;
-		EmphasisTextOut(lbuf, EmptyStr, cv, xp, yp);
+		EmphasisTextOutEx(lbuf, EmptyStr, cv, xp, yp);
 	}
 	else if (flag & LBFLG_GIT_TAG) {
 		if (remove_top_s(lbuf, "tags/")) {
@@ -8812,7 +8827,7 @@ void draw_InfListBox(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 		}
 	}
 	else {
-		EmphasisTextOut(lbuf, EmptyStr, cv, xp, yp);
+		EmphasisTextOutEx(lbuf, EmptyStr, cv, xp, yp);
 	}
 }
 
@@ -11366,6 +11381,111 @@ int get_MatchWordList(
 
 	return lst->Count;
 }
+//---------------------------------------------------------------------------
+int get_MatchWordListEx(
+	UnicodeString lbuf,	//対象文字列
+	UnicodeString kwd,	//検索語
+	SearchOption  opt,	//オプション
+	TStringList  *lst)	//[o] マッチ語リスト(Value=Index,Length)
+{
+	auto make_list = [](TMatchCollection mts, TStringList *lst) {
+		for (int i=0; i<mts.Count; i++) {
+			if (mts.Item[i].Success) {
+				if (mts.Item[i].Groups.Count>1 && mts.Item[i].Groups.Item[1].Success) {
+					lst->Add(UnicodeString().sprintf(_T("%s=%u,%u,%u,%u"),
+						mts.Item[i].Value.c_str(), 
+						mts.Item[i].Index, mts.Item[i].Length,
+						mts.Item[i].Groups.Item[1].Index, mts.Item[i].Groups.Item[1].Length));
+				}
+				else {
+					lst->Add(UnicodeString().sprintf(_T("%s=%u,%u"),
+						mts.Item[i].Value.c_str(), mts.Item[i].Index, mts.Item[i].Length));
+				}
+			}
+		}
+		return lst->Count;
+	};
+
+	lst->Clear();
+
+	TRegExOptions x_opt;
+	if (!opt.Contains(soCaseSens)) x_opt << roIgnoreCase;
+
+	//AND/OR検索
+	if (opt.Contains(soAndOr)) {
+		TStringDynArray or_lst = SplitString(Trim(kwd), "|");
+		for (int i=0; i<or_lst.Length; i++) {
+			std::unique_ptr<TStringList> tmp_lst(new TStringList());
+			TStringDynArray and_lst = SplitString(Trim(or_lst[i]), " ");
+			bool and_ok = true;
+			for (int j=0; j<and_lst.Length && and_ok; j++) {
+				UnicodeString s   = Trim(and_lst[j]);
+				UnicodeString ptn = opt.Contains(soRegEx)? s :
+					 			   opt.Contains(soMigemo)? usr_Migemo->GetRegExPtn(true, s)
+														 : TRegEx::Escape(conv_esc_char(s));
+				if (!ptn.IsEmpty()) {
+					TMatchCollection mts = TRegEx::Matches(lbuf, ptn, x_opt);
+					and_ok = (mts.Count>0);
+					if (and_ok) make_list(mts, tmp_lst.get());
+				}
+			}
+
+			if (and_ok) {
+				lst->AddStrings(tmp_lst.get());
+				break;
+			}
+		}
+	}
+	//単純検索
+	else if (!kwd.IsEmpty()) {
+		//正規表現/Migemo
+		if (opt.Contains(soRegEx) || opt.Contains(soMigemo)) {
+			UnicodeString ptn = opt.Contains(soRegEx)? kwd : usr_Migemo->GetRegExPtn(opt.Contains(soMigemo), kwd);
+			if (!ptn.IsEmpty()) make_list(TRegEx::Matches(lbuf, ptn, x_opt), lst);
+		}
+		//あいまい検索
+		else if (opt.Contains(soFuzzy)) {
+			make_list(TRegEx::Matches(lbuf, get_fuzzy_ptn(kwd), x_opt), lst);
+		}
+		//GitGrep
+		else if (opt.Contains(soGitGrep)) {
+			TStringDynArray s_lst = SplitString(Trim(kwd), " ");
+			if (TRegEx::IsMatch(kwd, "^(-e)\\s[^- ]+")) {
+				bool is_ptn = false;
+				for (int i=0; i<s_lst.Length; i++) {
+					UnicodeString s = s_lst[i];
+					if (SameStr(s, "--and") || SameStr(s, "--or") || SameStr(s, "--not")) {
+						is_ptn = false;
+					}
+					else if (SameStr(s, "-e")) {
+						is_ptn = true;
+					}
+					else if (is_ptn) {
+						make_list(TRegEx::Matches(lbuf, s, x_opt), lst);
+						is_ptn = false;
+					}
+					else {
+						is_ptn = false;
+					}
+				}
+			}
+			else {
+				for (int i=0; i<s_lst.Length; i++) make_list(TRegEx::Matches(lbuf, s_lst[i], x_opt), lst);
+			}
+		}
+		//AND/OR(' ')
+		else {
+			std::unique_ptr<TStringList> klst(new TStringList());
+			get_find_wd_list(kwd, klst.get());
+			for (int i=0; i<klst->Count; i++) {
+				UnicodeString ptn = TRegEx::Escape(klst->Strings[i]);
+				if (!ptn.IsEmpty()) make_list(TRegEx::Matches(lbuf, ptn, x_opt), lst);
+			}
+		}
+	}
+
+	return lst->Count;
+}
 
 //---------------------------------------------------------------------------
 //語の強調表示 (URL強調有り)
@@ -11376,10 +11496,7 @@ void EmphasisTextOut(
 	TCanvas *cv,
 	int &x,				//[i/o] 表示X位置
 	int y,				//[i]	表示Y位置
-	bool case_sns,		//大小文字を区別   (default = false)
-	bool only_top,		//先頭の語だけ強調 (default = false)
-	TColor fg,			//強調文字色 (default = col_fgEmp)
-	TColor bg)			//強調背景色 (default = col_bgEmp)
+	bool case_sns)		//大小文字を区別   (default = false)
 {
 	if (s.IsEmpty()) return;
 
@@ -11410,12 +11527,12 @@ void EmphasisTextOut(
 				if (p>0) {
 					int len = kwd.Length();
 					for (int j=0,k=p; j<len; j++,k++) {
-						FgCol[k] = fg;  BgCol[k] = bg;
+						FgCol[k] = col_fgEmp;  BgCol[k] = col_bgEmp;
 					}
 					p1 = std::max(p + len, p1);
 				}
 			}
-			if (p1==0 || only_top) break;
+			if (p1==0) break;
 			ofs = p1;
 		}
 	}
@@ -11450,20 +11567,105 @@ void EmphasisTextOut(
 }
 
 //---------------------------------------------------------------------------
-void EmphasisTextOut(
+void EmphasisTextOutEx(
+	UnicodeString s,		//表示文字列
+	TStringList *kw_lst,	//強調語のリスト(Value=Index,Length[,g_Index, g_Length])
+	TCanvas *cv,
+	int &x,				//[i/o] 表示X位置
+	int y,				//[i]	表示Y位置
+	bool only_top,		//先頭の語だけ強調	(default = false)
+	TColor fg,			//強調文字色		(default = col_fgEmp)
+	TColor bg)			//強調背景色		(default = col_bgEmp)
+{
+	if (s.IsEmpty()) return;
+
+	int s_len = s.Length();
+
+	std::unique_ptr<TColor[]> FgCol(new TColor[s_len + 1]);
+	std::unique_ptr<TColor[]> BgCol(new TColor[s_len + 1]);
+
+	for (int i=0; i<=s_len; i++) {	//0 は 現在色
+		FgCol[i] = cv->Font->Color;
+		BgCol[i] = cv->Brush->Color;
+	}
+
+	//URL強調
+	if (s.Pos("://")) {	//URL 処理時間短縮のための前チェック
+		TMatch mt = TRegEx::Match(s, URL_MATCH_PTN);
+		if (mt.Success) for (int j=0,p=mt.Index; j<mt.Length; j++,p++) FgCol[p] = col_URL;
+	}
+
+	//キーワード強調
+	if (kw_lst) {
+		int p0 = 1;
+		for (int i=0; i<kw_lst->Count && p0<=s_len; i++) {
+			TStringDynArray v = get_csv_array(kw_lst->ValueFromIndex[i], 4);
+			if (v.Length>=2) {
+				int idx = v[0].ToIntDef(0);
+				int len = v[1].ToIntDef(0);
+				int g_i = (v.Length==4)? v[2].ToIntDef(0) : 0;
+				int g_n = (v.Length==4)? v[3].ToIntDef(0) : 0;
+				if (idx>0 && idx<=s_len && (idx + len - 1)<=s_len) {
+					for (int j=0; j<len; j++) {
+						FgCol[idx + j] = fg;
+						BgCol[idx + j] = bg;
+					}
+					if (g_i>=idx && (g_i + g_n - 1)<=s_len) {
+						TColor bg2 = ComplementaryCol(bg);
+						for (int j=0; j<g_n; j++) {
+							BgCol[g_i + j] = bg2;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//コントロールコード
+	for (int i=1; i<=s_len; i++) {
+		if (iscntrl(s[i]) && (s[i]!='\t')) {
+			s[i] = (WideChar)((int)s[i] + 0x40);
+			FgCol[i] = col_Ctrl;
+		}
+	}
+
+	//文字列描画
+	cv->Font->Color  = FgCol[1];
+	cv->Brush->Color = BgCol[1];
+	UnicodeString sbuf;
+	for (int j=1; j<=s_len; j++) {
+		if (FgCol[j]==cv->Font->Color && BgCol[j]==cv->Brush->Color) {
+			sbuf.cat_sprintf(_T("%c"), s[j]);
+		}
+		else {
+			TabCrTextOut(sbuf, cv, x, y, cv->Font->Color);
+			sbuf = s[j];
+			cv->Font->Color  = FgCol[j];
+			cv->Brush->Color = BgCol[j];
+		}
+	}
+	if (!sbuf.IsEmpty()) TabCrTextOut(sbuf, cv, x, y, cv->Font->Color);
+
+	cv->Font->Color  = FgCol[0];
+	cv->Brush->Color = BgCol[0];
+}
+//---------------------------------------------------------------------------
+void EmphasisTextOutEx(
 	UnicodeString s,
 	UnicodeString kwd,	//強調語
 	TCanvas *cv,
 	int &x,				//[i/o] 表示X位置
 	int y,				//[i]	表示Y位置
 	bool case_sns,		//大小文字を区別   (default = false)
-	bool only_top,		//先頭の語だけ強調 (default = false)
+	bool only_top,		//先頭の語だけ強調	(default = false)
 	TColor fg,			//強調文字色 (default = col_fgEmp)
 	TColor bg)			//強調背景色 (default = col_bgEmp)
 {
+	SearchOption opt;
+	if (case_sns) opt << soCaseSens;
 	std::unique_ptr<TStringList> kwd_lst(new TStringList());
-	kwd_lst->Text = kwd;
-	EmphasisTextOut(s, kwd_lst.get(), cv, x, y, case_sns, only_top, fg, bg);
+	get_MatchWordListEx(s, kwd, opt, kwd_lst.get());
+	EmphasisTextOutEx(s, kwd_lst.get(), cv, x, y, only_top, fg, bg);
 }
 
 //---------------------------------------------------------------------------
@@ -11976,7 +12178,7 @@ void Emphasis_RLO_info(
 {
 	//RLO あり
 	if (fnam.Pos(L"\u202e")) {
-		EmphasisTextOut(warn_filename_RLO(fnam), "<RLO>", cv, xp, yp, false, false, col_Error, cv->Brush->Color);
+		EmphasisTextOutEx(warn_filename_RLO(fnam), "<RLO>", cv, xp, yp, false, false, col_Error, cv->Brush->Color);
 
 		//実際の表示名
 		cv->Font->Color = AdjustColor(cv->Font->Color, ADJCOL_FGLIST);
@@ -13030,9 +13232,11 @@ bool Execute_ex(
 bool Execute_cmdln(
 	UnicodeString cmdln,	//コマンドライン
 	UnicodeString wdir,		//作業ディレクトリ	(default = EmptyStr)
-	UnicodeString opt, DWORD *exit_code,
+	UnicodeString opt,
+	DWORD *exit_code,
 	TStringList   *o_lst,	//出力リスト		(default = NULL)
-	TMemoryStream *o_ms)	//出力イメージ		(default = NULL)
+	TMemoryStream *o_ms,	//出力イメージ		(default = NULL)
+	bool *rq_abort)			//中断要求			(default = NULL)
 {
 	GlobalErrMsg  = EmptyStr;
 	if (cmdln.IsEmpty()) return false;
@@ -13062,8 +13266,9 @@ bool Execute_cmdln(
 		PROCESS_INFORMATION pi;
 		if (::CreateProcess(NULL, cmdln.c_str(), NULL, NULL, TRUE, 0, NULL, wdir.c_str(), &si, &pi)) {
 			//終了待ち
+			bool aborted = false;
 			if (contains_wd_i(opt, "W|O|L")) {
-				bool exited = false;
+				bool exited  = false;
 
 				//コンソール出力の取り込み
 				if (::WaitForInputIdle(pi.hProcess, 0)==0xffffffff && hRead && hWrite) {
@@ -13109,7 +13314,10 @@ bool Execute_cmdln(
 							}
 						}
 						Application->ProcessMessages();
+						aborted = (rq_abort && *rq_abort);
+						if (aborted) break;
 					}
+
 					if (::PeekNamedPipe(hRead, NULL, 0, NULL, &len, NULL) && len>0) {
 						std::unique_ptr<char[]> buf(new char[len + 4]);
 						if (::ReadFile(hRead, buf.get(), len, &len, NULL)) {
@@ -13127,23 +13335,38 @@ bool Execute_cmdln(
 
 					//出力内容を設定
 					if (mp->Size>0 && o_lst) o_lst->Text = get_MemoryStrins(mp);
-					exited = true;
+					exited = !aborted;
 				}
 				//終了待ち
 				else if (ContainsStr(opt, "W")) {
-					while (::WaitForSingleObject(pi.hProcess, 50)==WAIT_TIMEOUT) Application->ProcessMessages();
+					while (::WaitForSingleObject(pi.hProcess, WAIT_INTERVAL)==WAIT_TIMEOUT) {
+						Application->ProcessMessages();
+						aborted = (rq_abort && *rq_abort);
+						if (aborted) break;
+					}
 					exited = true;
 				}
 
+				//強制終了
+				if (aborted) {
+					HANDLE hProcess = ::OpenProcess(PROCESS_TERMINATE, FALSE, pi.dwProcessId);
+					if (hProcess) {
+						::TerminateProcess(hProcess, 0);
+						::CloseHandle(hProcess);
+					}
+				}
 				//終了状態を取得
-				if (exited && exit_code) {
-					if (!::GetExitCodeProcess(pi.hProcess, exit_code)) SysErrAbort(GetLastError());
+				else {
+					if (exited && exit_code) {
+						if (!::GetExitCodeProcess(pi.hProcess, exit_code)) SysErrAbort(GetLastError());
+					}
 				}
 			}
 			::CloseHandle(pi.hThread);
 			::CloseHandle(pi.hProcess);
 			if (hRead)  ::CloseHandle(hRead);
 			if (hWrite) ::CloseHandle(hWrite);
+			if (aborted) throw EAbort("強制終了しました");
 		}
 		//起動失敗
 		else {
@@ -13218,7 +13441,8 @@ bool Execute_demote(
 //---------------------------------------------------------------------------
 bool GitShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst,
 	DWORD *exit_cd, 		//終了コード	(default = NULL)
-	TStringList *w_lst)		//警告			(警告を分離して取得		default = NULL)
+	TStringList *w_lst,		//警告			(警告を分離して取得		default = NULL)
+	bool *rq_abort)			//中断要求		(default = NULL)
 {
 	if (!GitExists) return false;
 
@@ -13227,7 +13451,7 @@ bool GitShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst,
 	if (!prm.IsEmpty()) cmdln.cat_sprintf(_T(" %s"), prm.c_str());
 
 	DWORD exit_code = 0;
-	bool res = Execute_cmdln(cmdln, wdir, "HWO", &exit_code, o_lst);
+	bool res = Execute_cmdln(cmdln, wdir, "HWO", &exit_code, o_lst, NULL, rq_abort);
 	if (exit_cd) *exit_cd = exit_code;
 
 	//警告の分離
@@ -13334,7 +13558,8 @@ UnicodeString save_GitRevAsTemp(UnicodeString id, UnicodeString fnam, UnicodeStr
 //grep.exe を実行
 //---------------------------------------------------------------------------
 bool GrepShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst,
-	DWORD *exit_cd) 		//終了コード	(default = NULL)
+	DWORD *exit_cd, 	//終了コード	(default = NULL)
+	bool *rq_abort)		//中断要求		(default = NULL)
 {
 	if (!GrepExists) return false;
 
@@ -13343,7 +13568,7 @@ bool GrepShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst,
 	if (!prm.IsEmpty()) cmdln.cat_sprintf(_T(" %s"), prm.c_str());
 
 	DWORD exit_code = 0;
-	bool res = Execute_cmdln(cmdln, wdir, "HWO", &exit_code, o_lst);
+	bool res = Execute_cmdln(cmdln, wdir, "HWO", &exit_code, o_lst, NULL, rq_abort);
 	if (exit_cd) *exit_cd = exit_code;
 	return res;
 }
@@ -14128,8 +14353,7 @@ void AddErr_Highlight()
 		AddLogCr();
 		msg[1] = 'E';
 		AddLog(msg);
-		for (int i=0; i<UserHighlight->ErrorList->Count; i++)
-			AddLog(UserHighlight->ErrorList->Strings[i]);
+		for (int i=0; i<UserHighlight->ErrorList->Count; i++) AddLog(UserHighlight->ErrorList->Strings[i]);
 		UserHighlight->ErrorList->Clear();
 	}
 	else {

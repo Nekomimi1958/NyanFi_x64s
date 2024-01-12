@@ -12,6 +12,7 @@
 #include <Vcl.Forms.hpp>
 #include <Vcl.Buttons.hpp>
 #include <Vcl.ExtCtrls.hpp>
+#include <Vcl.AppEvnts.hpp>
 
 //---------------------------------------------------------------------------
 class TFindKeyDlg : public TForm
@@ -23,11 +24,13 @@ __published:	// IDE で管理されるコンポーネント
 	TPanel *CanInPanel;
 	TPanel *CanOutPanel;
 	TSpeedButton *CancelBtn;
+	TApplicationEvents *ApplicationEvents1;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall FormDestroy(TObject *Sender);
+	void __fastcall ApplicationEvents1Message(TMsg &Msg, bool &Handled);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall DummyBtnClick(TObject *Sender);
 	void __fastcall CancelBtnClick(TObject *Sender);

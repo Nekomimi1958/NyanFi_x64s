@@ -265,10 +265,10 @@ void __fastcall TKeyListDlg::KeyListGridDrawCell(TObject *Sender, System::LongIn
 	//キー
 	if (ACol==0) {
 		// + と ~ をシンボル色で強調表示
+		SearchOption opt; opt << soRegEx;
 		std::unique_ptr<TStringList> em_lst(new TStringList());
-		em_lst->Text = "+\r\n~\r\n";
-		EmphasisTextOut(cellstr, em_lst.get(), cv, xp, yp, true, false,
-			use_fgsel? col_fgSelItem : col_Symbol, cv->Brush->Color);
+		get_MatchWordListEx(cellstr, "[+~]", opt, em_lst.get());
+		EmphasisTextOutEx(cellstr, em_lst.get(), cv, xp, yp, false, use_fgsel? col_fgSelItem : col_Symbol, cv->Brush->Color);
 	}
 	//コマンド
 	else if (ACol==1) {
@@ -279,7 +279,7 @@ void __fastcall TKeyListDlg::KeyListGridDrawCell(TObject *Sender, System::LongIn
 		}
 		else {
 			cv->Font->Color = use_fgsel? col_fgSelItem : col_Strings;
-			EmphasisTextOut(cellstr, get_CmdStr(cellstr), cv, xp, yp, false, true,
+			EmphasisTextOutEx(cellstr, get_CmdStr(cellstr), cv, xp, yp, false, true,
 				use_fgsel? col_fgSelItem : col_Reserved, cv->Brush->Color);
 		}
 	}

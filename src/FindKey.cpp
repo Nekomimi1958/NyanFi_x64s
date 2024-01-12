@@ -44,6 +44,15 @@ void __fastcall TFindKeyDlg::FormDestroy(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
+void __fastcall TFindKeyDlg::ApplicationEvents1Message(TMsg &Msg, bool &Handled)
+{
+	if (Active && Msg.message==WM_KEYDOWN) {
+		WORD Key = Msg.wParam;
+		FormKeyDown(NULL, Key, get_Shift());
+		Handled = true;
+	}	
+}
+//---------------------------------------------------------------------------
 //2ストローク開始キーか?
 //---------------------------------------------------------------------------
 bool __fastcall TFindKeyDlg::IsFirstCmdKey(UnicodeString keystr)

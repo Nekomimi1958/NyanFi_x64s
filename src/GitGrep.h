@@ -34,6 +34,7 @@ __published:	// IDE で管理されるコンポーネント
 	TButton *StartBtn;
 	TCheckBox *CaseCheckBox;
 	TCheckBox *RegExCheckBox;
+	TCheckBox *WordCheckBox;
 	TComboBox *FindComboBox;
 	TComboBox *PathComboBox;
 	TLabel *Label1;
@@ -53,7 +54,6 @@ __published:	// IDE で管理されるコンポーネント
 	TPanel *TopRightPanel;
 	TPopupMenu *PopupMenu1;
 	TStatusBar *StatusBar1;
-	TCheckBox *WordCheckBox;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -61,8 +61,6 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall FormResize(TObject *Sender);
 	void __fastcall RegExCheckBoxClick(TObject *Sender);
-	void __fastcall FindComboBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall FindComboBoxKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall GrepStartActionExecute(TObject *Sender);
 	void __fastcall GrepStartActionUpdate(TObject *Sender);
 	void __fastcall ResultListBoxData(TWinControl *Control, int Index, UnicodeString &Data);
@@ -78,7 +76,9 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall EditFileActionUpdate(TObject *Sender);
 	void __fastcall ViewFileActionExecute(TObject *Sender);
 	void __fastcall ViewFileActionUpdate(TObject *Sender);
+	void __fastcall HiddenCanBtnClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
 
 private:	// ユーザー宣言
 	bool DlgInitialized;
@@ -105,7 +105,13 @@ public:		// ユーザー宣言
 	{
 		FGitBusy = Value;
 		Enabled  = !Value;
-		if (Value) cursor_HourGlass(); else cursor_Default();
+		if (Value) {
+			GitGrepAborted = false;
+			cursor_HourGlass();
+		}
+		else {
+			cursor_Default();
+		}
 	}
 	__property bool GitBusy = {read = FGitBusy,  write = SetGitBusy};
 

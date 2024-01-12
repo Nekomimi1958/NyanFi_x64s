@@ -80,6 +80,26 @@ void __fastcall TColorPicker::FormClose(TObject *Sender, TCloseAction &Action)
 }
 
 //---------------------------------------------------------------------------
+void __fastcall TColorPicker::ApplicationEvents1Message(TMsg &Msg, bool &Handled)
+{
+	if (Active && Msg.message==WM_KEYDOWN) {
+		WORD Key = Msg.wParam;
+		if (get_Shift().Empty()) {
+			Handled = true;
+			TPoint p = Mouse->CursorPos;
+			switch (Key) {
+			case VK_LEFT:	p.x -= 1;	break;
+			case VK_RIGHT:	p.x += 1;	break;
+			case VK_UP:		p.y -= 1;	break;
+			case VK_DOWN:	p.y += 1;	break;
+			case VK_RETURN:	CopyColor();	break;
+			default:		Handled = false;
+			}
+			if (p!=Mouse->CursorPos) Mouse->CursorPos = p;
+		}
+	}
+}
+//---------------------------------------------------------------------------
 void __fastcall TColorPicker::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	if (Key==VK_ESCAPE)
@@ -289,4 +309,3 @@ void __fastcall TColorPicker::StartRepActionUpdate(TObject *Sender)
 	RepSttLabel->Caption = stt_str;
 }
 //---------------------------------------------------------------------------
-

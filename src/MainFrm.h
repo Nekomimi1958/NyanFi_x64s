@@ -1668,10 +1668,6 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall RegExCheckBoxClick(TObject *Sender);
 	void __fastcall RegExRCheckBoxClick(TObject *Sender);
 	void __fastcall NextLineCheckBoxClick(TObject *Sender);
-	void __fastcall GrepFindComboBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall GrepFindComboBoxKeyPress(TObject *Sender, System::WideChar &Key);
-	void __fastcall GrepFilterEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall GrepFilterEditKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall GrepFilterEditEnter(TObject *Sender);
 	void __fastcall GrepFilterEditExit(TObject *Sender);
 	void __fastcall GrepFltOptCheckBoxClick(TObject *Sender);
@@ -1971,6 +1967,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall IS_LoopActionUpdate(TObject *Sender);
 	void __fastcall IS_Match1ActionExecute(TObject *Sender);
 	void __fastcall IS_Match1ActionUpdate(TObject *Sender);
+	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
 
 private:	// ユーザー宣言
 	TIdFTP *IdFTP1;
@@ -2071,7 +2068,9 @@ private:	// ユーザー宣言
 	TGrepThread *GrepThread[MAX_GREP_THREAD];	//GREPスレッド
 
 	UnicodeString GrepPath;				//GREP 対象パス
+	UnicodeString GrepParameter;		//パラメータ ([>フィルタ> ]検索語)
 	UnicodeString GrepKeyword;			//  検索語
+	UnicodeString GrepFilter;			//	フィルタ
 	UnicodeString GrepResultMsg;		//  検索結果メッセージ
 	UnicodeString GrepResultMsgBuf;		//    待避用バッファ
 	UnicodeString GrepResultPath;		//  検索結果パス
@@ -2511,6 +2510,7 @@ private:	// ユーザー宣言
 	void __fastcall SetSttBarGrepDir(UnicodeString dnam = EmptyStr);
 	void __fastcall SetSttBarGrepOpt();
 	void __fastcall SetGrepSelInf();
+	void __fastcall GetFilterKeywd(UnicodeString ptn, UnicodeString &filter, UnicodeString &keywd);
 	void __fastcall PrepareGrep();
 	UnicodeString __fastcall MakeGrepOutLine(int idx, bool rep_log = false);
 	void __fastcall MakeGrepOutList(TStringList *lst, bool rep_log = false);

@@ -11,6 +11,11 @@
 #define REFRESH_INTERVAL	250
 
 //---------------------------------------------------------------------------
+//åüçıÉIÉvÉVÉáÉì
+enum GrepOpt {goRegEx, goAnd, goCaseSens, goWord, goOneMatch, goExcludeTag};
+typedef Set <GrepOpt, goRegEx, goExcludeTag> GrepOption;
+
+//---------------------------------------------------------------------------
 class TGrepThread : public TThread
 {
 private:
@@ -20,21 +25,16 @@ private:
 	int IndexTag;
 	UnicodeString FileName;
 	UnicodeString Keyword;
-
-	bool opt_regex;
-	bool opt_and;
-	bool opt_case;
-	bool opt_word;
-	bool opt_one;
-	bool opt_xtag;
+	UnicodeString Filter;
+	GrepOption    Options;
 
 	TStringList *ResultList;
 	void __fastcall AddResult();
 
 public:
 	__fastcall TGrepThread(bool CreateSuspended, int id,
-						int idx_tag, UnicodeString fnam, UnicodeString kwd,
-						bool sw_regex, bool sw_and, bool sw_case, bool sw_word, bool sw_one, bool sw_xtag);
+					int idx_tag, UnicodeString fnam, UnicodeString kwd,
+					GrepOption opt, UnicodeString filter = EmptyStr);
 };
 //---------------------------------------------------------------------------
 #endif

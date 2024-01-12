@@ -20,6 +20,7 @@ object NyanFiForm: TNyanFiForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
   OnResize = FormResize
   OnShow = FormShow
   TextHeight = 15
@@ -803,8 +804,6 @@ object NyanFiForm: TNyanFiForm
               OnChange = GrepFilterEditChange
               OnEnter = GrepFilterEditEnter
               OnExit = GrepFilterEditExit
-              OnKeyDown = GrepFilterEditKeyDown
-              OnKeyPress = GrepFilterEditKeyPress
             end
             object MigemoCheckBox: TCheckBox
               Left = 126
@@ -892,8 +891,6 @@ object NyanFiForm: TNyanFiForm
                   DropDownCount = 24
                   TabOrder = 0
                   OnEnter = GrepRepComboBoxEnter
-                  OnKeyDown = GrepFindComboBoxKeyDown
-                  OnKeyPress = GrepFindComboBoxKeyPress
                 end
               end
               object GrepT12Panel: TPanel
@@ -1088,7 +1085,6 @@ object NyanFiForm: TNyanFiForm
                 DropDownCount = 24
                 TabOrder = 0
                 OnEnter = GrepRepComboBoxEnter
-                OnKeyDown = GrepFindComboBoxKeyDown
               end
               object RepStrComboBox: TComboBox
                 Left = 290
@@ -1098,7 +1094,6 @@ object NyanFiForm: TNyanFiForm
                 Anchors = [akLeft, akTop, akRight]
                 DropDownCount = 24
                 TabOrder = 1
-                OnKeyDown = GrepFindComboBoxKeyDown
               end
               object WordRCheckBox: TCheckBox
                 Left = 512
@@ -5411,7 +5406,7 @@ object NyanFiForm: TNyanFiForm
   object WatchTailTimer: TTimer
     Enabled = False
     OnTimer = WatchTailTimerTimer
-    Left = 643
+    Left = 651
     Top = 87
   end
   object TrayIcon1: TTrayIcon
@@ -5574,7 +5569,7 @@ object NyanFiForm: TNyanFiForm
   object WaitTimer: TTimer
     Enabled = False
     OnTimer = WaitTimerTimer
-    Left = 634
+    Left = 650
     Top = 147
   end
   object MainMenu1: TMainMenu

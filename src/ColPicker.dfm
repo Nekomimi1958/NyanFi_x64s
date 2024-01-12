@@ -165,4 +165,9 @@ object ColorPicker: TColorPicker
       OnUpdate = StartRepActionUpdate
     end
   end
+  object ApplicationEvents1: TApplicationEvents
+    OnMessage = ApplicationEvents1Message
+    Left = 136
+    Top = 8
+  end
 end

@@ -53,6 +53,7 @@ void __fastcall TGitGrepForm::FormShow(TObject *Sender)
 
 	FindComboBox->SetFocus();
 	CloseIME(Handle);
+	GitGrepAborted = false;
 	DlgInitialized = true;
 }
 //---------------------------------------------------------------------------
@@ -89,32 +90,15 @@ void __fastcall TGitGrepForm::RegExCheckBoxClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TGitGrepForm::FindComboBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-{
-	UnicodeString KeyStr = get_KeyStr(Key, Shift);
-
-	if (contained_wd_i(KeysStr_ToList, KeyStr) && ResultListBox->Count>0) {
-		ResultListBox->SetFocus();
-	}
-	else return;
-
-	KeyHandled = true;
-	Key = 0;
-}
-//---------------------------------------------------------------------------
-void __fastcall TGitGrepForm::FindComboBoxKeyPress(TObject *Sender, System::WideChar &Key)
-{
-	if (KeyHandled) {
-		KeyHandled = false;
-		Key = 0;
-	}
-}
-//---------------------------------------------------------------------------
 //GREP開始
 //---------------------------------------------------------------------------
 void __fastcall TGitGrepForm::GrepStartActionExecute(TObject *Sender)
 {
-	GitBusy = true;
+	if (GitBusy) {
+		GitGrepAborted = true;
+		UpdateActions();
+		return;
+	}
 
 	Keyword = Trim(FindComboBox->Text);
 	UnicodeString prm = "grep -n";
@@ -152,14 +136,16 @@ void __fastcall TGitGrepForm::GrepStartActionExecute(TObject *Sender)
 
 	ResultListBox->Count = 0;
 	ResultBuff->Clear();
-	StatusBar1->Panels->Items[0]->Text = "検索中...";
+	StatusBar1->Panels->Items[0]->Text = "検索中... ESCで中断";
 	StatusBar1->Panels->Items[1]->Text = "git " + prm;
 	unsigned int start_cnt = GetTickCount();
 
+	GitBusy = true;
 	FindComboBox->Enabled = false;
 	UpdateActions();
-	bool ok = (GitShellExe(prm, WorkDir, ResultBuff));
+	bool ok = GitShellExe(prm, WorkDir, ResultBuff, NULL, NULL, &GitGrepAborted);
 	FindComboBox->Enabled = true;
+	GitBusy = false;
 
 	if (ok) {
 		if (ResultBuff->Count) {
@@ -184,6 +170,7 @@ void __fastcall TGitGrepForm::GrepStartActionExecute(TObject *Sender)
 			ResultScrPanel->UpdateKnob();
 			ResultListBox->ItemIndex = 0;
 			ResultListBox->SetFocus();
+
 			StatusBar1->Panels->Items[0]->Text =
 				UnicodeString().sprintf(_T("%uファイルで %u行発見 (%.1f秒)"),
 					f_cnt, ResultListBox->Count, (GetTickCount() - start_cnt)/1000.0);
@@ -193,8 +180,9 @@ void __fastcall TGitGrepForm::GrepStartActionExecute(TObject *Sender)
 			beep_Warn();
 		}
 	}
-
-	GitBusy = false;
+	else {
+		if (GitGrepAborted) StatusBar1->Panels->Items[0]->Text = "中断しました。";
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TGitGrepForm::GrepStartActionUpdate(TObject *Sender)
@@ -202,11 +190,10 @@ void __fastcall TGitGrepForm::GrepStartActionUpdate(TObject *Sender)
 	TAction *ap = (TAction *)Sender;
 
 	FindComboBox->Tag = CBTAG_HISTORY | (FindComboBox->Focused()? CBTAG_RGEX_V : 0) | (RegExCheckBox->Checked? CBTAG_RGEX_E : 0);
-
 	bool reg_ng = RegExCheckBox->Checked && !FindComboBox->Text.IsEmpty() && !chk_RegExPtn(FindComboBox->Text);
 	ErrMarkList->SetErrFrame(this, FindComboBox, reg_ng);
 
-	ap->Enabled = !FindComboBox->Text.IsEmpty() && !reg_ng && !GitBusy;
+	ap->Enabled = (!FindComboBox->Text.IsEmpty() && !reg_ng && !GitBusy);
 }
 //---------------------------------------------------------------------------
 void __fastcall TGitGrepForm::ResultListBoxData(TWinControl *Control, int Index, UnicodeString &Data)
@@ -286,10 +273,10 @@ void __fastcall TGitGrepForm::ResultListBoxDrawItem(TWinControl *Control, int In
 		opt << soGitGrep;
 		if (RegExCheckBox->Checked) opt << soRegEx;
 		if (CaseCheckBox->Checked)	opt << soCaseSens;
-		get_MatchWordList(lbuf, Keyword, opt, wlist.get());
+		get_MatchWordListEx(lbuf, Keyword, opt, wlist.get());
 		//マッチ語の強調表示
 		cv->Font->Color = get_ListFgCol();
-		EmphasisTextOut(lbuf, wlist.get(), cv, xp, yp, opt.Contains(soCaseSens));
+		EmphasisTextOutEx(lbuf, wlist.get(), cv, xp, yp);
 	}
 
 	cv->Brush->Color = lp->Color;
@@ -313,9 +300,6 @@ void __fastcall TGitGrepForm::ResultListBoxKeyDown(TObject *Sender, WORD &Key, T
 		;
 	else if	(SameText(cmd_F, "FileEdit"))	EditFileAction->Execute();
 	else if (SameText(cmd_F, "TextViewer"))	ViewFileAction->Execute();
-	else if (equal_TAB(KeyStr) || SameText(KeyStr, "Ctrl+S")) {
-		FindComboBox->SetFocus();
-	}
 	else if (contained_wd_i(KeysStr_Popup, KeyStr)) {
 		show_PopupMenu(PopupMenu1, lp);
 	}
@@ -449,9 +433,47 @@ void __fastcall TGitGrepForm::ViewFileActionUpdate(TObject *Sender)
 	ap->Enabled = (ResultListBox->ItemIndex != -1);
 }
 //---------------------------------------------------------------------------
+void __fastcall TGitGrepForm::HiddenCanBtnClick(TObject *Sender)
+{
+	if (GitBusy) GitGrepAborted = true; else ModalResult = mrCancel;
+}
+//---------------------------------------------------------------------------
 void __fastcall TGitGrepForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	UnicodeString KeyStr = get_KeyStr(Key, Shift);
-	SpecialKeyProc(this, Key, Shift, _T(HELPTOPIC_GIT) _T("#GitGrep"));
+	KeyHandled = true;
+	do {
+		if (!FindComboBox->Focused() && contained_wd_i(KeysStr_ToKeywd, KeyStr)) {
+			FindComboBox->SetFocus();	break;
+		}
+		if (!PathComboBox->Focused() && contained_wd_i(KeysStr_ToMask, KeyStr)) {
+			PathComboBox->SetFocus();	break;
+		}
+		if (!ResultListBox->Focused()) {
+			if (contained_wd_i(KeysStr_ToList, KeyStr) && ResultListBox->Count>0) {
+				ResultListBox->SetFocus();	break;
+			}
+			if (SameText(KeyStr, KeyStr_RegEx)) {
+				RegExCheckBox->Checked = !RegExCheckBox->Checked;	break;
+			}
+			else if (SameText(KeyStr, KeyStr_Case)) {
+				CaseCheckBox->Checked = !CaseCheckBox->Checked;		break;
+			}
+			else if (SameText(KeyStr, KeyStr_Word)) {
+				WordCheckBox->Checked = !WordCheckBox->Checked;		break;
+			}
+		}
+		KeyHandled = false;
+	} while (false);
+
+	if (!KeyHandled) KeyHandled = SpecialKeyProc(this, Key, Shift, _T(HELPTOPIC_GIT) _T("#GitGrep"));
+}
+//---------------------------------------------------------------------------
+void __fastcall TGitGrepForm::FormKeyPress(TObject *Sender, System::WideChar &Key)
+{
+	if (KeyHandled) {
+		KeyHandled = false;
+		Key = 0;
+	}
 }
 //---------------------------------------------------------------------------

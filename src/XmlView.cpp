@@ -525,7 +525,7 @@ void __fastcall TXmlViewer::XmlTreeViewKeyDown(TObject *Sender, WORD &Key, TShif
 	else if (SameText(cmd_F, "FindUp")) {
 		FindUpAction->Execute();
 	}
-	else if (StartsText("IncSearch", cmd_F) || contained_wd_i(KeyStr_Filter, KeyStr)) {
+	else if (StartsText("IncSearch", cmd_F) || contained_wd_i(KeysStr_Filter, KeyStr)) {
 		FindEdit->SetFocus();
 	}
 	//•Â‚¶‚é

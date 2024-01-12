@@ -109,6 +109,16 @@ void __fastcall TSortModeDlg::FormClose(TObject *Sender, TCloseAction &Action)
 }
 
 //---------------------------------------------------------------------------
+void __fastcall TSortModeDlg::ApplicationEvents1Message(TMsg &Msg, bool &Handled)
+{
+	if (Active && Msg.message==WM_KEYDOWN) {
+		WORD Key = Msg.wParam;
+		UnicodeString KeyStr = get_KeyStr(Key, get_Shift());
+		//カーソルキーで確定させない
+		InhOk = contained_wd_i("DOWN|UP|LEFT|RIGHT", KeyStr);
+	}
+}
+//---------------------------------------------------------------------------
 void __fastcall TSortModeDlg::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	if (SpecialKeyProc(this, Key, Shift, _T(HELPTOPIC_FL) _T("#SortDlg"))) return;
@@ -181,7 +191,7 @@ void __fastcall TSortModeDlg::SortModeRadioGroupClick(TObject *Sender)
 {
 	if (!DlgInitialized) return;
 
-	if (!InhOk) {	//TNyanFiForm::ApplicationEvents1Message でカーソルキーを抑止
+	if (!InhOk) {	//ApplicationEvents1Message でカーソルキーを抑止
 		Changed = true;
 		ModalResult = mrOk;
 	}
@@ -242,4 +252,3 @@ void __fastcall TSortModeDlg::AccDtoTCheckBoxClick(TObject *Sender)
 	SetAccDT();
 }
 //---------------------------------------------------------------------------
-

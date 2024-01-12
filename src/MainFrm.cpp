@@ -1353,16 +1353,62 @@ void __fastcall TNyanFiForm::FormResize(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-//ビューアでのキー操作
+//GREP/ビューアでのキー操作
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	if (!Initialized || UnInitializing) return;
 
 	//--------------------------
+	//GREP
+	//--------------------------
+	if (ScrMode==SCMD_GREP) {
+		UnicodeString KeyStr = get_KeyStr(Key, Shift);
+		KeyHandled = true;
+		bool is_find = GrepPageControl->ActivePage==FindSheet;
+		do {
+			if (contained_wd_i(KeysStr_ToKeywd, KeyStr)) {
+				if (is_find && !GrepFindComboBox->Focused()) { GrepFindComboBox->SetFocus(); break; }
+				if (!is_find && !RepFindComboBox->Focused()) { RepFindComboBox->SetFocus();	 break; }
+			}
+			if (!GrepMaskComboBox->Focused() && contained_wd_i(KeysStr_ToMask, KeyStr)) {
+				GrepMaskComboBox->SetFocus();	break;
+			}
+			if (!ResultListBox->Focused() && ResultListBox->Count>0 && contained_wd_i(KeysStr_ToList, KeyStr)) {
+				ResultListBox->SetFocus();		break;
+			}
+			if (!GrepFilterEdit->Focused() && contained_wd_i(KeysStr_Filter, KeyStr)) {
+				GrepFilterEdit->SetFocus();		break;
+			}
+			if (GrepFilterEdit->Focused() && SameText(KeyStr, KeyStr_Migemo)) {
+				MigemoCheckBox->Checked = !MigemoCheckBox->Checked;	break;
+			}
+			if (!ResultListBox->Focused()) {
+				if (SameText(KeyStr, KeyStr_RegEx)) {
+					TCheckBox *cp = is_find? RegExCheckBox : RegExRCheckBox;
+					cp->Checked = !cp->Checked;
+					break;
+				}
+				if (SameText(KeyStr, KeyStr_Case)) {
+					TCheckBox *cp = is_find? CaseCheckBox : CaseRCheckBox;
+					cp->Checked = !cp->Checked;
+					break;
+				}
+				if (SameText(KeyStr, KeyStr_Word)) {
+					TCheckBox *cp = is_find? WordCheckBox : WordRCheckBox;
+					cp->Checked = !cp->Checked;
+					break;
+				}
+			}
+			KeyHandled = false;
+		} while (false);
+
+		if (KeyHandled) Key = 0;
+	}
+	//--------------------------
 	//テキストビューア
 	//--------------------------
-	if (ScrMode==SCMD_TVIEW) {
+	else if (ScrMode==SCMD_TVIEW) {
 		try {
 			bool hadled = true;
 			//インクリメンタルサーチ
@@ -1485,6 +1531,14 @@ void __fastcall TNyanFiForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState
 		//※コンボボックスでデフォルトのメニューが出てしまう現象に対応
 		//　また、コントロールが隠れないように表示位置を変更
 		if (SameText(get_KeyStr(Key, Shift), "Shift+F10") && UserModule->ShowPopupMenu()) Key = 0;
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::FormKeyPress(TObject *Sender, System::WideChar &Key)
+{
+	if (KeyHandled) {
+		KeyHandled = false;
+		Key = 0;
 	}
 }
 
@@ -2661,32 +2715,6 @@ void __fastcall TNyanFiForm::ApplicationEvents1Message(TMsg &Msg, bool &Handled)
 					if (ExeCommandI(CmdStr)) Handled = true;
 				}
 			}
-		}
-		//カラーピッカー
-		else if (ColorPicker->Visible) {
-			if (Shift.Empty() && get_window_from_pos()==ImgScrollBox->Handle) {
-				Handled = true;
-				TPoint p = Mouse->CursorPos;
-				switch (Key) {
-				case VK_LEFT:	p.x -= 1;	break;
-				case VK_RIGHT:	p.x += 1;	break;
-				case VK_UP:		p.y -= 1;	break;
-				case VK_DOWN:	p.y += 1;	break;
-				case VK_RETURN:	ColorPicker->CopyColor();	break;
-				default:		Handled = false;
-				}
-				if (p!=Mouse->CursorPos) Mouse->CursorPos = p;
-			}
-		}
-		//ソート
-		else if (SortModeDlg && SortModeDlg->Visible) {
-			//カーソルキーで確定させない
-			SortModeDlg->InhOk = contained_wd_i("DOWN|UP|LEFT|RIGHT", KeyStr);
-		}
-		//キー検索
-		else if (FindKeyDlg && FindKeyDlg->Visible) {
-			FindKeyDlg->FormKeyDown(NULL, Key, Shift);
-			Handled = true;
 		}
 		//ヒストグラム/文字情報
 		else if (pCtrl==HistForm || pCtrl==CharInfoForm) {
@@ -11304,7 +11332,7 @@ void __fastcall TNyanFiForm::LogListBoxDrawItem(TWinControl *Control, int Index,
 		}
 	}
 
-	EmphasisTextOut(lbuf, EmptyStr, cv, xp, yp);
+	EmphasisTextOutEx(lbuf, EmptyStr, cv, xp, yp);
 
 	//カーソル
 	draw_ListCursor(lp, Rect, Index, State);
@@ -17849,10 +17877,13 @@ int __fastcall TNyanFiForm::FindFileCore(
 
 	UnicodeString msg;
 	StartLog(msg.sprintf(_T("検索開始  %s"), cur_stt->find_Path.c_str()));
-	if (cur_stt->find_UseSet)
+	if (!cur_stt->find_DirList.IsEmpty()) {
+		AddLog(msg.sprintf(_T("    リスト: %s"), to_relative_name(cur_stt->find_DirList).c_str()));
+	}
+	if (cur_stt->find_UseSet) {
 		AddLog(msg.sprintf(_T("  検索設定: %s"), to_relative_name(set_name).c_str()));
-	else
-		AddLog(msg.sprintf(_T("  マスク: %s"), cur_stt->find_Mask.c_str()));
+	}
+    AddLog(msg.sprintf(_T("    マスク: %s"), cur_stt->find_Mask.c_str()));
 	if (!cur_stt->find_Keywd.IsEmpty()) AddLog(msg.sprintf(_T("  検索語: %s"), cur_stt->find_Keywd.c_str()));
 
 	ShowMessageHint(USTR_SearchingESC, col_bgHint, false, true);
@@ -18678,9 +18709,19 @@ void __fastcall TNyanFiForm::FindFileDlgExecute(
 void __fastcall TNyanFiForm::FindFileDlgActionExecute(TObject *Sender)
 {
 	try {
-		UnicodeString lst_name = to_absolute_name(ExceptActionParam(_T("NM;FK;R0;R1;NT;X0;X1;A0;A1")));
-		if (!lst_name.IsEmpty() && !file_exists(lst_name))
-			throw EAbort(LoadUsrMsg(USTR_NotFound, _T("リストファイル")));
+		UnicodeString lst_name = ExceptActionParam(_T("NM;FK;R0;R1;NT;X0;X1;A0;A1"));
+		if (!lst_name.IsEmpty()) {
+			if (SameStr(lst_name, "*")) {
+				UserModule->PrepareOpenDlg(_T("リストファイルの選択"), F_FILTER_TXT, _T("*.txt"), ListFilePath);
+				lst_name = UserModule->OpenDlgExecute();
+				if (lst_name.IsEmpty()) SkipAbort();
+				ListFilePath = ExtractFilePath(lst_name);
+			}
+			else {
+				lst_name = to_absolute_name(lst_name);
+			}
+			if (!file_exists(lst_name)) throw EAbort(LoadUsrMsg(USTR_NotFound, _T("リストファイル")));
+		}
 
 		if (!lst_name.IsEmpty()) {
 			if (OppStt->is_Find) RecoverFileList(OppListTag);
@@ -21323,6 +21364,7 @@ void __fastcall TNyanFiForm::LoadFindSetActionExecute(TObject *Sender)
 		else {
 			UserModule->PrepareOpenDlg(_T("検索設定を読み込む"), F_FILTER_INI, _T("*.ini"), FindSetPath);
 			fnam = UserModule->OpenDlgExecute();
+			FindSetPath = ExtractFilePath(fnam);
 		}
 
 		int res = FindFileCore(CurStt->find_Dir, CurListTag, fnam);
@@ -30410,7 +30452,10 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 		int xp = xp_L + dx;
 		//検索
 		if (GrepPageControl->ActivePage == FindSheet) {
-			//マッチ語のリストを作成
+			UnicodeString s0 = get_tkn(ln_str, '\n');
+			UnicodeString s1 = get_tkn_r(ln_str, '\n');
+
+			//マッチ語のリストを作成(Value=Index,Length)
 			std::unique_ptr<TStringList> wlist(new TStringList());
 			SearchOption opt;
 			if (AndOrCheckBox->Checked) opt << soAndOr;
@@ -30418,28 +30463,26 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 			if (GrepEmFilter && !GrepFilterEdit->Text.IsEmpty()) {
 				if (MigemoCheckBox->Checked) opt << soMigemo;
 				if (contains_upper(GrepFilterEdit->Text)) opt << soCaseSens;
-				get_MatchWordList(ln_str, GrepFilterEdit->Text, opt, wlist.get());
+				get_MatchWordListEx(ln_str, GrepFilterEdit->Text, opt, wlist.get());
 			}
 			//検索語
 			else {
 				if (RegExCheckBox->Checked) opt << soRegEx;
 				if (GrepCaseSenstive)	    opt << soCaseSens;
-				get_MatchWordList(ln_str, GrepKeyword, opt, wlist.get());
+				get_MatchWordListEx(s0, GrepKeyword, opt, wlist.get());
 			}
-
-			UnicodeString s0 = get_tkn(ln_str, '\n');
-			UnicodeString s1 = get_tkn_r(ln_str, '\n');
 
 			//マッチ語が見えないとき前部分を省略
 			if (GrepOmitTop) {
 				//最初のマッチ位置
 				int p1 = -1, p2 = -1;
 				for (int i=0; i<wlist->Count; i++) {
-					UnicodeString kwd = wlist->Strings[i];
-					int p = GrepCaseSenstive? s0.Pos(kwd) : s0.UpperCase().Pos(kwd.UpperCase());
-					if (p>0) {
-						p1 = (p1==-1)? p : std::min(p, p1);
-						if (p1==p) p2 = p1 + kwd.Length();
+					UnicodeString v = wlist->ValueFromIndex[i];
+					int idx = get_tkn(v, ",").ToIntDef(0);
+					int len = get_tkn_r(v, ",").ToIntDef(0);
+					if (idx>0 && len>0) {
+						p1 = (p1==-1)? idx : std::min(idx, p1);
+						if (p1==idx) p2 = p1 + len;
 					}
 				}
 				//前部分を省略
@@ -30458,11 +30501,15 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 						s0.Insert("…", 1);
 						break;
 					}
+					//強調場所を再設定
+					if (RegExCheckBox->Checked) opt << soRegEx;
+					if (GrepCaseSenstive)	    opt << soCaseSens;
+					get_MatchWordListEx(s0, GrepKeyword, opt, wlist.get());
 				}
 			}
 
 			//マッチ語の強調表示
-			EmphasisTextOut(s0, wlist.get(), tmp_cv, xp, yp, opt.Contains(soCaseSens));
+			EmphasisTextOutEx(s0, wlist.get(), tmp_cv, xp, yp);
 
 			//次行表示
 			if (!s1.IsEmpty()) {
@@ -30588,11 +30635,15 @@ void __fastcall TNyanFiForm::ResultListBoxKeyDown(TObject *Sender, WORD &Key, TS
 					GrepFiltered = true;
 				}
 				//検索語へ
-				else if (equal_TAB(KeyStr) || SameText(KeyStr, "Ctrl+S")) {
+				else if (equal_TAB(KeyStr) || contained_wd_i(KeysStr_ToKeywd, KeyStr)) {
 					((GrepPageControl->ActivePage==FindSheet)? GrepFindComboBox : RepFindComboBox)->SetFocus();
 				}
+				//マスクへ
+				else if (contained_wd_i(KeysStr_ToMask, KeyStr)) {
+					GrepMaskComboBox->SetFocus();
+				}
 				//フィルタへ
-				else if (SameText(KeyStr, KeyStr_Filter)) {
+				else if (contained_wd_i(KeysStr_Filter, KeyStr)) {
 					GrepFilterEdit->SetFocus();
 				}
 				//右クリックメニュー
@@ -30658,64 +30709,6 @@ void __fastcall TNyanFiForm::NextLineCheckBoxClick(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-//検索文字列欄でのキー操作
-//---------------------------------------------------------------------------
-void __fastcall TNyanFiForm::GrepFindComboBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-{
-	UnicodeString KeyStr = get_KeyStr(Key, Shift);
-
-	if (contained_wd_i(KeysStr_ToList, KeyStr) && ResultListBox->Count>0) {
-		ResultListBox->SetFocus();
-	}
-	else if (SameText(KeyStr, KeyStr_Filter)) {
-		GrepFilterEdit->SetFocus();
-	}
-	else return;
-
-	KeyHandled = true;
-	Key = 0;
-}
-//---------------------------------------------------------------------------
-void __fastcall TNyanFiForm::GrepFindComboBoxKeyPress(TObject *Sender, System::WideChar &Key)
-{
-	if (KeyHandled) {
-		KeyHandled = false;
-		Key = 0;
-	}
-}
-
-//---------------------------------------------------------------------------
-//フィルタでのキー操作
-//---------------------------------------------------------------------------
-void __fastcall TNyanFiForm::GrepFilterEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-{
-	UnicodeString KeyStr = get_KeyStr(Key, Shift);
-	//一覧へ
-	if (contained_wd_i(KeysStr_ToList, KeyStr)) {
-		ResultListBox->SetFocus();
-	}
-	//検索語へ
-	else if (contained_wd_i("Ctrl+F|Ctrl+S", KeyStr)) {
-		((GrepPageControl->ActivePage==FindSheet)? GrepFindComboBox : RepFindComboBox)->SetFocus();
-	}
-	//Migemoモード切替
-	else if (SameText(KeyStr, KeyStr_Migemo)) {
-		MigemoCheckBox->Checked = !MigemoCheckBox->Checked;
-	}
-	else return;
-
-	KeyHandled = true;
-	Key = 0;
-}
-//---------------------------------------------------------------------------
-void __fastcall TNyanFiForm::GrepFilterEditKeyPress(TObject *Sender, System::WideChar &Key)
-{
-	if (KeyHandled) {
-		KeyHandled = false;
-		Key = 0;
-	}
-}
-//---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::GrepFilterEditEnter(TObject *Sender)
 {
 	GrepFilterEdit->Color = get_WinColor();
@@ -30736,6 +30729,7 @@ void __fastcall TNyanFiForm::GrepRepComboBoxEnter(TObject *Sender)
 {
 	UpdateActions();
 }
+
 //---------------------------------------------------------------------------
 //Grep 拡張設定
 //---------------------------------------------------------------------------
@@ -30868,7 +30862,21 @@ void __fastcall TNyanFiForm::MakeGrepOutList(
 	for (int i=0; i<ResultListBox->Count; i++) lst->Add(MakeGrepOutLine(i, rep_log));
 }
 
-
+//---------------------------------------------------------------------------
+//フィルタと検索文字列を分離して取得
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::GetFilterKeywd(UnicodeString ptn, UnicodeString &filter, UnicodeString &keywd)
+{
+	TMatch mt = TRegEx::Match(ptn, ">([\\w(,)\\s|]+)>\\s(.+)");
+	if (mt.Success && mt.Groups.Count==3) {
+		filter = Trim(mt.Groups.Item[1].Value);
+		keywd  = Trim(mt.Groups.Item[2].Value);
+	}
+	else {
+		filter = EmptyStr;
+		keywd  = Trim(ptn);
+	}
+}
 //---------------------------------------------------------------------------
 //文字列検索/置換の準備
 //---------------------------------------------------------------------------
@@ -30985,27 +30993,43 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 	bool is_sub = (!is_top || GrepFileList->Count==0) && SubDirCheckBox->Checked;
 	if (is_sub) prm += " -r";
 
+	//ERE
 	if (RegExCheckBox->Checked)	{
 		prm += " -E";
 		kwd = TRegEx::Replace(kwd, "([^\\\\])?(\\\\d)", "\\1[0-9]");
 	}
+	//BRE
 	else {
-		kwd = TRegEx::Escape(kwd);
+		kwd = ReplaceStr(kwd, ".", "\\.");
+		kwd = ReplaceStr(kwd, "[", "\\[");
+		kwd = ReplaceStr(kwd, "]", "\\]");
+		kwd = ReplaceStr(kwd, "^", "\\^");
+		kwd = ReplaceStr(kwd, "$", "\\$");
+		kwd = ReplaceStr(kwd, "*", "\\*");
+		kwd = ReplaceStr(kwd, "\\{", "\\\\{");
+		kwd = ReplaceStr(kwd, "\\}", "\\\\}");
+		kwd = ReplaceStr(kwd, "\\(", "\\\\(");
+		kwd = ReplaceStr(kwd, "\\)", "\\\\)");
 	}
 
 	if (!GrepCaseSenstive) prm += " -i";
 	if (WordCheckBox->Checked) prm += " -w";
 	if (OneMatchCheckBox->Checked) prm += " -l";
 
-	//キーワード
-	std::unique_ptr<TStringList> wlst(new TStringList());
-	get_find_wd_list(kwd, wlst.get());
-	if (wlst->Count==1) {
-		prm.cat_sprintf(_T(" \"%s\""), wlst->Strings[0].c_str());
+	//単独パターン
+	if (kwd.Pos(" ")==0) {
+		prm.cat_sprintf(_T(" -e \"%s\""), kwd.c_str());
 	}
+	//複数パターン
 	else {
-		prm += " -E ";
-		UnicodeString s;
+		//※ -e がうまく働かないようなのでEREに変換してOR
+		if (!RegExCheckBox->Checked) {
+			prm += " -E ";
+			kwd = TRegEx::Escape(exclude_quot(GrepKeyword));
+		}
+		std::unique_ptr<TStringList> wlst(new TStringList());
+		get_find_wd_list(kwd, wlst.get());
+		prm += " -e ";
 		for (int i=0; i<wlst->Count; i++) {
 			if (!EndsStr(" ", prm)) prm += "|";
 			prm += wlst->Strings[i];
@@ -31059,7 +31083,7 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 	OutDebugStr("$ grep " + prm);
 	OutDebugStr("> " + dnam);
 	std::unique_ptr<TStringList> r_lst(new TStringList());
-	if (GrepShellExe(prm, dnam, r_lst.get())) {
+	if (GrepShellExe(prm, dnam, r_lst.get(), NULL, &FindAborted)) {
 		UnicodeString last_fnam;
 		for (int i=0; i<r_lst->Count; i++) {
 			UnicodeString lbuf = r_lst->Strings[i];
@@ -31134,7 +31158,9 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 	GrepResultPath   = GrepPath;
 	GrepCaseSenstive = CaseCheckBox->Checked;
 
-	GrepKeyword = Trim(GrepFindComboBox->Text);
+	GrepParameter = Trim(GrepFindComboBox->Text);
+	GetFilterKeywd(GrepParameter, GrepFilter, GrepKeyword);
+
 	GrepMatchFileCnt = 0;
 	GrepMatchLineCnt = 0;
 
@@ -31145,16 +31171,22 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 	}
 	//内部
 	else {
+		GrepOption opt;
+		if (RegExCheckBox->Checked)		opt << goRegEx;
+		if (AndCheckBox->Checked)		opt << goAnd;
+		if (GrepCaseSenstive)			opt << goCaseSens;
+		if (WordCheckBox->Checked)		opt << goWord;
+		if (OneMatchCheckBox->Checked)	opt << goOneMatch;
+		if (ExclTagCheckBox->Checked)	opt << goExcludeTag;
+
 		int idx_tag = 1;
 		int i = 0;
 		while (!FindAborted && i<GrepFileList->Count) {
 			for (int id=0; id<MAX_GREP_THREAD && i<GrepFileList->Count; id++) {
 				if (GrepThread[id]==NULL) {
 					SttPrgBar->SetPosI(i, GrepFileList->Count);
-					GrepThread[id] = new TGrepThread(false,
-						id, idx_tag, GrepFileList->Strings[i++], GrepKeyword,
-						RegExCheckBox->Checked, AndCheckBox->Checked, GrepCaseSenstive, WordCheckBox->Checked,
-						OneMatchCheckBox->Checked, ExclTagCheckBox->Checked);
+					GrepThread[id] = new TGrepThread(false, id, idx_tag, GrepFileList->Strings[i++],
+														GrepKeyword, opt, GrepFilter);
 					idx_tag++;
 				}
 			}
@@ -31189,7 +31221,7 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 	if (ResultListBox->Count>0) {
 		GrepResultList->Assign(GrepResultBuff);
 		//検索語を履歴に追加
-		add_ComboBox_history(GrepFindComboBox, GrepKeyword);
+		add_ComboBox_history(GrepFindComboBox, GrepParameter);
 		IniFile->SaveComboBoxItems(GrepFindComboBox, RegExCheckBox->Checked? _T("GrepPtnHistory") : _T("GrepFindHistory"));
 		//マスクを履歴に追加
 		add_ComboBox_history(GrepMaskComboBox);
@@ -31252,13 +31284,16 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 	}
 	else {
 		GrepFindComboBox->SetFocus();
-		if (GrepUseExe) {
+		if (FindAborted) {
+			GrepResultMsg = "中断しました。";
+		}
+		else if (GrepUseExe) {
 			GrepResultMsg = "見つかりません。";
 		}
 		else {
 			GrepResultMsg.sprintf(_T("%uファイルで見つかりません。"), GrepFileList->Count);
 		}
-		if (ShowMsgHint) ShowMessageHint(USTR_NotFound, col_bgWarn);
+		if (ShowMsgHint) ShowMessageHint(GrepResultMsg, col_bgWarn);
 	}
 
 	SttPrgBar->End(GrepResultMsg);
@@ -31269,15 +31304,16 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 void __fastcall TNyanFiForm::GrepStartActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;
-
-	ap->Caption = (FindBusy && !GrepUseExe)? "中断" : "開始";
+	ap->Caption = FindBusy? "中断" : "開始";
 	if (ScrMode==SCMD_GREP && GrepPageControl->ActivePage==FindSheet) {
-		UnicodeString kwd = Trim(GrepFindComboBox->Text);
+		UnicodeString filter, kwd; 
+		GetFilterKeywd(GrepFindComboBox->Text, filter, kwd);
 		bool reg_ng = RegExCheckBox->Checked && !kwd.IsEmpty() && !chk_RegExPtn(kwd);
+
 		ErrMarkList->SetErrFrame(this, GrepFindComboBox, reg_ng);
 		ap->Enabled = (!FindBusy && !kwd.IsEmpty() && !reg_ng
 							&& !(GrepMaskComboBox->Enabled && GrepMaskComboBox->Text.IsEmpty()))
-						|| (FindBusy && !GrepUseExe && !FindAborted);
+						|| (FindBusy && !FindAborted);
 
 		GrepFindComboBox->Tag
 			= CBTAG_HISTORY | (GrepFindComboBox->Focused()? CBTAG_RGEX_V : 0) | (RegExCheckBox->Checked? CBTAG_RGEX_E : 0);

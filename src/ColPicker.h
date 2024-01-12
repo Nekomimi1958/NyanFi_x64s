@@ -14,6 +14,7 @@
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.ActnList.hpp>
 #include <Vcl.Mask.hpp>
+#include <Vcl.AppEvnts.hpp>
 
 //---------------------------------------------------------------------------
 class TColorPicker : public TForm
@@ -21,6 +22,7 @@ class TColorPicker : public TForm
 __published:	// IDE で管理されるコンポーネント
 	TAction *StartRepAction;
 	TActionList *ActionList1;
+	TApplicationEvents *ApplicationEvents1;
 	TButton *ExeRepBtn;
 	TCheckBox *Ave9pxCheckBox;
 	TCheckBox *CmpColCheckBox;
@@ -39,6 +41,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall ApplicationEvents1Message(TMsg &Msg, bool &Handled);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall StartRepActionExecute(TObject *Sender);
 	void __fastcall StartRepActionUpdate(TObject *Sender);

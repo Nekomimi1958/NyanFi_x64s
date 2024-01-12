@@ -121,7 +121,7 @@ void __fastcall TAskRepDlg::RepListBoxDrawItem(TWinControl *Control,
 			TabCrTextOut(s0, cv, xp, yp, get_ListFgCol(), Rect.Right);
 			itmstr.Delete(1, FoundPos - 1);
 			//マッチ語強調表示
-			EmphasisTextOut(itmstr, KeyWord, cv, xp, yp, false, true);
+			EmphasisTextOutEx(itmstr, KeyWord, cv, xp, yp, false, true, col_fgEmp, col_bgEmp);
 		}
 		else {
 			TabCrTextOut(itmstr, cv, xp, yp, get_ListFgCol(), Rect.Right);

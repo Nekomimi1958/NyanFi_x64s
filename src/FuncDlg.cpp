@@ -323,12 +323,12 @@ void __fastcall TFuncListDlg::FuncListBoxDrawItem(TWinControl *Control, int Inde
 			if (mt.Success) {
 				UnicodeString wd = Trim(mt.Value);
 				if (ends_tchs("{([:", wd)) delete_end(wd);
-				elist->Add(wd);
 				if (NameOnlyCheckBox->Checked) lbuf = wd;
 				lbuf.Insert(pre_str, 1);
+				mt = TRegEx::Match(lbuf, TRegEx::Escape(wd), opt);
+				if (mt.Success) elist->Add(wd.cat_sprintf(_T("=%u,%u"), mt.Index, mt.Length));
 			}
-
-			EmphasisTextOut(lbuf, elist.get(), cv, xp, yp, false, true, col_Headline, cv->Brush->Color);
+			EmphasisTextOutEx(lbuf, elist.get(), cv, xp, yp, false, col_Headline, cv->Brush->Color);
 		}
 		else {
 			cv->TextOut(xp, yp, lbuf);
@@ -390,7 +390,7 @@ void __fastcall TFuncListDlg::FuncListBoxKeyDown(TObject *Sender, WORD &Key, TSh
 		else if (contained_wd_i("S|Ctrl+S", KeyStr) && ListMode==1) {
 			UserDefComboBox->SetFocus();
 		}
-		else if (contained_wd_i(KeyStr_Filter, KeyStr)) {
+		else if (contained_wd_i(KeysStr_Filter, KeyStr)) {
 			FilterEdit->SetFocus();
 		}
 		else if (contained_wd_i(KeysStr_Popup, KeyStr)) {

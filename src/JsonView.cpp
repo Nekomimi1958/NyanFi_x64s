@@ -620,7 +620,7 @@ void __fastcall TJsonViewer::JsonTreeViewKeyDown(TObject *Sender, WORD &Key, TSh
 	else if (SameText(cmd_F, "FindUp")) {
 		FindUpAction->Execute();
 	}
-	else if (StartsText("IncSearch", cmd_F) || contained_wd_i(KeyStr_Filter, KeyStr)) {
+	else if (StartsText("IncSearch", cmd_F) || contained_wd_i(KeysStr_Filter, KeyStr)) {
 		FindEdit->SetFocus();
 	}
 	//•Â‚¶‚é
