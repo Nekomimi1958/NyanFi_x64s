@@ -588,6 +588,7 @@ TStringList *GrepResultBuff;			//GREP 結果リスト表示用バッファ
 TStringList *GrepResultList;			//GREP の結果リスト
 TStringList *GrepStashBuff;				//GREP 結果の退避バッファ
 TStringList *GrepUnsortBuff;			//GREP ソート前バッファ
+int  ResultListMode = 0;				//結果リストの内容	0:未定/ 1:GREP/ 2:置換
 
 TStringList *ViewFileList;				//イメージビューアでのファイル名リスト
 bool isViewIcon   = false;				//イメージビューアでアイコンを表示中
@@ -4670,7 +4671,7 @@ UnicodeString GetSelFileStr(
 			fnam = fp->f_name;
 		}
 
-		if (!f_str.IsEmpty()) f_str += " ";
+		cat_separator(f_str, " ");
 		f_str += add_quot_if_spc(fnam);
 
 		if (s_lst) s_lst->Add(add_quot_if_spc(fnam));
@@ -7592,8 +7593,7 @@ bool load_MenuFile(UnicodeString fnam, TStringList *lst)
 						break;
 					}
 					else {
-						if (!cmd_str.IsEmpty()) cmd_str += ":";
-						cmd_str += lbuf;
+						ins_sep_cat(cmd_str, ":", lbuf);
 					}
 				}
 
@@ -8781,6 +8781,7 @@ void draw_InfListBox(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 									  inam.IsEmpty()? AdjustColor(get_InfFgCol(), ADJCOL_FGLIST) :
 							 (flag & LBFLG_GIT_HASH)? col_GitHash : get_InfFgCol();
 
+	TxtOutOption t_opt;  t_opt << toNormal;
 	if (flag & LBFLG_PATH_FIF) {
 		if (SameStr(inam, "プログラム")) lbuf = ExtractFileName(lbuf) + "  " + ExtractFileDir(lbuf);
 		PathNameOut(lbuf, cv, xp, yp);
@@ -8812,7 +8813,7 @@ void draw_InfListBox(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 	}
 	else if (flag & LBFLG_DEBUG) {
 		if (!use_fgsel && ContainsStr(lbuf, "終了")) cv->Font->Color = col_Error;
-		EmphasisTextOutEx(lbuf, EmptyStr, cv, xp, yp);
+		EmphasisTextOutEx(lbuf, EmptyStr, cv, xp, yp, t_opt);
 	}
 	else if (flag & LBFLG_GIT_TAG) {
 		if (remove_top_s(lbuf, "tags/")) {
@@ -8827,7 +8828,7 @@ void draw_InfListBox(TListBox *lp, TRect &Rect, int Index, TOwnerDrawState State
 		}
 	}
 	else {
-		EmphasisTextOutEx(lbuf, EmptyStr, cv, xp, yp);
+		EmphasisTextOutEx(lbuf, EmptyStr, cv, xp, yp, t_opt);
 	}
 }
 
@@ -8925,8 +8926,7 @@ UnicodeString get_FileInfStr(file_rec *fp,
 	UnicodeString ret_str = with_atr? fp->attr_str : EmptyStr;
 
 	if (fp->f_attr!=faInvalid) {
-		if (!ret_str.IsEmpty()) ret_str += " ";
-		ret_str += get_FileSizeStr(fp->f_size);
+		ins_sep_cat(ret_str, " ", get_FileSizeStr(fp->f_size));
 		if (!ShowByteSize && fp->f_size!=-1 && EndsStr('B', ret_str))
 			ret_str.cat_sprintf(_T(" (%s)"), get_size_str_B(fp->f_size, 0).c_str());
 
@@ -11386,27 +11386,35 @@ int get_MatchWordListEx(
 	UnicodeString lbuf,	//対象文字列
 	UnicodeString kwd,	//検索語
 	SearchOption  opt,	//オプション
-	TStringList  *lst)	//[o] マッチ語リスト(Value=Index,Length)
+	TStringList  *lst,	//[o] マッチ語リスト(Value=Index,Length[,gIndex, gLength])
+	int s_idx,			//検索開始位置	(default = 0)
+	int s_len)			//検索長		(default = 0)
 {
-	auto make_list = [](TMatchCollection mts, TStringList *lst) {
+	auto make_list = [](TMatchCollection mts, TStringList *lst, int ofs) {
 		for (int i=0; i<mts.Count; i++) {
 			if (mts.Item[i].Success) {
 				if (mts.Item[i].Groups.Count>1 && mts.Item[i].Groups.Item[1].Success) {
 					lst->Add(UnicodeString().sprintf(_T("%s=%u,%u,%u,%u"),
 						mts.Item[i].Value.c_str(), 
-						mts.Item[i].Index, mts.Item[i].Length,
-						mts.Item[i].Groups.Item[1].Index, mts.Item[i].Groups.Item[1].Length));
+						mts.Item[i].Index + ofs, mts.Item[i].Length,
+						mts.Item[i].Groups.Item[1].Index + ofs, mts.Item[i].Groups.Item[1].Length));
 				}
 				else {
 					lst->Add(UnicodeString().sprintf(_T("%s=%u,%u"),
-						mts.Item[i].Value.c_str(), mts.Item[i].Index, mts.Item[i].Length));
+						mts.Item[i].Value.c_str(), mts.Item[i].Index + ofs, mts.Item[i].Length));
 				}
 			}
 		}
-		return lst->Count;
 	};
 
 	lst->Clear();
+
+	//DFMの場合、オフセットを設定
+	int ofs = 0;
+	if (s_idx>0) {
+		ofs  = s_idx - 1;
+		lbuf = lbuf.SubString(s_idx, (s_len>0)? s_len : lbuf.Length() - s_idx + 1);
+	}
 
 	TRegExOptions x_opt;
 	if (!opt.Contains(soCaseSens)) x_opt << roIgnoreCase;
@@ -11426,7 +11434,7 @@ int get_MatchWordListEx(
 				if (!ptn.IsEmpty()) {
 					TMatchCollection mts = TRegEx::Matches(lbuf, ptn, x_opt);
 					and_ok = (mts.Count>0);
-					if (and_ok) make_list(mts, tmp_lst.get());
+					if (and_ok) make_list(mts, tmp_lst.get(), ofs);
 				}
 			}
 
@@ -11441,11 +11449,11 @@ int get_MatchWordListEx(
 		//正規表現/Migemo
 		if (opt.Contains(soRegEx) || opt.Contains(soMigemo)) {
 			UnicodeString ptn = opt.Contains(soRegEx)? kwd : usr_Migemo->GetRegExPtn(opt.Contains(soMigemo), kwd);
-			if (!ptn.IsEmpty()) make_list(TRegEx::Matches(lbuf, ptn, x_opt), lst);
+			if (!ptn.IsEmpty()) make_list(TRegEx::Matches(lbuf, ptn, x_opt), lst, ofs);
 		}
 		//あいまい検索
 		else if (opt.Contains(soFuzzy)) {
-			make_list(TRegEx::Matches(lbuf, get_fuzzy_ptn(kwd), x_opt), lst);
+			make_list(TRegEx::Matches(lbuf, get_fuzzy_ptn(kwd), x_opt), lst, ofs);
 		}
 		//GitGrep
 		else if (opt.Contains(soGitGrep)) {
@@ -11461,7 +11469,7 @@ int get_MatchWordListEx(
 						is_ptn = true;
 					}
 					else if (is_ptn) {
-						make_list(TRegEx::Matches(lbuf, s, x_opt), lst);
+						make_list(TRegEx::Matches(lbuf, s, x_opt), lst, ofs);
 						is_ptn = false;
 					}
 					else {
@@ -11470,7 +11478,7 @@ int get_MatchWordListEx(
 				}
 			}
 			else {
-				for (int i=0; i<s_lst.Length; i++) make_list(TRegEx::Matches(lbuf, s_lst[i], x_opt), lst);
+				for (int i=0; i<s_lst.Length; i++) make_list(TRegEx::Matches(lbuf, s_lst[i], x_opt), lst, ofs);
 			}
 		}
 		//AND/OR(' ')
@@ -11479,7 +11487,7 @@ int get_MatchWordListEx(
 			get_find_wd_list(kwd, klst.get());
 			for (int i=0; i<klst->Count; i++) {
 				UnicodeString ptn = TRegEx::Escape(klst->Strings[i]);
-				if (!ptn.IsEmpty()) make_list(TRegEx::Matches(lbuf, ptn, x_opt), lst);
+				if (!ptn.IsEmpty()) make_list(TRegEx::Matches(lbuf, ptn, x_opt), lst, ofs);
 			}
 		}
 	}
@@ -11569,11 +11577,11 @@ void EmphasisTextOut(
 //---------------------------------------------------------------------------
 void EmphasisTextOutEx(
 	UnicodeString s,		//表示文字列
-	TStringList *kw_lst,	//強調語のリスト(Value=Index,Length[,g_Index, g_Length])
+	TStringList *kw_lst,	//強調語のリスト(Value=Index,Length[,g_Index,g_Length])
 	TCanvas *cv,
 	int &x,				//[i/o] 表示X位置
 	int y,				//[i]	表示Y位置
-	bool only_top,		//先頭の語だけ強調	(default = false)
+	TxtOutOption opt,	//オプション
 	TColor fg,			//強調文字色		(default = col_fgEmp)
 	TColor bg)			//強調背景色		(default = col_bgEmp)
 {
@@ -11581,12 +11589,48 @@ void EmphasisTextOutEx(
 
 	int s_len = s.Length();
 
+	if (opt.Contains(toCompBgCol)) bg = ComplementaryCol(bg);
+
 	std::unique_ptr<TColor[]> FgCol(new TColor[s_len + 1]);
 	std::unique_ptr<TColor[]> BgCol(new TColor[s_len + 1]);
 
 	for (int i=0; i<=s_len; i++) {	//0 は 現在色
 		FgCol[i] = cv->Font->Color;
 		BgCol[i] = cv->Brush->Color;
+	}
+
+	//DFM構文強調
+	if (opt.Contains(toIsDfm)) {
+		int p1 = s.Pos(".");
+		int p2 = (p1>0)? PosEx(".", s, p1 + 1) : 0;
+		int pq = s.Pos("=");
+		if (p1>0 && p2>0 && pq>p2) {
+			FgCol[p1] = FgCol[p2] = FgCol[pq] = col_Symbol;
+			//クラス名
+			for (int i=1; i<p1; i++)	FgCol[i] = col_Reserved;
+			//プロパティ名
+			for (int i=p2+1; i<pq; i++)	FgCol[i] = col_Reserved;
+			//オブジェクト名
+			TMatch mt = TRegEx::Match(s, "<anonymous>");
+			if (mt.Success && mt.Index<p2) {
+				for (int i=0; i<mt.Length; i++) FgCol[mt.Index + i] = col_InvItem;
+			}
+			//値
+			mt = TRegEx::Match(s, "'.*'");
+			if (mt.Success) {
+				for (int i=0; i<mt.Length; i++) {
+					if (FgCol[mt.Index + i]!=col_fgEmp) FgCol[mt.Index + i] = col_Strings;
+				}
+			}
+			else {
+				mt = TRegEx::Match(s, "\\d+$");
+				if (mt.Success) {
+					for (int i=0; i<mt.Length; i++) {
+						if (FgCol[mt.Index + i]!=col_fgEmp) FgCol[mt.Index + i] = col_Numeric;
+					}
+				}
+			}
+		}
 	}
 
 	//URL強調
@@ -11603,19 +11647,22 @@ void EmphasisTextOutEx(
 			if (v.Length>=2) {
 				int idx = v[0].ToIntDef(0);
 				int len = v[1].ToIntDef(0);
+				if ((idx + len - 1)>s_len) len = s_len - idx + 1;
 				int g_i = (v.Length==4)? v[2].ToIntDef(0) : 0;
 				int g_n = (v.Length==4)? v[3].ToIntDef(0) : 0;
-				if (idx>0 && idx<=s_len && (idx + len - 1)<=s_len) {
+				if (idx>0 && idx<=s_len) {
 					for (int j=0; j<len; j++) {
 						FgCol[idx + j] = fg;
 						BgCol[idx + j] = bg;
 					}
+					//グループ
 					if (g_i>=idx && (g_i + g_n - 1)<=s_len) {
 						TColor bg2 = ComplementaryCol(bg);
 						for (int j=0; j<g_n; j++) {
 							BgCol[g_i + j] = bg2;
 						}
 					}
+					if (opt.Contains(toOnlyTop)) break;
 				}
 			}
 		}
@@ -11623,9 +11670,19 @@ void EmphasisTextOutEx(
 
 	//コントロールコード
 	for (int i=1; i<=s_len; i++) {
-		if (iscntrl(s[i]) && (s[i]!='\t')) {
+		if (iscntrl(s[i]) && (s[i]!='\t') && (s[i]!='\r') && (s[i]!='\n')) {
 			s[i] = (WideChar)((int)s[i] + 0x40);
 			FgCol[i] = col_Ctrl;
+		}
+	}
+
+	//行頭のタブや空白を非表示
+	int i1 = 1;
+	if (opt.Contains(toTrimLeft)) {
+		for (int i=1; i<=s_len; i++) {
+			if (s[i]!=' ' && s[i]!='\t') {
+				i1 = i; break; 
+			}
 		}
 	}
 
@@ -11633,15 +11690,15 @@ void EmphasisTextOutEx(
 	cv->Font->Color  = FgCol[1];
 	cv->Brush->Color = BgCol[1];
 	UnicodeString sbuf;
-	for (int j=1; j<=s_len; j++) {
-		if (FgCol[j]==cv->Font->Color && BgCol[j]==cv->Brush->Color) {
-			sbuf.cat_sprintf(_T("%c"), s[j]);
+	for (int i=i1; i<=s_len; i++) {
+		if (FgCol[i]==cv->Font->Color && BgCol[i]==cv->Brush->Color) {
+			sbuf.cat_sprintf(_T("%c"), s[i]);
 		}
 		else {
 			TabCrTextOut(sbuf, cv, x, y, cv->Font->Color);
-			sbuf = s[j];
-			cv->Font->Color  = FgCol[j];
-			cv->Brush->Color = BgCol[j];
+			sbuf = s[i];
+			cv->Font->Color  = FgCol[i];
+			cv->Brush->Color = BgCol[i];
 		}
 	}
 	if (!sbuf.IsEmpty()) TabCrTextOut(sbuf, cv, x, y, cv->Font->Color);
@@ -11656,16 +11713,16 @@ void EmphasisTextOutEx(
 	TCanvas *cv,
 	int &x,				//[i/o] 表示X位置
 	int y,				//[i]	表示Y位置
-	bool case_sns,		//大小文字を区別   (default = false)
-	bool only_top,		//先頭の語だけ強調	(default = false)
+	TxtOutOption opt,	//オプション
 	TColor fg,			//強調文字色 (default = col_fgEmp)
 	TColor bg)			//強調背景色 (default = col_bgEmp)
 {
-	SearchOption opt;
-	if (case_sns) opt << soCaseSens;
+	SearchOption s_opt;
+	if (opt.Contains(toCaseSens)) s_opt << soCaseSens;
 	std::unique_ptr<TStringList> kwd_lst(new TStringList());
-	get_MatchWordListEx(s, kwd, opt, kwd_lst.get());
-	EmphasisTextOutEx(s, kwd_lst.get(), cv, x, y, only_top, fg, bg);
+	get_MatchWordListEx(s, kwd, s_opt, kwd_lst.get());
+
+	EmphasisTextOutEx(s, kwd_lst.get(), cv, x, y, opt, fg, bg);
 }
 
 //---------------------------------------------------------------------------
@@ -12178,7 +12235,8 @@ void Emphasis_RLO_info(
 {
 	//RLO あり
 	if (fnam.Pos(L"\u202e")) {
-		EmphasisTextOutEx(warn_filename_RLO(fnam), "<RLO>", cv, xp, yp, false, false, col_Error, cv->Brush->Color);
+		TxtOutOption t_opt;  t_opt << toNormal;
+		EmphasisTextOutEx(warn_filename_RLO(fnam), "<RLO>", cv, xp, yp, t_opt, col_Error, cv->Brush->Color);
 
 		//実際の表示名
 		cv->Font->Color = AdjustColor(cv->Font->Color, ADJCOL_FGLIST);
@@ -14085,7 +14143,7 @@ UnicodeString get_Alias_KeyStr(UnicodeString alias, TStringList *k_lst)
 		UnicodeString vbuf = k_lst->ValueFromIndex[j];
 		if (!remove_top_Dollar(vbuf)) continue;
 		if (SameText(alias, vbuf)) {
-			if (!ret_str.IsEmpty()) ret_str += ", ";
+			cat_separator(ret_str, ", ");
 			ret_str += k_lst->Names[j];
 		}
 	}
@@ -16161,10 +16219,7 @@ void get_GitInf(
 		TStringDynArray b_buf = SplitString(get_in_paren(get_pre_tab(lbuf)), ",");
 		for (int i=0; i<b_buf.Length; i++) {
 			UnicodeString s = Trim(b_buf[i]);
-			if (s.Pos("/")==0) {
-				if (!cmt_s.IsEmpty()) cmt_s += ", ";
-				cmt_s += s;
-			}
+			if (s.Pos("/")==0) ins_sep_cat(cmt_s, ", ", s);
 		}
 		if (!cmt_s.IsEmpty()) {
 			cmt_s = ReplaceStr(cmt_s, "HEAD -> ", HEAD_Mark);

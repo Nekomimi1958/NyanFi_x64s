@@ -86,6 +86,8 @@ void cat_str_semicolon(UnicodeString &s, UnicodeString t);
 UnicodeString ins_spc_length(UnicodeString s, int len);
 
 UnicodeString def_if_empty(UnicodeString s, UnicodeString def);
+void cat_separator(UnicodeString &s, UnicodeString sep);
+void ins_sep_cat(UnicodeString &s, UnicodeString sep, UnicodeString s2);
 
 NativeInt str_to_NativeInt(UnicodeString s);
 int extract_int(UnicodeString s);

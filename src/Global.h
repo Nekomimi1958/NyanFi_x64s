@@ -90,7 +90,6 @@ extern  FUNC_GetFontResourceInfo	lpfGetFontResourceInfo;
 //---------------------------------------------------------------------------
 //検索用オプション
 enum SeaOpt {soMigemo, soRegEx, soAndOr, soFuzzy, soCaseSens, soCSV, soTSV, soTree, soGitGrep, soGrep, soGrepS, soGrepF};
-
 typedef Set <SeaOpt, soMigemo, soGrepF> SearchOption;
 
 //---------------------------------------------------------------------------
@@ -776,6 +775,7 @@ extern TStringList *GrepResultBuff;
 extern TStringList *GrepResultList;
 extern TStringList *GrepStashBuff;
 extern TStringList *GrepUnsortBuff;
+extern int  ResultListMode;
 
 extern TStringList *ViewFileList;
 extern bool isViewIcon;
@@ -2161,14 +2161,18 @@ void out_TextEx(TCanvas *cv, int &x, int y, UnicodeString s, TColor fg = col_Non
 void out_TextRect(TCanvas *cv, TRect &rc, UnicodeString s, TColor fg = col_None, TColor bg = col_None);
 
 int  get_MatchWordList(UnicodeString lbuf, UnicodeString kwd, SearchOption opt, TStringList *lst);
-int  get_MatchWordListEx(UnicodeString lbuf, UnicodeString kwd, SearchOption opt, TStringList *lst);
+int  get_MatchWordListEx(UnicodeString lbuf, UnicodeString kwd, SearchOption opt, TStringList *lst,
+							int s_idx = 0, int s_len = 0);
 
 void EmphasisTextOut(UnicodeString s, TStringList *kw_lst, TCanvas *cv, int &x, int y, bool case_sns = false);
 
-void EmphasisTextOutEx(UnicodeString s, TStringList *kw_lst, TCanvas *cv, int &x, int y,
-	bool only_top = false, TColor fg = col_fgEmp, TColor bg = col_bgEmp);
-void EmphasisTextOutEx(UnicodeString s, UnicodeString kwd, TCanvas *cv, int &x, int y,
-	bool case_sns = false, bool only_top = false, TColor fg = col_fgEmp, TColor bg = col_bgEmp);
+enum TxtOutOpt {toNormal, toCaseSens, toOnlyTop, toCompBgCol, toIsDfm, toTrimLeft};
+typedef Set <TxtOutOpt, toNormal, toTrimLeft> TxtOutOption;
+
+void EmphasisTextOutEx(UnicodeString s, TStringList *kw_lst, TCanvas *cv, int &x, int y, TxtOutOption opt,
+	TColor fg = col_fgEmp, TColor bg = col_bgEmp);
+void EmphasisTextOutEx(UnicodeString s, UnicodeString kwd, TCanvas *cv, int &x, int y, TxtOutOption opt,
+	TColor fg = col_fgEmp, TColor bg = col_bgEmp);
 
 void draw_TAB(TCanvas *cv, int x, int y, int w, int h);
 void draw_CR(TCanvas *cv, int x, int y, int w, int h);

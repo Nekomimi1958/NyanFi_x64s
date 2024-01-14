@@ -1236,10 +1236,7 @@ void __fastcall TGitViewer::CopyBranchNameActionExecute(TObject *Sender)
 		UnicodeString ss = b_buf[i];
 		remove_top_s(ss, "HEAD -> ");
 		remove_top_s(ss, "HEAD");
-		if (!ss.IsEmpty()) {
-			if (!bnam.IsEmpty()) bnam += ",";
-			bnam += ss;
-		}
+		if (!ss.IsEmpty()) ins_sep_cat(bnam, ",", ss);
 	}
 	copy_to_Clipboard(bnam);
 }

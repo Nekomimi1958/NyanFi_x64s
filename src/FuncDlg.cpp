@@ -318,17 +318,18 @@ void __fastcall TFuncListDlg::FuncListBoxDrawItem(TWinControl *Control, int Inde
 
 			//ä÷êîñºÇã≠í≤
 			std::unique_ptr<TStringList> elist(new TStringList());
-			TRegExOptions opt; opt << roIgnoreCase;
-			TMatch mt = TRegEx::Match(lbuf, NamePtn, opt);
+			TRegExOptions re_opt;  re_opt << roIgnoreCase;
+			TMatch mt = TRegEx::Match(lbuf, NamePtn, re_opt);
 			if (mt.Success) {
 				UnicodeString wd = Trim(mt.Value);
 				if (ends_tchs("{([:", wd)) delete_end(wd);
 				if (NameOnlyCheckBox->Checked) lbuf = wd;
 				lbuf.Insert(pre_str, 1);
-				mt = TRegEx::Match(lbuf, TRegEx::Escape(wd), opt);
+				mt = TRegEx::Match(lbuf, TRegEx::Escape(wd), re_opt);
 				if (mt.Success) elist->Add(wd.cat_sprintf(_T("=%u,%u"), mt.Index, mt.Length));
 			}
-			EmphasisTextOutEx(lbuf, elist.get(), cv, xp, yp, false, col_Headline, cv->Brush->Color);
+			TxtOutOption t_opt;  t_opt << toNormal;
+			EmphasisTextOutEx(lbuf, elist.get(), cv, xp, yp, t_opt, col_Headline, cv->Brush->Color);
 		}
 		else {
 			cv->TextOut(xp, yp, lbuf);

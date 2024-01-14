@@ -890,6 +890,7 @@ object NyanFiForm: TNyanFiForm
                   Anchors = [akLeft, akTop, akRight]
                   DropDownCount = 24
                   TabOrder = 0
+                  OnChange = GrepRepComboBoxChange
                   OnEnter = GrepRepComboBoxEnter
                 end
               end
@@ -1084,6 +1085,7 @@ object NyanFiForm: TNyanFiForm
                 Anchors = [akLeft, akTop, akRight]
                 DropDownCount = 24
                 TabOrder = 0
+                OnChange = GrepRepComboBoxChange
                 OnEnter = GrepRepComboBoxEnter
               end
               object RepStrComboBox: TComboBox
@@ -5060,7 +5062,7 @@ object NyanFiForm: TNyanFiForm
   end
   object LogPopupMenu: TPopupMenu
     Left = 448
-    Top = 398
+    Top = 406
     object PopCopyItem: TMenuItem
       Action = Log_EditCopy
     end
@@ -5424,12 +5426,12 @@ object NyanFiForm: TNyanFiForm
     PopupMenu = TrayPopupMenu
     OnClick = TrayIcon1Click
     Left = 554
-    Top = 395
+    Top = 403
   end
   object TrayPopupMenu: TPopupMenu
     OnPopup = TrayPopupMenuPopup
     Left = 650
-    Top = 395
+    Top = 403
     object Sep_r_1: TMenuItem
       Caption = '-'
     end
@@ -6365,5 +6367,12 @@ object NyanFiForm: TNyanFiForm
   object DummyMenu: TMainMenu
     Left = 284
     Top = 398
+  end
+  object GrepFilterTimer: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = GrepFilterTimerTimer
+    Left = 658
+    Top = 331
   end
 end

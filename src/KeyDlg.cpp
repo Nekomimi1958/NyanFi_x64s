@@ -268,7 +268,8 @@ void __fastcall TKeyListDlg::KeyListGridDrawCell(TObject *Sender, System::LongIn
 		SearchOption opt; opt << soRegEx;
 		std::unique_ptr<TStringList> em_lst(new TStringList());
 		get_MatchWordListEx(cellstr, "[+~]", opt, em_lst.get());
-		EmphasisTextOutEx(cellstr, em_lst.get(), cv, xp, yp, false, use_fgsel? col_fgSelItem : col_Symbol, cv->Brush->Color);
+		TxtOutOption t_opt;  t_opt << toNormal;
+		EmphasisTextOutEx(cellstr, em_lst.get(), cv, xp, yp, t_opt, use_fgsel? col_fgSelItem : col_Symbol, cv->Brush->Color);
 	}
 	//ƒRƒ}ƒ“ƒh
 	else if (ACol==1) {
@@ -279,7 +280,8 @@ void __fastcall TKeyListDlg::KeyListGridDrawCell(TObject *Sender, System::LongIn
 		}
 		else {
 			cv->Font->Color = use_fgsel? col_fgSelItem : col_Strings;
-			EmphasisTextOutEx(cellstr, get_CmdStr(cellstr), cv, xp, yp, false, true,
+			TxtOutOption t_opt;  t_opt << toOnlyTop;
+			EmphasisTextOutEx(cellstr, get_CmdStr(cellstr), cv, xp, yp, t_opt,
 				use_fgsel? col_fgSelItem : col_Reserved, cv->Brush->Color);
 		}
 	}

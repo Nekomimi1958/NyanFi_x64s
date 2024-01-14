@@ -602,6 +602,22 @@ UnicodeString def_if_empty(UnicodeString s, UnicodeString def)
 }
 
 //---------------------------------------------------------------------------
+//•¶š—ñ‚ª‹ó‚Å‚È‚¢‚È‚ç‹æØ‚è•¶š—ñ‚ğ’Ç‰Á
+//---------------------------------------------------------------------------
+void cat_separator(UnicodeString &s, UnicodeString sep)
+{
+	if (!s.IsEmpty()) s += sep;
+}
+//---------------------------------------------------------------------------
+//•¶š—ñ‚ª‹ó‚Å‚È‚¢‚È‚ç‹æØ‚è•¶š—ñ‚ğ‘}“ü‚µ‚ÄAw’è•¶š—ñ‚ğ’Ç‰Á
+//---------------------------------------------------------------------------
+void ins_sep_cat(UnicodeString &s, UnicodeString sep, UnicodeString s2)
+{
+	if (!s.IsEmpty()) s += sep;
+	s += s2;
+}
+
+//---------------------------------------------------------------------------
 //•¶š—ñ‚ğ NativeInt ’l‚É•ÏŠ·
 //---------------------------------------------------------------------------
 NativeInt str_to_NativeInt(UnicodeString s)
@@ -1047,8 +1063,7 @@ UnicodeString extract_prm_RegExPtn(UnicodeString &s)
 		UnicodeString lbuf;
 		for (int i=0; i<lst.Length; i++) {
 			if (i==idx) continue;
-			if (!lbuf.IsEmpty()) lbuf += ";";
-			lbuf += lst[i];
+			ins_sep_cat(lbuf, ";", lst[i]);
 		}
 		s = lbuf;
 	}
@@ -1327,10 +1342,7 @@ UnicodeString make_csv_rec_str(TStringDynArray lst)
 UnicodeString make_csv_rec_str(std::initializer_list<UnicodeString> lst)
 {
 	UnicodeString lbuf;
-    for (UnicodeString value : lst) {
-		if (!lbuf.IsEmpty()) lbuf += ",";
-		lbuf += make_csv_str(value);
-    }
+    for (UnicodeString value : lst) ins_sep_cat(lbuf, ",", make_csv_str(value));
 	return lbuf;
 }
 //---------------------------------------------------------------------------
@@ -1885,10 +1897,7 @@ UnicodeString make_RuledLine(int cnt, ...)
 	va_start(ap, cnt);
 	for (int i=0; i<cnt; i++) {
 		int w = va_arg(ap, int);
-		if (w>0) {
-			if (!ret_str.IsEmpty()) ret_str += " ";
-			ret_str += StringOfChar(_T('-'), w);
-		}
+		if (w>0) ins_sep_cat(ret_str, " ", StringOfChar(_T('-'), w));
 	}
 	va_end(ap);
 
@@ -2950,7 +2959,7 @@ UnicodeString check_Surrogates(UnicodeString s)
 	int i = 1;
 	while(i<=s_len) {
 		if (s.IsLeadSurrogate(i)) {
-			if (!ret_str.IsEmpty()) ret_str += " ";
+			cat_separator(ret_str, " ");
 			ret_str.cat_sprintf(_T("%c"), s[i++]);
 			if (i<=s_len && s.IsTrailSurrogate(i)) ret_str.cat_sprintf(_T("%c"), s[i++]);
 		}
@@ -2979,7 +2988,7 @@ UnicodeString check_EnvDepandChars(UnicodeString s)
 			(c>=0x2150 && c<=0x218f) || (c>=0x2194 && c<=0x219f) || (c>=0x2460 && c<=0x24ef) ||
 			(c>=0x2600 && c<=0x266f) || (c>=0x3220 && c<=0x324f) || (c>=0x3280 && c<=0x33ff))
 		{
-			if (!ret_str.IsEmpty()) ret_str += " ";
+			cat_separator(ret_str, " ");
 			ret_str.cat_sprintf(_T("%c"), s[i]);
 		}
 	}

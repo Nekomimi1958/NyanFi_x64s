@@ -174,11 +174,13 @@ void __fastcall TFindTagForm::TagsListBoxDrawItem(TWinControl *Control, int Inde
 	UnicodeString lbuf = lp->Items->Strings[Index];
 	if (!IncSeaWord.IsEmpty()) {
 		std::unique_ptr<TStringList> wlist(new TStringList());
-		SearchOption opt;  opt << soAndOr;
-		if (IsMigemo) opt << soMigemo;
-		if (contains_upper(IncSeaWord)) opt << soCaseSens;
-		get_MatchWordListEx(lbuf, IncSeaWord, opt, wlist.get());
-		EmphasisTextOutEx(lbuf, wlist.get(), cv, xp, yp);
+		SearchOption s_opt;  s_opt << soAndOr;
+		if (IsMigemo) s_opt << soMigemo;
+		if (contains_upper(IncSeaWord)) s_opt << soCaseSens;
+		get_MatchWordListEx(lbuf, IncSeaWord, s_opt, wlist.get());
+		TxtOutOption t_opt;  t_opt << toNormal;
+		if (s_opt.Contains(soCaseSens)) t_opt << toCaseSens;
+		EmphasisTextOutEx(lbuf, wlist.get(), cv, xp, yp, t_opt);
 	}
 	else {
 		cv->TextOut(xp, yp, lbuf);

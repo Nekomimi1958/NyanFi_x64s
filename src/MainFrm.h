@@ -1129,6 +1129,7 @@ __published:	// IDE で管理されるコンポーネント
 	TVirtualImageList *IconVImgListI;
 	TVirtualImageList *IconVImgListP;
 	TVirtualImageList *IconVImgListV;
+	TTimer *GrepFilterTimer;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -1968,6 +1969,8 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall IS_Match1ActionExecute(TObject *Sender);
 	void __fastcall IS_Match1ActionUpdate(TObject *Sender);
 	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall GrepFilterTimerTimer(TObject *Sender);
+	void __fastcall GrepRepComboBoxChange(TObject *Sender);
 
 private:	// ユーザー宣言
 	TIdFTP *IdFTP1;
@@ -2076,6 +2079,7 @@ private:	// ユーザー宣言
 	UnicodeString GrepResultPath;		//  検索結果パス
 	UnicodeString GrepResultPathBuf;	//    待避用バッファ
 
+	bool UseDfmFilter;					//DfmObj フィルタを適用中
 	bool GrepCaseSenstive;				//大小文字を区別
 	bool GrepFiltered;					//結果絞り込み中
 	bool GrepLnSorted;					//行内容でソート中
@@ -2091,6 +2095,11 @@ private:	// ユーザー宣言
 	SttProgressBar *SttPrgBar;			//Grep用プログレスバー
 	UsrHintWindow *MsgHint;				//メッセージ、警告のヒント表示ウィンドウ
 	UsrHintWindow *KeyHint;				//2ストローク操作のヒント表示ウィンドウ
+
+	UnicodeString RepParameter;			//置換パラメータ ([>フィルタ> ]検索語)
+	UnicodeString RepKeyword;			//  検索文字列
+	UnicodeString ReplaceWord;			//  置換文字列
+	UnicodeString RepFilter;			//	フィルタ
 
 	int TabPinWidth;
 	int PopMenuIndex;

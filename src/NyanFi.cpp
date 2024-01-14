@@ -77,10 +77,10 @@ USEFORM("FileExtDlg.cpp", FileExtensionDlg);
 USEFORM("FileInfDlg.cpp", FileInfoDlg);
 USEFORM("GitTag.cpp", SetGitTagDlg);
 USEFORM("GitView.cpp", GitViewer);
+USEFORM("GitGrep.cpp", GitGrepForm);
 USEFORM("FtpDlg.cpp", FtpConnectDlg);
 USEFORM("FuncDlg.cpp", FuncListDlg);
 USEFORM("GenInfDlg.cpp", GeneralInfoDlg);
-USEFORM("GitGrep.cpp", GitGrepForm);
 //---------------------------------------------------------------------------
 #include "Global.h"
 #include "Splash.h"

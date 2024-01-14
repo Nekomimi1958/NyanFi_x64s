@@ -92,9 +92,10 @@ void __fastcall TAskRepDlg::RepListBoxDrawItem(TWinControl *Control,
 
 	//行番号
 	TRect rc = Rect;
-	LineNoOut(cv, rc, FoundLine - CurIndex + Index);
+	int f_idx = FoundLine - CurIndex + Index - 1;
+	LineNoOut(cv, rc, f_idx + 1);
 	cv->Brush->Color = get_ListBgCol();
-	xp = rc.Left + 4;
+	xp = rc.Left + SCALED_THIS(4);
 
 	//マッチ行
 	if (Index==CurIndex) {
@@ -121,7 +122,8 @@ void __fastcall TAskRepDlg::RepListBoxDrawItem(TWinControl *Control,
 			TabCrTextOut(s0, cv, xp, yp, get_ListFgCol(), Rect.Right);
 			itmstr.Delete(1, FoundPos - 1);
 			//マッチ語強調表示
-			EmphasisTextOutEx(itmstr, KeyWord, cv, xp, yp, false, true, col_fgEmp, col_bgEmp);
+			TxtOutOption opt;  opt << toOnlyTop;
+			EmphasisTextOutEx(itmstr, KeyWord, cv, xp, yp, opt, col_fgEmp, col_bgEmp);
 		}
 		else {
 			TabCrTextOut(itmstr, cv, xp, yp, get_ListFgCol(), Rect.Right);
@@ -134,7 +136,7 @@ void __fastcall TAskRepDlg::RepListBoxDrawItem(TWinControl *Control,
 	}
 	//前後行
 	else {
-		TabCrTextOut(itmstr, cv, xp, yp, get_ListFgCol(), Rect.Right);
+		TabCrTextOut(itmstr, cv, xp, yp, (f_idx>=TopIndex && f_idx<=EndIndex)? get_ListFgCol() : col_InvItem, Rect.Right);
 	}
 }
 //---------------------------------------------------------------------------
@@ -143,4 +145,3 @@ void __fastcall TAskRepDlg::RepListBoxEnter(TObject *Sender)
 	OKBtn->SetFocus();
 }
 //---------------------------------------------------------------------------
-

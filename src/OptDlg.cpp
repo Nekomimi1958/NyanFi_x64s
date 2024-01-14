@@ -1923,7 +1923,7 @@ bool __fastcall TOptionDlg::CheckDuplExt(
 	if (dpl_lst->Count>0) {
 		UnicodeString msg = "[";
 		for (int i=0; i<dpl_lst->Count; i++) {
-			if (!msg.IsEmpty()) msg += " ";
+			cat_separator(msg, " ");
 			UnicodeString fext = dpl_lst->Strings[i];
 			if (SameStr(fext, "."))
 				msg += fext;
@@ -2268,10 +2268,7 @@ UnicodeString __fastcall TOptionDlg::get_AliasInfo(UnicodeString alias)
 	}
 
 	UnicodeString ret_str = k_inf;
-	if (!a_inf.IsEmpty()) {
-		if (!ret_str.IsEmpty()) ret_str += " / ";
-		ret_str += a_inf;
-	}
+	if (!a_inf.IsEmpty()) ins_sep_cat(ret_str, " / ", a_inf);
 	return ret_str;
 }
 //---------------------------------------------------------------------------

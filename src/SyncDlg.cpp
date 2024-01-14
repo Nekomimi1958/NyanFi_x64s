@@ -58,10 +58,7 @@ void __fastcall TRegSyncDlg::RegListBoxDrawItem(TWinControl *Control, int Index,
 	xp += 24;
 
 	UnicodeString lbuf;
-	for (int i=3; i<syn_lst.Length && !syn_lst[i].IsEmpty(); i++) {
-		if (!lbuf.IsEmpty()) lbuf += ", ";
-		lbuf += syn_lst[i];
-	}
+	for (int i=3; i<syn_lst.Length && !syn_lst[i].IsEmpty(); i++) ins_sep_cat(lbuf, ", ", syn_lst[i]);
 	cv->TextOut(xp, yp, lbuf);
 }
 //---------------------------------------------------------------------------

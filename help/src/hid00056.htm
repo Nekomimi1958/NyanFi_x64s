@@ -60,7 +60,7 @@
   <hr class="light">
 
   <p>検索場所が Git リポジトリの場合、<b>Git GREP</b> (<a href="hid00005.htm#GitGrep">GitGrep</a>)を利用できます。</p>
-  <p>上部のタブを切り替えることにより、<b>文字列検索</b>および<a href="hid00061.htm">文字列置換</a>を行えます。</p>
+  <p>上部のタブを切り替えることにより、<a href="hid00061.htm">文字列置換</a>を行えます。</p>
   <br>
 
   <h2 id="Find">文字列検索</h2>
@@ -101,11 +101,13 @@
       正規表現でない場合、<b>\s</b> は半角空白、<b>\t</b> はタブ文字とみなされます。<br>
       <hr class="light">
       <div class="spc_box">
-        <b>フィルタによる検索対象の絞り込み:</b><br>
+        <b>フィルタによる検索対象の絞り込み</b> (Grep2 では利用不可)<br>
         <b>&gt;</b><span class="pram_text">フィルタ1[|フィルタ2...]</span><b>&gt;</b> <span class="pram_text">検索文字列</span><br>
-        という書式で<b>フィルタ</b>を指定することで、検索対象を絞り込めます(Grep2 では利用不可)。<br>
-        | で区切って複数のフィルタを指定すると、それらが順に適用されます。なお、フィルタ名の大文字・小文字は区別されません。<br>
-        今のところ、以下のフィルタを利用できます。<br>
+        という書式で<b>フィルタ</b>を指定することで、検索対象を絞り込めます。<br>
+        | で区切って複数のフィルタを指定すると、それらが順に適用されます。<br>
+        なお、フィルタ名の大文字・小文字は区別されません。フィルタ末尾の <b>&gt;</b> と検索文字列との間には空白を入れてください。<br>
+        入力内容が正しくない場合、入力欄を囲むエラー色の枠が表示されて<span class="btn_frame">開始</span>ボタンを押せません。<br>
+        利用できるフィルタは以下の通りです。<br>
         <dl>
           <dt class="no_bg">Head<span class="pram_text">(行数)</span></dt>
           <dd>
@@ -119,13 +121,30 @@
           </dd>
           <dt class="no_bg">HtmlHead</dt>
           <dd>
-            HTML文書で、&lt;head&gt; を含む行から &lt;/head&gt; を含む行までを検索します。<br>
+            HTML文書で、head 要素内の行を検索します。<br>
+          </dd>
+          <dt class="no_bg">HtmlBody</dt>
+          <dd>
+            HTML文書で、body 要素内の行を検索します。<br>
+          </dd>
+          <dt class="no_bg">HtmlRem</dt>
+          <dd>
+            HTML文書で、コメント部分を検索します。<br>
+            <div class="note_text">1行に複数のコメント部分がある場合、二つ目以降のコメントは認識されません。<br></div>
+            <b>例</b>: head 要素内のコメント部分を検索<br>
+            <span class="inp_box">&gt;HtmlHead|HrmlRem&gt; hoge</span>
           </dd>
           <dt class="no_bg">SubStr<span class="pram_text">(位置[,長さ])</span></dt>
           <dd>
             行毎に、指定した開始位置(1～)と長さの範囲を検索します。長さを省略すると、開始位置から行末までが範囲になります。<br>
             <b>例</b>: 先頭から20行で、10文字目から20文字の範囲を検索<br>
             <span class="inp_box">&gt;Head(20)|SubStr(10,20)&gt; hoge</span>
+          </dd>
+          <dt class="no_bg">DfmObj<span class="pram_text">(オブジェクトクラス名,プロパティ名)</span></dt>
+          <dd>
+            <b>.dfm</b> (Delphiフォームファイル)で、指定したオブジェクトのプロパティ値を検索します。オブジェクトクラス名やプロパティ名にはワイルドカード(*、?)を使えます。<br>
+            <b>例</b>: Caption に"表示"が含まれるすべてのオブジェクトを検索<br>
+            <span class="inp_box">&gt;dfmobj(*,Caption)&gt; 表示</span>
           </dd>
         </dl>
       </div>
@@ -137,14 +156,14 @@
       なお検索文字列欄の右クリックメニューから、正規表現を参照したり、<a href="hid00085.htm">正規表現チェッカー</a>を開いたりできます。<br>
       チェックしていない場合でも <b>Grep2</b> では、デフォルトで基本正規表現(BRE)となるため、メタキャラクタはエスケープして渡しています。
       <div class="spc_box">
-        結果リストでは、マッチ部分が強調表示されますが、グループがあるとその背景色が強調色の補色で表示されます(グループ1のみ)。
+        結果リストでは、マッチ部分が強調表示されますが、グループがあるとその背景が強調色の補色で表示されます(グループ1のみ)。
       </div>
     </dd>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> AND <span class="app_text">(Grep2 では無効)</span></dt>
     <dd>
       検索語を複数指定している場合に、AND検索を行います。チェックを外すとOR検索になります。<br>
-      <b>Grep2</b> では、代わりに<b>フィルタ</b>を利用するか、「<b>ヒットしたカレントのファイルを選択</b>」してさらに検索を行ってください。
+      <b>Grep2</b> では、代わりに<b>フィルタ</b>欄を利用するか、「<b>ヒットしたカレントのファイルを選択</b>」してさらに検索を行ってください。
     </dd>
 
     <dt class="no_bg" id="CaseSens"><img src="chkbox.png" alt=""> 大小区別</dt>
@@ -218,7 +237,7 @@
       <img src="chkbox.png" alt=""> <b>Migemo</b> をチェックしていると、<b>Migemo</b> モードで絞り込みを行えます(<span
         class="btn_frame">Ctrl</span>+<span class="btn_frame">M</span>でも切り替え可能)。<br>
       <div class="note_text">
-        ※<b>Migemo</b> モードだと処理が重くなります。フィルタ欄には日本語も入力できるので、項目数が多い場合は通常モードにした方がよいでしょう。<br>
+        <b>Migemo</b> モードだと処理が重くなります。フィルタ欄には日本語も入力できるので、項目数が多い場合は通常モードにした方がよいでしょう。<br>
       </div>
       <img src="chkbox.png" alt=""> <b>AND/OR</b> をチェックしていると、複数のキーワードを空白で区切って入力した場合にAND検索、"<b>|</b>"
       で区切るとOR検索で絞り込めます。区切りが混在しているその場合は、空白(AND)の方が | (OR)よりも優先順位が高くなります。<br>
@@ -322,7 +341,12 @@
     </dd>
 
     <dt class="no_bg_indent1">マッチ語前後の挿入文字列 <img src="edit.png" alt=""></dt>
-    <dd>マッチした語の前後に文字列を挿入できます。書式文字列は <b>\t</b>、<b>\n</b>、<b>\s</b> および <b>\\</b>を使えます。</dd>
+    <dd>
+      マッチした語の前後に文字列を挿入できます。書式文字列は <b>\t</b>、<b>\n</b>、<b>\s</b> および <b>\\</b>を使えます。<br>
+      <div class="note_text">
+      SubStr フィルタなどの適用によって検索対象が行全体ではない場合は挿入されません。<br>
+      </div>
+    </dd>
 
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> 行頭のタブや空白を削除</dt>
     <dd>マッチ行以降で、行頭にタブや空白があったら削除します。</dd>

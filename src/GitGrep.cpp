@@ -276,7 +276,8 @@ void __fastcall TGitGrepForm::ResultListBoxDrawItem(TWinControl *Control, int In
 		get_MatchWordListEx(lbuf, Keyword, opt, wlist.get());
 		//マッチ語の強調表示
 		cv->Font->Color = get_ListFgCol();
-		EmphasisTextOutEx(lbuf, wlist.get(), cv, xp, yp);
+		TxtOutOption t_opt;  t_opt << toNormal;
+		EmphasisTextOutEx(lbuf, wlist.get(), cv, xp, yp, t_opt);
 	}
 
 	cv->Brush->Color = lp->Color;

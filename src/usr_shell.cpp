@@ -1173,7 +1173,7 @@ UnicodeString UserShell::get_PropInf(
 					if (v>0) {
 						ustr = "bps";
 						if (v>1000) { v /= 1000; ustr.Insert("k" ,1); }
-						if (!vstr.IsEmpty()) vstr += " ";
+						cat_separator(vstr, " ");
 						vstr.cat_sprintf(_T("%u%s"), v, ustr.c_str());
 					}
 					//サンプルレート

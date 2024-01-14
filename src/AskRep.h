@@ -55,6 +55,9 @@ public:
 	int FileCount;
 	int FileIndex;
 
+	int TopIndex;
+	int EndIndex;
+
 	virtual __fastcall TAskRepDlg(TComponent* AOwner);
 };
 //----------------------------------------------------------------------------

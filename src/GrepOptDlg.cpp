@@ -176,10 +176,7 @@ void __fastcall TGrepExOptDlg::SampleChange(TObject *Sender)
 	if (TrimLeftCheckBox->Checked) {
 		TStringDynArray l_lst = SplitString(ln_str, "\n");
 		ln_str = EmptyStr;
-		for (int j=0; j<l_lst.Length; j++) {
-			if (!ln_str.IsEmpty()) ln_str += "\n";
-			ln_str += TrimLeft(l_lst[j]);
-		}
+		for (int j=0; j<l_lst.Length; j++) ins_sep_cat(ln_str, "\n", TrimLeft(l_lst[j]));
 	}
 
 	if (RepCrCheckBox->Checked)

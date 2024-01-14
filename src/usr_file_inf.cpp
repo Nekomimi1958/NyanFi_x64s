@@ -332,8 +332,7 @@ UnicodeString get_chunk_list(TFileStream *fs,
 			cnam.cat_sprintf(_T("%c"), buf[i]);
 		}
 		if (!ok) break;
-		if (!ret_str.IsEmpty()) ret_str += ",";
-		ret_str += cnam;
+		ins_sep_cat(ret_str, ",", cnam);
 		if (SameStr(cnam, "ANMF")) {
 			if (l_nam==cnam) anmf_cnt++; else anmf_cnt = 1;
 		}
@@ -1343,12 +1342,10 @@ bool get_WebpInf(
 				i_cnt++;
 			}
 			else if (SameText(chunk, "EXIF")) {
-				if (!meta.IsEmpty()) meta += ",";
-				meta += "EXIF";
+				ins_sep_cat(meta, ",", "EXIF");
 			}
 			else if (SameText(chunk, "XMP ")) {
-				if (!meta.IsEmpty()) meta += ",";
-				meta += "XMP";
+				ins_sep_cat(meta, ",", "XMP");
 	 		}
 
 			fs->Seek(p, soFromBeginning);
