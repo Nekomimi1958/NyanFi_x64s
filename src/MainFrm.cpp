@@ -299,6 +299,7 @@ __fastcall TNyanFiForm::TNyanFiForm(TComponent* Owner)
 	InhSeekBar	  = 0;
 	LockTxtPrv	  = false;
 	FinfSkipped   = false;
+	InhGrepFilter = false;
 
 	IdFTP1 = NULL;
 	IdAntiFreeze1 = NULL;
@@ -3234,15 +3235,21 @@ void __fastcall TNyanFiForm::ApplicationEvents1ShowHint(UnicodeString &HintStr, 
 					lbuf = yen_to_delimiter(get_post_tab(lbuf));
 				}
 				//ファイル情報
-				else if ((lp->Tag & (LBTAG_OPT_FIF1|LBTAG_OPT_FIF2))
-					&& (((int)lp->Items->Objects[idx] & LBFLG_STD_FINF)==0))
-				{
-					int w_max = LOWORD(lp->Tag);
-					UnicodeString inam = Trim(get_tkn(lbuf, ':'));
-					if (StartsStr('.', inam) && cv->TextWidth(inam)>w_max)
+				else if (lp->Tag & (LBTAG_OPT_FIF1|LBTAG_OPT_FIF2)) {
+					int flg = (int)lp->Items->Objects[idx];
+					if ((flg & LBFLG_STD_FINF)==0) {
+						int w_max = LOWORD(lp->Tag);
+						UnicodeString inam = Trim(get_tkn(lbuf, ':'));
+						if (StartsStr('.', inam) && cv->TextWidth(inam)>w_max)
+							lw = 0;
+						else
+							lw = w_max + cv->TextWidth(get_tkn_r(lbuf, ": ") + ": ");
+					}
+					//ファイル or パス
+					else if ((flg & (LBFLG_STD_FINF|LBFLG_PATH_FIF))!=0 && !StartsStr("<", lbuf)) {
 						lw = 0;
-					else
-						lw = w_max + cv->TextWidth(get_tkn_r(lbuf, ": ") + ": ");
+						lbuf.cat_sprintf(_T("\n文字数=%d"), lbuf.Length());
+					}
 				}
 				//名前=値1;値2;…
 				else if (lp->Tag & LBTAG_VAR_LIST) {
@@ -26592,8 +26599,9 @@ void __fastcall TNyanFiForm::SwapNameActionExecute(TObject *Sender)
 		}
 		//失敗したら元に戻して中断
 		if (ok_cnt<2) {
-			for (int i=0; i<2; i++)
+			for (int i=0; i<2; i++) {
 				if (FileExists(tmp_name[i])) move_FileT(tmp_name[i], org_name[i]);
+			}
 			UserAbort(USTR_FaildProc);
 		}
 
@@ -30180,7 +30188,11 @@ void __fastcall TNyanFiForm::GrepPageControlChange(TObject *Sender)
 {
 	SetSttBarGrepOpt();
 	GrepResultList->Clear();
-	ResultListBox->Clear();
+	ResultListBox->Count = 0;
+	GrepResultBuff->Clear();
+	GrepMatchList->Clear();
+	ShowMatchListAction->Checked = false;
+
 	UpdateActions();
 	((GrepPageControl->ActivePage==FindSheet)? GrepFindComboBox : RepFindComboBox)->SetFocus();
 }
@@ -30247,26 +30259,16 @@ void __fastcall TNyanFiForm::UpdateGrepSticky()
 		UnicodeString p_nam = get_pre_tab(lp->Items->Strings[idx]);
 		if (SameText(p_nam, (idx>0)? get_pre_tab(lp->Items->Strings[idx - 1]) : EmptyStr)) {
 			UnicodeString d_nam = ExtractFilePath(p_nam);
-			remove_top_text(d_nam, GrepResultPath);
+			if (!remove_top_text(d_nam, GrepResultPath)) d_nam = EmptyStr;
 			UnicodeString f_nam = ExtractFileName(p_nam);
 			int idx_tag = (int)lp->Items->Objects[idx];
 			TCanvas *cv = lp->Canvas;
 			cv->Font->Assign(lp->Font);
-			wd += SCALED_THIS(2);
-			if (GrepShowSubDir) wd += cv->TextWidth(get_MiniPathName(d_nam, lp->ClientWidth/4, cv->Font));
-			wd += cv->TextWidth(get_MiniPathName(f_nam, lp->ClientWidth/(GrepShowSubDir? 4 : 2), cv->Font));
+			int x_mg = SCALED_THIS(2);
+			wd += x_mg;
 			if (GrepShowItemNo) wd += get_CharWidth(cv, 6, ScaledInt(4));
-			int ln_wd = cv->TextWidth("000000 ");
-			wd += ln_wd;
-			int cwd = abs(cv->Font->Height);
-			int wdn = 16;
-			for (;;) {
-				if (wd<cwd*wdn) { wd = cwd*wdn;  break; }
-				wdn += 4;
-				if (cwd*wdn > lp->ClientWidth/2) break;
-			}
-			wd -= ln_wd;
-			wd += SCALED_THIS(4);
+			if (GrepShowSubDir) wd += (cv->TextWidth(get_MiniPathName(d_nam, lp->ClientWidth/4, cv->Font)) + x_mg);
+			wd += (std::min(GrepMaxFileWd, lp->ClientWidth/(GrepShowSubDir? 4 : 2)) + x_mg);
 			GrepStickyPanel->Width = wd;
 		}
 	}
@@ -30303,14 +30305,14 @@ void __fastcall TNyanFiForm::onGrepStickyPaint(TObject *Sender)
 		cv->Brush->Color = bg_col;
 	}
 
-	UnicodeString lbuf = lp->Items->Strings[idx];
-	UnicodeString p_nam  = split_pre_tab(lbuf);
-	UnicodeString d_nam  = ExtractFilePath(p_nam);
-	remove_top_text(d_nam, GrepResultPath);
-	UnicodeString f_nam  = ExtractFileName(p_nam);
+	UnicodeString lbuf  = lp->Items->Strings[idx];
+	UnicodeString p_nam = split_pre_tab(lbuf);
+	UnicodeString d_nam = ExtractFilePath(p_nam);
+	if (!remove_top_text(d_nam, GrepResultPath)) d_nam = EmptyStr;
+	UnicodeString f_nam = ExtractFileName(p_nam);
 	xp += SCALED_THIS(4);
 	if (GrepShowSubDir && !d_nam.IsEmpty()) {
-		cv->Font->Color  = col_Folder;
+		cv->Font->Color = col_Folder;
 		PathNameOut(get_MiniPathName(d_nam, lp->ClientWidth/4, cv->Font), cv, xp, yp);
 		xp += SCALED_THIS(2);
 	}
@@ -30362,6 +30364,7 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 	int l_no  = (lif.Length>0)? lif[0].ToIntDef(0) : 0;
 	int s_idx = (lif.Length>1)? lif[1].ToIntDef(0) : 0;
 	int s_len = (lif.Length>2)? lif[2].ToIntDef(0) : 0;
+	int m_cnt = (lif.Length>3)? lif[3].ToIntDef(0) : 0;
 
 	bool same_prv = SameText(p_nam, (Index>0)? get_pre_tab(lp->Items->Strings[Index - 1]) : EmptyStr);
 	bool same_nxt = SameText(p_nam, (Index<lp->Count-1)? get_pre_tab(lp->Items->Strings[Index + 1]) : EmptyStr);
@@ -30373,7 +30376,6 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 
 	UnicodeString ln_str = itmstr;
 	if (GrepPageControl->ActivePage==FindSheet && !NextLineCheckBox->Checked) ln_str = get_tkn(ln_str, '\n');
-//	if (GrepTrimTop) ln_str = TrimLeft(ln_str);
 
 	TRect tmp_rc = Rect;
 	OffsetRect(tmp_rc, 0, -tmp_rc.Top);
@@ -30398,7 +30400,7 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 	//項目番号
 	if (GrepShowItemNo) {
 		int idx = Index + 1;
-		if (GrepFileItemNo && !GrepLnSorted) {	//ファイル単位で先頭行のみに表示
+		if (!ShowMatchListAction->Checked && GrepFileItemNo && !GrepLnSorted) {	//ファイル単位で先頭行のみに表示
 			idx = (int)lp->Items->Objects[Index];
 			int idx0 = (Index>0)? (int)lp->Items->Objects[Index - 1] : -1;
 			if ((int)lp->Items->Objects[Index] == idx0) idx = 0;
@@ -30407,141 +30409,188 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 		tmp_cv->Brush->Color = get_ListBgCol();
 		dx = x_1 = tmp_rc.Left;
 	}
-	//ディレクトリ名
-	if (GrepShowSubDir && !CurStt->is_Work && !d_nam.IsEmpty()) {
-		d_nam = get_MiniPathName(d_nam, lp->ClientWidth/4, tmp_cv->Font);
+
+	//マッチ数一覧
+	if (ShowMatchListAction->Checked) {
+		//ファイル名
 		int xp = xp_L + dx;
-		if (!same_prv) {
-			tmp_cv->Font->Color = col_Folder;
-			PathNameOut(d_nam, tmp_cv, xp, yp);
+		int fw = std::min(GrepMaxFileWd, lp->ClientWidth/4);
+		f_nam = get_MiniPathName(f_nam, fw, tmp_cv->Font);
+		if (!f_nam.IsEmpty()) {
+			tmp_cv->Font->Color = get_ExtColor(f_ext);
+			tmp_cv->TextOut(xp, yp, f_nam);
 		}
-		else {
-			xp += tmp_cv->TextWidth(d_nam);
+		xp += (fw + tmp_cv->TextWidth(" 00000"));
+		//マッチ数
+		UnicodeString s = IntToStr(m_cnt);
+		if (m_cnt>0) {
+			tmp_cv->Font->Color = get_ListFgCol();
+			tmp_cv->TextOut(xp - tmp_cv->TextWidth(s), yp, s);
 		}
-		dx = xp - xp_L + x_mg;
-	}
-	//ファイル名
-	f_nam = get_MiniPathName(f_nam, lp->ClientWidth/(GrepShowSubDir? 4 : 2), tmp_cv->Font);
-	if (!same_prv) {
-		tmp_cv->Font->Color = (l_no==0)? col_Error : get_ExtColor(f_ext);
-		tmp_cv->TextOut(xp_L + dx, yp, f_nam);
-	}
-	dx += (tmp_cv->TextWidth(f_nam) + x_mg);
-
-	//行番号
-	if (l_no>0) dx += tmp_cv->TextWidth("000000 ");
-	int cwd = abs(tmp_cv->Font->Height);
-	int wdn = 16;
-	for (;;) {
-		if (dx<cwd*wdn) { dx = cwd*wdn;  break; }
-		wdn += 4;
-		if (cwd*wdn > ClientWidth/2) break;
-	}
-	int x_2 = dx;
-	if (l_no>0) {
-		tmp_rc.Left = xp_L + dx - tmp_cv->TextWidth("000000 ");
-		LineNoOut(tmp_cv, tmp_rc, l_no);
-		tmp_cv->Brush->Color = get_ListBgCol();
-	}
-
-	//ファイル境界
-	if (!same_nxt) {
-		tmp_cv->Pen->Style = psSolid;
-		tmp_cv->Pen->Width = ScaledInt(1);
-		tmp_cv->Pen->Color = col_bgLineNo;
-		tmp_cv->MoveTo(x_1, tmp_rc.Bottom - 1);
-		tmp_cv->LineTo(x_2, tmp_rc.Bottom - 1);
-	}
-
-	//エラー表示
-	if (l_no==0) {
-		tmp_cv->Font->Color = col_Error;
-		tmp_cv->TextOut(xp_L + dx, yp, ln_str);
-	}
-	//通常表示
-	else {
-		tmp_cv->Font->Color = get_ListFgCol();
-		int xp = xp_L + dx;
-		//検索
-		if (ResultListMode==1) {
-			UnicodeString s0 = get_tkn(ln_str, '\n');
-			UnicodeString s1 = get_tkn_r(ln_str, '\n');
-
-			//マッチ語のリストを作成(Value=Index,Length)
-			std::unique_ptr<TStringList> wlist(new TStringList());
-			SearchOption opt;
-			if (AndOrCheckBox->Checked) opt << soAndOr;
-			//フィルタ
-			if (GrepEmFilter && !GrepFilterEdit->Text.IsEmpty()) {
-				if (MigemoCheckBox->Checked) opt << soMigemo;
-				if (contains_upper(GrepFilterEdit->Text)) opt << soCaseSens;
-				get_MatchWordListEx(ln_str, GrepFilterEdit->Text, opt, wlist.get());
-			}
-			//検索語
-			else {
-				if (RegExCheckBox->Checked) opt << soRegEx;
-				if (GrepCaseSenstive)	    opt << soCaseSens;
-				get_MatchWordListEx(s0, GrepKeyword, opt, wlist.get(), s_idx, s_len);
-			}
-
-			//マッチ語が見えないとき前部分を省略
-			if (GrepOmitTop && !UseDfmFilter) {
-				//最初のマッチ位置
-				int p1 = -1, p2 = -1;
-				for (int i=0; i<wlist->Count; i++) {
-					UnicodeString v = wlist->ValueFromIndex[i];
-					int idx = get_tkn(v, ",").ToIntDef(0);
-					int len = get_tkn_r(v, ",").ToIntDef(0);
-					if (idx>0 && len>0) {
-						p1 = (p1==-1)? idx : std::min(idx, p1);
-						if (p1==idx) p2 = p1 + len;
-					}
+		//ファイル情報
+		if (!f_nam.IsEmpty()) {
+			//サイズ
+			__int64 fsize = StrToInt64Def(get_tkn(ln_str, " "), -1);
+			if (fsize>=0) {
+				xp += tmp_cv->TextWidth("9,999,999,999");
+				UnicodeString sz_str = get_FileSizeStr(fsize);
+				tmp_cv->Font->Color  = get_SizeColor(fsize, get_ListFgCol());
+				tmp_cv->TextOut(xp - tmp_cv->TextWidth(sz_str), yp, sz_str);
+				xp += tmp_cv->TextWidth(" ");
+				//タイムスタンプ
+				try {
+					TDateTime dt = str_to_DateTime(get_tkn_r(ln_str, " "));
+					UnicodeString dt_str = get_TimeStampStr(dt);
+					tmp_cv->Font->Color = get_TimeColor(dt, get_ListFgCol());
+					tmp_cv->TextOut(xp, yp, dt_str);
+					xp += tmp_cv->TextWidth(dt_str + " ");
 				}
-				//前部分を省略
-				int wd = xp_R - xp;
-				if (p2>0 && (tmp_cv->TextWidth(s0.SubString(1, p2)) > wd)) {
-					wd /= 2;
-					int w_r = tmp_cv->TextWidth(s0.SubString(p1, s0.Length() - p1 + 1));
-					if (w_r<wd) wd += (wd - w_r);
-					wd -= tmp_cv->TextWidth("… ");
-					if (!s1.IsEmpty()) wd -= tmp_cv->TextWidth(" ");
-					int w = 0;
-					for (int i=p1; i>4; i--) {
-						w += tmp_cv->TextWidth(s0.SubString(i, 1));
-						if (w<wd) continue;
-						s0.Delete(1, i);
-						s0.Insert("…", 1);
-						break;
-					}
-					//強調場所を再設定
+				catch (EConvertError &e) {
+					;
+				}
+			}
+			//ディレクトリ名
+			if (!d_nam.IsEmpty()) {
+				d_nam = get_MiniPathName(d_nam, xp_R - xp - SCALED_THIS(8) , tmp_cv->Font);
+				tmp_cv->Font->Color = col_Folder;
+				PathNameOut(d_nam, tmp_cv, xp, yp);
+			}
+		}
+		else if (m_cnt==0) {
+			tmp_cv->Font->Color = col_Error;
+			tmp_cv->TextOut(xp, yp, itmstr);
+		}
+	}
+	//結果リスト
+	else {
+		//ディレクトリ名
+		if (GrepShowSubDir && !CurStt->is_Work && !d_nam.IsEmpty()) {
+			d_nam = get_MiniPathName(d_nam, lp->ClientWidth/4, tmp_cv->Font);
+			int xp = xp_L + dx;
+			if (!same_prv) {
+				tmp_cv->Font->Color = col_Folder;
+				PathNameOut(d_nam, tmp_cv, xp, yp);
+			}
+			else {
+				xp += tmp_cv->TextWidth(d_nam);
+			}
+			dx = xp - xp_L + x_mg;
+		}
+		//ファイル名
+		int fw = std::min(GrepMaxFileWd, lp->ClientWidth/(GrepShowSubDir? 4 : 2));
+		f_nam = get_MiniPathName(f_nam, fw, tmp_cv->Font);
+		if (!same_prv || l_no==0) {
+			tmp_cv->Font->Color = (l_no==0)? col_Error : get_ExtColor(f_ext);
+			tmp_cv->TextOut(xp_L + dx, yp, f_nam);
+		}
+		dx += (fw + x_mg);
+
+		//行番号
+		if (l_no>0) {
+			tmp_rc.Left = xp_L + dx;
+			LineNoOut(tmp_cv, tmp_rc, l_no);
+			tmp_cv->Brush->Color = get_ListBgCol();
+		}
+		dx += tmp_cv->TextWidth("000000 ");
+		//ファイル境界
+		if (!same_nxt) {
+			tmp_cv->Pen->Style = psSolid;
+			tmp_cv->Pen->Width = ScaledInt(1);
+			tmp_cv->Pen->Color = col_bgLineNo;
+			tmp_cv->MoveTo(x_1, tmp_rc.Bottom - 1);
+			tmp_cv->LineTo(dx,  tmp_rc.Bottom - 1);
+		}
+
+		//エラー表示
+		if (l_no==0) {
+			tmp_cv->Font->Color = col_Error;
+			tmp_cv->TextOut(xp_L + dx, yp, ln_str);
+		}
+		//通常表示
+		else {
+			tmp_cv->Font->Color = get_ListFgCol();
+			int xp = xp_L + dx;
+			//検索
+			if (ResultListMode==1) {
+				UnicodeString s0 = get_tkn(ln_str, '\n');
+				UnicodeString s1 = get_tkn_r(ln_str, '\n');
+
+				//マッチ語のリストを作成(Value=Index,Length)
+				std::unique_ptr<TStringList> wlist(new TStringList());
+				SearchOption opt;
+				if (AndOrCheckBox->Checked) opt << soAndOr;
+				//フィルタ
+				if (GrepEmFilter && !GrepFilterEdit->Text.IsEmpty()) {
+					if (MigemoCheckBox->Checked) opt << soMigemo;
+					if (contains_upper(GrepFilterEdit->Text)) opt << soCaseSens;
+					get_MatchWordListEx(ln_str, GrepFilterEdit->Text, opt, wlist.get());
+				}
+				//検索語
+				else {
 					if (RegExCheckBox->Checked) opt << soRegEx;
 					if (GrepCaseSenstive)	    opt << soCaseSens;
-					get_MatchWordListEx(s0, GrepKeyword, opt, wlist.get());
+					get_MatchWordListEx(s0, GrepKeyword, opt, wlist.get(), s_idx, s_len);
+				}
+
+				//マッチ語が見えないとき前部分を省略
+				if (GrepOmitTop && !UseDfmFilter) {
+					//最初のマッチ位置
+					int p1 = -1, p2 = -1;
+					for (int i=0; i<wlist->Count; i++) {
+						UnicodeString v = wlist->ValueFromIndex[i];
+						int idx = get_tkn(v, ",").ToIntDef(0);
+						int len = get_tkn_r(v, ",").ToIntDef(0);
+						if (idx>0 && len>0) {
+							p1 = (p1==-1)? idx : std::min(idx, p1);
+							if (p1==idx) p2 = p1 + len;
+						}
+					}
+					//前部分を省略
+					int wd = xp_R - xp;
+					if (p2>0 && (tmp_cv->TextWidth(s0.SubString(1, p2)) > wd)) {
+						wd /= 2;
+						int w_r = tmp_cv->TextWidth(s0.SubString(p1, s0.Length() - p1 + 1));
+						if (w_r<wd) wd += (wd - w_r);
+						wd -= tmp_cv->TextWidth("… ");
+						if (!s1.IsEmpty()) wd -= tmp_cv->TextWidth(" ");
+						int w = 0;
+						for (int i=p1; i>4; i--) {
+							w += tmp_cv->TextWidth(s0.SubString(i, 1));
+							if (w<wd) continue;
+							s0.Delete(1, i);
+							s0.Insert("…", 1);
+							break;
+						}
+						//強調場所を再設定
+						if (RegExCheckBox->Checked) opt << soRegEx;
+						if (GrepCaseSenstive)	    opt << soCaseSens;
+						get_MatchWordListEx(s0, GrepKeyword, opt, wlist.get());
+					}
+				}
+
+				//マッチ文字列の強調表示
+				TxtOutOption t_opt;  t_opt << toNormal;
+				if (UseDfmFilter) t_opt << toIsDfm;
+				if (GrepTrimTop)  t_opt << toTrimLeft;
+				EmphasisTextOutEx(s0, wlist.get(), tmp_cv, xp, yp, t_opt);
+
+				//次行表示
+				if (!s1.IsEmpty()) {
+					s1.Insert("\n", 1);
+					if (GrepTrimTop) s1 = TRegEx::Replace(s1, "\\n[\\s\\t]+", "\n");
+					TabCrTextOut(s1, tmp_cv, xp, yp,
+						GrepAdjNextLn? AdjustColor(get_ListFgCol(), ADJCOL_FGLIST) : get_ListFgCol());
 				}
 			}
-
-			//マッチ文字列の強調表示
-			TxtOutOption t_opt;  t_opt << toNormal;
-			if (UseDfmFilter) t_opt << toIsDfm;
-			if (GrepTrimTop)  t_opt << toTrimLeft;
-			EmphasisTextOutEx(s0, wlist.get(), tmp_cv, xp, yp, t_opt);
-
-			//次行表示
-			if (!s1.IsEmpty()) {
-				s1.Insert("\n", 1);
-				if (GrepTrimTop) s1 = TRegEx::Replace(s1, "\\n[\\s\\t]+", "\n");
-				TabCrTextOut(s1, tmp_cv, xp, yp,
-					GrepAdjNextLn? AdjustColor(get_ListFgCol(), ADJCOL_FGLIST) : get_ListFgCol());
+			//置換
+			else if (ResultListMode==2) {
+				//置換文字列のリストを作成(Value=Index,Length)
+				std::unique_ptr<TStringList> wlist(new TStringList());
+				wlist->Add(UnicodeString().sprintf(_T("%s=%d,%d"), ln_str.SubString(s_idx, s_len).c_str(), s_idx, s_len));
+				TxtOutOption t_opt;  t_opt << toCompBgCol;
+				if (GrepTrimTop) t_opt << toTrimLeft;
+				EmphasisTextOutEx(ln_str, wlist.get(), tmp_cv, xp, yp, t_opt);
 			}
-		}
-		//置換
-		else if (ResultListMode==2) {
-			//置換文字列のリストを作成(Value=Index,Length)
-			std::unique_ptr<TStringList> wlist(new TStringList());
-			wlist->Add(UnicodeString().sprintf(_T("%s=%d,%d"), ln_str.SubString(s_idx, s_len).c_str(), s_idx, s_len));
-			TxtOutOption t_opt;  t_opt << toCompBgCol;
-			if (GrepTrimTop) t_opt << toTrimLeft;
-			EmphasisTextOutEx(ln_str, wlist.get(), tmp_cv, xp, yp, t_opt);
 		}
 	}
 
@@ -30555,6 +30604,12 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 	lp->Canvas->Draw(Rect.Left, Rect.Top, tmp_bmp.get());
 	if (State.Contains(odFocused) && !use_VclStyle()) lp->Canvas->DrawFocusRect(Rect);
 }
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::ResultListBoxEnter(TObject *Sender)
+{
+	ResultListBoxClick(ResultListBox);
+}
+
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::ResultListBoxExit(TObject *Sender)
 {
@@ -30584,15 +30639,17 @@ void __fastcall TNyanFiForm::ResultListBoxKeyDown(TObject *Sender, WORD &Key, TS
 			if (cmd_id==0) ExeCmdAction(ReturnListAction);
 		}
 		else {
-			UnicodeString lbuf = lp->Items->Strings[lp->ItemIndex];
-			UnicodeString fnam = split_pre_tab(lbuf);
-			int lno = get_tkn(get_pre_tab(lbuf), ":").ToIntDef(0);
+			UnicodeString   lbuf = lp->Items->Strings[lp->ItemIndex];
+			UnicodeString   fnam = split_pre_tab(lbuf);
+			TStringDynArray lif  = SplitString(get_pre_tab(lbuf), ":");
+			int lno = (lif.Length>0)? lif[0].ToIntDef(0) : 0;
 
 			switch (cmd_id) {
 			case 0:	//リストに戻る
 				ExeCmdAction(ReturnListAction);
 				break;
 			case 1:	//閲覧
+				if (fnam.IsEmpty()) break;
 				fromGrep = true;
 				if (test_HtmlExt(get_extension(fnam))) TxtViewer->isHtm2Txt = false;
 				//別ウィンドウ
@@ -30614,6 +30671,7 @@ void __fastcall TNyanFiForm::ResultListBoxKeyDown(TObject *Sender, WORD &Key, TS
 				}
 				break;
 			case 2:	//編集
+				if (fnam.IsEmpty()) break;
 				//バイナリ文書
 				if (xd2tx_TestExt(get_extension(fnam))) {
 					ExeCommandAction("FileEdit", fnam);
@@ -30643,7 +30701,14 @@ void __fastcall TNyanFiForm::ResultListBoxKeyDown(TObject *Sender, WORD &Key, TS
 					ResultListBoxClick(lp);
 				}
 				else if (equal_ENTER(KeyStr)) {
-					if (!JumpToList(CurListTag, fnam)) GlobalAbort();
+					//結果表示に戻る
+					if (ShowMatchListAction->Checked) {
+						ShowMatchListAction->Execute();
+					}
+					//移動
+					else if (!JumpToList(CurListTag, fnam)) {
+						GlobalAbort();
+					}
 				}
 				//一時的に削除
 				else if (cmd_id==4 || equal_DEL(KeyStr)) {
@@ -30653,6 +30718,10 @@ void __fastcall TNyanFiForm::ResultListBoxKeyDown(TObject *Sender, WORD &Key, TS
 					assign_FileListBox(ResultListBox, GrepResultBuff, std::min(idx, lp->Count - 1), ResultScrPanel);
 					SttPrgBar->End(UnicodeString().sprintf(_T("一時削除あり (%u/%u)"), lp->Count, GrepResultList->Count));
 					GrepFiltered = true;
+				}
+				//マッチ数一覧切り替え
+				else if (equal_F5(KeyStr)) {
+					ShowMatchListAction->Execute();
 				}
 				//検索語へ
 				else if (equal_TAB(KeyStr) || contained_wd_i(KeysStr_ToKeywd, KeyStr)) {
@@ -30691,8 +30760,10 @@ void __fastcall TNyanFiForm::ResultListBoxClick(TObject *Sender)
 	UnicodeString fnam = get_pre_tab(lp->Items->Strings[lp->ItemIndex]);
 	SetSttBarGrepDir((GrepShowSubDir && !CurStt->is_Work)? GrepResultPath : ExtractFilePath(fnam));
 
-	if (ShowSttBar)
-		StatusBar1->Panels->Items[0]->Text = UnicodeString().sprintf(_T("%s  %s"), fnam.c_str(), get_FileInfStr(fnam).c_str());
+	if (ShowSttBar) {
+		StatusBar1->Panels->Items[0]->Text
+			= UnicodeString().sprintf(_T("%s  %s"), fnam.c_str(), get_FileInfStr(fnam).c_str());
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::ResultListBoxDblClick(TObject *Sender)
@@ -30725,12 +30796,12 @@ void __fastcall TNyanFiForm::RegExRCheckBoxClick(TObject *Sender)
 void __fastcall TNyanFiForm::NextLineCheckBoxClick(TObject *Sender)
 {
 	ResultListBox->Repaint();
-	GrepFilterEditChange(GrepFilterEdit);
 }
 
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::GrepFilterEditEnter(TObject *Sender)
 {
+	InhGrepFilter = false;
 	GrepFilterEdit->Color = get_WinColor();
 }
 //---------------------------------------------------------------------------
@@ -30796,10 +30867,10 @@ void __fastcall TNyanFiForm::SetSttBarGrepOpt()
 	GetFilterKeywd(prm, filter, keywd);
 	UnicodeString filter_inf = GetFilterInfStr(filter, is_grep);
 	if (!filter_inf.IsEmpty()) {
-		if (is_grep && GrepUseExe) 
+		if (is_grep && GrepUseExe)
 			msg = "フィルタ: 利用不可";
 		else
-			msg = "フィルタ: " + filter_inf; 
+			msg = "フィルタ: " + filter_inf;
 	}
 
 	if (is_grep) {
@@ -30810,8 +30881,9 @@ void __fastcall TNyanFiForm::SetSttBarGrepOpt()
 				msg += ExtractFileName(GrepFileName);
 			else
 				msg += "クリップボード";
-			if (!GrepAppName.IsEmpty() && GrepAppEnabled)
+			if (!GrepAppName.IsEmpty() && GrepAppEnabled) {
 				msg.cat_sprintf(_T("  起動: %s"), ExtractFileName(GrepAppName).c_str());
+			}
 		}
 		else {
 			msg += "出力: 無し";
@@ -30935,7 +31007,9 @@ void __fastcall TNyanFiForm::PrepareGrep()
 	GrepResultList->Clear();
 	ResultListBox->Count = 0;
 	GrepResultBuff->Clear();
+	GrepMatchList->Clear();
 
+	ShowMatchListAction->Checked = false;
 	GrepFilterEdit->Text = EmptyStr;
 	UpdateActions();
 
@@ -31000,6 +31074,14 @@ void __fastcall TNyanFiForm::PrepareGrep()
 						GrepFileList->Count, (GrepPageControl->ActivePage==FindSheet)? _T("検索") : _T("置換"));
 		SttPrgBar->Begin(msg.c_str());
 	}
+
+	//ファイル名の最大幅を取得
+	TCanvas *cv = ResultListBox->Canvas;
+	GrepMaxFileWd = cv->TextWidth(StringOfChar(_T('W'), 16));
+	for (int i=0; i<GrepFileList->Count; i++) {
+		GrepMaxFileWd = std::max(cv->TextWidth(ExtractFileName(GrepFileList->Strings[i])), GrepMaxFileWd);
+	}
+	GrepMaxFileWd += cv->TextWidth(" ");
 }
 
 //---------------------------------------------------------------------------
@@ -31167,6 +31249,46 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 
 	return GrepMatchLineCnt;
 }
+
+//---------------------------------------------------------------------------
+//マッチ/置換数一覧の作成
+//---------------------------------------------------------------------------
+int __fastcall TNyanFiForm::MakeMatchRepList()
+{
+	GrepMatchList->Clear();
+	TCanvas *cv = ResultListBox->Canvas;
+	UnicodeString lst_fnam, tmp;
+	int lst_lp = 0;
+	int cnt = 1;
+	for (int i=0; i<GrepResultList->Count; i++) {
+		UnicodeString lbuf = GrepResultList->Strings[i];
+		UnicodeString fnam = split_pre_tab(lbuf);
+		if (!SameText(fnam, lst_fnam)) {
+			if (!lst_fnam.IsEmpty()) {
+				tmp.sprintf(_T("%s\t%d:0:0:%d\t%s %s\n"), lst_fnam.c_str(), lst_lp, cnt, 
+					IntToStr(get_file_size(lst_fnam)).c_str(),
+					FormatDateTime("yyyy/mm/dd hh:nn:ss", get_file_age(lst_fnam)).c_str());
+				GrepMatchList->Add(tmp);
+			}
+			lst_fnam = fnam;
+			lst_lp   = get_tkn(get_pre_tab(lbuf), ":").ToIntDef(0);
+			cnt      = (lst_lp>0)? 1 : 0;
+		}
+		else {
+			cnt++;
+		}
+	}
+
+	if (!lst_fnam.IsEmpty()) {
+		tmp.sprintf(_T("%s\t%d:0:0:%d\t%s %s\n"), lst_fnam.c_str(), lst_lp, cnt, 
+			IntToStr(get_file_size(lst_fnam)).c_str(),
+			FormatDateTime("yyyy/mm/dd hh:nn:ss", get_file_age(lst_fnam)).c_str());
+		GrepMatchList->Add(tmp);
+	}
+
+	return GrepMatchList->Count;
+}
+
 //---------------------------------------------------------------------------
 //Grep 検索開始
 //---------------------------------------------------------------------------
@@ -31261,6 +31383,9 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 
 	if (ResultListBox->Count>0) {
 		GrepResultList->Assign(GrepResultBuff);
+		//マッチ数一覧の作成
+		MakeMatchRepList();	
+
 		//検索語を履歴に追加
 		add_ComboBox_history(GrepFindComboBox, GrepParameter);
 		IniFile->SaveComboBoxItems(GrepFindComboBox, RegExCheckBox->Checked? _T("GrepPtnHistory") : _T("GrepFindHistory"));
@@ -31347,7 +31472,7 @@ void __fastcall TNyanFiForm::GrepStartActionUpdate(TObject *Sender)
 	TAction *ap = (TAction*)Sender;
 	ap->Caption = FindBusy? "中断" : "開始";
 	if (ScrMode==SCMD_GREP && GrepPageControl->ActivePage==FindSheet) {
-		UnicodeString filter, kwd; 
+		UnicodeString filter, kwd;
 		GetFilterKeywd(GrepFindComboBox->Text, filter, kwd);
 		bool flt_ng = (GrepUseExe && !filter.IsEmpty()) || !TestFilter(filter, true);
 		bool prm_ng = (RegExCheckBox->Checked && !kwd.IsEmpty() && !chk_RegExPtn(kwd)) || flt_ng;
@@ -31733,6 +31858,7 @@ void __fastcall TNyanFiForm::GrepShowItemNoActionExecute(TObject *Sender)
 {
 	GrepShowItemNo = !GrepShowItemNo;
 	ResultListBox->Repaint();
+	UpdateGrepSticky();
 	ResultListBoxClick(ResultListBox);
 }
 //---------------------------------------------------------------------------
@@ -31768,6 +31894,7 @@ void __fastcall TNyanFiForm::GrepShowSubDirActionExecute(TObject *Sender)
 {
 	GrepShowSubDir = !GrepShowSubDir;
 	ResultListBox->Repaint();
+	UpdateGrepSticky();
 	ResultListBoxClick(ResultListBox);
 }
 //---------------------------------------------------------------------------
@@ -31859,10 +31986,11 @@ void __fastcall TNyanFiForm::GrepFilterTimerTimer(TObject *Sender)
 		&& (!MigemoCheckBox->Checked || (MigemoCheckBox->Checked && GrepFilterEdit->Text.Length()>=IncSeaMigemoMin)))
 	{
 		std::unique_ptr<TStringList> ibuf(new TStringList());
-		ibuf->Assign(GrepResultList);
+		ibuf->Assign(ShowMatchListAction->Checked? GrepMatchList : GrepResultList);
 		std::unique_ptr<TStringList> rbuf(new TStringList());
 		SearchOption opt;
-		opt << (OneMatchCheckBox->Checked? soGrepF : NextLineCheckBox->Checked? soGrep : soGrepS);
+		opt << ((OneMatchCheckBox->Checked || ShowMatchListAction->Checked)? soGrepF :
+												  NextLineCheckBox->Checked? soGrep : soGrepS);
 		if (MigemoCheckBox->Checked) opt << soMigemo;
 		if (AndOrCheckBox->Checked)  opt << soAndOr;
 		filter_List(ibuf.get(), rbuf.get(), GrepFilterEdit->Text, opt);
@@ -31874,8 +32002,9 @@ void __fastcall TNyanFiForm::GrepFilterTimerTimer(TObject *Sender)
 		SttPrgBar->End(UnicodeString().sprintf(_T("%s (%u)"), GrepResultMsg.c_str(), ResultListBox->Count));
 		GrepFiltered = true;
 	}
+	//解除
 	else {
-		GrepResultBuff->Assign(GrepResultList);
+		GrepResultBuff->Assign(ShowMatchListAction->Checked? GrepMatchList : GrepResultList);
 		set_Strings_ItemNo(GrepResultBuff);
 		assign_FileListBox(ResultListBox, GrepResultBuff, -1, ResultScrPanel);
 
@@ -31886,6 +32015,11 @@ void __fastcall TNyanFiForm::GrepFilterTimerTimer(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::GrepFilterEditChange(TObject *Sender)
 {
+	if (InhGrepFilter) {
+		InhGrepFilter = false;
+		return;
+	}
+
 	if (GrepResultList->Count==0) return;
 
 	//IME入力対策
@@ -31930,7 +32064,6 @@ void __fastcall TNyanFiForm::ReplaceStartActionExecute(TObject *Sender)
 
 	TRegExOptions re_opt;
 	if (!CaseRCheckBox->Checked) re_opt << roIgnoreCase;
-
 	std::unique_ptr<TStringList> f_buf(new TStringList());	//読込バッファ
 	std::unique_ptr<TStringList> o_buf(new TStringList());	//出力バッファ
 	bool ask_rep = AskRepCheckBox->Checked;
@@ -31939,6 +32072,7 @@ void __fastcall TNyanFiForm::ReplaceStartActionExecute(TObject *Sender)
 		SttPrgBar->SetPosI(i, GrepFileList->Count);
 
 		UnicodeString fnam = GrepFileList->Strings[i];	if (!file_exists(fnam)) continue;
+
 		bool with_bom = true;
 		if (load_text_ex(fnam, f_buf.get(), 0, 0, false, NULL, &with_bom)==0) continue;
 
@@ -32120,6 +32254,9 @@ void __fastcall TNyanFiForm::ReplaceStartActionExecute(TObject *Sender)
 	assign_FileListBox(ResultListBox, GrepResultBuff, -1, ResultScrPanel);
 
 	if (rep_cnt>0) {
+		//置換数一覧の作成
+		MakeMatchRepList();	
+
 		//検索、置換文字列を履歴に追加
 		add_ComboBox_history(RepFindComboBox);
 		IniFile->SaveComboBoxItems(RepFindComboBox,  RegExRCheckBox->Checked? _T("RepFindRxHisgory") : _T("RepFindHistory"));
@@ -32134,8 +32271,7 @@ void __fastcall TNyanFiForm::ReplaceStartActionExecute(TObject *Sender)
 
 		//ログ出力
 		if (SaveReplaceLog && !ReplaceLogName.IsEmpty()) {
-			UnicodeString fnam = ReplaceLogName;
-			if (ExtractFilePath(fnam).IsEmpty()) fnam.Insert(ExePath, 1);
+			UnicodeString fnam = to_absolute_name(ReplaceLogName);
 			//既存に追加の場合は一旦読み込む
 			std::unique_ptr<TStringList> fbuf(new TStringList());
 			int top = 1;
@@ -32173,7 +32309,7 @@ void __fastcall TNyanFiForm::ReplaceStartActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;
 	if (GrepPageControl->ActivePage == ReplaceSheet) {
-		UnicodeString filter, kwd; 
+		UnicodeString filter, kwd;
 		GetFilterKeywd(RepFindComboBox->Text, filter, kwd);
 		bool prm_ng = (RegExRCheckBox->Checked && !kwd.IsEmpty() && !chk_RegExPtn(kwd)) || !TestFilter(filter, false);
 		bool kwd_ok = RegExRCheckBox->Checked? (!kwd.IsEmpty() && !prm_ng) : !kwd.IsEmpty();
@@ -32211,6 +32347,43 @@ void __fastcall TNyanFiForm::GrepCanBtnClick(TObject *Sender)
 // テキストビューア
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
+//---------------------------------------------------------------------------
+//マッチ/置換数一覧を表示
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::ShowMatchListActionExecute(TObject *Sender)
+{
+	TListBox *lp = ResultListBox;
+	UnicodeString fnam;
+	if (lp->ItemIndex!=-1) fnam = get_pre_tab(lp->Items->Strings[lp->ItemIndex]);
+
+	ShowMatchListAction->Checked = !ShowMatchListAction->Checked;
+	GrepResultBuff->Assign(ShowMatchListAction->Checked? GrepMatchList : GrepResultList);
+	set_Strings_ItemNo(GrepResultBuff);
+
+	int idx = 0;
+	if (!fnam.IsEmpty()) {
+		for (int i=0; i<GrepResultBuff->Count; i++) {
+			if (SameText(get_pre_tab(GrepResultBuff->Strings[i]), fnam)) { idx = i; break; }
+		}
+	}
+
+	assign_FileListBox(lp, GrepResultBuff, idx, ResultScrPanel);
+	lp->SetFocus();
+	ResultListBoxClick(lp);
+	GrepLnSorted = false;
+	if (!GrepFilterEdit->Text.IsEmpty()) {
+		InhGrepFilter = true;
+		GrepFilterEdit->Text = EmptyStr;
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TNyanFiForm::ShowMatchListActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction*)Sender;
+	ap->Visible = ScrMode==SCMD_GREP;
+	ap->Caption = (GrepPageControl->ActivePage==ReplaceSheet)? "置換数一覧を表示" : "マッチ数一覧を表示";
+	ap->Enabled = ap->Visible && (!ap->Checked? GrepMatchList->Count>0 : true); 
+}
 //---------------------------------------------------------------------------
 //テキストビューアを開く
 //---------------------------------------------------------------------------
@@ -38229,7 +38402,7 @@ void __fastcall TNyanFiForm::IS_Match1ActionExecute(TObject *Sender)
 {
 	IncSeaMatch1Exit = !IncSeaMatch1Exit;
 }
-//-----------------------------------------------------GrepRepComboBoxChange
+//---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::IS_Match1ActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;

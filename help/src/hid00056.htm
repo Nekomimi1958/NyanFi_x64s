@@ -17,7 +17,9 @@
 	<param name="Keyword" value="xd2txlib.dll">
 	<param name="Keyword" value="タグジャンプ">
 	<param name="Keyword" value="フィルタ">
+	<param name="Keyword" value="マッチ数一覧">
 	<param name="Keyword" value="環境変数">
+	<param name="Keyword" value="結果リスト">
 	<param name="Keyword" value="正規表現">
 	<param name="Keyword" value="正規表現チェッカー">
 	<param name="Keyword" value="文字列検索">
@@ -29,8 +31,7 @@
 
   <h1>文字列検索(GREP)</h1>
   <p>
-    <a href="hid00005.htm#Grep">Grep</a> コマンドを実行すると、カレント側ファイルリスト(<a href="hid00052.htm">ファイル名検索</a>の結果リストや<a
-      href="hid00060.htm">ワークリスト</a>も可)のテキストファイルに対する <b>文字列検索(GREP)</b> 画面が開きます。<br>
+    <a href="hid00005.htm#Grep">Grep</a> コマンドを実行すると、カレント側ファイルリスト(<a href="hid00052.htm">ファイル名検索</a>の結果リストや<a href="hid00060.htm">ワークリスト</a>も可)のテキストファイルに対する <b>文字列検索(GREP)</b> 画面が開きます。上部のタブを<span class="tab_frame">置換</span>に切り替えれば、<a href="hid00061.htm">文字列置換</a>も行えます。
   </p>
   <p>
     検索はマルチスレッドで行われます。スレッドはファイル単位で作られ(最大4スレッド)、結果が取得される毎にリストに追加されていきます。そのためファイルの順序が前後する場合がありますが、完了時にはパス/行番号順にソート表示されます。<br>
@@ -42,8 +43,7 @@
 
   <p>
     <a href="hid00005.htm#Grep2">Grep2</a> コマンドを実行してもこの画面が開きますが、検索処理には外部の <b>grep.exe</b> を利用します。<br>
-    <b>Git for Windows</b> をインストールしていると、<b>grep.exe</b> も利用できるはずです。標準的な場所にインストールされている場合は自動的に検出されますが、そうでない場合は <a
-      href="hid00024.htm#Other">オプション設定 - 一般2 - その他</a> で設定してください。<br>
+    <b>Git for Windows</b> をインストールしていると、<b>grep.exe</b> も利用できるはずです。標準的な場所にインストールされている場合は自動的に検出されますが、そうでない場合は <a href="hid00024.htm#Other">オプション設定 - 一般2 - その他</a> で設定してください。<br>
 
     正規表現検索などは <b>Grep</b> に比べてかなり高速ですが、以下のような制約があります。<br>
   <ul>
@@ -60,15 +60,13 @@
   <hr class="light">
 
   <p>検索場所が Git リポジトリの場合、<b>Git GREP</b> (<a href="hid00005.htm#GitGrep">GitGrep</a>)を利用できます。</p>
-  <p>上部のタブを切り替えることにより、<a href="hid00061.htm">文字列置換</a>を行えます。</p>
   <br>
 
   <h2 id="Find">文字列検索</h2>
   <p>
     必用に応じて後述の項目を設定してください。<br>
     カレントで選択項目がある場合は、それらが検索対象となります(マスク指定は無視)。また非表示の項目は対象から外されます。<br>
-    <span class="btn_frame">開始</span>ボタンで検索がはじまります。検索を中断したい場合は<span class="btn_frame">中断</span>ボタンまたは<span
-      class="btn_frame">ESC</span>キーを押してください。<br>
+    <span class="btn_frame">開始</span>ボタンで検索がはじまります。検索を中断したい場合は<span class="btn_frame">中断</span>ボタンまたは<span class="btn_frame">ESC</span>キーを押してください。<br>
     検索が終了すると、結果が下のリストに表示され、フォーカスが移ります。<br>
   </p>
 
@@ -101,7 +99,7 @@
       正規表現でない場合、<b>\s</b> は半角空白、<b>\t</b> はタブ文字とみなされます。<br>
       <hr class="light">
       <div class="spc_box">
-        <b>フィルタによる検索対象の絞り込み</b> (Grep2 では利用不可)<br>
+        <b>フィルタによる検索対象の絞り込み</b> (<span class="red_text">Grep2 では利用不可</span>)<br>
         <b>&gt;</b><span class="pram_text">フィルタ1[|フィルタ2...]</span><b>&gt;</b> <span class="pram_text">検索文字列</span><br>
         という書式で<b>フィルタ</b>を指定することで、検索対象を絞り込めます。<br>
         | で区切って複数のフィルタを指定すると、それらが順に適用されます。<br>
@@ -160,7 +158,7 @@
       </div>
     </dd>
 
-    <dt class="no_bg"><img src="chkbox.png" alt=""> AND <span class="app_text">(Grep2 では無効)</span></dt>
+    <dt class="no_bg"><img src="chkbox.png" alt=""> AND <span class="app_text">(<span class="red_text">Grep2 では無効</span>)</span></dt>
     <dd>
       検索語を複数指定している場合に、AND検索を行います。チェックを外すとOR検索になります。<br>
       <b>Grep2</b> では、代わりに<b>フィルタ</b>欄を利用するか、「<b>ヒットしたカレントのファイルを選択</b>」してさらに検索を行ってください。
@@ -175,16 +173,16 @@
     <dd>
       結果リスト以外にフォーカスがある場合、<span class="btn_frame">Ctrl</span>+<span class="btn_frame">R</span>で<b>正規表現</b>、<span class="btn_frame">Ctrl</span>+<span class="btn_frame">U</span>で<b>大小区別</b>、<span class="btn_frame">Ctrl</span>+<span class="btn_frame">W</span>で<b>単語</b>のチェック状態を切り替えられます。<br>
     </dd>
-  
-    <dt class="no_bg"><img src="chkbox.png" alt=""> 1マッチ <span class="app_text">(Grep2 では無効)</span></dt>
+
+    <dt class="no_bg"><img src="chkbox.png" alt=""> 1マッチ <span class="app_text">(<span class="red_text">Grep2 では無効</span>)</span></dt>
     <dd>そのファイルで一箇所マッチしたらそれ以降の検索を止め、次のファイルに移ります。</dd>
 
-    <dt class="no_bg"><img src="chkbox.png" alt=""> タグ除外 <span class="app_text">(Grep2 では無効)</span></dt>
+    <dt class="no_bg"><img src="chkbox.png" alt=""> タグ除外 <span class="app_text">(<span class="red_text">Grep2 では無効</span>)</span></dt>
     <dd>ファイルがHTML文書の場合、HTMLタグ部分を除外して検索します。<br>
       HTML文書以外のファイルに対しては機能しません。
     </dd>
 
-    <dt class="no_bg"><img src="chkbox.png" alt=""> 次行表示 <span class="app_text">(Grep2 では無効)</span></dt>
+    <dt class="no_bg"><img src="chkbox.png" alt=""> 次行表示 <span class="app_text">(<span class="red_text">Grep2 では無効</span>)</span></dt>
     <dd>結果リストに、マッチした行以降の3行(空行は除く)を改行マークで区切って表示します。<br>
       検索終了後に変更した場合にも、表示が切り替わります。
     </dd>
@@ -214,12 +212,11 @@
     <dt class="no_bg">結果リストでのキー操作</dt>
     <dd>
       ファイラーで割り当てられているのと同じキーで、カーソル移動や、ファイルの閲覧(<a href="hid00005.htm#TextViewer">TextViewer</a> /
-      <b>TextViewer</b>_XW)、編集(<a href="hid00005.htm#FileEdit">FileEdit</a>)が行えます。また <a
-        href="hid00005.htm#OpenByApp">OpenByApp</a>、<a href="hid00005.htm#OpenByWin">OpenByWin</a> コマンドも実行できます。<br>
+      <b>TextViewer</b>_XW)、編集(<a href="hid00005.htm#FileEdit">FileEdit</a>)が行えます。また <a href="hid00005.htm#OpenByApp">OpenByApp</a>、<a href="hid00005.htm#OpenByWin">OpenByWin</a> コマンドも実行できます。<br>
       <b>TextViewer</b>_XW で別ウィンドウのテキストビューアを開いている場合、<span class="btn_frame">TAB</span>キーで結果リストとの間を行き来できます。<br>
       <a href="hid00012.htm">オプション設定 - エディタ</a> - テキストエディタ
       の「<b>パラメータ(GREP用)</b>」を設定しておけば、エディタで開いてその行位置に移動(タグジャンプ)できます。バイナリ文書では対応するエディタで開きます。<br>
-      また<span class="btn_frame">ENTER</span>キーを押すと、結果リストから抜けて、そのファイルのある位置に移動します。<br>
+      <span class="btn_frame">ENTER</span>キーを押すと、結果リストから抜けて、そのファイルのある位置に移動します。<br>
       <span class="btn_frame">DEL</span>キーや <a href="hid00005.htm#Delete">Delete</a>
       コマンドが割り当てられているキーを押すと、カーソル位置の項目が一時的に削除されます。これは、後述の絞り込みを行った場合と同様で、メニューの「<b>絞り込みの解除</b>」によって元に戻ります。<br>
       画面を閉じてファイラーに戻るには、<span class="btn_frame">ESC</span>キーを押すか、<a href="hid00005.htm#ReturnList">ReturnList</a>
@@ -227,15 +224,23 @@
       なお、2ストロークキー操作には対応していません。<br>
 
       <div class="spc_box">
-        検索結果は、再度検索を行うまで保持されています。画面を閉じても再度開けばまた見ることができます。その場合、対象ディレクトリ表示には、結果リストにフォーカスがあれば前回検索時のパスが、そうでない場合はカレントパスが表示されます。<br>
+        検索結果は、再度検索を行うか<span class="tab_frame">置換</span>タブに切り替えるまで保持されています。画面を閉じても再度開けばまた見ることができます。その場合、対象ディレクトリ表示には、結果リストにフォーカスがあれば前回検索時のパスが、そうでない場合はカレントパスが表示されます。<br>
       </div>
+    </dd>
+
+    <dt class="no_bg">マッチ数一覧</dt>
+    <dd>
+      結果リストが表示されている状態で<span class="btn_frame">F5</span>キーを押すと、ファイル毎のマッチ数一覧に切り替わります(表示メニューからも切り替え可能)。<br>
+      マッチ数一覧には、ファイル名とマッチ数の他に、ファイラーと同じ形式でサイズやタイムスタンプも表示されます。また、サブディレクトリ名は、その後ろに表示されます。対象がワークリストでサブディレクトリではない場合はフルパス表示になります。
+      <br>
+      項目に対してファイルの閲覧や編集を行うと、そのファイルの最初のマッチ位置が開かれます。<br>
+      マッチ数一覧から通常の結果リストに戻るには、もう一度<span class="btn_frame">F5</span>キーを押してください。一覧で項目をダブルクリックするか<span class="btn_frame">ENTER</span>キーを押しても戻れます。
     </dd>
 
     <dt class="no_bg" id="Filter">フィルタ</dt>
     <dd>
       検索を行った後で、<b>フィルタ</b> <img src="edit.png" alt=""> 欄に文字を入力すると、ファイル名や行番号を除いた行内容部分を対象として、結果リストを絞り込むことができます。
-      <img src="chkbox.png" alt=""> <b>Migemo</b> をチェックしていると、<b>Migemo</b> モードで絞り込みを行えます(<span
-        class="btn_frame">Ctrl</span>+<span class="btn_frame">M</span>でも切り替え可能)。<br>
+      <img src="chkbox.png" alt=""> <b>Migemo</b> をチェックしていると、<b>Migemo</b> モードで絞り込みを行えます(<span class="btn_frame">Ctrl</span>+<span class="btn_frame">M</span>でも切り替え可能)。<br>
       <div class="note_text">
         <b>Migemo</b> モードだと処理が重くなります。フィルタ欄には日本語も入力できるので、項目数が多い場合は通常モードにした方がよいでしょう。<br>
       </div>
@@ -259,8 +264,7 @@
         「<b>検索結果の退避</b>」で、現在表示されている結果リストの内容をバッファに退避できます。退避しておいた内容は、「<b>検索結果の復帰</b>」で結果リストに呼び戻せます。</div>
 
       <div class="spc_box">
-        「<b>ヒットしたカレントのファイルを選択</b>」では、結果リストに表示されているファイルのうち、カレントのファイルリストにあるものを選択状態にします。ファイラーで <a
-          href="hid00005.htm#SelAllFile">SelAllFile</a>
+        「<b>ヒットしたカレントのファイルを選択</b>」では、結果リストに表示されているファイルのうち、カレントのファイルリストにあるものを選択状態にします。ファイラーで <a href="hid00005.htm#SelAllFile">SelAllFile</a>
         コマンドが割り当てられているキーでも選択できます。この後でさらに検索を行った場合、選択されているファイルが検索対象となります。<br>
         「<b>ヒットしたファイルを含むディレクトリを選択</b>」では、結果リストのファイルを含んでいるカレントのディレクトリを選択状態にします。この後でさらに検索を行った場合、選択されているディレクトリが検索対象となります。<br>
       </div>
@@ -272,14 +276,14 @@
       <hr class="light">
 
       <div class="spc_box">
-        表示メニュー(または結果リストの右クリックメニュー)の「<b>検索中に結果リストを更新しない</b>」をチェックする、検索の途中経過を結果リストに表示しません(プログレスバーやヒット数は表示、Grep2 では無効)。<br>
+        表示メニュー(または結果リストの右クリックメニュー)の「<b>検索中に結果リストを更新しない</b>」をチェックする、検索の途中経過を結果リストに表示しません(プログレスバーやヒット数は表示、<span class="red_text">Grep2 では無効</span>)。<br>
         「<b>結果リストに項目番号を表示</b>」をチェックすると、項目の通し番号が表示されます。また、「<b>項目番号をファイル単位で表示</b>」もチェックすると、項目番号をファイル単位の連番で表示します。ファイル内で複数行ヒットした場合、最初の行だけに番号が表示されます。なお、行内容でソートしている場合は項目の通し番号になります。<br>
         「<b>結果リストにサブディレクトリ名を表示</b>」をチェックすると、ファイル名の前にカレント以下のサブディレクトリ名が表示されます(ワークリストの場合は除く)。<br>
         「<b>行頭のタブや空白を非表示</b>」をチェックすると、結果リストで、行頭のタブや空白を除外して表示します(次行部分を含む)。<br>
         「<b>マッチ語が見えないとき前部分を省略</b>」をチェックすると、結果リストの各行で、マッチした語が見えない場合、前部分を省略して見えるように表示します。<br>
         「<b>フィルタの語を強調表示</b>」をチェックすると、結果リストをフィルタで絞り込んでいる場合、検索文字列の代わりに<a href="#Filter">フィルタ</a>の語を強調表示します。<br>
         「<b>次行表示部分の明度を加減</b>」をチェックすると、後述の <img src="chkbox.png" alt=""> <b>次行表示</b>
-        をチェックしている場合に、次行部分の文字明度を加減してマッチ行と区別しやすくします(Grep2 では無効)。<br>
+        をチェックしている場合に、次行部分の文字明度を加減してマッチ行と区別しやすくします(<span class="red_text">Grep2 では無効</span>)。<br>
       </div>
 
       <hr class="light">
@@ -344,7 +348,7 @@
     <dd>
       マッチした語の前後に文字列を挿入できます。書式文字列は <b>\t</b>、<b>\n</b>、<b>\s</b> および <b>\\</b>を使えます。<br>
       <div class="note_text">
-      SubStr フィルタなどの適用によって検索対象が行全体ではない場合は挿入されません。<br>
+        SubStr フィルタなどの適用によって検索対象が行全体ではない場合は挿入されません。<br>
       </div>
     </dd>
 

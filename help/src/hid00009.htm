@@ -23,9 +23,7 @@
   <h1>オプション設定 - 一般</h1>
 
   <p class="link_box">
-    <a href="#Show">表示</a> ／ <a href="#Operation">操作</a> ／ <a href="#Watch">監視/更新</a> ／ <a href="#Task">タスク</a> ／ <a
-      href="#Tolerance">タイムスタンプの許容誤差</a> ／ <a href="#Copy">コピー動作</a> ／ <a href="#Delete">削除/上書き動作</a> ／ <a
-      href="#WorkList">ワークリスト</a> ／ <a href="#DirHistory">ディレクトリ履歴</a> ／ <a href="#RecentList">最近使ったファイル</a>
+    <a href="#Show">表示</a> ／ <a href="#Operation">操作</a> ／ <a href="#Watch">監視/更新</a> ／ <a href="#Task">タスク</a> ／ <a href="#Tolerance">タイムスタンプの許容誤差</a> ／ <a href="#Copy">コピー動作</a> ／ <a href="#Delete">削除/上書き動作</a> ／ <a href="#WorkList">ワークリスト</a> ／ <a href="#DirHistory">ディレクトリ履歴</a> ／ <a href="#RecentList">最近使ったファイル</a>
   </p>
   <br>
 
@@ -134,8 +132,7 @@
     </dd>
 
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> Altキーでメニューに移らない</dt>
-    <dd>チェックすると、<span class="btn_frame">Alt</span>キーを押したときにメニューにフォーカスが移らなくなります。<span
-        class="btn_frame">Alt</span>+英字によるメニューアクセスは可能です。<br>
+    <dd>チェックすると、<span class="btn_frame">Alt</span>キーを押したときにメニューにフォーカスが移らなくなります。<span class="btn_frame">Alt</span>+英字によるメニューアクセスは可能です。<br>
       キー割り当てやファンクションキーバーの修飾キーとして<span class="btn_frame">Alt</span>キー用いる場合にチェックしてください。<br>
       なお、メニューバーが非表示の場合は不要です。<br>
     </dd>
@@ -236,8 +233,7 @@
         10秒)</span></dt>
     <dd>
       指定した秒数以上、キーやマウス操作をしなかった場合、<b>ネットワーク待ち時間</b>と<b>通常待ち時間</b>を両方とも最小(転送速度が約64MB/秒以上なら 0 そうでなければ 1ms)にして高速実行になります。<br>
-      その場合、<a href="hid00069.htm">タスクマネージャ</a>では「高速実行」と表示され、またファイラーのタスク表示部では、進捗バーの左に<span
-        style="color:#ff0000;">■</span>マークが出ます。<br>
+      その場合、<a href="hid00069.htm">タスクマネージャ</a>では「高速実行」と表示され、またファイラーのタスク表示部では、進捗バーの左に<span style="color:#ff0000;">■</span>マークが出ます。<br>
       何らかの操作をすると、再び指定待ち時間に戻ります。<br>
       なお、0 を指定するとこの機能は無効になります。<br>
       <hr>
@@ -269,8 +265,7 @@
     <dt id="WorkList"><img src="grpbox.png" alt=""> ワークリスト</dt>
     <dd></dd>
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> 項目をソートしない</dt>
-    <dd>ワークリストの項目をソートしないようにします(<b>SortDlg</b> コマンドを禁止)。<a href="hid00005.htm#WorkItemUp">WorkItemUp</a>、<a
-        href="hid00005.htm#WorkItemDown">WorkItemDown</a>、<a href="hid00005.htm#WorkItemMove">WorkItemMove</a>
+    <dd>ワークリストの項目をソートしないようにします(<b>SortDlg</b> コマンドを禁止)。<a href="hid00005.htm#WorkItemUp">WorkItemUp</a>、<a href="hid00005.htm#WorkItemDown">WorkItemDown</a>、<a href="hid00005.htm#WorkItemMove">WorkItemMove</a>
       コマンドやマウスドラッグによって、項目を自由に並べ替えられます。<br>
       これが無効の場合でも、ワークリストにセパレータが含まれているとソートされません。
     </dd>
@@ -303,18 +298,15 @@
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> ソート方法を記憶する</dt>
     <dd>ディレクトリが変化した際、<a href="hid00057.htm">ディレクトリ履歴</a>を元にしてソート方法(～順を含む、ディレクトリのソート方法は除く)を復元します。<br>
       履歴はタブ/左右で個別管理されているため、同じディレクトリでも履歴が異なるとソート方法も異なります。ワークリストについては専用の履歴情報を用います。またタブごとに保持されているソート方法は無視され履歴にしたがいます。履歴がない場合は復元されませんので注意してください。<br>
-      特定のディレクトリに対して決まったソート方法を指定したい場合は <a href="hid00075.htm">.naynfi ファイル</a>の利用をお勧めします(→ <a
-        href="hid00005.htm#DotNyanDlg">DotNyanDlg</a> コマンド)。<b>.naynfi</b>
+      特定のディレクトリに対して決まったソート方法を指定したい場合は <a href="hid00075.htm">.naynfi ファイル</a>の利用をお勧めします(→ <a href="hid00005.htm#DotNyanDlg">DotNyanDlg</a> コマンド)。<b>.naynfi</b>
       ファイル(上位からの継承を含む)でソート方法に「<b>そのまま</b>」以外を指定していると、履歴より優先して適用されます。<br>
     </dd>
 
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> 履歴の存在チェックを行わない</dt>
     <dd>明示的に、あるいは内部でディレクトリ履歴を参照する前に、ディレクトリの存在チェックを行いません。<br>
       ネットワーク・ドライブなどのために操作が滞るような場合にチェックしてみてください。<br>
-      これをチェックしていると、存在しなくなったディレクトリが履歴に残る場合があります。<a href="hid00005.htm#BackDirHist">BackDirHist</a>、<a
-        href="hid00005.htm#ForwardDirHist">ForwardDirHist</a>、<a href="hid00005.htm#PopDir">PopDir</a>
-      コマンドで存在しないディレクトリに移動しようとしたら、その項目を削除・スキップします。また <a href="hid00005.htm#DirHistory">DirHistory</a>、<a
-        href="hid00005.htm#DirStack">DirStack</a> コマンドでは警告を出してその項目を削除します。<br>
+      これをチェックしていると、存在しなくなったディレクトリが履歴に残る場合があります。<a href="hid00005.htm#BackDirHist">BackDirHist</a>、<a href="hid00005.htm#ForwardDirHist">ForwardDirHist</a>、<a href="hid00005.htm#PopDir">PopDir</a>
+      コマンドで存在しないディレクトリに移動しようとしたら、その項目を削除・スキップします。また <a href="hid00005.htm#DirHistory">DirHistory</a>、<a href="hid00005.htm#DirStack">DirStack</a> コマンドでは警告を出してその項目を削除します。<br>
       なお全体履歴については、項目数が多くなる場合があるため、事前の存在チェックは行っていません。<br>
     </dd>
 
@@ -351,11 +343,9 @@
     <dd></dd>
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> 開いたファイルを「最近使った項目」に追加</dt>
     <dd>
-      <a href="hid00005.htm#OpenByWin">OpenByWin</a>、<a href="hid00005.htm#OpenByApp">OpenByApp</a>、<a
-        href="hid00005.htm#FileEdit">FileEdit</a>、<a href="hid00005.htm#BinaryEdit">BinaryEdit</a>
+      <a href="hid00005.htm#OpenByWin">OpenByWin</a>、<a href="hid00005.htm#OpenByApp">OpenByApp</a>、<a href="hid00005.htm#FileEdit">FileEdit</a>、<a href="hid00005.htm#BinaryEdit">BinaryEdit</a>
       コマンドで開いたファイルを「最近使った項目」に明示的に追加します。<br>
-      追加されたファイルは <a href="hid00058.htm#RecentList">最近使ったファイル一覧</a> (<a
-        href="hid00005.htm#RecentList">RecentList</a>)に表示されます。<br>
+      追加されたファイルは <a href="hid00058.htm#RecentList">最近使ったファイル一覧</a> (<a href="hid00005.htm#RecentList">RecentList</a>)に表示されます。<br>
       <div class="spc_box note_text">
         ※Windows 側の設定によって最近使った項目の保存が制限されている場合は機能しません。<br>
       </div>

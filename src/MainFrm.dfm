@@ -713,6 +713,7 @@ object NyanFiForm: TNyanFiForm
         OnDataObject = ResultListBoxDataObject
         OnDblClick = ResultListBoxDblClick
         OnDrawItem = ResultListBoxDrawItem
+        OnEnter = ResultListBoxEnter
         OnExit = ResultListBoxExit
         OnKeyDown = ResultListBoxKeyDown
       end
@@ -4952,6 +4953,13 @@ object NyanFiForm: TNyanFiForm
       OnExecute = IS_Match1ActionExecute
       OnUpdate = IS_Match1ActionUpdate
     end
+    object ShowMatchListAction: TAction
+      Category = 'Grep'
+      Caption = #12510#12483#12481#25968#19968#35239#12434#34920#31034'(&M)'
+      ShortCut = 116
+      OnExecute = ShowMatchListActionExecute
+      OnUpdate = ShowMatchListActionUpdate
+    end
   end
   object TaskSttTimer: TTimer
     Enabled = False
@@ -5117,7 +5125,7 @@ object NyanFiForm: TNyanFiForm
   object KeyHintTimer: TTimer
     Enabled = False
     OnTimer = KeyHintTimerTimer
-    Left = 456
+    Left = 464
     Top = 151
   end
   object DropPopupMenu: TPopupMenu
@@ -5141,7 +5149,7 @@ object NyanFiForm: TNyanFiForm
   end
   object ImgPrvPopupMenu: TPopupMenu
     OnPopup = ImgPrvPopupMenuPopup
-    Left = 40
+    Left = 256
     Top = 300
     object CopyPrviewImgItem: TMenuItem
       Action = CopyPreImgOrgAction
@@ -5840,6 +5848,9 @@ object NyanFiForm: TNyanFiForm
       end
       object ReloadItem: TMenuItem
         Action = ReloadListAction
+      end
+      object ShowMatchListItem: TMenuItem
+        Action = ShowMatchListAction
       end
       object Sep_v_1: TMenuItem
         Caption = '-'

@@ -1474,6 +1474,11 @@ bool equal_F1(UnicodeString s)
 {
 	return (_tcsicmp(s.c_str(), _T("F1"))==0);
 }
+//---------------------------------------------------------------------------
+bool equal_F5(UnicodeString s)
+{
+	return (_tcsicmp(s.c_str(), _T("F5"))==0);
+}
 
 //---------------------------------------------------------------------------
 //英数文字列か?
@@ -1800,13 +1805,23 @@ UnicodeString minimize_str(
 	bool omit_end,		//末尾を省略 (default = false : 中間を省略)
 	bool spc_sw)		//半/全角空白の代替文字を考慮	(default = false)
 {
+	if (s.IsEmpty()) return EmptyStr;
+
 	int ww = get_TextWidth(cv, s, spc_sw);
 	if (wd<=0) {
 		s = EmptyStr;
 	}
 	else if (ww > wd) {
+		int wz = std::max(ww/s.Length() * 12 / 10, 1);	//***
+
 		if (omit_end) {
+			for (int i=0; i<3; i++) {
+				int n = std::max((ww - wd)/wz, 1);  if (n<=1) break;
+				s = s.SubString(1, s.Length() - n);
+				ww = get_TextWidth(cv, s, spc_sw);
+			}
 			s += "…";
+
 			int p = s.Length() - 1;
 			while (p>0) {
 				s.Delete(p--, 1);
@@ -1822,6 +1837,13 @@ UnicodeString minimize_str(
 			}
 			if (p==0) p = 1;
 			s.Insert("…", p);	p += 1;
+
+			for (int i=0; i<3; i++) {
+				int n = std::max((ww - wd)/wz, 1);  if (n<=1) break;
+				s.Delete(p, n);
+				ww = get_TextWidth(cv, s, spc_sw);
+			}
+	
 			while (s.Length()>=p) {
 				s.Delete(p, 1);
 				if (get_TextWidth(cv, s, spc_sw) <= wd) break;

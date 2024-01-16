@@ -62,8 +62,7 @@
 
     <dt class="no_bg_indent1" id="MinShowTime">最小表示タイム <img src="edit.png" alt="">　<span class="def_text">(デフォルト:
         0m秒)</span></dt>
-    <dd>m秒単位で 0 より大きな値を指定すると、画像表示後にその間 <a href="hid00007.htm#NextFile">NextFile</a>、<a
-        href="hid00007.htm#PrevFile">PrevFile</a> コマンドを受け付けません。コマンドを割り当てたキーを押しっぱなしにすると、画像を順に見ていくことができます。<br>
+    <dd>m秒単位で 0 より大きな値を指定すると、画像表示後にその間 <a href="hid00007.htm#NextFile">NextFile</a>、<a href="hid00007.htm#PrevFile">PrevFile</a> コマンドを受け付けません。コマンドを割り当てたキーを押しっぱなしにすると、画像を順に見ていくことができます。<br>
       値に0を指定すると、処理が間に合わない場合、表示が飛ばされます。サムネイルを表示している場合などには、0にした方が操作しやすいかもしれません。<br>
     </dd>
 
@@ -80,14 +79,12 @@
     </dd>
 
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> カーソルをループ移動する</dt>
-    <dd>カーソルが先頭にあるとき <a href="hid00007.htm#PrevFile">PrevFile</a> コマンドで最後のファイルへ、末尾にあるとき <a
-        href="hid00007.htm#NextFile">NextFile</a> コマンドで先頭のファイルへ移動します。<br>
+    <dd>カーソルが先頭にあるとき <a href="hid00007.htm#PrevFile">PrevFile</a> コマンドで最後のファイルへ、末尾にあるとき <a href="hid00007.htm#NextFile">NextFile</a> コマンドで先頭のファイルへ移動します。<br>
       なお、見開き表示の場合には無効となります。<br>
     </dd>
 
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> 先頭・最後でヒント表示　<img src="chkbox.png" alt=""> 警告音</dt>
-    <dd>先頭または最後からさらに移動しようとした場合にヒント表示します。「<b>カーソルをループ移動する</b>」が有効な場合、さらに <a href="hid00007.htm#PrevFile">PrevFile</a>、<a
-        href="hid00007.htm#NextFile">NextFile</a> コマンドを実行するとループ移動します。<br>
+    <dd>先頭または最後からさらに移動しようとした場合にヒント表示します。「<b>カーソルをループ移動する</b>」が有効な場合、さらに <a href="hid00007.htm#PrevFile">PrevFile</a>、<a href="hid00007.htm#NextFile">NextFile</a> コマンドを実行するとループ移動します。<br>
       なおヒント表示の際に、警告音を鳴らすことも可能です。
     </dd>
 
@@ -103,8 +100,7 @@
     <dd>見開き表示の場合、右綴じならシークバーの始点も右端にします。</dd>
 
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> 右綴じでNext/Prev入替</dt>
-    <dd>「<b>シークバーの始点を綴じ方向に合わす</b>」がチェックされていて、右綴じ見開き表示で、シークバーが表示になっている場合(全画面表示で隠れていても)、キーによる前後移動の動作(<a
-        href="hid00007.htm#NextFile">NextFile</a> / <a href="hid00007.htm#PrevFile">PrevFile</a> コマンド)を入れ替えます。</dd>
+    <dd>「<b>シークバーの始点を綴じ方向に合わす</b>」がチェックされていて、右綴じ見開き表示で、シークバーが表示になっている場合(全画面表示で隠れていても)、キーによる前後移動の動作(<a href="hid00007.htm#NextFile">NextFile</a> / <a href="hid00007.htm#PrevFile">PrevFile</a> コマンド)を入れ替えます。</dd>
 
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> 全画面表示でマウスポインタを隠す</dt>
     <dd><a href="hid00007.htm#FullScreen">FullScreen</a> コマンドで全画面表示に切り替えた際に、マウスポインタを隠します。<br>
@@ -200,12 +196,9 @@
 
     <dt id="SetMark"><img src="grpbox.png" alt=""> 閉じた時に栞マークを設定</dt>
     <dd>
-      <img src="chkbox.png" alt=""> <b>有効</b> をチェックしていると、イメージビューアを閉じた時に、表示していた画像に栞マーク(<a
-        href="hid00007.htm#Mark">Mark</a>)を設定します。この際、カレントの栞マークは一旦すべて解除(<a
-        href="hid00007.htm#ClearMark">ClearMark</a>)されます。<br>
+      <img src="chkbox.png" alt=""> <b>有効</b> をチェックしていると、イメージビューアを閉じた時に、表示していた画像に栞マーク(<a href="hid00007.htm#Mark">Mark</a>)を設定します。この際、カレントの栞マークは一旦すべて解除(<a href="hid00007.htm#ClearMark">ClearMark</a>)されます。<br>
       <div class="spc_box">
-        <span class="tips">Tips</span>アーカイブ内にマークされた画像がある場合、アーカイブファイルに対して <a
-          href="hid00005.htm#ImageViewer">ImageViewer</a>
+        <span class="tips">Tips</span>アーカイブ内にマークされた画像がある場合、アーカイブファイルに対して <a href="hid00005.htm#ImageViewer">ImageViewer</a>
         コマンドを実行すると、アーカイブを開いてその画像を表示します。この場合、イメージビューアを閉じると仮想ディレクトリから抜けます。<br>
       </div>
     </dd>

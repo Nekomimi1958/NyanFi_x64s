@@ -172,6 +172,7 @@ bool equal_DOWN(UnicodeString s);
 bool equal_HOME(UnicodeString s);
 bool equal_END(UnicodeString s);
 bool equal_F1(UnicodeString s);
+bool equal_F5(UnicodeString s);
 
 bool is_separator(UnicodeString s);
 bool is_alnum_str(UnicodeString s);

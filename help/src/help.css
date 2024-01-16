@@ -242,6 +242,10 @@ PRE {
     color: #080;
 }
 
+.red_text {
+    color: #900;
+}
+
 .al_right {
     text-align: right;
     margin-right: 2em;

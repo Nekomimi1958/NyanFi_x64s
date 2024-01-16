@@ -775,6 +775,7 @@ extern TStringList *GrepResultBuff;
 extern TStringList *GrepResultList;
 extern TStringList *GrepStashBuff;
 extern TStringList *GrepUnsortBuff;
+extern TStringList *GrepMatchList;
 extern int  ResultListMode;
 
 extern TStringList *ViewFileList;

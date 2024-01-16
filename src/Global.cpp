@@ -588,6 +588,7 @@ TStringList *GrepResultBuff;			//GREP 結果リスト表示用バッファ
 TStringList *GrepResultList;			//GREP の結果リスト
 TStringList *GrepStashBuff;				//GREP 結果の退避バッファ
 TStringList *GrepUnsortBuff;			//GREP ソート前バッファ
+TStringList *GrepMatchList;				//GREP ファイル別マッチ数リスト
 int  ResultListMode = 0;				//結果リストの内容	0:未定/ 1:GREP/ 2:置換
 
 TStringList *ViewFileList;				//イメージビューアでのファイル名リスト
@@ -1325,44 +1326,45 @@ void InitializeGlobal()
 	UsrIcoList		  = CreStringList(GENLST_ICON);
 	DrvIcoList		  = CreStringList(GENLST_ICON);
 
-	FontList		  = CreStringList(GENLST_FONT);
-	CmdFileList 	  = CreStringList(GENLST_CMDSLIST);
-	TabList 		  = CreStringList(GENLST_TABLIST);
-	TabBuff			  = CreStringList();
-	DriveInfoList	  = CreStringList(GENLST_DRIVE);
-	DriveLogList	  = CreStringList();
-	WatchTailList	  = CreStringList();
-	InvalidUncList	  = CreStringList();
-	PlayList		  = CreStringList();
-	XCMD_VarList	  = CreStringList();
-	BakSetupList	  = CreStringList();
-	SyncDirList 	  = CreStringList();
-	AssRenList		  = CreStringList();
-	DistrDefList	  = CreStringList();
-	GrepPathList	  = CreStringList();
-	GrepFileList	  = CreStringList();
-	GrepResultBuff	  = CreStringList();
-	GrepResultList	  = CreStringList();
-	GrepStashBuff	  = CreStringList();
-	GrepUnsortBuff	  = CreStringList();
-	KeyFuncList 	  = CreStringList();
-	FKeyLabelList	  = CreStringList();
-	HotKeyList		  = CreStringList();
-	DirStack		  = CreStringList();
-	RegDirList		  = CreStringList();
-	ProtectDirList	  = CreStringList();
-	VirDriveList	  = CreStringList();
-	PathMaskList	  = CreStringList();
-	ColorList		  = CreStringList();
-	ExtColList		  = CreStringList();
-	AssociateList	  = CreStringList();
-	OpenStdCmdList	  = CreStringList();
-	EtcEditorList	  = CreStringList();
-	ExtToolList 	  = CreStringList();
-	ExtMenuList 	  = CreStringList();
-	DriveList		  = CreStringList();
-	NetDriveList	  = CreStringList();
-	AllDirHistory	  = CreStringList();
+	FontList          = CreStringList(GENLST_FONT);
+	CmdFileList       = CreStringList(GENLST_CMDSLIST);
+	TabList           = CreStringList(GENLST_TABLIST);
+	TabBuff           = CreStringList();
+	DriveInfoList     = CreStringList(GENLST_DRIVE);
+	DriveLogList      = CreStringList();
+	WatchTailList     = CreStringList();
+	InvalidUncList    = CreStringList();
+	PlayList          = CreStringList();
+	XCMD_VarList      = CreStringList();
+	BakSetupList      = CreStringList();
+	SyncDirList       = CreStringList();
+	AssRenList        = CreStringList();
+	DistrDefList      = CreStringList();
+	GrepPathList      = CreStringList();
+	GrepFileList      = CreStringList();
+	GrepResultBuff    = CreStringList();
+	GrepResultList    = CreStringList();
+	GrepStashBuff     = CreStringList();
+	GrepUnsortBuff    = CreStringList();
+	GrepMatchList     = CreStringList();
+	KeyFuncList       = CreStringList();
+	FKeyLabelList     = CreStringList();
+	HotKeyList        = CreStringList();
+	DirStack          = CreStringList();
+	RegDirList        = CreStringList();
+	ProtectDirList    = CreStringList();
+	VirDriveList      = CreStringList();
+	PathMaskList      = CreStringList();
+	ColorList         = CreStringList();
+	ExtColList        = CreStringList();
+	AssociateList     = CreStringList();
+	OpenStdCmdList    = CreStringList();
+	EtcEditorList     = CreStringList();
+	ExtToolList       = CreStringList();
+	ExtMenuList       = CreStringList();
+	DriveList         = CreStringList();
+	NetDriveList      = CreStringList();
+	AllDirHistory     = CreStringList();
 	TextViewHistory   = CreStringList();
 	TextEditHistory   = CreStringList();
 	WorkListHistory   = CreStringList();
@@ -1370,23 +1372,23 @@ void InitializeGlobal()
 	InputCmdsHistory  = CreStringList();
 	InputCmdsHistoryV = CreStringList();
 	InputCmdsHistoryI = CreStringList();
-	IncSeaHistory	  = CreStringList();
-	FilterHistory	  = CreStringList();
-	WebSeaHistory	  = CreStringList();
-	LatLngHistory	  = CreStringList();
-	HeadlineList	  = CreStringList();
-	RenCmdFileList	  = CreStringList();
-	RenArcFileList	  = CreStringList();
-	RedrawList		  = CreStringList();
-	CmdRequestList	  = CreStringList();
-	CommandHistory	  = CreStringList();
-	PopMenuList 	  = CreStringList();
-	ToolBtnList 	  = CreStringList();
-	ToolBtnListV	  = CreStringList();
-	ToolBtnListI	  = CreStringList();
-	CnvCharList 	  = CreStringList();
-	LogBufList		  = CreStringList();
-	HideInfItems	  = CreStringList();
+	IncSeaHistory     = CreStringList();
+	FilterHistory     = CreStringList();
+	WebSeaHistory     = CreStringList();
+	LatLngHistory     = CreStringList();
+	HeadlineList      = CreStringList();
+	RenCmdFileList    = CreStringList();
+	RenArcFileList    = CreStringList();
+	RedrawList        = CreStringList();
+	CmdRequestList    = CreStringList();
+	CommandHistory    = CreStringList();
+	PopMenuList       = CreStringList();
+	ToolBtnList       = CreStringList();
+	ToolBtnListV      = CreStringList();
+	ToolBtnListI      = CreStringList();
+	CnvCharList       = CreStringList();
+	LogBufList        = CreStringList();
+	HideInfItems      = CreStringList();
 
 	GitCfgUrlList	  = CreStringList();
 	GitInfList		  = CreStringList();
@@ -3504,6 +3506,8 @@ UnicodeString get_MiniPathName(
 	TFont *font,
 	bool rep_delimiter)		//ディレクトリ区切りを置換	(default = true)
 {
+	if (pnam.IsEmpty()) return EmptyStr;
+
 	HWND hWnd = Application->ActiveFormHandle;
 	HDC hDc = ::GetDC(hWnd);
 	if (hDc) {
@@ -3513,8 +3517,11 @@ UnicodeString get_MiniPathName(
 		bool ends_dlmt = EndsStr("\\", pnam);
 
 		//ディレクトリ区切りの違いによる制限幅の補正
-		int w = cv->TextWidth(yen_to_delimiter(pnam)) - cv->TextWidth(pnam);
+		int ww = cv->TextWidth(pnam);
+		int w  = cv->TextWidth(yen_to_delimiter(pnam)) - ww;
 		if (w>0) max_w -= w;
+
+		int wz = std::max(ww/pnam.Length() * 12 / 10, 1);	//***
 
 		while (cv->TextWidth(pnam)>max_w) {
 			TStringDynArray plst = split_path(pnam);
@@ -3524,17 +3531,13 @@ UnicodeString get_MiniPathName(
 				if (i==0 && (StartsStr("\\\\", dnam) || StartsStr('<', dnam))) continue;
 				int dlen = dnam.Length();
 				if (!EndsStr("…", dnam) && dlen>4) {
-					plst[i] = dnam.SubString(1, (dlen>=32)? dlen/2 : dlen - 3) + "…";
+					int nz = std::max((ww - max_w)/wz, 1);
+					plst[i] = (dlen<nz)? UnicodeString("…") : dnam.SubString(1, (dlen>=32)? dlen/2 : dlen - 3) + "…";
 					changed = true;
 					break;
 				}
-				if (EndsStr("…", dnam) && dlen>2) {
+				if (EndsStr("…", dnam) && dlen>1) {
 					plst[i].Delete(dlen - 1, 1);
-					changed = true;
-					break;
-				}
-				if (i>0 && i<plst.Length-1 && EndsStr("…", dnam) && dlen==2) {
-					plst[i] = "…";
 					changed = true;
 					break;
 				}
@@ -3544,6 +3547,7 @@ UnicodeString get_MiniPathName(
 			pnam = EmptyStr;
 			for (int i=0; i<plst.Length; i++) pnam.cat_sprintf(_T("%s\\"), plst[i].c_str());
 			if (!ends_dlmt) pnam = ExcludeTrailingPathDelimiter(pnam);
+			ww = cv->TextWidth(pnam);
 		}
 		::ReleaseDC(hWnd, hDc);
 

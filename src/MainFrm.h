@@ -453,6 +453,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *ShowIndentAction;
 	TAction *ShowLineNoAction;
 	TAction *ShowLogWinAction;
+	TAction *ShowMatchListAction;
 	TAction *ShowOpenAsRunAction;
 	TAction *ShowPreviewAction;
 	TAction *ShowPropertyAction;
@@ -906,6 +907,7 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *ShowIconItem;
 	TMenuItem *ShowLineNoItem;
 	TMenuItem *ShowLogWinItem;
+	TMenuItem *ShowMatchListItem;
 	TMenuItem *ShowPreviewItem;
 	TMenuItem *ShowPropertyItem;
 	TMenuItem *ShowRubyItem;
@@ -1109,6 +1111,7 @@ __published:	// IDE で管理されるコンポーネント
 	TTabSheet *FindSheet;
 	TTabSheet *ReplaceSheet;
 	TTimer *BlinkTimer;
+	TTimer *GrepFilterTimer;
 	TTimer *KeyHintTimer;
 	TTimer *MsgHintTimer;
 	TTimer *TaskSttTimer;
@@ -1129,7 +1132,6 @@ __published:	// IDE で管理されるコンポーネント
 	TVirtualImageList *IconVImgListI;
 	TVirtualImageList *IconVImgListP;
 	TVirtualImageList *IconVImgListV;
-	TTimer *GrepFilterTimer;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -1138,6 +1140,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall FormResize(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall DropMenuItemClick(TObject *Sender);
 	void __fastcall ApplicationEvents1Activate(TObject *Sender);
 	void __fastcall ApplicationEvents1Deactivate(TObject *Sender);
@@ -1673,6 +1676,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall GrepFilterEditExit(TObject *Sender);
 	void __fastcall GrepFltOptCheckBoxClick(TObject *Sender);
 	void __fastcall GrepRepComboBoxEnter(TObject *Sender);
+	void __fastcall GrepRepComboBoxChange(TObject *Sender);
 	void __fastcall GrepOptionActionExecute(TObject *Sender);
 	void __fastcall GrepOptionActionUpdate(TObject *Sender);
 	void __fastcall GrepStartActionExecute(TObject *Sender);
@@ -1718,10 +1722,13 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall GrepEmFilterActionUpdate(TObject *Sender);
 	void __fastcall GrepAdjNextLnActionExecute(TObject *Sender);
 	void __fastcall GrepAdjNextLnActionUpdate(TObject *Sender);
+	void __fastcall GrepFilterTimerTimer(TObject *Sender);
 	void __fastcall GrepFilterEditChange(TObject *Sender);
 	void __fastcall ReplaceStartActionExecute(TObject *Sender);
 	void __fastcall ReplaceStartActionUpdate(TObject *Sender);
 	void __fastcall GrepCanBtnClick(TObject *Sender);
+	void __fastcall ShowMatchListActionExecute(TObject *Sender);
+	void __fastcall ShowMatchListActionUpdate(TObject *Sender);
 	void __fastcall TextMarginBoxPaint(TObject *Sender);
 	void __fastcall TextScrollBarChange(TObject *Sender);
 	void __fastcall TextScrollBoxDblClick(TObject *Sender);
@@ -1968,9 +1975,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall IS_LoopActionUpdate(TObject *Sender);
 	void __fastcall IS_Match1ActionExecute(TObject *Sender);
 	void __fastcall IS_Match1ActionUpdate(TObject *Sender);
-	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
-	void __fastcall GrepFilterTimerTimer(TObject *Sender);
-	void __fastcall GrepRepComboBoxChange(TObject *Sender);
+	void __fastcall ResultListBoxEnter(TObject *Sender);
 
 private:	// ユーザー宣言
 	TIdFTP *IdFTP1;
@@ -2088,9 +2093,11 @@ private:	// ユーザー宣言
 
 	bool GrepSelFileOnly;				//ファイルのみ選択
 	bool fromViewer;					//テキストビューアから
+	bool InhGrepFilter;					//フィルタの抑止
 
 	int GrepMatchFileCnt;				//マッチしたファイル数
 	int GrepMatchLineCnt;				//マッチした行数
+	int GrepMaxFileWd;					//マッチファイル名の最大幅
 
 	SttProgressBar *SttPrgBar;			//Grep用プログレスバー
 	UsrHintWindow *MsgHint;				//メッセージ、警告のヒント表示ウィンドウ
@@ -2601,6 +2608,7 @@ private:	// ユーザー宣言
 	bool __fastcall UploadFtpCore(file_rec *fp);
 
 	int  __fastcall ExeGrepCore(UnicodeString dnam, int &idx_tag);
+	int  __fastcall MakeMatchRepList();
 
 public:		// ユーザー宣言
 	//CurPath プロパティ
