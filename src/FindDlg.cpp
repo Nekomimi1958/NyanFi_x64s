@@ -26,9 +26,10 @@ void __fastcall TFindFileDlg::FormCreate(TObject *Sender)
 	UserModule->SetUsrPopupMenu(this);
 
 	DateMaskEdit->Text = format_Date(Date());
-	FindDate = Date();
-	FindAttr = 0;
-	FindDir  = FindBoth = NoMask = ToKeywd = false;
+	FindDate    = Date();
+	FindDateRel = 0;
+	FindAttr    = 0;
+	FindDir = FindBoth = NoMask = ToKeywd = false;
 
 	FindTime = 0;
 	FindRate = FindFps = FindFrWd = FindFrHi = FindSmpl = 0;
@@ -37,9 +38,12 @@ void __fastcall TFindFileDlg::FormCreate(TObject *Sender)
 	ClearExtraCond();
 
 	MaskComboBox->Tag	 = CBTAG_HISTORY;
+	SkipDirComboBox->Tag = CBTAG_HISTORY;
 	KeywordComboBox->Tag = CBTAG_HISTORY;
 	TxtKwdComboBox->Tag  = CBTAG_HISTORY;
 	LatLngComboBox->Tag  = CBTAG_HISTORY;
+
+	SkipDirComboBox->Hint = LoadUsrMsg(USTR_HintMltSepSC);
 
 	set_ComboBoxText(CodePageComboBox,
 		_T("\n")
@@ -72,6 +76,9 @@ void __fastcall TFindFileDlg::FormShow(TObject *Sender)
 	IniFile->LoadComboBoxItems(MaskComboBox, FindDir? _T("FindDirHistory") : _T("FindHistory"));
 	MaskComboBox->Text = IniFile->ReadStrGen(FindDir? _T("FindDirLastMask") : _T("FindLastMask"));
 
+	IniFile->LoadComboBoxItems(SkipDirComboBox, _T("FindSkipHistory"));
+	SkipDirComboBox->Text = IniFile->ReadStrGen(_T("FindSkipDir"));
+
 	DateRadioGroup->ItemIndex = IniFile->ReadIntGen(FindDir? _T("FindDirDateMode") : _T("FindDateMode"));
 	ResLinkCheckBox->Checked  = IniFile->ReadBoolGen(_T("FindResLink"));
 	DirLinkCheckBox->Checked  = IniFile->ReadBoolGen(_T("FindDirLink"));
@@ -92,6 +99,7 @@ void __fastcall TFindFileDlg::FormShow(TObject *Sender)
 	if (FindDir) {
 		MaskPanel->Visible		  = true;		MaskPanel->Align = alTop;
 		KeywordPanel->Visible	  = false;
+		SkipPanel->Visible		  = false;
 		DatePanel->Visible		  = true;		DatePanel->Align = alTop;
 		SizePanel->Visible		  = false;
 		AttrPanel->Visible		  = true;		AttrPanel->Align = alTop;
@@ -107,17 +115,18 @@ void __fastcall TFindFileDlg::FormShow(TObject *Sender)
 	else {
 		MaskPanel->Visible		  = !NoMask;	MaskPanel->Align	= alTop;
 		KeywordPanel->Visible	  = true;		KeywordPanel->Align = alTop;
+		SkipPanel->Visible		  = true;		SkipPanel->Align	= alTop;
 		DatePanel->Visible		  = true;		DatePanel->Align	= alTop;
 		SizePanel->Visible		  = true;		SizePanel->Align	= alTop;
 		AttrPanel->Visible		  = true;		AttrPanel->Align	= alTop;
 		ContPanel->Visible		  = false;
 		CaseCheckBox->Checked	  = IniFile->ReadBoolGen(_T("FindOptCase"));
 		AndCheckBox->Checked	  = IniFile->ReadBoolGen(_T("FindOptAnd"));
-
 		RegExCheckBox->Checked	  = IniFile->ReadBoolGen(_T("FindOptRegEx"));
 		IniFile->LoadComboBoxItems(KeywordComboBox, RegExCheckBox->Checked? _T("FindPatrnHistory") : _T("FindKeywdHistory"));
-		SizeRadioGroup->ItemIndex = IniFile->ReadIntGen(_T("FindSizeMode"));
-		SizeEdit->Text			  = IniFile->ReadStrGen(_T("FindSizeText"),	"0");
+		RelDateCheckBox->Checked  = IniFile->ReadBoolGen(_T("FindOptRel"));
+		SizeRadioGroup->ItemIndex = IniFile->ReadIntGen( _T("FindSizeMode"));
+		SizeEdit->Text			  = IniFile->ReadStrGen( _T("FindSizeText"),	"0");
 
 		int s_unit = IniFile->ReadIntGen(_T("FindSizeUnit"));
 		switch (s_unit) {
@@ -229,7 +238,10 @@ void __fastcall TFindFileDlg::FormCloseQuery(TObject *Sender, bool &CanClose)
 				FindDate	= 0;
 			}
 			else {
-				if (DateRadioGroup->ItemIndex!=0) FindDate = str_to_DateTime(DateMaskEdit->Text);
+				if (DateRadioGroup->ItemIndex!=0) {
+					FindDate    = str_to_DateTime(DateMaskEdit->Text);
+					FindDateRel = RelDateCheckBox->Checked? -DaysBetween(Today(), FindDate) : 0;
+				}
 				FindDateStr = EmptyStr;
 			}
 
@@ -258,6 +270,11 @@ void __fastcall TFindFileDlg::FormClose(TObject *Sender, TCloseAction &Action)
 	IniFile->WriteStrGen(FindDir? _T("FindDirLastMask") : _T("FindLastMask"), MaskComboBox->Text);
 	IniFile->SaveComboBoxItems(MaskComboBox, FindDir? _T("FindDirHistory") : _T("FindHistory"));
 
+	if (!FindDir) {
+		IniFile->WriteStrGen(_T("FindSkipDir"), SkipDirComboBox->Text);
+		IniFile->SaveComboBoxItems(SkipDirComboBox, _T("FindSkipHistory"));
+	}
+
 	IniFile->SaveComboBoxItems(KeywordComboBox, RegExCheckBox->Checked?    _T("FindPatrnHistory")  : _T("FindKeywdHistory"));
 	IniFile->SaveComboBoxItems(TxtKwdComboBox,  TxtRegExCheckBox->Checked? _T("FindTxtPtnHistory") : _T("FindTxtKwdHistory"));
 
@@ -274,6 +291,7 @@ void __fastcall TFindFileDlg::FormClose(TObject *Sender, TCloseAction &Action)
 		IniFile->WriteBoolGen(_T("FindOptCase"),	CaseCheckBox);
 		IniFile->WriteBoolGen(_T("FindOptAnd"),		AndCheckBox);
 		IniFile->WriteBoolGen(_T("FindOptRegEx"),	RegExCheckBox);
+		IniFile->WriteBoolGen(_T("FindOptRel"), 	RelDateCheckBox);
 		IniFile->WriteIntGen(_T("FindSizeMode"),	SizeRadioGroup);
 		IniFile->WriteStrGen(_T("FindSizeText"),	SizeEdit);
 
@@ -593,6 +611,8 @@ void __fastcall TFindFileDlg::FindOkActionExecute(TObject *Sender)
 	if (!FindDir) {
 		add_ComboBox_history(KeywordComboBox);
 		IniFile->SaveComboBoxItems(KeywordComboBox, RegExCheckBox->Checked? _T("FindPatrnHistory") : _T("FindKeywdHistory"));
+		add_ComboBox_history(SkipDirComboBox);
+		IniFile->SaveComboBoxItems(SkipDirComboBox, _T("FindSkipHistory"));
 	}
 
 	if (hasText) {
@@ -628,12 +648,14 @@ void __fastcall TFindFileDlg::FindOkActionUpdate(TObject *Sender)
 	UnicodeString dtstr = DateMaskEdit->Text;
 	bool date_ng = false;
 	bool use_wc  = (DateRadioGroup->ItemIndex==1 && ContainsStr(dtstr, "?"));
+	RelDateCheckBox->Enabled = !use_wc;
 	try {
 		if (DateRadioGroup->ItemIndex>0) {
 			if (ContainsStr(dtstr, " ")) Abort();
 			if (use_wc) {
-				for (int i=1; i<dtstr.Length(); i++)
+				for (int i=1; i<dtstr.Length(); i++) {
 					if (!iswdigit(dtstr[i]) && dtstr[i]!='/' && dtstr[i]!='?') Abort();
+				}
 			}
 			else {
 				if (ContainsStr(dtstr, "?")) Abort();

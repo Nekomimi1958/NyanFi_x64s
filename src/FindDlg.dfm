@@ -42,15 +42,16 @@ object FindFileDlg: TFindFileDlg
     TabOrder = 0
     object AttrPanel: TPanel
       Left = 2
-      Top = 309
+      Top = 339
       Width = 396
       Height = 103
       Align = alTop
       BevelOuter = bvNone
       ParentBackground = False
       ShowCaption = False
-      TabOrder = 4
+      TabOrder = 5
       StyleElements = []
+      ExplicitTop = 342
       DesignSize = (
         396
         103)
@@ -132,14 +133,15 @@ object FindFileDlg: TFindFileDlg
     end
     object ContPanel: TPanel
       Left = 2
-      Top = 412
+      Top = 442
       Width = 396
       Height = 78
       Align = alTop
       BevelOuter = bvNone
       ParentBackground = False
-      TabOrder = 5
+      TabOrder = 6
       StyleElements = []
+      ExplicitTop = 445
       object ContRadioGroup: TRadioGroup
         Left = 4
         Top = 6
@@ -166,15 +168,16 @@ object FindFileDlg: TFindFileDlg
     end
     object DatePanel: TPanel
       Left = 2
-      Top = 97
+      Top = 127
       Width = 396
       Height = 106
       Align = alTop
       BevelOuter = bvNone
       ParentBackground = False
       ShowCaption = False
-      TabOrder = 2
+      TabOrder = 3
       StyleElements = []
+      ExplicitTop = 130
       DesignSize = (
         396
         106)
@@ -213,20 +216,20 @@ object FindFileDlg: TFindFileDlg
             #19968#33268
             #20197#21069
             #20197#38477)
-          TabOrder = 6
+          TabOrder = 7
           OnClick = CondChangeUpdate
         end
         object DateBtn5: TButton
-          Left = 285
+          Left = 275
           Top = 18
-          Width = 44
+          Width = 40
           Height = 24
           Caption = '-1Y'
           TabOrder = 5
           OnClick = DateBtnClick
         end
         object DateBtn1: TButton
-          Left = 109
+          Left = 103
           Top = 18
           Width = 44
           Height = 24
@@ -235,31 +238,39 @@ object FindFileDlg: TFindFileDlg
           OnClick = DateBtnClick
         end
         object DateBtn2: TButton
-          Left = 153
+          Left = 149
           Top = 18
-          Width = 44
+          Width = 40
           Height = 24
           Caption = '-1D'
           TabOrder = 2
           OnClick = DateBtnClick
         end
         object DateBtn3: TButton
-          Left = 197
+          Left = 191
           Top = 18
-          Width = 44
+          Width = 40
           Height = 24
           Caption = '-7D'
           TabOrder = 3
           OnClick = DateBtnClick
         end
         object DateBtn4: TButton
-          Left = 241
+          Left = 233
           Top = 18
-          Width = 44
+          Width = 40
           Height = 24
           Caption = '-1M'
           TabOrder = 4
           OnClick = DateBtnClick
+        end
+        object RelDateCheckBox: TCheckBox
+          Left = 320
+          Top = 23
+          Width = 57
+          Height = 17
+          Caption = #30456#23550
+          TabOrder = 6
         end
       end
     end
@@ -267,13 +278,13 @@ object FindFileDlg: TFindFileDlg
       Left = 2
       Top = 37
       Width = 396
-      Height = 60
+      Height = 58
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 1
       DesignSize = (
         396
-        60)
+        58)
       object KwdLabel: TLabel
         Left = 9
         Top = 7
@@ -353,14 +364,15 @@ object FindFileDlg: TFindFileDlg
     end
     object OkPanel: TPanel
       Left = 2
-      Top = 490
+      Top = 520
       Width = 396
       Height = 130
       Align = alTop
       BevelOuter = bvNone
       ParentBackground = False
       ShowCaption = False
-      TabOrder = 6
+      TabOrder = 7
+      ExplicitTop = 523
       DesignSize = (
         396
         130)
@@ -431,14 +443,15 @@ object FindFileDlg: TFindFileDlg
     end
     object SizePanel: TPanel
       Left = 2
-      Top = 203
+      Top = 233
       Width = 396
       Height = 106
       Align = alTop
       BevelOuter = bvNone
       ParentBackground = False
-      TabOrder = 3
+      TabOrder = 4
       StyleElements = []
+      ExplicitTop = 236
       DesignSize = (
         396
         106)
@@ -512,6 +525,37 @@ object FindFileDlg: TFindFileDlg
         end
       end
     end
+    object SkipPanel: TPanel
+      Left = 2
+      Top = 95
+      Width = 396
+      Height = 32
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 2
+      DesignSize = (
+        396
+        32)
+      object TLabel
+        Left = 15
+        Top = 8
+        Width = 46
+        Height = 15
+        Hint = #38500#22806#12487#12451#12524#12463#12488#12522
+        Alignment = taRightJustify
+        Caption = #38500#22806'Dirs'
+        FocusControl = MaskComboBox
+      end
+      object SkipDirComboBox: TComboBox
+        Left = 65
+        Top = 5
+        Width = 323
+        Height = 23
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 0
+        OnChange = MaskComboBoxChange
+      end
+    end
   end
   object ExtPanel: TPanel
     Left = 404
@@ -521,7 +565,6 @@ object FindFileDlg: TFindFileDlg
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 406
     object PanelSpacer: TBevel
       Left = 0
       Top = 1132

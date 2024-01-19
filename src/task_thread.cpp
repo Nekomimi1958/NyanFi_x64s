@@ -398,12 +398,12 @@ int __fastcall TTaskThread::GetFilesEx(
 	pnam = IncludeTrailingPathDelimiter(pnam);
 
 	//除外ディレクトリ
-	TStringDynArray skip_dir_lst = split_strings_semicolon(skip_dir);
+	TStringDynArray skip_dir_lst = split_strings_semicolon(skip_dir, true);
 	//マスク
 	if (inc_mask.IsEmpty()) inc_mask = "*";
 
-	TStringDynArray inc_msk_lst = split_strings_semicolon(inc_mask);	//対象
-	TStringDynArray exc_msk_lst = split_strings_semicolon(exc_mask);	//除外
+	TStringDynArray inc_msk_lst = split_strings_semicolon(inc_mask, true);	//対象
+	TStringDynArray exc_msk_lst = split_strings_semicolon(exc_mask, true);	//除外
 
 	TSearchRec sr;
 	if (FindFirst(cv_ex_filename(pnam + "*"), faAnyFile, sr)==0) {
@@ -420,7 +420,6 @@ int __fastcall TTaskThread::GetFilesEx(
 				//除外ディレクトリのチェック
 				bool skip = false;
 				for (int i=0; i<skip_dir_lst.Length; i++) {
-					if (skip_dir_lst[i].IsEmpty()) continue;
 					if (str_match(skip_dir_lst[i], dnam)) {
 						skip = true; break;
 					}

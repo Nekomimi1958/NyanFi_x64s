@@ -3302,14 +3302,14 @@ object OptionDlg: TOptionDlg
       end
       object TLabel
         Left = 651
-        Top = 403
+        Top = 512
         Width = 14
         Height = 15
         Caption = 'KB'
       end
       object TLabel
         Left = 651
-        Top = 436
+        Top = 545
         Width = 18
         Height = 15
         Caption = 'MB'
@@ -3323,7 +3323,7 @@ object OptionDlg: TOptionDlg
       end
       object AltBackSlashCheckBox: TCheckBox
         Left = 470
-        Top = 340
+        Top = 333
         Width = 205
         Height = 17
         Caption = '"\" '#12434' "'#8726'"(U+2216)'#12391#34920#31034
@@ -3331,7 +3331,7 @@ object OptionDlg: TOptionDlg
       end
       object AozoraCheckBox: TCheckBox
         Left = 684
-        Top = 315
+        Top = 308
         Width = 209
         Height = 17
         Caption = #38738#31354#25991#24235#24418#24335#12395#23550#24540#12377#12427
@@ -3339,11 +3339,11 @@ object OptionDlg: TOptionDlg
       end
       object BinMemMapedCheckBox: TCheckBox
         Left = 684
-        Top = 435
+        Top = 540
         Width = 203
         Height = 17
         Caption = #12513#12514#12522#12510#12483#12503#12489#12501#12449#12452#12523#12392#12375#12390#38283#12367
-        TabOrder = 31
+        TabOrder = 32
       end
       object CellAlphaEdit: TLabeledEdit
         Left = 265
@@ -3379,7 +3379,7 @@ object OptionDlg: TOptionDlg
       end
       object DecDfmStrCheckBox: TCheckBox
         Left = 684
-        Top = 341
+        Top = 333
         Width = 209
         Height = 17
         Caption = '.dfm '#12501#12449#12452#12523#12398#25991#23383#21015#20516#12434#12487#12467#12540#12489
@@ -3652,7 +3652,7 @@ object OptionDlg: TOptionDlg
       end
       object LimitBinEdit: TLabeledEdit
         Left = 589
-        Top = 433
+        Top = 538
         Width = 60
         Height = 23
         Alignment = taRightJustify
@@ -3661,12 +3661,12 @@ object OptionDlg: TOptionDlg
         EditLabel.Caption = #12496#12452#12490#12522#26368#22823#35501#36796#12469#12452#12474
         LabelPosition = lpLeft
         NumbersOnly = True
-        TabOrder = 30
+        TabOrder = 31
         Text = ''
       end
       object LimitTxtEdit: TLabeledEdit
         Left = 589
-        Top = 400
+        Top = 509
         Width = 60
         Height = 23
         Alignment = taRightJustify
@@ -3675,7 +3675,7 @@ object OptionDlg: TOptionDlg
         EditLabel.Caption = #12486#12461#12473#12488#26368#22823#35501#36796#12469#12452#12474
         LabelPosition = lpLeft
         NumbersOnly = True
-        TabOrder = 29
+        TabOrder = 30
         Text = ''
       end
       object RstViewLnCheckBox: TCheckBox
@@ -3779,7 +3779,7 @@ object OptionDlg: TOptionDlg
       end
       object UseXd2txCheckBox: TCheckBox
         Left = 470
-        Top = 315
+        Top = 308
         Width = 205
         Height = 17
         Caption = 'xd2txlib.dll '#12391#12486#12461#12473#12488#34920#31034
@@ -3809,7 +3809,7 @@ object OptionDlg: TOptionDlg
       end
       object FormatJsonCheckBox: TCheckBox
         Left = 470
-        Top = 365
+        Top = 358
         Width = 205
         Height = 17
         Caption = '.json '#12501#12449#12452#12523#12434#25972#24418#12375#12390#34920#31034
@@ -3830,6 +3830,44 @@ object OptionDlg: TOptionDlg
         Height = 17
         Caption = #12452#12531#12487#12531#12488#12460#12452#12489#12434#34920#31034
         TabOrder = 3
+      end
+      object WrapGroupBox: TGroupBox
+        Left = 460
+        Top = 388
+        Width = 434
+        Height = 95
+        Caption = #31105#21063#20966#29702
+        TabOrder = 29
+        object WordWrapCheckBox: TCheckBox
+          Left = 8
+          Top = 67
+          Width = 97
+          Height = 17
+          Caption = #12527#12540#12489#12521#12483#12503
+          TabOrder = 2
+        end
+        object JpWrapChar1Edit: TLabeledEdit
+          Left = 10
+          Top = 36
+          Width = 240
+          Height = 23
+          EditLabel.Width = 78
+          EditLabel.Height = 15
+          EditLabel.Caption = #34892#38957#31105#21063#25991#23383
+          TabOrder = 0
+          Text = ''
+        end
+        object JpWrapChar2Edit: TLabeledEdit
+          Left = 260
+          Top = 36
+          Width = 160
+          Height = 23
+          EditLabel.Width = 78
+          EditLabel.Height = 15
+          EditLabel.Caption = #34892#26411#31105#21063#25991#23383
+          TabOrder = 1
+          Text = ''
+        end
       end
     end
     object ImgViewerSheet: TTabSheet

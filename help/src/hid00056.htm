@@ -17,7 +17,7 @@
 	<param name="Keyword" value="xd2txlib.dll">
 	<param name="Keyword" value="タグジャンプ">
 	<param name="Keyword" value="フィルタ">
-	<param name="Keyword" value="マッチ数一覧">
+	<param name="Keyword" value="マッチ行数一覧">
 	<param name="Keyword" value="環境変数">
 	<param name="Keyword" value="結果リスト">
 	<param name="Keyword" value="正規表現">
@@ -183,7 +183,7 @@
     </dd>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> 次行表示 <span class="app_text">(<span class="red_text">Grep2 では無効</span>)</span></dt>
-    <dd>結果リストに、マッチした行以降の3行(空行は除く)を改行マークで区切って表示します。<br>
+    <dd>結果リストに、マッチした行以降の3行を改行マークで区切って表示します。空行はカウントしませんが、改行マークは追加されます。<br>
       検索終了後に変更した場合にも、表示が切り替わります。
     </dd>
 
@@ -228,13 +228,13 @@
       </div>
     </dd>
 
-    <dt class="no_bg">マッチ数一覧</dt>
+    <dt class="no_bg">マッチ行数一覧</dt>
     <dd>
-      結果リストが表示されている状態で<span class="btn_frame">F5</span>キーを押すと、ファイル毎のマッチ数一覧に切り替わります(表示メニューからも切り替え可能)。<br>
-      マッチ数一覧には、ファイル名とマッチ数の他に、ファイラーと同じ形式でサイズやタイムスタンプも表示されます。また、サブディレクトリ名は、その後ろに表示されます。対象がワークリストでサブディレクトリではない場合はフルパス表示になります。
+      結果リストが表示されている状態で<span class="btn_frame">F5</span>キーを押すと、ファイル毎のマッチ行数一覧に切り替わります(表示メニューからも切り替え可能)。<br>
+      マッチ行数一覧には、ファイル名とマッチ行数の他に、ファイラーと同じ形式でサイズやタイムスタンプも表示されます。また、サブディレクトリ名は、その後ろに表示されます。対象がワークリストでサブディレクトリではない場合はフルパス表示になります。
       <br>
       項目に対してファイルの閲覧や編集を行うと、そのファイルの最初のマッチ位置が開かれます。<br>
-      マッチ数一覧から通常の結果リストに戻るには、もう一度<span class="btn_frame">F5</span>キーを押してください。一覧で項目をダブルクリックするか<span class="btn_frame">ENTER</span>キーを押しても戻れます。
+      マッチ行数一覧から通常の結果リストに戻るには、もう一度<span class="btn_frame">F5</span>キーを押してください。一覧で項目をダブルクリックするか<span class="btn_frame">ENTER</span>キーを押しても戻れます。
     </dd>
 
     <dt class="no_bg" id="Filter">フィルタ</dt>

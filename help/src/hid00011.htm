@@ -27,6 +27,7 @@
     <param name="Keyword" value="メモリマップドファイル">
     <param name="Keyword" value="リッチテキスト">
     <param name="Keyword" value="ルーラ">
+    <param name="Keyword" value="ワードラップ">
     <param name="Keyword" value="強調表示">
     <param name="Keyword" value="青空文庫">
   </object>
@@ -50,8 +51,8 @@
       のいずれかを選択できます。<br>
       テキストビューアで<b>ルーラ</b>を表示している場合は、任意の位置をダブルクリックして設定することもできます(0以前の位置ではウィンドウ幅)。<br>
       <a href="hid00006.htm#SetWidth">→ SetWidth</a><br>
-      <hr><br>
     </dd>
+    <hr class="light"><br>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> ルーラを表示</dt>
     <dd>ルーラを表示します。<br>
@@ -220,8 +221,8 @@
         <b>table</b> には対応していませんが、"---- ---- ～" という形の区切りが挿入されます。<br>
         なお、<a href="hid00006.htm#HtmlToText">HtmlToText</a> コマンドのパラメータでこの設定を切り替えることもできます(<b>MD</b> で有効、<b>TX</b> で無効)。
       </div>
-      <hr><br>
     </dd>
+    <hr class="light"><br>
 
     <dt class="no_bg"><img src="chkbox.png" alt=""> xd2txlib.dll でテキスト表示</dt>
     <dd><b>xd2txlib.dll</b> がインストールされている場合、チェックすると、各種バイナリ文書からテキストを抽出して表示します。<br>
@@ -274,6 +275,21 @@
       </div>
       <br>
     </dd>
+
+    <dt id="WordWrap"><img src="grpbox.png" alt=""> 禁則処理</dt>
+    <dd>
+      指定した禁則文字について、ぶら下げ/追い出し処理を行います。<br>
+      無効にしたい場合は、指定を削除してください。<br>
+      <b>行頭禁則文字 </b><img src="edit.png" alt="">　<span class="def_text">(デフォルト: 、。，．？！）〕］｝〉》」』】,.?!)]}-)</span><br>
+      <b>行末禁則文字 </b><img src="edit.png" alt="">　<span class="def_text">(デフォルト: （〔［｛〈《「『【)</span><br>
+      <div class="spc_box">
+        <img src="chkbox.png" alt=""> <b>ワードラップ</b><br>
+        <div class="indent1">
+          英単語の途中で折り返さないようにします。なお次行頭が空白になる場合は、ぶら下げます。<br>
+        </div>
+      </div>
+    </dd>
+    <hr class="light"><br>
 
     <dt class="no_bg" id="FixedLimit">テキスト最大読込サイズ <img src="edit.png" alt="">　<span class="def_text">(デフォルト:
         256KB)</span></dt>

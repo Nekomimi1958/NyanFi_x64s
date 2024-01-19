@@ -1098,13 +1098,14 @@ void __fastcall TTxtViewer::UpdateScr(
 	else {
 		ClearDispLine();
 
-		int max_wd;
+		int maxWd;	//表示行最大幅
+		int hch_mgn = (!JpWrapChar2.IsEmpty() || !JpWrapChar2.IsEmpty())? 2 : 1;
 		if (!isFitWin && ViewFoldWidth>0) {
-			max_wd	= (ViewFoldWidth - 1) * HchWidth;
+			maxWd	= (ViewFoldWidth - hch_mgn) * HchWidth;
 			MaxHchX = ViewFoldWidth;
 		}
 		else {
-			max_wd	 = ViewBox->ClientWidth - HchWidth*2 - TopXpos;
+			maxWd	 = ViewBox->ClientWidth - HchWidth*(1 + hch_mgn) - TopXpos;
 			MaxHchX  = MaxFoldWd + 1;
 			isFitWin = true;
 		}
@@ -1444,11 +1445,43 @@ void __fastcall TTxtViewer::UpdateScr(
 				while (!tmp_buf.IsEmpty()) {
 					int n = 1;
 					int w = 0;
-					for (int j=1; j<tmp_buf.Length(); j++,n++) {
-						w = add_CharWidth(tmp_buf[j], w);	if (w>max_wd) break;
+					int tmp_len = tmp_buf.Length();
+					for (int j=1; j<tmp_len; j++,n++) {
+						w = add_CharWidth(tmp_buf[j], w);
+						if (w>maxWd) break;
 					}
 
-					UnicodeString sbuf = tmp_buf.SubString(1, n);	tmp_buf.Delete(1, n);
+					//禁則処理
+					if (n<tmp_len) {
+						WideChar c0 = tmp_buf[n];
+						WideChar c1 = tmp_buf[n + 1];
+						//追い出し
+						if (JpWrapChar2.Pos(c0)) {
+							n--;
+						}
+						//ぶら下げ
+						else if (JpWrapChar1.Pos(c1)) {
+							n++;
+						}
+						//ワードラップ
+						else if (WordWrap && isalnum(c0)) {
+							if (c1==' ') {
+								n++;			//ぶら下げ
+							}
+							else if (isalnum(c1)) {
+								for (int i=n-1; i>1; i--) {
+									if (!isalnum(tmp_buf[i])) {
+										n = i;
+										break;
+									}
+								}
+							}
+						}
+					}
+
+					UnicodeString sbuf = tmp_buf.SubString(1, n);
+					tmp_buf.Delete(1, n);
+
 					if (ind_n2>0 && !tmp_buf.IsEmpty()) tmp_buf.Insert(StringOfChar(_T('　'), ind_n2), 1);
 					if (tmp_buf.IsEmpty()) sbuf += "\n";
 					line_rec *lp = AddDispLine(sbuf, org_lno, idx++);

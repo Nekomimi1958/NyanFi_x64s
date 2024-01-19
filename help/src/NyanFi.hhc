@@ -22,7 +22,11 @@
 			<param name="Name" value="画面構成">
 			<param name="Local" value="hid00004.htm">
 			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
+    <LI> <OBJECT type="text/sitemap">
+      <param name="Name" value="用語について">
+      <param name="Local" value="hid00106.htm">
+      </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="コマンド">
 			<param name="Local" value="hid00005.htm">
 			</OBJECT>

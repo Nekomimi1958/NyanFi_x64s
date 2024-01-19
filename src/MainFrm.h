@@ -2452,7 +2452,7 @@ private:	// ÉÜÅ[ÉUÅ[êÈåæ
 	void __fastcall ClearViewImage();
 	void __fastcall SetSeekStat(int idx);
 	void __fastcall SetViewFileIdx();
-	int  __fastcall FindFileCore(bool dir_sw = false, int tag = -1, UnicodeString set_name = EmptyStr);
+	int  __fastcall FindFileCore(int tag = -1, UnicodeString set_name = EmptyStr);
 	void __fastcall FindFileDlgExecute(bool both = false, UnicodeString lst_name = EmptyStr);
 	int  __fastcall FindHardLinkCore(UnicodeString fnam, int tag);
 	int  __fastcall FindMarkCore(int tag = -1);

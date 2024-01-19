@@ -474,6 +474,11 @@ extern bool ShowSeekBar;
 extern bool WarnHighlight;
 extern bool DoublePage;
 extern bool RightBind;
+
+extern UnicodeString JpWrapChar1;
+extern UnicodeString JpWrapChar2;
+extern bool WordWrap;
+
 extern bool PermitDotCmds;
 extern bool InheritDotNyan;
 extern bool DotNyanPerUser;
@@ -1402,6 +1407,7 @@ struct flist_stt {
 	bool is_narrow;				//絞り込み
 	bool find_Loaded;			//ファイルから読み込んだリスト
 	bool find_UseSet;			//検索設定ファイルを使用
+	int  find_SortMode;			//検索設定ファイルによるソートモード設定
 
 	bool find_Dir;				//ディレクトリ検索
 	bool find_Both;				//ファイル・ディレクトリ検索
@@ -1412,9 +1418,9 @@ struct flist_stt {
 	bool find_MARK;				//マーク検索
 	bool find_TAG;				//タグ検索
 	bool find_TAG_all;			//すべてのタグにマッチ
+	bool find_DICON;			//フォルダアイコン検索
 	bool find_DUPL;				//重複ファイルの検索
 	bool find_HLINK;			//ハードリンク列挙
-	bool find_DICON;			//フォルダアイコン検索
 
 	bool find_RegEx;			//正規表現
 	bool find_And;				//AND検索
@@ -1430,6 +1436,7 @@ struct flist_stt {
 
 	UnicodeString find_Path;	//検索パス
 	UnicodeString find_DirList;	//検索ディレクトリ・リスト
+	UnicodeString find_SkipDir;	//除外ディレクトリ(;区切り)
 	UnicodeString find_Name;	//検索名(ハードリンク用)
 	UnicodeString find_Mask;	//マスク
 	UnicodeString find_Keywd;	//キーワード
@@ -1437,9 +1444,12 @@ struct flist_stt {
 	UnicodeString find_Icons;	//フォルダアイコン(改行区切り)
 
 	TStringList  *find_SubList;	//選択サブディレクトリ
+
 	int  find_DT_mode;			//日付条件
 	TDateTime find_DT_value;
 	UnicodeString find_DT_str;
+	int  find_DT_rel;			//相対指定値
+
 	int  find_SZ_mode;			//サイズ条件
 	__int64 find_SZ_value;
 	int  find_CT_mode;			//内容条件
@@ -1892,8 +1902,9 @@ void save_DirHistory(UsrIniFile *ini_file);
 bool save_TagGroup(UnicodeString fnam);
 
 void clear_FindStt(flist_stt *lst_stt);
-bool save_FindSettings(int tag, UnicodeString fnam);
-bool load_FindSettings(int tag, UnicodeString fnam);
+bool save_FindSettings(UnicodeString fnam, flist_stt *lst_stt);
+bool load_FindSettings(UnicodeString fnam, flist_stt *lst_stt);
+void get_FindSetInf(UnicodeString fnam, TStringList *lst);
 
 bool is_FindAll(flist_stt *lst_stt);
 UnicodeString get_FindInfStr(bool pnam_sw);
@@ -2064,7 +2075,7 @@ bool is_TextFile(UnicodeString fnam, int *code_page = NULL, UnicodeString *line_
 int  CountListLines(TStringList *lst, UnicodeString fnam, int *rem_cnt, int *blk_cnt);
 
 UnicodeString get_IniTypeStr(file_rec *fp);
-
+bool is_FindSet(file_rec *fp);
 bool is_MenuFile(file_rec *fp);
 bool is_ResultList(file_rec *fp);
 bool is_AudioVideo(UnicodeString fnam);

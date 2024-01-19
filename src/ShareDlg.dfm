@@ -27,8 +27,6 @@ object NetShareDlg: TNetShareDlg
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 228
-    ExplicitHeight = 292
     object ShareListBox: TListBox
       Left = 0
       Top = 0
@@ -40,12 +38,11 @@ object NetShareDlg: TNetShareDlg
       BorderStyle = bsNone
       PopupMenu = PopupMenu1
       TabOrder = 0
+      StyleElements = [seBorder]
       OnDblClick = ShareListBoxDblClick
       OnDrawItem = ShareListBoxDrawItem
       OnKeyDown = ShareListBoxKeyDown
       OnKeyPress = ShareListBoxKeyPress
-      ExplicitWidth = 224
-      ExplicitHeight = 292
     end
   end
   object HiddenCanBtn: TButton
@@ -58,8 +55,6 @@ object NetShareDlg: TNetShareDlg
     ModalResult = 2
     TabOrder = 2
     TabStop = False
-    ExplicitTop = 321
-    ExplicitWidth = 228
   end
   object PathTabControl: TTabControl
     Left = 0
@@ -75,7 +70,6 @@ object NetShareDlg: TNetShareDlg
     TabStop = False
     OnChange = PathTabControlChange
     OnDrawTab = PathTabControlDrawTab
-    ExplicitWidth = 228
   end
   object PopupMenu1: TPopupMenu
     Left = 24

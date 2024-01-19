@@ -1286,7 +1286,6 @@ void __fastcall TNyanFiForm::FormDestroy(TObject *Sender)
 	delete ImgInfScrPanel;
 	delete TxtViewScrPanel;
 	delete ResultScrPanel;
-	OutDebugStr("  < delete ScrPanels");
 
 	delete IdFTP1;
 	delete IdAntiFreeze1;
@@ -7817,10 +7816,13 @@ void __fastcall TNyanFiForm::SetSttBarInf(
 	UnicodeString stt_str, bnam, pnam;
 
 	if (fp) {
-		if (fp->is_virtual && !contains_Slash(fp->f_name))
-			pnam.sprintf(_T("%s%s\\%s"), CurPath[CurListTag].c_str(), ExtractFileName(fp->arc_name).c_str(), fp->p_name.c_str());
-		else
+		if (fp->is_virtual && !contains_Slash(fp->f_name)) {
+			pnam.sprintf(_T("%s%s\\%s"), 
+				CurPath[CurListTag].c_str(), ExtractFileName(fp->arc_name).c_str(), fp->p_name.c_str());
+		}
+		else {
 			pnam = fp->p_name;
+		}
 		bnam = warn_filename_RLO(fp->n_name);
 	}
 	else {
@@ -7856,7 +7858,9 @@ void __fastcall TNyanFiForm::SetSttBarInf(
 			else if (remove_top_s(fmt, 'S')) {
 				stt_str += get_word_i_idx("名前|拡張子|日時|サイズ|属性|なし|場所", CurSortMode());
 			}
-			else if (remove_top_s(fmt, "HS"))	stt_str.cat_sprintf(_T("%c%c"), (ShowHideAtr? 'H' : '_'), (ShowSystemAtr? 'S' : '_'));
+			else if (remove_top_s(fmt, "HS")) {
+				stt_str.cat_sprintf(_T("%c%c"), (ShowHideAtr? 'H' : '_'), (ShowSystemAtr? 'S' : '_'));
+			}
 			else if (remove_top_s(fmt, "DV"))	div_p = stt_str.Length() + 1;
 			else if (remove_top_s(fmt, 'M'))	{ if (fp_ok) stt_str += IniFile->GetMarkMemo(fp->r_name); }
 			else if (remove_top_s(fmt, 'Z'))	{ if (fp_ok) stt_str += get_FileSizeStr(fp->f_size); }
@@ -7895,13 +7899,14 @@ void __fastcall TNyanFiForm::SetListHeader(int tag)
 
 		flist_stt *lst_stt = &ListStt[tag];
 		int mgn = hp->Width - lst_stt->lxp_right + 8;
+		int hwd = hp->ClientWidth;
 		sp->Items[1]->Width = lst_stt->lwd_fext + (HideSizeTime? mgn : 8);
 		sp->Items[4]->Width = HideSizeTime? 0 :
-								(lst_stt->is_Find && FindPathColumn)? std::max(hp->ClientWidth - ListStt[tag].lxp_path, 0) : 0;
+								(lst_stt->is_Find && FindPathColumn)? std::max(hwd - ListStt[tag].lxp_path, 0) : 0;
 		sp->Items[3]->Width = HideSizeTime? 0 :
-								std::max(hp->ClientWidth - sp->Items[4]->Width - ListStt[tag].lxp_time, 0);
+								std::max(hwd - sp->Items[4]->Width - ListStt[tag].lxp_time, 0);
 		sp->Items[2]->Width = HideSizeTime? 0 :
-								std::max(hp->ClientWidth - sp->Items[4]->Width - sp->Items[3]->Width - ListStt[tag].lxp_size, 0);
+								std::max(hwd - sp->Items[4]->Width - sp->Items[3]->Width - ListStt[tag].lxp_size, 0);
 		adjust_HeaderSecWidth(hp, 0);
 
 		for (int i=0; i<sp->Count; i++) {
@@ -9443,10 +9448,7 @@ void __fastcall TNyanFiForm::ReloadList(
 			}
 			//検索結果
 			else if (lst_stt->is_Find) {
-				lst_stt->find_DICON? FindFolderIconCore(i) :
-				lst_stt->find_HLINK? FindHardLinkCore(lst_stt->find_Name, i) :
-				lst_stt->find_MARK ? FindMarkCore(i) :
-				lst_stt->find_TAG  ? FindTagCore(i) : FindFileCore(lst_stt->find_Dir, i);
+				FindFileCore(i);
 			}
 			//代替データストリーム
 			else if (lst_stt->is_ADS) {
@@ -17871,29 +17873,41 @@ void __fastcall TNyanFiForm::FilterComboBoxKeyPress(TObject *Sender, System::Wid
 //ファイル/ディレクトリ名検索
 //---------------------------------------------------------------------------
 int __fastcall TNyanFiForm::FindFileCore(
-	bool dir_sw,			//ディレクトリ検索	(default = false);
 	int tag,				//リストタグ		(default = -1 : CurListTag)
 	UnicodeString set_name)	//検索設定ファイル	(default = EmptyStr)
 {
-	FindBusy = true;
-	if (tag!=-1) FindTag = tag;
-
+	FindTag = (tag!=-1)? tag : CurListTag;
 	flist_stt *cur_stt = &ListStt[FindTag];
 	cur_stt->last_fl_idx = FileListBox[FindTag]->ItemIndex;
 
-	if (!set_name.IsEmpty() && !load_FindSettings(FindTag, set_name)) return -2;
-	cur_stt->find_UseSet = !set_name.IsEmpty();
+	if (!set_name.IsEmpty()) {
+		if (!load_FindSettings(set_name, cur_stt)) return -2;
+	} 
 
+	cur_stt->find_UseSet = !set_name.IsEmpty();
+	if (cur_stt->find_UseSet) {
+		if (cur_stt->find_SortMode!=-1) SortMode[FindTag] = cur_stt->find_SortMode;
+	}
+	else {
+		cur_stt->find_PathSort = FindPathColumn;
+	}
+
+	if (cur_stt->find_TAG)		return FindTagCore(FindTag);
+	if (cur_stt->find_MARK)		return FindMarkCore(FindTag);
+	if (cur_stt->find_DICON)	return FindFolderIconCore(FindTag);
+	if (cur_stt->find_HLINK)	return FindHardLinkCore(cur_stt->find_Name, FindTag);
+
+	FindBusy = true;
 	UnicodeString msg;
 	StartLog(msg.sprintf(_T("検索開始  %s"), cur_stt->find_Path.c_str()));
 	if (!cur_stt->find_DirList.IsEmpty()) {
-		AddLog(msg.sprintf(_T("    リスト: %s"), to_relative_name(cur_stt->find_DirList).c_str()));
+		AddLog(msg.sprintf(_T("リスト: %s"), to_relative_name(cur_stt->find_DirList).c_str()));
 	}
 	if (cur_stt->find_UseSet) {
-		AddLog(msg.sprintf(_T("  検索設定: %s"), to_relative_name(set_name).c_str()));
+		AddLog(msg.sprintf(_T("検索設定: %s"), to_relative_name(set_name).c_str()));
 	}
-    AddLog(msg.sprintf(_T("    マスク: %s"), cur_stt->find_Mask.c_str()));
-	if (!cur_stt->find_Keywd.IsEmpty()) AddLog(msg.sprintf(_T("  検索語: %s"), cur_stt->find_Keywd.c_str()));
+    AddLog(msg.sprintf(_T("マスク: %s"), cur_stt->find_Mask.c_str()));
+	if (!cur_stt->find_Keywd.IsEmpty()) AddLog(msg.sprintf(_T("検索語: %s"), cur_stt->find_Keywd.c_str()));
 
 	ShowMessageHint(USTR_SearchingESC, col_bgHint, false, true);
 	SttWorkMsg(_T("検索中..."), FindTag);
@@ -17901,7 +17915,7 @@ int __fastcall TNyanFiForm::FindFileCore(
 	TStringList *r_lst = ResultList[FindTag];
 	std::unique_ptr<TStringList> o_lst(new TStringList());
 
-	if (dir_sw || cur_stt->find_UseSet) cur_stt->is_narrow = false;
+	if (cur_stt->find_Dir || cur_stt->find_UseSet) cur_stt->is_narrow = false;
 
 	//絞り込みのために現在のリストをコピー
 	if (cur_stt->is_narrow) {
@@ -17955,7 +17969,7 @@ int __fastcall TNyanFiForm::FindFileCore(
 		}
 		//通常検索
 		else {
-			if (dir_sw) {
+			if (cur_stt->find_Dir) {
 				for (int i=0; i<cur_stt->find_SubList->Count && !FindAborted; i++)
 					get_FindListD(cur_stt->find_SubList->Strings[i], cur_stt, r_lst, FindTag);
 			}
@@ -17973,7 +17987,6 @@ int __fastcall TNyanFiForm::FindFileCore(
 		int idx = lp->ItemIndex;
 		file_rec *cfp = (idx>=0 && idx<r_lst->Count-1)? (file_rec*)r_lst->Objects[idx] : NULL;
 		ApplySelMask(r_lst, FindTag);
-		if (!cur_stt->find_UseSet) cur_stt->find_PathSort = FindPathColumn;
 		SortList(r_lst, FindTag);
 		SetFlItemWidth(r_lst, FindTag);
 		update_FileListBox(r_lst, FindTag, (cfp? r_lst->IndexOfObject((TObject*)cfp) : 0));
@@ -18025,6 +18038,7 @@ void __fastcall TNyanFiForm::FindDirDlgActionExecute(TObject *Sender)
 		CurStt->find_DT_mode  = FindFileDlg->DateRadioGroup->ItemIndex;
 		CurStt->find_DT_value = FindFileDlg->FindDate;
 		CurStt->find_DT_str   = FindFileDlg->FindDateStr;
+		CurStt->find_DT_rel   = FindFileDlg->FindDateRel;
 		CurStt->find_AT_mode  = FindFileDlg->AttrRadioGroup->ItemIndex;
 		CurStt->find_AT_value = FindFileDlg->FindAttr;
 		CurStt->find_Warn	  = FindFileDlg->DirWarnCheckBox->Checked;
@@ -18048,7 +18062,7 @@ void __fastcall TNyanFiForm::FindDirDlgActionExecute(TObject *Sender)
 		}
 
 		if (!CurStt->find_Mask.IsEmpty()) {
-			int res = FindFileCore(true);
+			int res = FindFileCore();
 			if		(res==0)  SttBarWarnUstr(USTR_NotFound);
 			else if (res==-1) SttBarWarnUstr(USTR_Canceled);
 			else {
@@ -18090,6 +18104,8 @@ int __fastcall TNyanFiForm::FindFolderIconCore(int tag)
 	CurWorking = false;
 
 	if (r_cnt>0) {
+		cur_stt->is_Find = true;
+
 		//戻り用
 		file_rec *fp = cre_new_up_rec(tag);
 		fp->f_time = Now();
@@ -18100,6 +18116,7 @@ int __fastcall TNyanFiForm::FindFolderIconCore(int tag)
 		TListBox *lp = FileListBox[tag];
 		lp->Color = col_bgFind;
 		UpdateBgImage();
+		SortList(r_lst, tag);
 		SetFlItemWidth(r_lst, tag);
 		update_FileListBox(r_lst, tag, 0);
 		ViewCurFileInf();
@@ -18127,7 +18144,6 @@ void __fastcall TNyanFiForm::FindFolderIconActionExecute(TObject *Sender)
 		if (ico_lst->Count==0) SkipAbort();
 
 		clear_FindStt(CurStt);
-		CurStt->is_Find 	  = true;
 		CurStt->find_Path	  = CurPath[CurListTag];
 		CurStt->find_DICON	  = true;
 		CurStt->find_Icons	  = ico_lst->Text;
@@ -18501,6 +18517,7 @@ void __fastcall TNyanFiForm::FindFileDlgExecute(
 		clear_FindStt(CurStt);
 		CurStt->find_Path	 = CurPath[CurListTag];
 		CurStt->find_DirList = lst_name;
+		CurStt->find_SkipDir = FindFileDlg->SkipDirComboBox->Text;
 		CurStt->find_Both	 = FindFileDlg->FindBoth;
 		CurStt->find_SubDir	 = FindFileDlg->SubDirCheckBox->Checked;
 		CurStt->find_Arc	 = FindFileDlg->ArcCheckBox->Checked;
@@ -18516,6 +18533,7 @@ void __fastcall TNyanFiForm::FindFileDlgExecute(
 		CurStt->find_DT_mode  = FindFileDlg->DateRadioGroup->ItemIndex;
 		CurStt->find_DT_value = FindFileDlg->FindDate;
 		CurStt->find_DT_str   = FindFileDlg->FindDateStr;
+		CurStt->find_DT_rel   = FindFileDlg->FindDateRel;
 		CurStt->find_SZ_mode  = FindFileDlg->SizeRadioGroup->ItemIndex;
 		CurStt->find_SZ_value = EditToInt(FindFileDlg->SizeEdit);
 
@@ -18667,7 +18685,7 @@ void __fastcall TNyanFiForm::FindFileDlgExecute(
 
 		if (!CurStt->is_narrow) {
 			CurStt->find_SubList->Clear();
-			//ディレクトリリストが対象
+			//ディレクトリ・リストが対象
 			if (!lst_name.IsEmpty()) {
 				std::unique_ptr<TStringList> fbuf(new TStringList());
 				load_text_ex(lst_name, fbuf.get());
@@ -18675,9 +18693,7 @@ void __fastcall TNyanFiForm::FindFileDlgExecute(
 					UnicodeString lbuf = get_pre_tab(fbuf->Strings[i]);
 					if (lbuf.IsEmpty() || StartsStr(';', lbuf)) continue;
 					UnicodeString dnam = cv_env_str(lbuf);
-					if (dir_exists(dnam)) {
-						CurStt->find_SubList->Add(ExcludeTrailingPathDelimiter(dnam));
-					}
+					if (dir_exists(dnam)) CurStt->find_SubList->Add(ExcludeTrailingPathDelimiter(dnam));
 				}
 			}
 			//カレント下が対象
@@ -19022,7 +19038,6 @@ int __fastcall TNyanFiForm::FindTagCore(int tag)
 		usr_TAG->UpdateFile();
 
 		ApplySelMask(r_lst, FindTag);
-		cur_stt->find_PathSort = FindPathColumn;
 		SortList(r_lst, FindTag);
 		SetFlItemWidth(r_lst, FindTag);
 		update_FileListBox(r_lst, FindTag);
@@ -21350,21 +21365,8 @@ void __fastcall TNyanFiForm::LoadFindSetActionExecute(TObject *Sender)
 		UnicodeString fnam;
 		if (!ActionParam.IsEmpty()) {
 			if (SameStr(ActionParam, "*")) {
-				//メニューの作成
-				std::unique_ptr<TStringList> l_lst(new TStringList());
-				std::unique_ptr<TStringList> m_buf(new TStringList());
-				get_files(ExePath, "*.ini", l_lst.get(), true);
-				for (int i=0,n=0; i<l_lst->Count; i++) {
-					UnicodeString inam = l_lst->Strings[i];
-					std::unique_ptr<UsrIniFile> set_file(new UsrIniFile(inam));
-					if (set_file->SectionExists("FindSettings")) {
-						m_buf->Add(make_MenuAccStr(n++).cat_sprintf(_T("%s\t%s"), get_base_name(inam).c_str(), inam.c_str()));
-					}
-				}
-				//選択
-				ExePopMenuList(m_buf.get(), true);
-				if (PopMenuIndex==-1) SkipAbort();
-				fnam = get_post_tab(m_buf->Strings[PopMenuIndex]);
+				NetShareDlg->isFindSet = true;
+				if (NetShareDlg->ShowModal()==mrOk) fnam = NetShareDlg->FileName;
 			}
 			else {
 				fnam = to_absolute_name(ActionParam);
@@ -21375,8 +21377,9 @@ void __fastcall TNyanFiForm::LoadFindSetActionExecute(TObject *Sender)
 			fnam = UserModule->OpenDlgExecute();
 			FindSetPath = ExtractFilePath(fnam);
 		}
+		if (fnam.IsEmpty()) SkipAbort();
 
-		int res = FindFileCore(CurStt->find_Dir, CurListTag, fnam);
+		int res = FindFileCore(CurListTag, fnam);
 		if		(res==0)  SttBarWarnUstr(USTR_NotFound);
 		else if (res==-1) SttBarWarnUstr(USTR_Canceled);
 		else if (res==-2) TextAbort(_T("検索設定が読み込みません。"));
@@ -21405,7 +21408,6 @@ void __fastcall TNyanFiForm::LoadResultListActionExecute(TObject *Sender)
 			UserModule->PrepareOpenDlg(_T("結果リストを読み込む"), F_FILTER_TXT, _T("*.txt"), ResultListPath);
 			fnam = UserModule->OpenDlgExecute();
 		}
-
 		if (fnam.IsEmpty()) SkipAbort();
 		if (!file_exists(fnam)) UserAbort(USTR_FileNotOpen);
 		ResultListPath = ExtractFilePath(fnam);
@@ -21896,7 +21898,7 @@ void __fastcall TNyanFiForm::MaskFindActionExecute(TObject *Sender)
 		//選択していなければカレントを対象に
 		if (CurStt->find_SubList->Count==0) CurStt->find_SubList->Add(CurStt->find_Path);
 
-		int res = FindFileCore(CurStt->find_Dir);
+		int res = FindFileCore();
 		if (res==0)  {
 			if (!ExeCmdsBusy) SttBarWarnUstr(USTR_NotFound);
 		}
@@ -22989,8 +22991,8 @@ void __fastcall TNyanFiForm::OpenStandardActionExecute(TObject *Sender)
 					not_down	 = true;
 				}
 				//検索設定
-				else if (OpenStdFindSet && SameText(get_IniTypeStr(cfp), "検索設定")) {
-					int res = FindFileCore(CurStt->find_Dir, CurListTag, cfp->f_name);
+				else if (OpenStdFindSet && is_FindSet(cfp)) {
+					int res = FindFileCore(CurListTag, cfp->f_name);
 					if		(res==0)  SttBarWarnUstr(USTR_NotFound);
 					else if (res==-1) SttBarWarnUstr(USTR_Canceled);
 					else if (res==-2) TextAbort(_T("検索設定が読み込みません。"));
@@ -24479,10 +24481,14 @@ void __fastcall TNyanFiForm::ReturnListActionUpdate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::SaveAsFindSetActionExecute(TObject *Sender)
 {
+	if (CurStt->find_DUPL) {
+		SetActionAbort(USTR_OpeNotSuported); return;
+	}
+
 	UserModule->PrepareSaveDlg(LoadUsrMsg(USTR_SaveAs, _T("検索設定")).c_str(), F_FILTER_INI, NULL, FindSetPath);
 	UnicodeString fnam = UserModule->SaveDlgExecute();
 	if (!fnam.IsEmpty()) {
-		if (save_FindSettings(FindTag, fnam)) {
+		if (save_FindSettings(fnam, &ListStt[FindTag])) {
 			FindSetPath = ExtractFilePath(fnam);
 			ShowHintAndStatus(UnicodeString().sprintf(_T("検索設定[%s]を保存しました。"), ExtractFileName(fnam).c_str()));
 		}
@@ -25123,10 +25129,7 @@ void __fastcall TNyanFiForm::SelMaskActionExecute(TObject *Sender)
 				RecoverFileList(CurListTag);
 			}
 			else {
-				CurStt->find_DICON? FindFolderIconCore(CurListTag) :
-				CurStt->find_HLINK? FindHardLinkCore(CurStt->find_Name, CurListTag) :
-				CurStt->find_MARK ? FindMarkCore(CurListTag) :
-				CurStt->find_TAG  ? FindTagCore(CurListTag) : FindFileCore(CurStt->find_Dir, CurListTag);
+				FindFileCore(CurListTag);
 			}
 		}
 		else if (CurStt->is_FTP) {
@@ -30410,7 +30413,7 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 		dx = x_1 = tmp_rc.Left;
 	}
 
-	//マッチ数一覧
+	//マッチ行/置換数一覧
 	if (ShowMatchListAction->Checked) {
 		//ファイル名
 		int xp = xp_L + dx;
@@ -30577,7 +30580,7 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 				//次行表示
 				if (!s1.IsEmpty()) {
 					s1.Insert("\n", 1);
-					if (GrepTrimTop) s1 = TRegEx::Replace(s1, "\\n[\\s\\t]+", "\n");
+					if (GrepTrimTop) s1 = TRegEx::Replace(s1, "\\n[\\s\\t]+\\n", "\n\n");
 					TabCrTextOut(s1, tmp_cv, xp, yp,
 						GrepAdjNextLn? AdjustColor(get_ListFgCol(), ADJCOL_FGLIST) : get_ListFgCol());
 				}
@@ -31251,7 +31254,7 @@ int __fastcall TNyanFiForm::ExeGrepCore(UnicodeString dnam, int &idx_tag)
 }
 
 //---------------------------------------------------------------------------
-//マッチ/置換数一覧の作成
+//マッチ行/置換数一覧の作成
 //---------------------------------------------------------------------------
 int __fastcall TNyanFiForm::MakeMatchRepList()
 {
@@ -31383,7 +31386,7 @@ void __fastcall TNyanFiForm::GrepStartActionExecute(TObject *Sender)
 
 	if (ResultListBox->Count>0) {
 		GrepResultList->Assign(GrepResultBuff);
-		//マッチ数一覧の作成
+		//マッチ行/置換数一覧の作成
 		MakeMatchRepList();	
 
 		//検索語を履歴に追加
@@ -32381,7 +32384,7 @@ void __fastcall TNyanFiForm::ShowMatchListActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction*)Sender;
 	ap->Visible = ScrMode==SCMD_GREP;
-	ap->Caption = (GrepPageControl->ActivePage==ReplaceSheet)? "置換数一覧を表示" : "マッチ数一覧を表示";
+	ap->Caption = (GrepPageControl->ActivePage==ReplaceSheet)? "置換数一覧を表示" : "マッチ行数一覧を表示";
 	ap->Enabled = ap->Visible && (!ap->Checked? GrepMatchList->Count>0 : true); 
 }
 //---------------------------------------------------------------------------

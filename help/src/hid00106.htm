@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+  <title>用語について</title>
+  <link rel="stylesheet" type="text/css" href="help.css">
+  <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="コマンド">
+	<param name="Keyword" value="コマンドファイル">
+	<param name="Keyword" value="タグ">
+	<param name="Keyword" value="タブ">
+	<param name="Keyword" value="ディレクトリ">
+	<param name="Keyword" value="ファイル名主部">
+	<param name="Keyword" value="ワークリスト">
+	<param name="Keyword" value="仮想リスト">
+	<param name="Keyword" value="代替データストリーム">
+	<param name="Keyword" value="栞マーク">
+  </object>
+</head>
+
+<body>
+
+  <h1>用語について</h1>
+
+  <dl>
+    <dt>タブ</dt>
+    <dd>
+      表示メニューまたは <a href="hid00005.htm#ShowTabBar">ShowTabBar</a> コマンドで<b>タブバー</b>を表示できます。<br>
+      タブは、一般的なタブ型ファイラーとは異なり、左右のディレクトリを組として切り替えるためのボタンとして機能します。<br>
+    </dd>
+
+    <dt>コマンド</dt>
+    <dd>
+      ほとんどの機能は、<a href="hid00005.htm">コマンド</a>で処理されます。<br>
+      コマンドは、キーや<a href="hid00068.htm">ツールバー</a>などに割り当てられます。また、<a href="hid00005.htm#InputCommands">InputCommands</a> コマンドの入力ボックスからも実行できます。<br>
+    </dd>
+
+    <dt>コマンドファイル</dt>
+    <dd>
+      <b>NyanFi</b> のコマンドを記述した、テキストファイルです。バッチファイルに似た文法によって、一連の処理を行えます。<br>
+      コマンドファイルは、<a href="hid00063.htm">ExeCommands</a> コマンドなどで実行できます。<br>
+    </dd>
+
+    <dt id="WorkList">ワークリスト</dt>
+    <dd>
+      いろいろな場所にあるファイルやディレクトリをまとめた参照リストです(→ <a href="hid00060.htm">ワークリスト</a>)。<br>
+      よく使うファイルやディレクトリを登録しておくと素早くアクセスできます。<br>
+      <a href="hid00005.htm#WorkList">WorkList</a> コマンドで<a href="#VirtualList">仮想リスト</a>として開けます。<br>
+    </dd>
+
+    <dt>タグ</dt>
+    <dd>
+      ファイルやディレクトリには、<a href="hid00005.htm#AddTag">AddTag</a> コマンドで<b>タグ</b>(ラベル)を付けて管理することができます(<a href="hid00088.htm">→ タグによるファイル管理</a>)。<br>
+      これは、「プロパティ」で設定できるタグとは無関係です。また対象そのものには一切変更を加えません。<br>
+      タグに関するデータは、<b>NyanFi</b> 実行ディレクトリの <b>TAGDATA.TXT</b> というファイルに保存されています。<br>
+    </dd>
+
+    <dt>栞マーク</dt>
+    <dd>
+      ファイルやディレクトリには、<a href="hid00005.htm#Mark">Mark</a> コマンドで<b>栞マーク</b>を設定できます。その際にメモを付けることも可能です。<br>
+      <a href="hid00005.htm#MarkList">MarkList</a> コマンドで<a href="hid00070.htm">栞マーク一覧</a>を開くと、栞マークが設定されている項目を確認できます
+      。<br>
+      栞マークに関するデータは、INIファイルに保存されます。<br>
+    </dd>
+
+    <dt>ディレクトリ</dt>
+    <dd>
+      Windows では一般的に「フォルダ」と呼ばれますが、<b>NyanFi</b> はエクスプローラのようなシェル拡張系のファイラーではないため、<b>ディレクトリ</b>と呼んでいます。ディレクトリの中身はファイル/ディレクトリだけですが、フォルダにはファイルではないオブジェクトが含まれている場合があります。<br>
+    </dd>
+
+    <dt>ファイル名主部</dt>
+    <dd>
+      パス無しファイル名から拡張子を除いた部分です。一般的には「ベース名」と呼ばれていますが、拡張子を含む場合もあり、曖昧性を避けるため <b>NyanFi</b> では<b>ファイル名主部</b>と呼んでいます。<br>
+      例えば "D:\NyanFi64s\NyanFi.exe" というファイル名の場合、ファイル名主部は "NyanFi" になります。<br>
+    </dd>
+
+    <dt id="VirtualList">仮想ディレクトリ/リスト</dt>
+    <dd>
+      アーカイブファイルは、仮想的なディレクトリのように開いて扱うことができます。<br>
+      また、<a href="#WorkList">ワークリスト</a>、検索結果リスト(→ <a href="hid00005.htm#SaveAsResultList">SaveAsResultList</a>/<a href="hid00005.htm#LoadResultList">LoadResultList</a>)、検索設定ファイル(→ <a href="hid00005.htm#SaveAsFindSet">SaveAsFindSet</a>/<a href="hid00005.htm#LoadFindSet">LoadFindSet</a>)なども、仮想的なファイルリストとして表示できます。<br>
+    </dd>
+
+    <dt>代替データストリーム</dt>
+    <dd>
+      Windows の NTFS の機能のひとつで、通常のファイルやディレクトリに追加データを格納できます。<br>
+      <b>NyanFi</b> では、サムネイルキャッシュなどで利用しています(<a href="hid00102.htm">→ NyanFi が用いるファイル</a>)。<br>
+      <a href="hid00005.htm#OpenADS">OpenADS</a> コマンドで仮想リストとして開き、コピー、削除、閲覧などを行えます。<br>
+    </dd>
+  </dl>
+  <br><br><br><br>
+
+</body>
+
+</html>

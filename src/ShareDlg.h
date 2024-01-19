@@ -78,11 +78,13 @@ private:	// ユーザー宣言
 public:		// ユーザー宣言
 	UnicodeString ComputerName;
 	UnicodeString PathName;
+	UnicodeString FileName;
 
 	bool isShare;		//共有フォルダ
 	bool isSelDir;		//ディレクトリ選択
 	bool isSelSub;		//サブディレクトリ選択
 	bool isLibrary;		//ライブラリ
+	bool isFindSet;		//検索設定
 	bool rqRetPath;		//選択したパスを返す(ディレクトリ変更は行わない)
 
 	__fastcall TNetShareDlg(TComponent* Owner);

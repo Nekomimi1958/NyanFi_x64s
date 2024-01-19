@@ -140,12 +140,15 @@ void __fastcall TGrepThread::Execute()
 				if (found) {
 					UnicodeString itmstr;	//ファイル名 [TAB] 行番号:Idx:Len [TAB] マッチ行\n次3行
 					itmstr.sprintf(_T("%s\t%d:%d:%d\t%s\n"), FileName.c_str(), lp + 1, r_idx, r_len, lbuf.c_str());
-					//次3行分(空行は除く)を付加
+					//次3行分を付加(空行は除くが、\nは挿入)
 					int p = lp + 1;
 					int lcnt = 0;
 					while (p<f_buf->Count && lcnt<3) {
 						UnicodeString tmp = FLT->GetDispLine(p++);
-						if (tmp.IsEmpty()) continue;
+						if (tmp.IsEmpty()) {
+							itmstr += "\n";
+							continue;
+						}
 						itmstr.cat_sprintf(_T("%s\n"), tmp.c_str());
 						lcnt++;
 					}

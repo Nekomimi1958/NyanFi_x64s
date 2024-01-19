@@ -500,6 +500,8 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	HdrStrEdit->Tag 			= (NativeInt)&HtmHdrStr;
 	DelBlkClsEdit->Tag			= (NativeInt)&HtmDelBlkCls;
 	DelBlkIdEdit->Tag			= (NativeInt)&HtmDelBlkId;
+	JpWrapChar1Edit->Tag		= (NativeInt)&JpWrapChar1;
+	JpWrapChar2Edit->Tag		= (NativeInt)&JpWrapChar2;
 	FExtGetInfEdit->Tag 		= (NativeInt)&FExtGetInf;
 	FExtNoInfEdit->Tag			= (NativeInt)&FExtNoInf;
 	NoWatchPathEdit->Tag		= (NativeInt)&NoWatchPath;
@@ -708,6 +710,7 @@ void __fastcall TOptionDlg::FormCreate(TObject *Sender)
 	AltBackSlashCheckBox->Tag	= (NativeInt)&AltBackSlash;
 	DecDfmStrCheckBox->Tag		= (NativeInt)&DecodeDfmStr;
 	FormatJsonCheckBox->Tag		= (NativeInt)&FormatJson;
+	WordWrapCheckBox->Tag		= (NativeInt)&WordWrap;
 	BinMemMapedCheckBox->Tag	= (NativeInt)&BinMemMaped;
 	EmRemCheckBox->Tag			= (NativeInt)&EmpComment;
 	EmStrCheckBox->Tag			= (NativeInt)&EmpStrings;

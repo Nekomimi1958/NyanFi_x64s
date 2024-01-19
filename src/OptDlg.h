@@ -760,6 +760,10 @@ __published:	// IDE で管理されるコンポーネント
 	TBevel *Bevel1;
 	TBevel *Bevel2;
 	TBevel *Bevel3;
+	TCheckBox *WordWrapCheckBox;
+	TGroupBox *WrapGroupBox;
+	TLabeledEdit *JpWrapChar1Edit;
+	TLabeledEdit *JpWrapChar2Edit;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);

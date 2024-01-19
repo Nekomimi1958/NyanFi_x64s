@@ -1066,7 +1066,7 @@ int get_all_files_ex(
 	//サブディレクトリを検索
 	TSearchRec sr;
 	if (sub_sw && sub_n>0) {
-		TStringDynArray skip_dir_lst = split_strings_semicolon(skip_dir);
+		TStringDynArray skip_dir_lst = split_strings_semicolon(skip_dir, true);
 		if (FindFirst(cv_ex_filename(pnam + "*"), faAnyFile, sr)==0) {
 			do {
 				if ((sr.Attr & faDirectory)==0) continue;

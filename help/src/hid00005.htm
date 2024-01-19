@@ -1491,7 +1491,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
         「<b>結果リストから反対側へ反映</b>」をチェックしていると、検索の結果リストでカーソルを移動した際に、反対側がカーソル位置のディレクトリのパスに自動的に変更されます。チェックしていない場合でも、<a href="#CurrToOpp">CurrToOpp</a> コマンドを実行すると、個々に同様の動作が可能です。<br>
         なお右下隅の<span class="btn_frame">∨</span>/<span class="btn_frame">∧</span>ボタン(<span class="btn_frame">Alt</span>+<span class="btn_frame">O</span>キーでも可)で設定パネルを開閉できます。
       </div>
-      <a href="#SetFolderIcon">→ SetFolderIcon</a>
+      <a href="#SetFolderIcon">→ SetFolderIcon</a>　<a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#LoadFindSet">→ LoadFindSet</a>
     </dd>
 
     <dt id="FindHardLink">FindHardLink<span class="pram_text">[_OP]</span></dt>
@@ -1506,7 +1506,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       <div class="spc_box">
         <span class="tips">Tips</span>結果リストにあるすべてのファイルをごみ箱を使わずに削除すれば、実体も削除できます。<br>
       </div>
-      <a href="#CreateHardLink">→ CreateHardLink</a>　<a href="#CompareDlg">→ CompareDlg</a>
+      <a href="#CreateHardLink">→ CreateHardLink</a>　<a href="#CompareDlg">→ CompareDlg</a>　<a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#LoadFindSet">→ LoadFindSet</a>
     </dd>
 
     <dt id="FindMark">FindMark<span class="pram_text">[_AL][;OP]</span></dt>
@@ -1520,7 +1520,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       <div class="spc_box">
         なお、アーカイブ内の検索には対応していません。アーカイブ内の栞マーク項目にアクセスしたい場合は <a href="hid00070.htm">栞マーク一覧</a>(<a href="#MarkList">MarkList</a>)を利用してください。<br>
       </div>
-      <a href="#Mark">→ Mark</a>　<a href="#ClearMark">→ ClearMark</a>　<a href="#MarkList">→ MarkList</a>　<a href="#NextMark">→ NextMark</a>　<a href="#PrevMark">→ PrevMark</a>
+      <a href="#Mark">→ Mark</a>　<a href="#ClearMark">→ ClearMark</a>　<a href="#MarkList">→ MarkList</a>　<a href="#NextMark">→ NextMark</a>　<a href="#PrevMark">→ PrevMark</a>　<a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#LoadFindSet">→ LoadFindSet</a>
     </dd>
 
     <dt id="FindTag">FindTag<span class="pram_text">[_タグ[;タグ...]]</span><br>
@@ -1552,7 +1552,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       </div>
 
       <a href="hid00088.htm">→ タグによるファイル管理</a><br>
-      <a href="#AddTag">→ AddTag</a>　<a href="#DelTag">→ DelTag</a>　<a href="#SetTag">→ SetTag</a>　<a href="#TrimTagData">→ TrimTagData</a>　<a href="#TagSelect">→ TagSelect</a>
+      <a href="#AddTag">→ AddTag</a>　<a href="#DelTag">→ DelTag</a>　<a href="#SetTag">→ SetTag</a>　<a href="#TrimTagData">→ TrimTagData</a>　<a href="#TagSelect">→ TagSelect</a>　<a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#LoadFindSet">→ LoadFindSet</a>
     </dd>
 
     <dt id="FindTagName">FindTagName<span class="pram_text">[_EJ]</span></dt>
@@ -2098,15 +2098,18 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
     </dd>
 
     <dt id="LoadFindSet">LoadFindSet<span class="pram_text">[_{ファイル名|*}]</span></dt>
-    <dd>
-    <dd><a href="#SaveAsFindSet">SaveAsFindSet</a> コマンドで保存しておいた検索設定ファイルを読み込み、その設定にしたがって検索を行います(<a href="hid00052.htm">ファイル(/ディレクトリ)名検索ダイアログ</a>は非表示)。<br>
-      パラメータで<b>ファイル名</b>を指定することも可能(ドライブ名がない場合は <b>NyanFi</b> ディレクトリからの相対指定)。<br>
-      まて、パラメータに <b>*</b> を指定すると、<b>NyanFi</b> ディレクトリ下(サブディレクトリを含む)にある検索設定ファイルをポップアップメニューで選択できます。<br>
-      パラメータを指定しない場合、ファイルの選択ダイアログが表示されます。<br>
+    <dd><a href="#SaveAsFindSet">SaveAsFindSet</a> コマンドで保存しておいた検索設定ファイルを読み込み、その設定にしたがってダイアログ非表示で直ちに検索を行います(Mac のスマートフォルダに似ています)。<br>
+      対応しているのは、<a href="hid00052.htm">ファイル(/ディレクトリ)名検索</a>(<a href="#FindFileDlg">FindFileDlg/<a href="#FindFileDirDlg">FindFileDirDlg</a></a>)／<a href="hid00053.htm">ディレクトリ名検索</a>(<a href="#FindDirDlg">FindDirDlg</a>)／<b>タグ検索</b>(<a href="#FindTag">FindTag</a>)／<b>栞マーク検索</b>(<a href="#FindMark">FindMark</a>)／<b>フォルダアイコン検索</b>(<a href="#FindFolderIcon">FindFolderIcon</a>)／ハードリンクの列挙(<a href="#FindHardLink">→ FindHardLink</a>)の結果リストです。<br>
+      <div class="spc_box">
+        パラメータで<b>ファイル名</b>を指定することも可能(ドライブ名がない場合は <b>NyanFi</b> ディレクトリからの相対指定)。<br>
+        まて、パラメータに <b>*</b> を指定すると、<b>NyanFi</b> ディレクトリ下(サブディレクトリを含む)にある検索設定ファイルをダイアログで選択できます。<br>
+        パラメータを指定しない場合は、ファイルの選択ダイアログが表示されます。<br>
+      </div>
       <div class="spc_box">
         <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>検索設定</b>」をチェックしていると <a href="#OpenStandard">OpenStandard</a> コマンドでも実行できます。<br>
       </div>
-      <a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#OpenStandard">→ OpenStandard</a>　<a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDirDlg">→ FindFileDirDlg</a>
+      <a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#OpenStandard">→ OpenStandard</a><br>
+      <a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDirDlg">→ FindFileDirDlg</a>　<a href="#MaskFind">→ MaskFind</a>　<a href="#FindTag">→ FindTag</a>　<a href="#FindMark">→ FindMark</a>　<a href="#FindFolderIcon">→ FindFolderIcon</a>
     </dd>
 
     <dt id="LoadResultList">LoadResultList<span class="pram_text">[_ファイル名]</span></dt>
@@ -2440,7 +2443,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 
     <dt id="OpenADS">OpenADS</dt>
     <dd>カーソル位置の項目の代替データストリーム一覧を仮想リストとして開きます。<br>
-      仮想リストに対しては、コピー、削除、閲覧、編集(アプリケーションが対応している場合)などの基本的な操作が可能ですが、移動や改名、実行、各種変換などはできません。<br>
+      仮想リストに対しては、コピー、削除、閲覧、編集(アプリケーションが対応している場合)などの基本的な操作が可能ですが、移動、実行、各種変換などはできません。<br>
       また独自の関連付け(<a href="#OpenByApp">OpenByApp</a>)では開けますが、<b>Windows</b> の関連付け(<a href="#OpenByWin">OpenByWin</a>)では開けません。<br>
       テキストや通常の画像はプレビュー可能ですが、動画、アイコン、カーソル、フォントなどはプレビューできません。<br>
       <div class="note_text">
@@ -2575,8 +2578,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
         ・<a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>結果リスト</b>」をチェックしていると、結果リストファイル(一行目が
         ";[ResultList]") を <a href="#LoadResultList">LoadResultList</a> コマンドで開きます。<br>
         ・<a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a>
-        で「<b>検索設定</b>」をチェックしていると、検索設定ファイル([FindSettings]セクションを持つINIファイル) を <a href="#LoadFindSet">LoadFindSet</a>
-        コマンドで開きます。<br>
+        で「<b>検索設定</b>」をチェックしていると、検索設定ファイル([FindSettings]セクションを持つINIファイル) を <a href="#LoadFindSet">LoadFindSet</a> コマンドで開きます。<br>
         ・それ以外のファイルはビューアでテキストまたはバイナリ表示します。<br>
         ・<a href="hid00080.htm">FTP接続</a>時のリモート側では、ディレクトリの変更のみ可能です。<br>
       </div>
@@ -3007,21 +3009,23 @@ NyanFi.exe -XRegExChecker
       <a href="#ToParent">→ ToParent</a>
     </dd>
 
-
     <dt id="SaveAsFindSet">SaveAsFindSet</dt>
     <dd>
-      カレントが検索結果リストの場合、その検索設定(選択やリストファイルによるディレクトリ指定を含む)に名前を付けて保存します。<br>
-      保存したファイルは、<a href="#LoadFindSet">LoadFindSet</a> コマンドで読み込んで検索を実行できます。<br>
+      カレントが検索結果リストの場合、その検索設定(選択やリストファイルによるディレクトリ指定、その時点でのソートモードも含む)に名前を付けて保存します。<br>
+      保存したファイルは、<a href="#LoadFindSet">LoadFindSet</a> コマンドで読み込んで検索を実行できます(Mac のスマートフォルダに似ています)。<br>
       <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>検索設定</b>」をチェックしていると、<a href="#OpenStandard">OpenStandard</a> コマンドでも実行できます。<br>
-
+      <div class="spc_box">
+        対応しているのは、<a href="hid00052.htm">ファイル(/ディレクトリ)名検索</a>(<a href="#FindFileDlg">FindFileDlg/<a href="#FindFileDirDlg">FindFileDirDlg</a></a>)／<a href="hid00053.htm">ディレクトリ名検索</a>(<a href="#FindDirDlg">FindDirDlg</a>)／<b>タグ検索</b>(<a href="#FindTag">FindTag</a>)／<b>栞マーク検索</b>(<a href="#FindMark">FindMark</a>)／<b>フォルダアイコン検索</b>(<a href="#FindFolderIcon">FindFolderIcon</a>)／ハードリンクの列挙(<a href="#FindHardLink">→ FindHardLink</a>)の結果リストです。<br>
+      </div>
       <div class="spc_box">
         <b>検索設定ファイル</b>の内容は、[FindSettings]というセクションを持つINIファイルです。<br>
         多数のファイルがある場合は、他のINIファイルに紛れないように、専用ディレクトリを作って保存するとよいかもしれません。<br>
-        <a href="#LoadFindSet">LoadFindSet</a>_* を実行すると、<b>NyanFi</b> ディレクトリ下(サブディレクトリを含む)にある検索設定ファイルをポップアップメニューで選択できます。<br>
+        <a href="#LoadFindSet">LoadFindSet</a>_* を実行すると、<b>NyanFi</b> ディレクトリ下(サブディレクトリを含む)にある検索設定ファイルをダイアログで選択できます。<br>
         検索設定ファイルは、指定した条件で検索した結果を集めて表示する仮想ディレクトリのように振る舞います。
       </div>
 
-      <a href="#LoadFindSet">→ LoadFindSet</a>　<a href="#OpenStandard">→ OpenStandard</a>　<a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDirDlg">→ FindFileDirDlg</a>
+      <a href="#LoadFindSet">→ LoadFindSet</a>　<a href="#OpenStandard">→ OpenStandard</a><br>
+      <a href="#FindFileDlg">→ FindFileDlg</a>　<a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDirDlg">→ FindFileDirDlg</a>　<a href="#MaskFind">→ MaskFind</a>　<a href="#FindTag">→ FindTag</a>　<a href="#FindMark">→ FindMark</a>　<a href="#FindFolderIcon">→ FindFolderIcon</a>　<a href="#FindHardLink">→ FindHardLink</a>
     </dd>
 
     <dt id="SaveAsResultList">SaveAsResultList</dt>

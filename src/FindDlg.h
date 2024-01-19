@@ -51,6 +51,7 @@ __published:	// IDE で管理されるコンポーネント
 	TCheckBox *PrpCaseCheckBox;
 	TCheckBox *PrpRegExCheckBox;
 	TCheckBox *RegExCheckBox;
+	TCheckBox *RelDateCheckBox;
 	TCheckBox *ResLinkCheckBox;
 	TCheckBox *SubDirCheckBox;
 	TCheckBox *TxtAndCheckBox;
@@ -62,6 +63,7 @@ __published:	// IDE で管理されるコンポーネント
 	TComboBox *LatLngComboBox;
 	TComboBox *LineBrkComboBox;
 	TComboBox *MaskComboBox;
+	TComboBox *SkipDirComboBox;
 	TComboBox *TagsComboBox;
 	TComboBox *TxtKwdComboBox;
 	TEdit *SizeEdit;
@@ -120,6 +122,7 @@ __published:	// IDE で管理されるコンポーネント
 	TPanel *PropPanel;
 	TPanel *RatePanel;
 	TPanel *SizePanel;
+	TPanel *SkipPanel;
 	TPanel *TagsPanel;
 	TPanel *TextPanel;
 	TPanel *TimePanel;
@@ -183,6 +186,7 @@ public:		// ユーザー宣言
 
 	TDateTime FindDate;
 	UnicodeString FindDateStr;
+	int  FindDateRel;
 	TTime FindTime;
 	int  FindAttr;
 	int  FindRate;

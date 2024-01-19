@@ -16,9 +16,8 @@ TNetShareDlg *NetShareDlg;
 __fastcall TNetShareDlg::TNetShareDlg(TComponent* Owner)
 	: TForm(Owner)
 {
-	ComputerName = PathName = EmptyStr;
 	rqRetPath = false;
-	isShare = isSelDir = isSelSub = isLibrary = false;
+	isShare = isSelDir = isSelSub = isLibrary = isFindSet = false;
 	isPC = false;
 }
 //---------------------------------------------------------------------------
@@ -35,6 +34,8 @@ void __fastcall TNetShareDlg::FormShow(TObject *Sender)
 		IniFile->LoadPosInfo(this, DialogCenter, isSelSub? "SelSub" : "SelDir");
 	else if (isLibrary)
 		IniFile->LoadPosInfo(this, DialogCenter, "Library");
+	else if (isFindSet)
+		IniFile->LoadPosInfo(this, DialogCenter, "FindSet");
 	else
 		IniFile->LoadPosInfo(this, DialogCenter);
 
@@ -93,6 +94,22 @@ void __fastcall TNetShareDlg::WmFormShowed(TMessage &msg)
 		ComputerName = ExcludeTrailingPathDelimiter(ComputerName);
 		UpdateShareList(ComputerName);
 	}
+	//åüçıê›íË
+	else if (isFindSet) {
+		Caption = "åüçıê›íË";
+		std::unique_ptr<TStringList> l_lst(new TStringList());
+		std::unique_ptr<TStringList> s_lst(new TStringList());
+		get_files(ExePath, "*.ini", l_lst.get(), true);
+		for (int i=0,n=0; i<l_lst->Count; i++) {
+			UnicodeString inam = l_lst->Strings[i];
+			std::unique_ptr<UsrIniFile> set_file(new UsrIniFile(inam));
+			if (set_file->SectionExists("FindSettings")) s_lst->Add(inam);
+		}
+		s_lst->Sort();
+		ShareListBox->Items->Assign(s_lst.get());
+		ListBoxSetIndex(ShareListBox, 0);
+		FileName = EmptyStr;
+	}
 
 	ListScrPanel->UpdateKnob();
 }
@@ -103,11 +120,13 @@ void __fastcall TNetShareDlg::FormClose(TObject *Sender, TCloseAction &Action)
 		IniFile->SavePosInfo(this, isSelSub? "SelSub" : "SelDir");
 	else if (isLibrary)
 		IniFile->SavePosInfo(this, "Library");
+	else if (isFindSet)
+		IniFile->SavePosInfo(this, "FindSet");
 	else
 		IniFile->SavePosInfo(this);
 
 	rqRetPath = false;
-	isShare = isSelDir = isSelSub = isLibrary = false;
+	isShare = isSelDir = isSelSub = isLibrary = isFindSet = false;
 	isPC = false;
 }
 //---------------------------------------------------------------------------
@@ -123,6 +142,7 @@ void __fastcall TNetShareDlg::FormKeyDown(TObject *Sender, WORD &Key, TShiftStat
 	if		(isShare)				topic += "#ShareList";
 	else if (isSelDir && isSelSub)	topic += "#SubDirList";
 	else if (isLibrary)				topic += "#Library";
+	else if (isFindSet)				topic += "#LoadFindSet";
 	else							topic = EmptyStr;
 
 	if (!topic.IsEmpty())
@@ -368,6 +388,11 @@ void __fastcall TNetShareDlg::ShareListBoxDrawItem(TWinControl *Control, int Ind
 					(attr & faSymLink)  ? col_SymLink : col_Folder;
 			}
 		}
+		//åüçıê›íË
+		else if (isFindSet) {
+			cv->Font->Color = col_Folder;
+			lbuf = get_base_name(lbuf);
+		}
 		cv->TextOut(xp, yp, lbuf);
 	}
 
@@ -450,6 +475,10 @@ void __fastcall TNetShareDlg::ShareListBoxKeyDown(TObject *Sender, WORD &Key, TS
 					cursor_HourGlass();
 					NyanFiForm->UpdateCurPath(IncludeTrailingPathDelimiter(dnam));
 					cursor_Default();
+				}
+				//åüçıê›íË
+				else if (isFindSet) {
+					FileName = lp->Items->Strings[idx];
 				}
 				ModalResult = mrOk;
 			}
