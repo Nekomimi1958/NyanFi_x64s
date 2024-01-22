@@ -215,14 +215,15 @@ bool __fastcall TTxtViewer::CloseAuxForm()
 //---------------------------------------------------------------------------
 line_rec* __fastcall TTxtViewer::AddDispLine(UnicodeString s, int lno, int lidx)
 {
-	line_rec *lp = new line_rec;
-	lp->LineNo	 = lno;
-	lp->LineIdx  = lidx;
-	lp->hasCR	 = ends_tchs("\n\r", s);
-	lp->topQch	 = '\0';
-	lp->RemPos0  = 0;
-	lp->RemPos1  = 0;
-	lp->IndentN  = 0;
+	line_rec *lp  = new line_rec;
+	lp->LineNo    = lno;
+	lp->LineIdx   = lidx;
+	lp->hasCR     = ends_tchs("\n\r", s);
+	lp->topQch    = '\0';
+	lp->RemPos0   = 0;
+	lp->RemPos1   = 0;
+	lp->IndentN   = 0;
+	lp->StickyIdx = -1;
 
 	//インデントガイドの表示数
 	if (!isBinary) {
@@ -883,7 +884,7 @@ void __fastcall TTxtViewer::UpdateScr(
 
 	//関数マッチパターン
 	FuncPtn    = !isBinary? GetFuncPtns(&FuncNamPtn) : EmptyStr;
-	FuncBrkPtn = "^(\\}|end)";	//***
+	FuncBrkPtn = test_FileExt(fext, FEXT_PROGRAM)? "^(\\}|end)" : "";	//***
 
 	//ユーザ定義の取得
 	bool usr_hl = UserHighlight->GetSection(FileName, isClip, isLog, isHtm2Txt);
@@ -1923,6 +1924,8 @@ void __fastcall TTxtViewer::PaintText()
 {
 	if (!isReady || !ViewBox->Parent->Showing) return;
 
+	OutDebugStr("==> PaintText");
+
 	std::unique_ptr<Graphics::TBitmap> tmp_bmp(new Graphics::TBitmap());
 	tmp_bmp->SetSize(ViewBox->ClientWidth - (ScrBar->Visible? 1 : 0), LineHeight);
 	TRect    tmp_rc	= Rect(0, 0, tmp_bmp->Width, tmp_bmp->Height);
@@ -1971,6 +1974,7 @@ void __fastcall TTxtViewer::PaintText()
 
 	//行内容の描画
 	int v_yp = 0;
+	OutDebugStr("  ## > for");
 	for (int i=top_idx; i<=btm_idx; i++, v_yp+=LineHeight) {
 		//余白
 		tmp_cv->Brush->Color = color_Margin;
@@ -2361,6 +2365,7 @@ void __fastcall TTxtViewer::PaintText()
 		}
 		ViewCanvas->CopyRect(v_rc, tmp_cv, tmp_rc);
 	}
+	OutDebugStr("  ## < for");
 
 	//現在の画面をバッファにコピー
 	ImgBuff->SetSize(img_rc.Width(), img_rc.Height());
@@ -2387,6 +2392,8 @@ void __fastcall TTxtViewer::PaintText()
 	LastPos = CurPos;
 	LastTop = top_idx;
 	LastSel = (SelStart!=SelEnd);
+
+	OutDebugStr("<== PaintText");
 }
 
 //---------------------------------------------------------------------------
@@ -2767,24 +2774,42 @@ void __fastcall TTxtViewer::UpdatePos(
 //---------------------------------------------------------------------------
 void __fastcall TTxtViewer::UpdateSticky()
 {
+	OutDebugStr(" => UpdateSticky");
 	StickyStr  = EmptyStr;
 	StickyLine = 0;
 	if (isReady && ShowSticky && !FuncPtn.IsEmpty() && CurTop>1) {
 		bool has_par = ContainsStr(FuncPtn, "\\(");
 		bool non_tab = StartsStr('^', FuncPtn) && !StartsStr("^\\s*", FuncPtn);
 		TRegExOptions opt; opt << roIgnoreCase;
+		int s_idx = -1;
+		int r_idx = -1;
 		for (int i=CurTop-1; i>=0; i--) {
 			line_rec *rp = get_LineRec(i);  if (rp->LineIdx>0) continue;
+			if (rp->StickyIdx!=-1) {
+				s_idx = rp->StickyIdx;
+				r_idx = i;
+				StickyStr  = TrimRight(get_DispLine(s_idx));
+				StickyLine = rp->LineNo;
+				break;
+			}
+
 			UnicodeString lbuf = TrimRight(get_DispLine(i));
-			if (TRegEx::IsMatch(lbuf, FuncBrkPtn, opt)) break;
+			if (!FuncBrkPtn.IsEmpty() && TRegEx::IsMatch(lbuf, FuncBrkPtn, opt)) break;
 			if (non_tab && (StartsStr('\t', lbuf) || StartsStr(' ', lbuf))) continue;
 			if (has_par && (!ContainsStr(lbuf, "(") || ContainsStr(lbuf, "="))) continue;
 			if (TRegEx::IsMatch(lbuf, FuncPtn, opt)) {
 				StickyStr  = lbuf;
 				StickyLine = rp->LineNo;
+				rp->StickyIdx = s_idx = i;
+				r_idx = i;
 				break;
 			}
 		}
+
+		if (s_idx!=-1 && r_idx!=-1) {
+			for (int i=r_idx+1; i<CurTop-1; i++) get_LineRec(i)->StickyIdx = s_idx;
+		}
+
 		StickyPanel->Top     = RulerBox->Height;
 		StickyPanel->Left    = 0;
 		StickyPanel->Height  = LineHeight;
@@ -2795,6 +2820,7 @@ void __fastcall TTxtViewer::UpdateSticky()
 	else {
 		StickyPanel->Visible = false;
 	}
+	OutDebugStr(" <= UpdateSticky");
 }
 
 //---------------------------------------------------------------------------

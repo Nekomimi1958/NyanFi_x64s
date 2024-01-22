@@ -521,6 +521,20 @@ void __fastcall TFindFileDlg::MaskComboBoxChange(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
+void __fastcall TFindFileDlg::DateMaskEditChange(TObject *Sender)
+{
+	if (!ContainsStr(DateMaskEdit->Text, "?")) {
+		try {
+			TDateTime dt = str_to_DateTime(DateMaskEdit->Text);
+			int r_day = RelDateCheckBox->Checked? DaysBetween(Today(), FindDate) : 0;
+			DateMaskEdit->Hint = (r_day==0)? UnicodeString("本日") : UnicodeString().sprintf(_T("%u日前"), r_day);
+		}
+		catch (EConvertError &e) {
+			DateMaskEdit->Hint = EmptyStr;
+		}
+	}
+}
+//---------------------------------------------------------------------------
 //ボタンによる日付の変更
 //---------------------------------------------------------------------------
 void __fastcall TFindFileDlg::DateBtnClick(TObject *Sender)
@@ -702,3 +716,4 @@ void __fastcall TFindFileDlg::FindOkActionUpdate(TObject *Sender)
 		= (PrpKwdEdit->Focused()? EDTAG_RGEX_V : 0) | (PrpRegExCheckBox->Checked? EDTAG_RGEX_E : 0);
 }
 //---------------------------------------------------------------------------
+

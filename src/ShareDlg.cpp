@@ -56,17 +56,7 @@ void __fastcall TNetShareDlg::FormShow(TObject *Sender)
 	set_StdListBox(ShareListBox);
 	set_UsrScrPanel(ListScrPanel);
 
-	//パンくずリスト
-	PathTabControl->Visible = false;
-	PathTabControl->Height = get_FontHeightMgnS(PathTabControl->Font, 8, 8) + 2;
-	if (isSelDir && isSelSub) {
-		PathTabControl->Tabs->Clear();
-		if (!StartsStr("\\\\", PathName)) PathTabControl->Tabs->Add("PC");
-		TStringDynArray plst = split_path(PathName);
-		for (int i=0; i<plst.Length; i++) PathTabControl->Tabs->Add(plst[i]);
-		PathTabControl->Visible  = true;
-		PathTabControl->TabIndex = PathTabControl->Tabs->Count - 1;
-	}
+	UpdateBreadcrumb(PathName);
 
 	::PostMessage(Handle, WM_FORM_SHOWED, 0, 0);
 }
@@ -127,7 +117,8 @@ void __fastcall TNetShareDlg::FormClose(TObject *Sender, TCloseAction &Action)
 
 	rqRetPath = false;
 	isShare = isSelDir = isSelSub = isLibrary = isFindSet = false;
-	isPC = false;
+	isPC  = false;
+	Title = EmptyStr;
 }
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::FormDestroy(TObject *Sender)
@@ -221,8 +212,10 @@ void __fastcall TNetShareDlg::UpdateShareList(
 void __fastcall TNetShareDlg::UpdatePathList(
 	UnicodeString pnam)	//基準ディレクトリ (EmptyStr ならドライブ選択)
 {
-	if (isSelSub)
-		Caption = pnam.IsEmpty()? UnicodeString("PC") : yen_to_delimiter(ExcludeTrailingPathDelimiter(pnam));
+	if (isSelSub) {
+		Caption = (!Title.IsEmpty()? (Title + " - ") : EmptyStr) + 
+					(pnam.IsEmpty()? UnicodeString("PC") : yen_to_delimiter(ExcludeTrailingPathDelimiter(pnam))) ;
+	}
 
 	cursor_HourGlass();
 	LibIdxBase = -1;
@@ -233,8 +226,7 @@ void __fastcall TNetShareDlg::UpdatePathList(
 		for (int i=0; i<DriveInfoList->Count; i++) {
 			drive_info *dp = (drive_info *)DriveInfoList->Objects[i];
 			if (!dp->accessible) continue;
-			d_lst->Add(UnicodeString().sprintf(_T("%s %s"),
-						get_tkn(dp->drive_str, '\\').c_str(), dp->volume.c_str()));
+			d_lst->Add(UnicodeString().sprintf(_T("%s %s"), get_tkn(dp->drive_str, '\\').c_str(), dp->volume.c_str()));
 		}
 		//ライブラリ
 		std::unique_ptr<TStringList> l_lst(new TStringList());
@@ -280,7 +272,22 @@ void __fastcall TNetShareDlg::UpdatePathList(
 	ListBoxSetIndex(lp, idx);
 	cursor_Default();
 }
-
+//---------------------------------------------------------------------------
+//パンくずリストの更新
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::UpdateBreadcrumb(UnicodeString pnam)
+{
+	PathTabControl->Visible = false;
+	PathTabControl->Height = get_FontHeightMgnS(PathTabControl->Font, 8, 8) + 2;
+	if (isSelDir && isSelSub) {
+		PathTabControl->Tabs->Clear();
+		if (!StartsStr("\\\\", pnam)) PathTabControl->Tabs->Add("PC");
+		TStringDynArray plst = split_path(pnam);
+		for (int i=0; i<plst.Length; i++) PathTabControl->Tabs->Add(plst[i] + " >");
+		PathTabControl->Visible  = true;
+		PathTabControl->TabIndex = PathTabControl->Tabs->Count - 1;
+	}
+}
 //---------------------------------------------------------------------------
 //パンくずリストの処理
 //---------------------------------------------------------------------------
@@ -292,18 +299,24 @@ void __fastcall TNetShareDlg::PathTabControlDrawTab(TCustomTabControl *Control, 
 	cv->Brush->Color = Active? col_bgOptTab : get_PanelColor();
 	cv->Font->Color  = Active? col_fgOptTab : get_LabelColor();
 	cv->FillRect(Rect);
+
 	int yp = (Rect.Height() - cv->TextHeight("Q")) /2;
-	cv->TextOut(Rect.Left + SCALED_THIS(2), yp, yen_to_delimiter(PathTabControl->Tabs->Strings[TabIndex]));
+	int xp = Rect.Left + SCALED_THIS(2);
+	UnicodeString s = yen_to_delimiter(get_tkn(PathTabControl->Tabs->Strings[TabIndex], ' '));
+	cv->TextOut(xp, yp, s);
+	if (TabIndex>0) {
+		xp += cv->TextWidth(s);
+		cv->Brush->Style = bsClear;
+		cv->Font->Color  = AdjustColor(get_LabelColor(), ADJCOL_LIGHT);
+		cv->TextOut(xp, yp, " >");
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::PathTabControlChange(TObject *Sender)
 {
 	int idx = PathTabControl->TabIndex;
 	if (idx!=-1) {
-		UnicodeString pnam;
-		for (int i=(StartsStr("\\\\", PathName)? 0 : 1); i<PathTabControl->Tabs->Count && i<=idx; i++)
-			pnam += PathTabControl->Tabs->Strings[i] + "\\";
-
+		UnicodeString pnam = GetBreadcrumbStr(idx);
 		if (is_computer_name(pnam)) {
 			isSelDir = isSelSub = false;
 			ComputerName = ExcludeTrailingPathDelimiter(pnam);
@@ -412,8 +425,7 @@ void __fastcall TNetShareDlg::ShareListBoxKeyDown(TObject *Sender, WORD &Key, TS
 	if (isPC && (equal_ENTER(KeyStr) || (!KeyStr.IsEmpty() && isalpha(KeyStr[1])))) {
 		if (equal_ENTER(KeyStr)) {
 			int idx = lp->ItemIndex;
-			if (idx!=-1 && idx<LibIdxBase-1)
-				dstr = IncludeTrailingPathDelimiter(get_tkn(lp->Items->Strings[idx], ' '));
+			if (idx!=-1 && idx<LibIdxBase-1) dstr = IncludeTrailingPathDelimiter(get_tkn(lp->Items->Strings[idx], ' '));
 		}
 		else {
 			for (int i=0; i<LibIdxBase; i++) {
@@ -456,10 +468,7 @@ void __fastcall TNetShareDlg::ShareListBoxKeyDown(TObject *Sender, WORD &Key, TS
 				}
 				//ディレクトリ
 				else if (isSelDir) {
-					UnicodeString pnam;
-					pnam = lp->Items->Strings[idx];
-					if (SameStr(ExtractFileName(pnam), "..")) pnam = get_parent_path(ExtractFilePath(pnam));
-					pnam = IncludeTrailingPathDelimiter(pnam);
+					UnicodeString pnam = GetListPathName(idx);
 					if (rqRetPath) {
 						PathName = pnam;
 					}
@@ -484,24 +493,54 @@ void __fastcall TNetShareDlg::ShareListBoxKeyDown(TObject *Sender, WORD &Key, TS
 			}
 		}
 	}
-	//パス切り替え
+	//パンくずリストを進む
 	else if (PathTabControl->Visible && is_ToRightOpe(KeyStr, cmd_F)) {
-		int idx = PathTabControl->TabIndex;
-		if (idx<PathTabControl->Tabs->Count-1) {
-			PathTabControl->TabIndex = idx + 1;
-			PathTabControlChange(PathTabControl);
+		int p_idx = PathTabControl->TabIndex;
+		int idx = lp->ItemIndex;
+		UnicodeString s = (idx!=-1)? lp->Items->Strings[idx] : EmptyStr;
+		if (EndsText(".library-ms", s) || s=="-") s = EmptyStr;
+		if (!s.IsEmpty()) {
+			if (p_idx==PathTabControl->Tabs->Count-1) {
+				UpdateBreadcrumb(GetListPathName(idx));
+				PathTabControlChange(PathTabControl);
+			}
+			else {
+				PathTabControl->TabIndex = p_idx + 1;
+				PathTabControlChange(PathTabControl);
+				if (PathTabControl->TabIndex<PathTabControl->Tabs->Count - 1) {
+					UnicodeString pnam = GetBreadcrumbStr(PathTabControl->TabIndex + 1);
+					lp->ItemIndex = lp->Items->IndexOf(ExcludeTrailingPathDelimiter(pnam));
+				}
+			}
 		}
 	}
+	//パンくずリストを戻る
 	else if (PathTabControl->Visible && (is_ToLeftOpe(KeyStr, cmd_F) || SameText(get_CmdStr(cmd_F), "ToParent"))) {
-		int idx = PathTabControl->TabIndex;
-		if (idx>0) {
-			PathTabControl->TabIndex = idx -1;
+		int p_idx = PathTabControl->TabIndex;
+		if (p_idx>0) {
+			UnicodeString pnam = GetBreadcrumbStr(p_idx);
+			PathTabControl->TabIndex = p_idx -1;
 			PathTabControlChange(PathTabControl);
+			pnam = ExcludeTrailingPathDelimiter(pnam);
+			if (PathTabControl->TabIndex==0) {
+				for (int i=0; i<lp->Count; i++) {
+					if (SameText(get_tkn(lp->Items->Strings[i], ' '), pnam)) {
+						lp->ItemIndex = i;
+						break;
+					}
+				}
+			}
+			else {
+				lp->ItemIndex = lp->Items->IndexOf(ExcludeTrailingPathDelimiter(pnam));
+			}
 		}
 	}
 	//カーソル移動
 	else if	(ExeCmdListBox(lp, cmd_F)) {
-		;
+		if (PathTabControl->TabIndex<PathTabControl->Tabs->Count-1) {
+			int n = PathTabControl->Tabs->Count - PathTabControl->TabIndex - 1;
+			for (int i=0; i<n; i++) PathTabControl->Tabs->Delete(PathTabControl->Tabs->Count - 1);
+		}
 	}
 	//頭文字サーチ
 	else if (isSelDir && is_IniSeaKey(KeyStr)) {
@@ -522,6 +561,14 @@ void __fastcall TNetShareDlg::ShareListBoxKeyPress(TObject *Sender, System::Wide
 {
 	//インクリメンタルサーチを回避
 	if (_istalnum(Key)) Key = 0;
+}
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::ShareListBoxClick(TObject *Sender)
+{
+	if (PathTabControl->TabIndex<PathTabControl->Tabs->Count-1) {
+		int n = PathTabControl->Tabs->Count - PathTabControl->TabIndex - 1;
+		for (int i=0; i<n; i++) PathTabControl->Tabs->Delete(PathTabControl->Tabs->Count - 1);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::ShareListBoxDblClick(TObject *Sender)

@@ -95,8 +95,9 @@
       条件が「<b>一致</b>」の場合、日付の設定にワイルドカード <b>?</b> を使えます。<br>
       　<b>例</b>: <span class="inp_box">2???/04/??</span> 2000年以降の4月のファイルを検索<br>
       <div class="spc_box">
-        <img src="chkbox.png" alt=""> <b>相対</b> をチェックしていると、結果リストで <a href="hid00005.htm#SaveAsFindSet">SaveAsFindSet</a> コマンドを実行したとき、日付設定を今日からの相対指定として保存します。その検索設定ファイルを用いると、常に今日の日付から相対的に検索を行うため、例えば「最近７日以降のファイル」などの検索が可能になります。<br>
+        <img src="chkbox.png" alt=""> <b>相対</b> をチェックしていると、結果リストで <a href="hid00005.htm#SaveAsFindSet">SaveAsFindSet</a> コマンドを実行したとき、日付設定を今日からの相対指定として保存します。その検索設定ファイルを用いると、常に今日の日付から相対的に検索を行うため、例えば「最近７日以内のファイル」などの検索が可能になります。<br>
         このオプションは検索設定ファイルにかかわるもので、このダイアログでの検索には影響しません。<br>
+        なお、マウスオーバーすると何日前かがヒント表示されます。
       </div>
       <div class="spc_box">
         入力欄が全選択または選択無しの状態で貼り付けを行おうとした場合、可能ならクリップボード内容を yyyy/mm/dd 形式に変換して貼り付けます。～年～月～日 などの形式にも対応。<br>
@@ -122,11 +123,18 @@
       <br>
     </dd>
 
-    <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> サブディレクトリも検索</dt>
+    <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> サブディレクトリ</dt>
     <dd>
       チェックすると、カレントパス以下すべてのサブディレクトリも検索対象になります。<br>
       また、カレントにあるライブラリファイル(<b>.library-ms</b>)もディレクトリの集合としてみなして検索対象になります。<br>
       なおコマンドに <b>R0</b>/<b>R1</b> パラメータを指定することで、チェック状態を事前に設定しておくこともできます。<br>
+    </dd>
+
+    <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> アーカイブ内 <span style="font-weight: normal;">(ファイル名検索のみ)</span></dt>
+    <dd>
+      チェックすると、アーカイブ内のファイルも検索対象になります。拡張検索はできません。<br>
+      なおコマンドに <b>A0</b>/<b>A1</b> パラメータを指定することで、チェック状態を事前に設定しておくこともできます。<br>
+      <br>
     </dd>
 
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> 拡張検索</dt>
@@ -166,12 +174,6 @@
         </li>
       </ul>
       <br>
-    </dd>
-
-    <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> アーカイブ内も検索 <span style="font-weight: normal;">(ファイル名検索のみ)</span></dt>
-    <dd>
-      チェックすると、アーカイブ内のファイルも検索対象になります。拡張検索はできません。<br>
-      なおコマンドに <b>A0</b>/<b>A1</b> パラメータを指定することで、チェック状態を事前に設定しておくこともできます。<br>
     </dd>
 
     <dt class="no_bg_indent1"><img src="chkbox.png" alt=""> 結果リストから反対側へ反映</dt>

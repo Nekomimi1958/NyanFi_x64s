@@ -2031,6 +2031,7 @@ private:	// ユーザー宣言
 	bool TmpEqualSize;					//一時的な等倍表示
 	bool ThumbExtended;					//サムネイルの拡張表示
 	bool ThumbClicked;					//直前にサムネイルがクリックされている
+	bool InhThumbGrid;					//サムネイル・グリッド処理の抑止
 	bool FinfSkipped;					//ファイル情報取得がスキップされた
 	bool isLoopHint;
 	TPoint LastP;						//イメージ移動中の前回のマウス位置

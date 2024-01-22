@@ -57,6 +57,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall CopyPathActionUpdate(TObject *Sender);
 	void __fastcall CopyPathAllActionExecute(TObject *Sender);
 	void __fastcall CopyPathAllActionUpdate(TObject *Sender);
+	void __fastcall ShareListBoxClick(TObject *Sender);
 
 private:	// ユーザー宣言
 	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
@@ -74,11 +75,34 @@ private:	// ユーザー宣言
 	NET_API_STATUS __fastcall GetShareList(UnicodeString cnam, TListBox *lp);
 	void __fastcall UpdateShareList(UnicodeString cnam);
 	void __fastcall UpdatePathList(UnicodeString pnam);
+	void __fastcall UpdateBreadcrumb(UnicodeString pnam);
+
+	UnicodeString __fastcall GetBreadcrumbStr(int idx = -1)
+	{
+		UnicodeString pnam;
+		if (idx==-1) idx = PathTabControl->TabIndex;
+		int top = StartsStr("\\\\", PathTabControl->Tabs->Strings[0])? 0 : 1;
+		for (int i=top; i<PathTabControl->Tabs->Count && i<=idx; i++) {
+			pnam += IncludeTrailingPathDelimiter(get_tkn(PathTabControl->Tabs->Strings[i], ' '));
+		}
+		return pnam;
+	}
+
+	UnicodeString __fastcall GetListPathName(int idx)
+	{
+		UnicodeString pnam = ShareListBox->Items->Strings[idx];
+		if (isPC)
+			pnam = get_tkn(pnam, ' ');
+		else if (SameStr(ExtractFileName(pnam), ".."))
+			pnam = get_parent_path(ExtractFilePath(pnam));
+		return IncludeTrailingPathDelimiter(pnam);
+	}
 
 public:		// ユーザー宣言
 	UnicodeString ComputerName;
 	UnicodeString PathName;
 	UnicodeString FileName;
+	UnicodeString Title;
 
 	bool isShare;		//共有フォルダ
 	bool isSelDir;		//ディレクトリ選択

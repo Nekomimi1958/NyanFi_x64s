@@ -54,8 +54,6 @@ object SubViewer: TSubViewer
     ParentBackground = False
     TabOrder = 0
     StyleElements = []
-    ExplicitWidth = 300
-    ExplicitHeight = 235
     object Image1: TImage
       Left = 0
       Top = 0

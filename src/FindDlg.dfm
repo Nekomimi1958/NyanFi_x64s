@@ -51,7 +51,6 @@ object FindFileDlg: TFindFileDlg
       ShowCaption = False
       TabOrder = 5
       StyleElements = []
-      ExplicitTop = 342
       DesignSize = (
         396
         103)
@@ -141,7 +140,6 @@ object FindFileDlg: TFindFileDlg
       ParentBackground = False
       TabOrder = 6
       StyleElements = []
-      ExplicitTop = 445
       object ContRadioGroup: TRadioGroup
         Left = 4
         Top = 6
@@ -177,7 +175,6 @@ object FindFileDlg: TFindFileDlg
       ShowCaption = False
       TabOrder = 3
       StyleElements = []
-      ExplicitTop = 130
       DesignSize = (
         396
         106)
@@ -201,6 +198,7 @@ object FindFileDlg: TFindFileDlg
           MaxLength = 10
           TabOrder = 0
           Text = '    /  /  '
+          OnChange = DateMaskEditChange
         end
         object DateRadioGroup: TRadioGroup
           Left = 12
@@ -221,7 +219,7 @@ object FindFileDlg: TFindFileDlg
         end
         object DateBtn5: TButton
           Left = 275
-          Top = 18
+          Top = 20
           Width = 40
           Height = 24
           Caption = '-1Y'
@@ -230,7 +228,7 @@ object FindFileDlg: TFindFileDlg
         end
         object DateBtn1: TButton
           Left = 103
-          Top = 18
+          Top = 20
           Width = 44
           Height = 24
           Caption = #26412#26085
@@ -239,7 +237,7 @@ object FindFileDlg: TFindFileDlg
         end
         object DateBtn2: TButton
           Left = 149
-          Top = 18
+          Top = 20
           Width = 40
           Height = 24
           Caption = '-1D'
@@ -248,7 +246,7 @@ object FindFileDlg: TFindFileDlg
         end
         object DateBtn3: TButton
           Left = 191
-          Top = 18
+          Top = 20
           Width = 40
           Height = 24
           Caption = '-7D'
@@ -257,7 +255,7 @@ object FindFileDlg: TFindFileDlg
         end
         object DateBtn4: TButton
           Left = 233
-          Top = 18
+          Top = 20
           Width = 40
           Height = 24
           Caption = '-1M'
@@ -366,19 +364,18 @@ object FindFileDlg: TFindFileDlg
       Left = 2
       Top = 520
       Width = 396
-      Height = 130
+      Height = 110
       Align = alTop
       BevelOuter = bvNone
       ParentBackground = False
       ShowCaption = False
       TabOrder = 7
-      ExplicitTop = 523
       DesignSize = (
         396
-        130)
+        110)
       object OkButton: TButton
         Left = 105
-        Top = 98
+        Top = 78
         Width = 80
         Height = 26
         Action = FindOkAction
@@ -386,18 +383,19 @@ object FindFileDlg: TFindFileDlg
         Default = True
         ModalResult = 1
         TabOrder = 5
+        ExplicitTop = 98
       end
       object SubDirCheckBox: TCheckBox
         Left = 12
         Top = 12
-        Width = 184
+        Width = 129
         Height = 17
-        Caption = #12469#12502#12487#12451#12524#12463#12488#12522#12418#26908#32034'(&R)'
+        Caption = #12469#12502#12487#12451#12524#12463#12488#12522'(&R)'
         TabOrder = 0
       end
       object CanButton: TButton
         Left = 210
-        Top = 98
+        Top = 78
         Width = 80
         Height = 26
         Anchors = [akLeft, akBottom]
@@ -405,11 +403,12 @@ object FindFileDlg: TFindFileDlg
         Caption = #12461#12515#12531#12475#12523
         ModalResult = 2
         TabOrder = 6
+        ExplicitTop = 98
       end
       object ExtraCheckBox: TCheckBox
-        Left = 210
-        Top = 35
-        Width = 119
+        Left = 276
+        Top = 12
+        Width = 101
         Height = 17
         Caption = #25313#24373#26908#32034'(&X) '
         TabOrder = 2
@@ -417,7 +416,7 @@ object FindFileDlg: TFindFileDlg
       end
       object ResLinkCheckBox: TCheckBox
         Left = 12
-        Top = 61
+        Top = 41
         Width = 200
         Height = 17
         Caption = #32080#26524#12522#12473#12488#12363#12425#21453#23550#20596#12408#21453#26144
@@ -425,18 +424,18 @@ object FindFileDlg: TFindFileDlg
       end
       object DirLinkCheckBox: TCheckBox
         Left = 210
-        Top = 61
+        Top = 41
         Width = 143
         Height = 17
         Caption = #12487#12451#12524#12463#12488#12522#21517#12434#21453#26144
         TabOrder = 4
       end
       object ArcCheckBox: TCheckBox
-        Left = 210
+        Left = 145
         Top = 12
-        Width = 184
+        Width = 113
         Height = 17
-        Caption = #12450#12540#12459#12452#12502#20869#12418#26908#32034'(&V)'
+        Caption = #12450#12540#12459#12452#12502#20869'(&V)'
         TabOrder = 1
         OnClick = ArcCheckBoxClick
       end
@@ -451,7 +450,6 @@ object FindFileDlg: TFindFileDlg
       ParentBackground = False
       TabOrder = 4
       StyleElements = []
-      ExplicitTop = 236
       DesignSize = (
         396
         106)
@@ -537,7 +535,7 @@ object FindFileDlg: TFindFileDlg
         396
         32)
       object TLabel
-        Left = 15
+        Left = 17
         Top = 8
         Width = 46
         Height = 15
@@ -547,7 +545,7 @@ object FindFileDlg: TFindFileDlg
         FocusControl = MaskComboBox
       end
       object SkipDirComboBox: TComboBox
-        Left = 65
+        Left = 67
         Top = 5
         Width = 323
         Height = 23
@@ -1481,8 +1479,8 @@ object FindFileDlg: TFindFileDlg
     end
   end
   object ActionList1: TActionList
-    Left = 304
-    Top = 625
+    Left = 336
+    Top = 593
     object FindOkAction: TAction
       Caption = 'OK'
       OnExecute = FindOkActionExecute

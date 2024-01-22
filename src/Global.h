@@ -1355,6 +1355,7 @@ struct flist_stt {
 	int sel_f_cnt;				//選択ファイル数
 	int sel_d_cnt;				//選択ディレクトリ数
 	__int64 sel_size;			//選択サイズ
+
 	int last_fl_idx;			//ファイルリストに復帰した時のカーソル位置
 
 	bool show_f_d_cnt;			//ファイル、ディレクトリ数を表示
@@ -1364,7 +1365,6 @@ struct flist_stt {
 
 	int lwd_half;				//"X" の幅
 	int lwd_fext_max;			//".WWWWWWWWWWWW" の幅
-
 	int lwd_fext;				//拡張子の表示幅
 	int lwd_size;				//サイズの表示幅
 	int lwd_time;				//タイムスタンプの表示幅

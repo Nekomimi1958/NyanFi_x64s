@@ -1259,18 +1259,23 @@ void InitializeGlobal()
 		DirSortMode[i] 	 = 0;
 
 		flist_stt *sp	 = &ListStt[i];
-		sp->clu_size	 = 0;
 		sp->drive_Used	 = 0;
 		sp->drive_Free	 = 0;
 		sp->drive_Total  = 0;
 		sp->cur_total	 = -1;
 		sp->occ_total	 = -1;
 		sp->cmp_total	 = -1;
+		sp->clu_size	 = 0;
+
 		sp->f_cnt		 = 0;
 		sp->d_cnt		 = 0;
+		sp->f_cnt_total	 = 0;
+		sp->d_cnt_total	 = 0;
 		sp->sel_f_cnt	 = 0;
 		sp->sel_d_cnt	 = 0;
 		sp->sel_size	 = 0;
+
+		sp->last_fl_idx	 = -1;
 
 		sp->show_f_d_cnt = false;
 		sp->dir_graph	 = false;
@@ -1287,32 +1292,41 @@ void InitializeGlobal()
 		sp->lxp_fext	 = 0;
 		sp->lxp_size	 = 0;
 		sp->lxp_time	 = 0;
+		sp->lxp_path	 = 0;
+		sp->lxp_right	 = 0;
 
 		sp->color_bgDirInf = col_None;
 		sp->color_fgDirInf = col_None;
 		sp->color_bgDrvInf = col_None;
 		sp->color_fgDrvInf = col_None;
+		sp->color_Cursor   = col_None;
+		sp->color_selItem  = col_None;
 
 		sp->is_TabFixed   = false;
 		sp->git_checked   = false;
 
 		sp->is_Work 	  = false;
 		sp->is_FTP		  = false;
+
 		sp->is_Arc		  = false;
 		sp->arc_RetList   = CreStringList();
 		sp->arc_TmpList   = CreStringList();
 
+		sp->is_ADS		  = false;
+
 		sp->find_SubList  = CreStringList();
+	
 		sp->find_UseSet   = false;
 		sp->find_ResLink  = false;
 		sp->find_DirLink  = false;
 		sp->find_PathSort = false;
+		clear_FindStt(sp);
+
 		sp->is_IncSea     = false;
 		sp->is_Migemo     = false;
 		sp->is_Filter     = false;
 		sp->is_Fuzzy      = false;
 		sp->filter_csns   = false;
-		clear_FindStt(sp);
 	}
 
 	for (int i=0; i<MAX_TIMER_EVENT; i++) {
@@ -12192,8 +12206,12 @@ void PathNameOut(
 	std::unique_ptr<TColor[]> FgCol(new TColor[s_len + 1]);
 	std::unique_ptr<TColor[]> BgCol(new TColor[s_len + 1]);
 
-	for (int i=0; i<=s_len; i++) {	//0 ‚Í Œ»ÝF
-		FgCol[i] = cv->Font->Color;
+	TColor fg_sep = AdjustColor(cv->Font->Color, ADJCOL_FGLIST);
+	FgCol[0] = cv->Font->Color;
+	BgCol[0] = cv->Brush->Color;
+	for (int i=1; i<=s_len; i++) {	//0 ‚Í Œ»ÝF
+		WideChar c = s[i];
+		FgCol[i] = (c=='<' || c=='>')? fg_sep : cv->Font->Color;
 		BgCol[i] = cv->Brush->Color;
 	}
 
@@ -12219,12 +12237,12 @@ void PathNameOut(
 	}
 
 	//•¶Žš—ñ•`‰æ
-	TColor fg_sep = AdjustColor(cv->Font->Color, ADJCOL_FGLIST);
 	int yh = y + cv->TextHeight("Q");
 	int s_wd = cv->TextWidth(DirDelimiter);
 	int s_mg = (s_wd>cv->TextWidth("/"))? 0 : s_wd/4;
-	cv->Font->Color  = FgCol[1];
-	cv->Brush->Color = BgCol[1];
+	cv->Font->Color = FgCol[1];
+	if (cv->Brush->Style!=bsClear) cv->Brush->Color = BgCol[1];
+
 	UnicodeString sbuf;
 	for (int i=1; i<=s_len; i++) {
 		WideChar c = s[i];
@@ -12246,8 +12264,8 @@ void PathNameOut(
 				}
 			}
 			if (i<s_len) sbuf = c;
-			cv->Font->Color  = FgCol[i];
-			cv->Brush->Color = BgCol[i];
+			cv->Font->Color = FgCol[i];
+			if (cv->Brush->Style!=bsClear) cv->Brush->Color = BgCol[i];
 		}
 		else {
 			sbuf.cat_sprintf(_T("%c"), c);
@@ -12265,40 +12283,8 @@ void PathNameOut(
 	int max_w)			//§ŒÀ• (default = 0 : –³§ŒÀ)
 {
 	if (s.IsEmpty()) return;
-
 	if (max_w>0) s = get_MiniPathName(ReplaceStr(s, DirDelimiter, "\\"), max_w, cv->Font, false);
-	int s_len = s.Length();
-
-	TColor fg_org = cv->Font->Color;
-	TColor fg_sep = AdjustColor(fg_org, ADJCOL_FGLIST);
-
-	int yh = y + cv->TextHeight("Q");
-	int s_wd = cv->TextWidth(DirDelimiter);
-	UnicodeString sbuf;
-	for (int i=1; i<=s_len; i++) {
-		WideChar c = s[i];
-		if (i==s_len) sbuf.cat_sprintf(_T("%c"), c);
-		if (EndsStr('\\', sbuf) || i==s_len) {
-			if (!sbuf.IsEmpty()) {
-				bool flag = remove_end_s(sbuf, '\\');
-				int w = cv->TextWidth(sbuf);
-				if (w>0) {
-					cv->Font->Color = fg_org;
-					cv->TextRect(Rect(x, y, x + w, yh), x, y, sbuf);
-					x += w;
-				}
-				if (flag) {
-					cv->Font->Color = fg_sep;
-					cv->TextRect(Rect(x, y, x + s_wd, yh), x, y, DirDelimiter);
-					x += s_wd;
-				}
-			}
-			if (i<s_len) sbuf = c;
-		}
-		else {
-			sbuf.cat_sprintf(_T("%c"), c);
-		}
-	}
+	PathNameOut(s, NULL, false, cv, x, y, false);
 }
 
 //---------------------------------------------------------------------------

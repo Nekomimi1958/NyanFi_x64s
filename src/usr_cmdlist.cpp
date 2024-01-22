@@ -1156,12 +1156,14 @@ void get_PrmList(
 		if (SameText(cmd, "Copy")) {
 			params.cat_sprintf(_T("%s"),
 				_T("OP : 反対側コピー先のカーソル位置を設定\nOP2 : コピー先のカーソル位置を逐次設定\n")
-			 	_T("TO : コピー先を入力\nSD : コピー先を参照\nSS : カレントのサブディレクトリを選択\n"));
+			 	_T("TO : コピー先を入力\nSD : コピー先を参照\n")
+				_T("SS : カレントのサブディレクトリを選択\nSX : 任意のディレクトリを選択\n"));
 		}
 		if (SameText(cmd, "Move")) {
 			params.cat_sprintf(_T("%s"),
 				_T("OP : 反対側移動先のカーソル位置を設定\nOP2 : 移動先のカーソル位置を逐次設定\n")
-			 	_T("TO : 移動先を入力\nSD : 移動先を参照\nSS : カレントのサブディレクトリを選択\n"));
+			 	_T("TO : 移動先を入力\nSD : 移動先を参照\n")
+				_T("SS : カレントのサブディレクトリを選択\nSX : 任意のディレクトリを選択\n"));
 		}
 		if (contained_wd_i(_T("Copy|Move"), cmd)) {
 			params += "PR : 同名時処理を事前に指定\nKT : ディレクトリのタイムスタンプを維持\n";

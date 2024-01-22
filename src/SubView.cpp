@@ -275,4 +275,3 @@ void __fastcall TSubViewer::RotateActionUpdate(TObject *Sender)
 	((TAction *)Sender)->Enabled = hasBitmap;
 }
 //---------------------------------------------------------------------------
-

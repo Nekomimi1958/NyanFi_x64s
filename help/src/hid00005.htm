@@ -554,7 +554,7 @@ NyanFi.exe -XCalculator_CB
       反対側がカレントと同じ場合、確認なしで上書きされます。<br>
     </dd>
 
-    <dt id="Copy">Copy<span class="pram_text">[_SO][;{OP|OP2}][;{TO|SD|SS}][;PR][;KT][;日付条件]</span></dt>
+    <dt id="Copy">Copy<span class="pram_text">[_SO][;{OP|OP2}][;{TO|SD|SS|SX}][;PR][;KT][;日付条件]</span></dt>
     <dd>選択中(無ければカーソル位置)の項目を反対パスにコピーします。<br>
       <div class="spc_box">
         反対パスが<a href="hid00060.htm">ワークリスト</a>の場合、項目がリストに登録されます。<br>
@@ -576,7 +576,8 @@ NyanFi.exe -XCalculator_CB
         パラメータに <b>TO</b> を指定すると、反対パスではなく、入力ボックス(<a href="#InputDir">→
           InputDir</a>)で指定したディレクトリがコピー先になります。このとき存在しないディレクトリを指定すると、確認メッセージが出てそれを新規作成できます。<br>
         パラメータに <b>SD</b> を指定すると、フォルダの参照ダイアログでコピー先を選択できます。<br>
-        また <b>SS</b> を指定すると、カレントのサブディレクトリをコピー先として選択するダイアログが開きます。最初の <b>..</b> を選ぶと親ディレクトリにコピーします。<br>
+        <b>SS</b> を指定すると、カレントのサブディレクトリをコピー先として選択するダイアログが開きます。最初の <b>..</b> を選ぶと親ディレクトリにコピーします。<br>
+        <b>SX</b> を指定すると、<a href="#SubDirList">SubDirList</a> コマンドと同様のダイアログが開き、任意のディレクトリをコピー先として選択できます。<br>
       </div>
       <div class="spc_box">
         パラメータに <b>PR</b> を指定すると、同名ファイルがあったときの処理(すべてに適用)をダイアログで事前に指定できます。これが適用されるのは、バックグラウンド・タスクによる通常のファイルコピーのみです。<br>
@@ -3571,8 +3572,7 @@ D:\Data\hoge.txt
 
       <div class="spc_box">
         一覧でのキー操作は、<a href="hid00057.htm">ディレクトリ履歴</a>などと同様です(頭文字サーチも可能)。<br>
-        また<span class="btn_frame">←</span> / <span class="btn_frame">→</span>キーや、<a href="#ToLeft">ToLeft</a>/<a href="#ToRight">ToRight</a>、<a href="#ToParentOnLeft">ToParentOnLeft</a>/<a href="#ToParentOnRight">ToParentOnRight</a>、<a href="#PrevTab">PrevTab</a>/<a href="#NextTab">NextTab</a>
-        コマンドが割り当てられているキーによって、基準となるディレクトリをパンくずリストのように遡って変更できます(マウスによる選択も可能)。左端ではドライブの変更(UNCパスの場合は共有フォルダ)やライブラリへの移動が可能。<br>
+        また<span class="btn_frame">←</span> / <span class="btn_frame">→</span>キーや、<a href="#ToLeft">ToLeft</a>/<a href="#ToRight">ToRight</a>、<a href="#ToParentOnLeft">ToParentOnLeft</a>/<a href="#ToParentOnRight">ToParentOnRight</a>、<a href="#PrevTab">PrevTab</a>/<a href="#NextTab">NextTab</a> コマンドが割り当てられているキーによって、基準となるディレクトリをパンくずリストのように遡って変更できます(マウスによる選択も可能)。左端ではドライブの変更(UNCパスの場合は共有フォルダ)やライブラリへの移動が可能。<br>
         なお、右クリックメニューでパスのコピーが可能です。<br>
         一覧の表示位置はカレント側の中央になりますが、サイズは変更可能で保存されます。<br>
       </div>

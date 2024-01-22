@@ -158,6 +158,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall ExtraCheckBoxClick(TObject *Sender);
 	void __fastcall ArcCheckBoxClick(TObject *Sender);
 	void __fastcall MaskComboBoxChange(TObject *Sender);
+	void __fastcall DateMaskEditChange(TObject *Sender);
 	void __fastcall DateBtnClick(TObject *Sender);
 	void __fastcall AttrCheckBoxClick(TObject *Sender);
 	void __fastcall CondChangeUpdate(TObject *Sender);

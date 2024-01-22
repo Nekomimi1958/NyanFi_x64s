@@ -36,9 +36,12 @@ object NetShareDlg: TNetShareDlg
       Align = alLeft
       Anchors = [akLeft, akTop, akRight, akBottom]
       BorderStyle = bsNone
+      DoubleBuffered = True
+      ParentDoubleBuffered = False
       PopupMenu = PopupMenu1
       TabOrder = 0
       StyleElements = [seBorder]
+      OnClick = ShareListBoxClick
       OnDblClick = ShareListBoxDblClick
       OnDrawItem = ShareListBoxDrawItem
       OnKeyDown = ShareListBoxKeyDown
@@ -72,8 +75,8 @@ object NetShareDlg: TNetShareDlg
     OnDrawTab = PathTabControlDrawTab
   end
   object PopupMenu1: TPopupMenu
-    Left = 24
-    Top = 48
+    Left = 32
+    Top = 112
     object CopyUncItem: TMenuItem
       Action = CopyUncAction
     end
@@ -88,7 +91,7 @@ object NetShareDlg: TNetShareDlg
     end
   end
   object ActionList1: TActionList
-    Left = 104
+    Left = 32
     Top = 45
     object CopyUncAction: TAction
       Caption = 'UNC'#12497#12473#12434#12467#12500#12540'(&C)'
