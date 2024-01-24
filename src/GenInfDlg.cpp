@@ -819,6 +819,8 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 		fnam = ExcludeTrailingPathDelimiter(fnam);
 		lbuf = get_pre_tab(lbuf);
 
+		OutDebugStr(lbuf + " : " + fnam);
+
 		if (StartsText(fnam, lbuf)) {
 			lbuf.Delete(1, fnam.Length());
 		}
@@ -838,8 +840,13 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 			RuledLnTextOut(lbuf, cv, rc, use_fgsel? col_fgSelItem : get_ListFgCol(), tw, wlist.get(), case_sns);
 		}
 		else {
-			cv->Font->Color = use_fgsel? col_fgSelItem : get_ListFgCol();
-			PathNameOut(lbuf, wlist.get(), case_sns, cv, xp, yp);
+			if (EndsStr('\\', lbuf) || get_extension(lbuf).IsEmpty()) {
+				cv->Font->Color = use_fgsel? col_fgSelItem : col_Folder;
+				PathNameOut(lbuf, wlist.get(), case_sns, cv, xp, yp);
+			}
+			else {
+				FileNameOut(cv, rc, lbuf, use_fgsel, true, wlist.get(), case_sns);
+			}
 		}
 	}
 	//ディレクトリ名一覧
@@ -1111,7 +1118,7 @@ void __fastcall TGeneralInfoDlg::GenListBoxKeyDown(TObject *Sender, WORD &Key, T
 			}
 		}
 	}
-	else if (SameText(KeyStr, KeyStr_Copy)) {
+	else if (SameText(KeyStr, KeyStr_Copy) || (isFileList && SameText(cmd_F, "CopyFileName"))) {
 		CopyAction->Execute();
 	}
 	else if (contained_wd_i(KeysStr_Popup, KeyStr)) {

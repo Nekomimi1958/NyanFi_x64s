@@ -666,7 +666,7 @@ NyanFi.exe -XCalculator_CB
         　<b>$N</b>　パス無しファイル名主部<br>
         　<b>$E</b>　拡張子(ドットを含む)<br>
         　<b>$B</b>　パス無しファイル名($N + $E)<br>
-        　<b>$F</b>　パス付ファイル名($P + $B)<br>
+        　<b>$F</b>　パス付きファイル名($P + $B)<br>
         　<b>$A</b>　属性(DRHSAC)<br>
         　<b>$S</b>　サイズ (ファイルリストの表示と同じ書式)<br>
         　<b>$Y</b>　サイズ (バイト単位、カンマ無し)<br>
@@ -723,6 +723,9 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
 &lt;img src="nyanfi_grep.jpg" width="800" height="320" alt=""&gt;
 &lt;img src="nyanfi_scr.jpg" width="800" height="600" alt=""&gt;
 </pre>
+      </div>
+      <div class="spc_box">
+        なお、単にパス付きファイル名としてコピーした場合、履歴として保持され <a href="#ListFileName">ListFileName</a>_CH コマンドで参照できます。
       </div>
 
       <a href="#ListFileName">→ ListFileName</a>　<a href="#NameFromClip">→ NameFromClip</a>　<a href="#GetHash">→
@@ -1455,7 +1458,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
         ToOppSameHash</a>　<a href="#SelSameDir">→ SelSameDir</a>
     </dd>
 
-    <dt id="FindFileDlg">FindFileDlg<span class="pram_text">[_{NM|FK}][;R{0|1}][;X{0|1}][;A{0|1}][;NT][;リストファイル名|*]</span>
+    <dt id="FindFileDlg">FindFileDlg<span class="pram_text">[_{NM|FK}][;R{0|1}][;X{0|1}][;A{0|1}][;NT][;リストファイル名|*|$特殊フォルダ識別名]</span>
     </dt>
     <dd>「<a href="hid00052.htm">ファイル名検索</a>」ダイアログを開きます。<br>
       マスク、検索語、日付、サイズ、属性の条件にマッチするファイルを検索できます。結果リストに対する絞り込み検索も可能です。<br>
@@ -1479,6 +1482,44 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       <div class="spc_box">
         複数のパラメータを指定する場合は <b>;</b> (セミコロン)で区切ってください。<br>
         <b>例</b>: FindFileDlg_R1;X1;DirList.txt<br>
+      </div>
+
+      <div class="spc_box">
+        パラメータに <b>$</b> で始まる名前を指定すると、<b>特殊フォルダ識別名</b>とみなされ、対応するディレクトリのリストに置き換えられます。<br>
+        特殊フォルダ識別名には以下を使用できます。<br>
+        <table>
+          <tr>
+            <td><b>$STARTMENU</b></td>
+            <td>現在のユーザおよびパブリックのスタートメニュー</td>
+          </tr>
+          <tr>
+            <td><b>$STARTUP</b></td>
+            <td>現在のユーザおよびパブリックのスタートアップ</td>
+          </tr>
+          <tr>
+            <td><b>$DESKTOP</b></td>
+            <td>現在のユーザおよびパブリックのデスクトップ</td>
+          </tr>
+          <tr>
+            <td><b>$DOCUMENT</b></td>
+            <td>現在のユーザおよびパブリックのドキュメント</td>
+          </tr>
+          <tr>
+            <td><b>$PICTURE</b></td>
+            <td>現在のユーザおよびパブリックのピクチャ</td>
+          </tr>
+          <tr>
+            <td><b>$VIDEO</b></td>
+            <td>現在のユーザおよびパブリックのビデオ</td>
+          </tr>
+          <tr>
+            <td><b>$MUSIC</b></td>
+            <td>現在のユーザおよびパブリックのミュージック</td>
+          </tr>
+        </table>
+      </div>
+      <div class="spc_box">
+        <b>例</b>: FindFileDlg_R1;$STARTMENU<br>
       </div>
       <a href="#FindDirDlg">→ FindDirDlg</a>　<a href="#FindFileDirDlg">→ FindFileDirDlg</a>　<a href="#MaskFind">→
         MaskFind</a>　<a href="#SaveAsFindSet">→ SaveAsFindSet</a>　<a href="#LoadFindSet">→ LoadFindSet</a>
@@ -1985,17 +2026,19 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       <a href="#ShowFileInfo">→ ShowFileInfo</a>　<a href="#ShowProperty">→ ShowProperty</a>
     </dd>
 
-    <dt id="ListFileName">ListFileName<span class="pram_text">[_{FN|書式}]</span></dt>
+    <dt id="ListFileName">ListFileName<span class="pram_text">[_{FN|書式}][;CH]</span></dt>
     <dd>選択中(無ければカレントの全ファイル)のファイル名を、指定した<b>書式</b>で<a href="hid00073.htm">一覧ダイアログ</a>に表示します。<br>
       パラメータに <b>FN</b> を指定すると、パス名を除いたファイル名部分のみを表示します。<br>
       書式には、<a href="#CopyFileName">CopyFileName</a> コマンドと同じ書式文字列が使えます。<br>
       一覧で<span class="btn_frame">Enter</span>キーを押すと、ダイアログを閉じてそのファイル位置に移動します(選択項目があればファイルリストに反映)。<br>
-
       <div class="spc_box">
         <b>例</b>: HTML文書のタイトルを一覧表示<br>
         　ListFileName_"$B $R(title)"<br>
       </div>
-
+      <div class="spc_box">
+        パラメータに <b>CH</b> を指定すると、<b>NyanFi</b> 上でクリップボードにコピーされたパス付きファイル名の履歴が一覧表示されます。<br>
+        保持されている履歴のうち最大50個はINIファイルに保存され、次回起動時にも参照できます。
+      </div>
       <a href="#CopyFileName">→ CopyFileName</a>　<a href="#CopyDir">→ CopyDir</a>　<a href="#ListTree">→ ListTree</a>
     </dd>
 
@@ -2103,8 +2146,11 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       対応しているのは、<a href="hid00052.htm">ファイル(/ディレクトリ)名検索</a>(<a href="#FindFileDlg">FindFileDlg/<a href="#FindFileDirDlg">FindFileDirDlg</a></a>)／<a href="hid00053.htm">ディレクトリ名検索</a>(<a href="#FindDirDlg">FindDirDlg</a>)／<b>タグ検索</b>(<a href="#FindTag">FindTag</a>)／<b>栞マーク検索</b>(<a href="#FindMark">FindMark</a>)／<b>フォルダアイコン検索</b>(<a href="#FindFolderIcon">FindFolderIcon</a>)／ハードリンクの列挙(<a href="#FindHardLink">→ FindHardLink</a>)の結果リストです。<br>
       <div class="spc_box">
         パラメータで<b>ファイル名</b>を指定することも可能(ドライブ名がない場合は <b>NyanFi</b> ディレクトリからの相対指定)。<br>
-        まて、パラメータに <b>*</b> を指定すると、<b>NyanFi</b> ディレクトリ下(サブディレクトリを含む)にある検索設定ファイルをダイアログで選択できます。<br>
         パラメータを指定しない場合は、ファイルの選択ダイアログが表示されます。<br>
+      </div>
+      <div class="spc_box">
+        パラメータに <b>*</b> を指定すると、<b>NyanFi</b> ディレクトリ下(サブディレクトリを含む)にある検索設定ファイルをダイアログで選択できます。<br>
+        なお、このダイアログでは、項目に対して右クリックメニューで「<b>表示色の設定</b>」、「<b>除外ディレクトリの設定</b>」、および「<b>リストファイルの編集</b>」が可能です。
       </div>
       <div class="spc_box">
         <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で「<b>検索設定</b>」をチェックしていると <a href="#OpenStandard">OpenStandard</a> コマンドでも実行できます。<br>
@@ -4028,7 +4074,7 @@ D:\Data\hoge.txt
           </tr>
           <tr>
             <td><b>$PathName$</b></td>
-            <td>画像のパス付ファイル名</td>
+            <td>画像のパス付きファイル名</td>
           </tr>
           <tr>
             <td><b>$FileName$</b></td>

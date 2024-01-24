@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------//
 // NyanFi																//
-//  共有フォルダ/サブディレクトリ選択/ライブラリ一覧					//
+//  共有フォルダ/サブディレクトリ選択/ライブラリ一覧/検索設定			//
 //----------------------------------------------------------------------//
 #ifndef ShareDlgH
 #define ShareDlgH
@@ -17,6 +17,7 @@
 #include <Vcl.ComCtrls.hpp>
 #include <Vcl.Tabs.hpp>
 #include <Vcl.ActnList.hpp>
+#include <Vcl.Dialogs.hpp>
 #include "usr_scrpanel.h"
 
 //-----------------------------------------------
@@ -27,6 +28,9 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *CopyPathAllAction;
 	TAction *CopyUncAction;
 	TAction *CopyUncAllAction;
+	TAction *EditListAction;
+	TAction *SetColorAction;
+	TAction *SetSkipDirAction;
 	TActionList *ActionList1;
 	TButton *HiddenCanBtn;
 	TListBox *ShareListBox;
@@ -34,6 +38,9 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *CopyPathItem;
 	TMenuItem *CopyUncAllItem;
 	TMenuItem *CopyUncItem;
+	TMenuItem *EditListItem;
+	TMenuItem *SetColorItem;
+	TMenuItem *SetSkipDirItem;
 	TPanel *ListPanel;
 	TPopupMenu *PopupMenu1;
 	TTabControl *PathTabControl;
@@ -48,6 +55,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall ShareListBoxDrawItem(TWinControl *Control, int Index, TRect &Rect, TOwnerDrawState State);
 	void __fastcall ShareListBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall ShareListBoxKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall ShareListBoxClick(TObject *Sender);
 	void __fastcall ShareListBoxDblClick(TObject *Sender);
 	void __fastcall CopyUncActionExecute(TObject *Sender);
 	void __fastcall CopyUncActionUpdate(TObject *Sender);
@@ -57,7 +65,12 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall CopyPathActionUpdate(TObject *Sender);
 	void __fastcall CopyPathAllActionExecute(TObject *Sender);
 	void __fastcall CopyPathAllActionUpdate(TObject *Sender);
-	void __fastcall ShareListBoxClick(TObject *Sender);
+	void __fastcall SetColorActionExecute(TObject *Sender);
+	void __fastcall SetColorActionUpdate(TObject *Sender);
+	void __fastcall EditListActionExecute(TObject *Sender);
+	void __fastcall EditListActionUpdate(TObject *Sender);
+	void __fastcall SetSkipDirActionExecute(TObject *Sender);
+	void __fastcall SetSkipDirActionUpdate(TObject *Sender);
 
 private:	// ユーザー宣言
 	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー

@@ -1208,6 +1208,11 @@ void __fastcall TAppListDlg::AppListBoxKeyDown(TObject *Sender, WORD &Key, TShif
 	else if (StartsText("ShowFileInfo", CmdStr) || SameText(CmdStr, "ListFileInfo")) {
 		AppInfoAction->Execute();
 	}
+	//実行ファイル名のコピー
+	else if (SameText(CmdStr, "CopyFileName")) {
+		AppWinInf *ap = GetCurAppWinInf();
+		if (ap) copy_to_Clipboard(ap->FileName);
+	}
 	else handled = false;
 
 	if (!is_DialogKey(Key) || handled) Key = 0;

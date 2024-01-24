@@ -1278,6 +1278,13 @@ void add_dyn_array(TStringDynArray &lst, UnicodeString s,
 	lst.Length = len + 1;
 	lst[len]   = s;
 }
+//---------------------------------------------------------------------------
+//TStringDynArray ‚Ì€–Ú“à—eæ“¾
+//---------------------------------------------------------------------------
+UnicodeString get_array_item(TStringDynArray items, int idx)
+{
+	return ((idx>=0 && idx<items.Length)? items[idx] : EmptyStr);
+}
 
 //---------------------------------------------------------------------------
 //CSV€–Ú“à—eæ“¾
@@ -1306,7 +1313,6 @@ UnicodeString get_csv_item(UnicodeString src, int idx)
 	rec->DelimitedText	 = src;
 	return (idx>=0 && idx<rec->Count)? rec->Strings[idx] : EmptyStr;
 }
-
 //---------------------------------------------------------------------------
 UnicodeString get_tsv_item(UnicodeString src, int idx)
 {
@@ -1626,6 +1632,18 @@ bool ListVal_is_empty(TStringList *lst, UnicodeString name)
 bool ListVal_equal_1(TStringList *lst, UnicodeString name)
 {
 	return SameStr(lst->Values[name], "1");
+}
+
+//---------------------------------------------------------------------------
+//•¶š—ñ‚ğ—š—ğ‚Æ‚µ‚Äd•¡‚È‚µ‚Å’Ç‰Á
+//---------------------------------------------------------------------------
+void add_as_history(TStrings *lst, UnicodeString s)
+{
+	if (!s.IsEmpty()) {
+		int i=0;
+		while (i < lst->Count) if (SameText(lst->Strings[i], s)) lst->Delete(i); else i++;
+		lst->Insert(0, s);
+	}
 }
 
 //---------------------------------------------------------------------------

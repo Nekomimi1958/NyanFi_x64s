@@ -16806,8 +16806,6 @@ void __fastcall TNyanFiForm::DotNyanDlgActionUpdate(TObject *Sender)
 void __fastcall TNyanFiForm::DriveGraphActionExecute(TObject *Sender)
 {
 	try {
-		if (!IsCurFList()) UserAbort(USTR_OpeNotSuported);
-
 		UnicodeString dnam;
 		if (!ActionParam.IsEmpty())
 			dnam.sprintf(_T("%c:"), ActionParam[1]);
@@ -18689,13 +18687,18 @@ void __fastcall TNyanFiForm::FindFileDlgExecute(
 			CurStt->find_SubList->Clear();
 			//ディレクトリ・リストが対象
 			if (!lst_name.IsEmpty()) {
-				std::unique_ptr<TStringList> fbuf(new TStringList());
-				load_text_ex(lst_name, fbuf.get());
-				for (int i=0; i<fbuf->Count; i++) {
-					UnicodeString lbuf = get_pre_tab(fbuf->Strings[i]);
-					if (lbuf.IsEmpty() || StartsStr(';', lbuf)) continue;
-					UnicodeString dnam = cv_env_str(lbuf);
-					if (dir_exists(dnam)) CurStt->find_SubList->Add(ExcludeTrailingPathDelimiter(dnam));
+				if (StartsStr('$', lst_name)) {
+					get_SpecialDirList(lst_name, CurStt->find_SubList);
+				}
+				else {
+					std::unique_ptr<TStringList> fbuf(new TStringList());
+					load_text_ex(lst_name, fbuf.get());
+					for (int i=0; i<fbuf->Count; i++) {
+						UnicodeString lbuf = get_pre_tab(fbuf->Strings[i]);
+						if (lbuf.IsEmpty() || StartsStr(';', lbuf)) continue;
+						UnicodeString dnam = cv_env_str(lbuf);
+						if (dir_exists(dnam)) CurStt->find_SubList->Add(ExcludeTrailingPathDelimiter(dnam));
+					}
 				}
 			}
 			//カレント下が対象
@@ -18744,21 +18747,23 @@ void __fastcall TNyanFiForm::FindFileDlgActionExecute(TObject *Sender)
 				if (lst_name.IsEmpty()) SkipAbort();
 				ListFilePath = ExtractFilePath(lst_name);
 			}
-			else {
-				lst_name = to_absolute_name(lst_name);
+			else if (StartsStr('$', lst_name)) {
+				if (!get_SpecialDirList(lst_name)) UserAbort(USTR_IllegalParam);
 			}
-			if (!file_exists(lst_name)) throw EAbort(LoadUsrMsg(USTR_NotFound, _T("リストファイル")));
+			else if (!StartsStr('$', lst_name)) {
+				lst_name = to_absolute_name(lst_name);
+				if (!file_exists(lst_name)) throw EAbort(LoadUsrMsg(USTR_NotFound, _T("リストファイル")));
+			}
 		}
 
+		CurStt->is_narrow = CurStt->is_Find;
 		if (!lst_name.IsEmpty()) {
 			if (OppStt->is_Find) RecoverFileList(OppListTag);
-			CurStt->is_narrow = false;
-			FindFileDlgExecute(false, lst_name);
+			FindFileDlgExecute(false, !CurStt->is_narrow? lst_name : EmptyStr);
 		}
 		else {
 			if (CurStt->is_Arc || CurStt->is_ADS || CurStt->is_Work || CurStt->is_FTP) UserAbort(USTR_OpeNotSuported);
 			if (OppStt->is_Find) RecoverFileList(OppListTag);
-			CurStt->is_narrow = !CurStt->find_UseSet && CurStt->is_Find;
 			FindFileDlgExecute(false);
 		}
 	}
@@ -19810,6 +19815,7 @@ void __fastcall TNyanFiForm::InputCommandsActionExecute(TObject *Sender)
 		if (InpCmdsDlg->ShowModal()==mrOk) {
 			UnicodeString cmds = InpCmdsDlg->CmdsComboBox->Text;
 			if (TEST_ActParam("EL")) ActionOptStr = ActionParam;
+			AddCmdHistory(get_CmdStr(cmds), get_PrmStr(cmds), ">");
 			if (!ExeAliasOrCommands(cmds)) GlobalAbort();
 
 			//履歴に追加
@@ -20869,15 +20875,21 @@ void __fastcall TNyanFiForm::ListClipboardActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::ListFileNameActionExecute(TObject *Sender)
 {
+	bool is_cpy_hst = TEST_DEL_ActParam("CH");
 	UnicodeString fmt =
 		ActionParam.IsEmpty()? UnicodeString("$F") :
 		  TEST_ActParam("FN")? UnicodeString("$B") : ActionParam;
 
-	TStringList *lst = GetCurList();
 	std::unique_ptr<TStringList> r_lst(new TStringList());
-	GetCopyFileNames(fmt, GetSelCount(lst)==0, NULL, r_lst.get());
+	TStringList *lst = GetCurList();
+	if (is_cpy_hst) {
+		r_lst->Assign(CopyPathHistory);
+	}
+	else {
+		GetCopyFileNames(fmt, GetSelCount(lst)==0, NULL, r_lst.get());
+	}
 	if (r_lst->Count>0) {
-		set_FormTitle(GeneralInfoDlg, _T("ファイル名一覧"));
+		GeneralInfoDlg->Caption = UnicodeString("ファイル名一覧") + (is_cpy_hst? " - コピー履歴" : "");
 		GeneralInfoDlg->isFileList = true;
 		GeneralInfoDlg->GenInfoList->Assign(r_lst.get());
 		if (GeneralInfoDlg->ShowModal()==mrOk) {
@@ -30264,11 +30276,11 @@ void __fastcall TNyanFiForm::SetGrepSelInf()
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::UpdateGrepSticky()
 {
-	GrepStickyPanel->Top    = ResultListBox->Top;
-	GrepStickyPanel->Left   = ResultListBox->Left;
-	GrepStickyPanel->Height = ResultListBox->ItemHeight - CursorWidth;
-
 	TListBox *lp = ResultListBox;
+	GrepStickyPanel->Top    = lp->Top;
+	GrepStickyPanel->Left   = lp->Left;
+	GrepStickyPanel->Height = lp->ItemHeight - CursorWidth;
+
 	int idx = lp->TopIndex;
 	int wd = 0;
 	if (idx>0) {
@@ -30655,8 +30667,8 @@ void __fastcall TNyanFiForm::ResultListBoxKeyDown(TObject *Sender, WORD &Key, TS
 			if (cmd_id==0) ExeCmdAction(ReturnListAction);
 		}
 		else {
-			UnicodeString   lbuf = lp->Items->Strings[lp->ItemIndex];
-			UnicodeString   fnam = split_pre_tab(lbuf);
+			UnicodeString lbuf = lp->Items->Strings[lp->ItemIndex];
+			UnicodeString fnam = split_pre_tab(lbuf);
 			TStringDynArray lif  = SplitString(get_pre_tab(lbuf), ":");
 			int lno = (lif.Length>0)? lif[0].ToIntDef(0) : 0;
 

@@ -1,9 +1,11 @@
 //----------------------------------------------------------------------//
 // NyanFi																//
-//  共有フォルダ/サブディレクトリ選択/ライブラリ一覧					//
+//  共有フォルダ/サブディレクトリ選択/ライブラリ一覧/検索設定			//
 //----------------------------------------------------------------------//
 #include "UserFunc.h"
+#include "UserMdl.h"
 #include "Global.h"
+#include "EditItem.h"
 #include "MainFrm.h"
 #include "ShareDlg.h"
 
@@ -91,9 +93,13 @@ void __fastcall TNetShareDlg::WmFormShowed(TMessage &msg)
 		std::unique_ptr<TStringList> s_lst(new TStringList());
 		get_files(ExePath, "*.ini", l_lst.get(), true);
 		for (int i=0,n=0; i<l_lst->Count; i++) {
-			UnicodeString inam = l_lst->Strings[i];
-			std::unique_ptr<UsrIniFile> set_file(new UsrIniFile(inam));
-			if (set_file->SectionExists("FindSettings")) s_lst->Add(inam);
+			UnicodeString fnam = l_lst->Strings[i];
+			std::unique_ptr<UsrIniFile> set_file(new UsrIniFile(fnam));
+			UnicodeString sct = "FindSettings";
+			if (set_file->SectionExists(sct)) {
+				//ファイル名 [TAB] 表示色 [TAB] リストファイル名
+				s_lst->Add(fnam + "\t" + set_file->ReadString(sct, "Color") + "\t" + set_file->ReadString(sct, "DirList"));
+			}
 		}
 		s_lst->Sort();
 		ShareListBox->Items->Assign(s_lst.get());
@@ -403,14 +409,17 @@ void __fastcall TNetShareDlg::ShareListBoxDrawItem(TWinControl *Control, int Ind
 		}
 		//検索設定
 		else if (isFindSet) {
-			cv->Font->Color = col_Folder;
-			lbuf = get_base_name(lbuf);
+			TStringDynArray itm_buf = split_strings_tab(lbuf);
+			lbuf = get_base_name(get_array_item(itm_buf, 0));
+			cv->Font->Color = TColor(get_array_item(itm_buf, 1).ToIntDef((int)col_Folder));
 		}
 		cv->TextOut(xp, yp, lbuf);
 	}
 
 	//カーソル
-	draw_ListCursor2(lp, Rect, Index, State);
+	draw_ListCursor(lp, Rect, Index, State);
+
+	OutDebugStr((State.Contains(odFocused)? "* " : "_ ") + lbuf);
 }
 
 //---------------------------------------------------------------------------
@@ -440,11 +449,13 @@ void __fastcall TNetShareDlg::ShareListBoxKeyDown(TObject *Sender, WORD &Key, TS
 		if (is_drive_accessible(dstr)) {
 			NyanFiForm->RecoverFileList();
 			NyanFiForm->UpdateCurDrive(dstr);
-			Key = 0;
 			ModalResult = mrOk;
-			return;
 		}
-		else beep_Warn();
+		else {
+			beep_Warn();
+		}
+		Key = 0;
+		return;
 	}
 
 	//確定
@@ -487,7 +498,7 @@ void __fastcall TNetShareDlg::ShareListBoxKeyDown(TObject *Sender, WORD &Key, TS
 				}
 				//検索設定
 				else if (isFindSet) {
-					FileName = lp->Items->Strings[idx];
+					FileName = get_pre_tab(lp->Items->Strings[idx]);
 				}
 				ModalResult = mrOk;
 			}
@@ -534,6 +545,10 @@ void __fastcall TNetShareDlg::ShareListBoxKeyDown(TObject *Sender, WORD &Key, TS
 				lp->ItemIndex = lp->Items->IndexOf(ExcludeTrailingPathDelimiter(pnam));
 			}
 		}
+	}
+	//ポップアップメニュー
+	else if (contained_wd_i(KeysStr_Popup, KeyStr)) {
+		show_PopupMenu(lp);
 	}
 	//カーソル移動
 	else if	(ExeCmdListBox(lp, cmd_F)) {
@@ -653,4 +668,76 @@ void __fastcall TNetShareDlg::CopyPathAllActionUpdate(TObject *Sender)
 	ap->Enabled = ap->Visible && (ShareListBox->Count>0);
 }
 //---------------------------------------------------------------------------
-
+//表示色の設定
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::SetColorActionExecute(TObject *Sender)
+{
+	TListBox *lp = ShareListBox;
+	int idx = lp->ItemIndex;
+	if (idx!=-1) {
+		TStringDynArray itm_buf = split_strings_tab(lp->Items->Strings[idx]);
+		UnicodeString fnam = get_array_item(itm_buf, 0);
+		UnicodeString col  = get_array_item(itm_buf, 1);
+		UserModule->ColorDlg->Color = !col.IsEmpty()? TColor(col.ToIntDef((int)col_Folder)) : col_Folder;
+		if (UserModule->ColorDlg->Execute()) {
+			col = IntToStr((int)UserModule->ColorDlg->Color);
+			std::unique_ptr<UsrIniFile> set_file(new UsrIniFile(fnam));
+			UnicodeString sct = "FindSettings";
+			set_file->WriteString(sct, "Color", col);
+			set_file->UpdateFile(true);
+			lp->Items->Strings[idx] = fnam + "\t" + col + "\t" + set_file->ReadString(sct, "DirList"); 
+			lp->Repaint();
+		}
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::SetColorActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction *)Sender;
+	ap->Visible = isFindSet;
+	ap->Enabled = ap->Visible && (ShareListBox->ItemIndex!=-1);
+}
+//---------------------------------------------------------------------------
+//リストファイルの編集
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::EditListActionExecute(TObject *Sender)
+{
+	TListBox *lp = ShareListBox;
+	if (lp->ItemIndex!=-1) {
+		if (!open_by_TextEditor(get_tsv_item(lp->Items->Strings[lp->ItemIndex], 2))) msgbox_ERR(GlobalErrMsg);
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::EditListActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction *)Sender;
+	ap->Visible = isFindSet;
+	TListBox *lp = ShareListBox;
+	ap->Enabled = (ap->Visible && lp->ItemIndex!=-1 && !get_tsv_item(lp->Items->Strings[lp->ItemIndex], 2).IsEmpty());
+}
+//---------------------------------------------------------------------------
+//除外ディレクトリの設定
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::SetSkipDirActionExecute(TObject *Sender)
+{
+	TListBox *lp = ShareListBox;
+	int idx = lp->ItemIndex;
+	if (idx!=-1) {
+		std::unique_ptr<UsrIniFile> set_file(new UsrIniFile(get_tsv_item(lp->Items->Strings[idx], 0)));
+		UnicodeString sct = "FindSettings";
+		if (!EditItemDlg) EditItemDlg = new TEditItemDlg(this);	//初回に動的作成
+		EditItemDlg->AssignText("除外ディレクトリ", set_file->ReadString(sct, "SkipDir"));
+		if (show_ModalDlg(EditItemDlg)==mrOk) {
+			set_file->WriteString(sct, "SkipDir", EditItemDlg->RetStr);
+			set_file->UpdateFile(true);
+		}
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::SetSkipDirActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction *)Sender;
+	ap->Visible = isFindSet;
+	ap->Enabled = ap->Visible && (ShareListBox->ItemIndex!=-1);
+}
+//---------------------------------------------------------------------------

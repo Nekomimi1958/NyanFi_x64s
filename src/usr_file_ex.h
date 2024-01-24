@@ -9,6 +9,9 @@
 #include <winternl.h>
 
 //---------------------------------------------------------------------------
+#define PATH_MATCH_PTN	"^(([a-z]:)|(%\\w+%)|(\\\\\\\\[^\\\\]+))\\\\(.+?\\\\)*.+$"
+
+//---------------------------------------------------------------------------
 #define	FileRenameInformation (FILE_INFORMATION_CLASS)10
 
 typedef struct _FILE_RENAME_INFORMATION {

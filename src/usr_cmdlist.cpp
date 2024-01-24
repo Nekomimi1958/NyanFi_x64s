@@ -680,6 +680,7 @@ void get_PrmList(
 	else if (contained_wd_i(_T("CopyFileName|ListFileName"), cmd)) {
 		if (cp) cp->Style = csDropDown;
 		params = "\nFN : ファイル名部分のみ\n";
+		if (SameText(cmd, "ListFileName")) params += "CH : クリップボードへのコピー履歴を表示\n";
 	}
 	else if (SameText(cmd, "CreateDir")) {
 		params = "\r\nIN : デフォルト名を指定して入力\r\n";
@@ -770,7 +771,14 @@ void get_PrmList(
 				_T("X1 : 「拡張検索」オン\n")
 				_T("A0 : 「アーカイブ内も検索」オフ\n")
 				_T("A1 : 「アーカイブ内も検索」オン\n")
-				_T("* : リストファイルの選択ダイアログを表示\n"));
+				_T("* : リストファイルの選択ダイアログを表示\n")
+				_T("$STARTMENU : スタートメニューを検索\n")
+				_T("$STARTUP : スタートアップを検索\n")
+				_T("$DESKTOP : デスクトップを検索\n")
+				_T("$DOCUMENT : ドキュメントを検索\n")
+				_T("$PICTURE : ピクチャを検索\n")
+				_T("$VIDEO : ビデオを検索\n")
+				_T("$MUSIC : ミュージックを検索\n"));
 		}
 	}
 	else if (SameText(cmd, "FindHardLink")) {

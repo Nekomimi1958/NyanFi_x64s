@@ -704,6 +704,7 @@ TStringList *AllDirHistory;		//全体のディレクトリ履歴
 TStringList *TextViewHistory;	//テキスト閲覧履歴
 TStringList *TextEditHistory;	//テキスト編集履歴
 TStringList *WorkListHistory;	//ワークリスト履歴
+TStringList *CopyPathHistory;	//コピーしたパス名の履歴
 TStringList *InputDirHistory;	//ディレクトリ入力の履歴
 TStringList *InputCmdsHistory;	//コマンド入力の履歴
 TStringList *InputCmdsHistoryV;
@@ -1352,6 +1353,7 @@ void InitializeGlobal()
 	DriveLogList      = CreStringList();
 	WatchTailList     = CreStringList();
 	InvalidUncList    = CreStringList();
+	CopyPathHistory  = CreStringList();
 	PlayList          = CreStringList();
 	XCMD_VarList      = CreStringList();
 	BakSetupList      = CreStringList();
@@ -2022,6 +2024,7 @@ void InitializeGlobal()
 		{_T("L:TextViewHistory=50,true"),	(TObject*)TextViewHistory},
 		{_T("L:TextEditHistory=50,true"),	(TObject*)TextEditHistory},
 		{_T("L:WorkListHistory=50,true"),	(TObject*)WorkListHistory},
+		{_T("L:CopyPathHistory=50,true"),	(TObject*)CopyPathHistory},
 		{_T("L:InpDirHistory=50,true"),		(TObject*)InputDirHistory},
 		{_T("L:InpCmdsHistory=30,true"),	(TObject*)InputCmdsHistory},
 		{_T("L:InpCmdsHistoryV=20,true"),	(TObject*)InputCmdsHistoryV},
@@ -5535,13 +5538,18 @@ bool load_FindSettings(UnicodeString fnam, flist_stt *lst_stt)
 
 	if (!lst_stt->find_DirList.IsEmpty()) {
 		lst_stt->find_SubList->Clear();
-		std::unique_ptr<TStringList> fbuf(new TStringList());
-		load_text_ex(lst_stt->find_DirList, fbuf.get());
-		for (int i=0; i<fbuf->Count; i++) {
-			UnicodeString lbuf = get_pre_tab(fbuf->Strings[i]);
-			if (lbuf.IsEmpty() || StartsStr(';', lbuf)) continue;
-			UnicodeString dnam = cv_env_str(lbuf);
-			if (dir_exists(dnam)) lst_stt->find_SubList->Add(ExcludeTrailingPathDelimiter(dnam));
+		if (StartsStr('$', lst_stt->find_DirList)) {
+			get_SpecialDirList(lst_stt->find_DirList, lst_stt->find_SubList);
+		}
+		else {
+			std::unique_ptr<TStringList> fbuf(new TStringList());
+			load_text_ex(lst_stt->find_DirList, fbuf.get());
+			for (int i=0; i<fbuf->Count; i++) {
+				UnicodeString lbuf = get_pre_tab(fbuf->Strings[i]);
+				if (lbuf.IsEmpty() || StartsStr(';', lbuf)) continue;
+				UnicodeString dnam = cv_env_str(lbuf);
+				if (dir_exists(dnam)) lst_stt->find_SubList->Add(ExcludeTrailingPathDelimiter(dnam));
+			}
 		}
 	}
 	else {
@@ -6756,6 +6764,60 @@ bool get_NameList_objSize(
 	}
 
 	return true;
+}
+
+//---------------------------------------------------------------------------
+//特殊ディレクトリのリストを取得
+//---------------------------------------------------------------------------
+bool get_SpecialDirList(UnicodeString id, TStringList *o_lst)
+{
+	bool ret = true;
+	if (SameText(id, "$STARTMENU")) {
+		if (o_lst) {
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_StartMenu));
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_CommonStartMenu));
+		}
+	}
+	else if (SameText(id, "$STARTUP")) {
+		if (o_lst) {
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_Startup));
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_CommonStartup));
+		}
+	}
+	else if (SameText(id, "$DESKTOP")) {
+		if (o_lst) {
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_Desktop));
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_PublicDesktop));
+		}
+	}
+	else if (SameText(id, "$DOCUMENT")) {
+		if (o_lst) {
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_Documents));
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_PublicDocuments));
+		}
+	}
+	else if (SameText(id, "$PICTURE")) {
+		if (o_lst) {
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_Pictures));
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_PublicPictures));
+		}
+	}
+	else if (SameText(id, "$VIDEO")) {
+		if (o_lst) {
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_Videos));
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_PublicVideos));
+		}
+	}
+	else if (SameText(id, "$MUSIC")) {
+		if (o_lst) {
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_Music));
+			o_lst->Add(usr_SH->KnownGuidToPath(FOLDERID_PublicMusic));
+		}
+	}
+	else {
+		ret = false;
+	}
+	return ret;
 }
 
 //---------------------------------------------------------------------------
@@ -15076,6 +15138,16 @@ void copy_to_Clipboard(UnicodeString s)
 	if (s.IsEmpty()) return;
 
 	Clipboard()->AsText = s;
+
+	//ファイル名なら履歴に追加
+	std::unique_ptr<TStringList> lst(new TStringList());
+	lst->Text = s;
+	TRegExOptions opt; opt << roIgnoreCase;
+	for (int i=0; i<lst->Count; i++) {
+		UnicodeString lbuf = lst->Strings[i];
+		if (TRegEx::IsMatch(lbuf, PATH_MATCH_PTN, opt)) add_as_history(CopyPathHistory, lbuf);
+	}
+
 	::SendMessage(MainHandle, WM_NYANFI_CLPCOPIED, get_line_count(s) | 0x80000000, str_len_unicode(s));
 	//WParam | 0x80000000 でテキストであることを通知
 }
@@ -15926,7 +15998,7 @@ void AddCmdHistory(
 	UnicodeString id,		//画面モード		(default = EmptyStr)
 	UnicodeString fnam)		//対象ファイル名	(default = EmptyStr)
 {
-	if (SameText(cmd, "CmdHistory") || (InhCmdHistory && !SameStr(id, "-"))) return;
+	if (SameText(cmd, "CmdHistory") || (InhCmdHistory && id!="-" && id!=">")) return;
 
 	OutDebugStr("#AddCmdHistory: " + cmd + (!prm.IsEmpty()? "_" + prm : EmptyStr));
 

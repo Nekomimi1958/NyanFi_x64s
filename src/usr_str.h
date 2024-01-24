@@ -141,6 +141,7 @@ bool find_mlt_str(UnicodeString wd, UnicodeString s, TStringList *lst, bool case
 int get_line_count(UnicodeString s);
 
 void add_dyn_array(TStringDynArray &lst, UnicodeString s, bool no_dupl = false);
+UnicodeString get_array_item(TStringDynArray items, int idx);
 
 TStringDynArray get_csv_array(UnicodeString src, int size, bool force_size = false);
 UnicodeString get_csv_item(UnicodeString src, int idx);
@@ -200,6 +201,8 @@ UnicodeString exclude_quot(UnicodeString s);
 int  get_ListIntVal(TStringList *lst, UnicodeString name, int def = 0);
 bool ListVal_is_empty(TStringList *lst, UnicodeString name);
 bool ListVal_equal_1(TStringList *lst, UnicodeString name);
+
+void add_as_history(TStrings *lst, UnicodeString s);
 
 UnicodeString __fastcall mSecToTStr(unsigned int ms, bool cs = true);
 int param_to_mSec(UnicodeString prm);

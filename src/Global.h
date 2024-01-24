@@ -117,6 +117,7 @@ typedef Set <SeaOpt, soMigemo, soGrepF> SearchOption;
 
 #define MAX_WORKHISTORY 50				//最大ワークリスト履歴数
 #define MAX_CMD_HISTORY 1000			//最大コマンド履歴数
+#define MAX_FNCPY_HISTORY 50			//コピーしたファイル名の最大履歴数
 
 #define CMPDEL_BUFF_SIZE 2048			//完全削除のバッファサイズ
 #define CRLF_DETECT_LINE 1000			//改行コード判定の行数
@@ -969,6 +970,7 @@ extern TStringList *AllDirHistory;
 extern TStringList *TextViewHistory;
 extern TStringList *TextEditHistory;
 extern TStringList *WorkListHistory;
+extern TStringList *CopyPathHistory;
 extern TStringList *InputDirHistory;
 extern TStringList *InputCmdsHistory;
 extern TStringList *InputCmdsHistoryV;
@@ -1950,6 +1952,7 @@ void update_FileListBoxT(TStrings *lst, int tag);
 
 bool get_Files_objSize(UnicodeString pnam, TStrings *lst, bool exc_sym);
 bool get_NameList_objSize(TStringList *lst, TStringList *o_lst, bool sub_sw, bool exc_sym);
+bool get_SpecialDirList(UnicodeString id, TStringList *o_lst = NULL);
 void get_FindListF(UnicodeString pnam, flist_stt *lst_stt, TStrings *lst, int tag);
 void get_FindListD(UnicodeString pnam, flist_stt *lst_stt, TStrings *lst, int tag);
 void get_SubDirs(UnicodeString pnam, TStrings *lst, TStatusBar *stt_bar = NULL, int stt_idx = 0, bool proc_msg = false);

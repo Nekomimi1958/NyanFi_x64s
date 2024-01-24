@@ -462,8 +462,8 @@ void __fastcall TEditHistoryDlg::UpdateList()
 				TStringDynArray sbuf = split_strings_tab(klist->Strings[k]);
 				if (sbuf.Length==0) continue;
 				UnicodeString fnam = sbuf[0];
-				UnicodeString memo = (sbuf.Length>1)? sbuf[1] : EmptyStr;	//ƒƒ‚
-				UnicodeString stim = (sbuf.Length>2)? sbuf[2] : EmptyStr;	//İ’è“ú
+				UnicodeString memo = get_array_item(sbuf, 1);	//ƒƒ‚
+				UnicodeString stim = get_array_item(sbuf, 2);	//İ’è“ú
 
 				//i‚è‚İ
 				if (!ptn.IsEmpty()) {
