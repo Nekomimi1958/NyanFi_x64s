@@ -2295,6 +2295,12 @@ object NyanFiForm: TNyanFiForm
       Height = 21
       Align = alRight
       Caption = '...'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 1
       OnClick = RefDirBtnClick
       OnExit = RefDirBtnExit
@@ -5104,7 +5110,6 @@ object NyanFiForm: TNyanFiForm
     AutoPopup = False
     Images = IconVImgListP
     OwnerDraw = True
-    OnPopup = OdPopupMenuPopup
     Left = 151
     Top = 137
   end
@@ -5216,13 +5221,11 @@ object NyanFiForm: TNyanFiForm
   end
   object DrivePopupMenu: TPopupMenu
     OwnerDraw = True
-    OnPopup = OdPopupMenuPopup
     Left = 40
     Top = 190
   end
   object SelItemPopupMenu: TPopupMenu
     OwnerDraw = True
-    OnPopup = OdPopupMenuPopup
     Left = 151
     Top = 192
   end

@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------//
 // NyanFi																//
-//  共有フォルダ/サブディレクトリ選択/ライブラリ一覧/検索設定			//
+//  共有フォルダ/ライブラリ/検索設定/ディレクトリ選択					//
 //----------------------------------------------------------------------//
 #include "UserFunc.h"
 #include "UserMdl.h"
@@ -15,12 +15,28 @@
 TNetShareDlg *NetShareDlg;
 
 //---------------------------------------------------------------------------
+int __fastcall sort_comp_DirIcon(TStringList *List, int Index1, int Index2)
+{
+	UnicodeString dnam0 = List->Strings[Index1];
+	UnicodeString dnam1 = List->Strings[Index2];
+	UnicodeString inam0 = get_FolderIconName(dnam0);
+	UnicodeString inam1 = get_FolderIconName(dnam1);
+	dnam0 = ExtractFileName(ExcludeTrailingPathDelimiter(dnam0));
+	dnam1 = ExtractFileName(ExcludeTrailingPathDelimiter(dnam1));
+
+	if (SameText(inam0, inam1)) return CompNameFN(dnam0, dnam1);
+	if (inam0.IsEmpty()) return 1;
+	if (inam1.IsEmpty()) return -1;
+	return CompNameFN(inam0, inam1);
+}
+
+//---------------------------------------------------------------------------
 __fastcall TNetShareDlg::TNetShareDlg(TComponent* Owner)
 	: TForm(Owner)
 {
 	rqRetPath = false;
-	isShare = isSelDir = isSelSub = isLibrary = isFindSet = false;
-	isPC = false;
+	isShare = isOnlySub = isLibrary = isFindSet = false;
+	isPC = isUNC = false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::FormCreate(TObject *Sender)
@@ -30,16 +46,16 @@ void __fastcall TNetShareDlg::FormCreate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::FormShow(TObject *Sender)
 {
-	isPC = false;
+	isPC = isUNC = false;
 
-	if (isSelDir)
-		IniFile->LoadPosInfo(this, DialogCenter, isSelSub? "SelSub" : "SelDir");
+	if (isShare)
+		IniFile->LoadPosInfo(this, DialogCenter);
 	else if (isLibrary)
 		IniFile->LoadPosInfo(this, DialogCenter, "Library");
 	else if (isFindSet)
 		IniFile->LoadPosInfo(this, DialogCenter, "FindSet");
 	else
-		IniFile->LoadPosInfo(this, DialogCenter);
+		IniFile->LoadPosInfo(this, DialogCenter, isOnlySub? "SelSub" : "SelDir");
 
 	//中央揃え
 	TControl *cp = (TControl *)((CurListTag==0)? NyanFiForm->L_Panel : NyanFiForm->R_Panel);
@@ -57,8 +73,7 @@ void __fastcall TNetShareDlg::FormShow(TObject *Sender)
 
 	set_StdListBox(ShareListBox);
 	set_UsrScrPanel(ListScrPanel);
-
-	UpdateBreadcrumb(PathName);
+	ShareListBox->Clear();
 
 	::PostMessage(Handle, WM_FORM_SHOWED, 0, 0);
 }
@@ -67,24 +82,20 @@ void __fastcall TNetShareDlg::WmFormShowed(TMessage &msg)
 {
 	PathTabControl->Repaint();
 
-	//ディレクトリの選択
-	if (isSelDir) {
-		PathName = IncludeTrailingPathDelimiter(PathName);
-		UpdatePathList(PathName);
+	//共有フォルダ
+	if (isShare) {
+		if (!ComputerName.IsEmpty() && !StartsStr("\\\\", ComputerName)) ComputerName.Insert("\\\\", 1);
+		ComputerName = ExcludeTrailingPathDelimiter(ComputerName);
+		PathName     = ComputerName;
+		UpdateShareList(ComputerName);
 	}
 	//ライブラリ
 	else if (isLibrary) {
-		set_FormTitle(this, _T("ライブラリ"));
+		Caption = "ライブラリ";
 		std::unique_ptr<TStringList> l_lst(new TStringList());
 		get_files(LibraryPath, "*.library-ms", l_lst.get());
 		ShareListBox->Items->Assign(l_lst.get());
 		ListBoxSetIndex(ShareListBox, 0);
-	}
-	//共有フォルダ
-	else if (isShare) {
-		if (!ComputerName.IsEmpty() && !StartsStr("\\\\", ComputerName)) ComputerName.Insert("\\\\", 1);
-		ComputerName = ExcludeTrailingPathDelimiter(ComputerName);
-		UpdateShareList(ComputerName);
 	}
 	//検索設定
 	else if (isFindSet) {
@@ -106,23 +117,30 @@ void __fastcall TNetShareDlg::WmFormShowed(TMessage &msg)
 		ListBoxSetIndex(ShareListBox, 0);
 		FileName = EmptyStr;
 	}
+	//ディレクトリの選択
+	else {
+		PathName = IncludeTrailingPathDelimiter(PathName);
+		UpdatePathList(PathName);
+	}
 
 	ListScrPanel->UpdateKnob();
+
+	UpdateBreadcrumb(PathName);
 }
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::FormClose(TObject *Sender, TCloseAction &Action)
 {
-	if (isSelDir)
-		IniFile->SavePosInfo(this, isSelSub? "SelSub" : "SelDir");
+	if (isShare)
+		IniFile->SavePosInfo(this);
 	else if (isLibrary)
 		IniFile->SavePosInfo(this, "Library");
 	else if (isFindSet)
 		IniFile->SavePosInfo(this, "FindSet");
 	else
-		IniFile->SavePosInfo(this);
+		IniFile->SavePosInfo(this, isOnlySub? "SelSub" : "SelDir");
 
 	rqRetPath = false;
-	isShare = isSelDir = isSelSub = isLibrary = isFindSet = false;
+	isShare = isOnlySub = isLibrary = isFindSet = false;
 	isPC  = false;
 	Title = EmptyStr;
 }
@@ -136,11 +154,11 @@ void __fastcall TNetShareDlg::FormDestroy(TObject *Sender)
 void __fastcall TNetShareDlg::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	UnicodeString topic = HELPTOPIC_FL;
-	if		(isShare)				topic += "#ShareList";
-	else if (isSelDir && isSelSub)	topic += "#SubDirList";
-	else if (isLibrary)				topic += "#Library";
-	else if (isFindSet)				topic += "#LoadFindSet";
-	else							topic = EmptyStr;
+	if		(isShare)	topic += "#ShareList";
+	else if (isLibrary)	topic += "#Library";
+	else if (isFindSet)	topic += "#LoadFindSet";
+	else if (rqRetPath)	topic  = EmptyStr;
+	else				topic += "#SubDirList";
 
 	if (!topic.IsEmpty())
 		SpecialKeyProc(this, Key, Shift, topic.c_str());
@@ -164,7 +182,7 @@ NET_API_STATUS __fastcall TNetShareDlg::GetShareList(
 		for (DWORD i=0; i<entry_cnt; i++) {
 			if (p_si[i].shi1_type==STYPE_DISKTREE) {
 				UnicodeString nnam = p_si[i].shi1_netname;
-				if (!EndsStr("$", nnam)) lp->Items->Add(nnam);
+				if (!EndsStr("$", nnam)) lp->Items->Add(IncludeTrailingPathDelimiter(cnam) + nnam);
 			}
 		}
 	}
@@ -203,13 +221,7 @@ void __fastcall TNetShareDlg::UpdateShareList(
 	}
 	ListScrPanel->UpdateKnob();
 
-	UnicodeString pnam = CurPathName;
-	if (remove_top_s(pnam, "\\\\"))
-		pnam = ExcludeTrailingPathDelimiter(get_tkn_r(pnam, "\\"));
-	else
-		pnam = EmptyStr;
-
-	ListBoxSetIndex(lp, lp->Items->IndexOf(pnam));
+	ListBoxSetIndex(lp, lp->Items->IndexOf(ExcludeTrailingPathDelimiter(CurPathName)));
 }
 
 //---------------------------------------------------------------------------
@@ -218,10 +230,8 @@ void __fastcall TNetShareDlg::UpdateShareList(
 void __fastcall TNetShareDlg::UpdatePathList(
 	UnicodeString pnam)	//基準ディレクトリ (EmptyStr ならドライブ選択)
 {
-	if (isSelSub) {
-		Caption = (!Title.IsEmpty()? (Title + " - ") : EmptyStr) + 
-					(pnam.IsEmpty()? UnicodeString("PC") : yen_to_delimiter(ExcludeTrailingPathDelimiter(pnam))) ;
-	}
+	Caption = (!Title.IsEmpty()? (Title + " - ") : EmptyStr) +
+				(pnam.IsEmpty()? UnicodeString("PC") : yen_to_delimiter(ExcludeTrailingPathDelimiter(pnam))) ;
 
 	cursor_HourGlass();
 	LibIdxBase = -1;
@@ -261,10 +271,9 @@ void __fastcall TNetShareDlg::UpdatePathList(
 			} while(FindNext(sr)==0);
 			FindClose(sr);
 		}
-		if (!is_root_dir(pnam) && !isSelSub) d_lst->Add(pnam + "..");
-		d_lst->CustomSort(comp_NaturalOrder);
+		d_lst->CustomSort((DirSortMode[CurListTag]==6)? sort_comp_DirIcon : comp_NaturalOrder);
+		if (!is_root_dir(pnam) && isOnlySub) d_lst->Insert(0, pnam + "..");
 	}
-
 	TListBox *lp = ShareListBox;
 	lp->Items->Assign(d_lst.get());
 	ListScrPanel->UpdateKnob();
@@ -283,11 +292,14 @@ void __fastcall TNetShareDlg::UpdatePathList(
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::UpdateBreadcrumb(UnicodeString pnam)
 {
+	OutDebugStr(pnam);
 	PathTabControl->Visible = false;
 	PathTabControl->Height = get_FontHeightMgnS(PathTabControl->Font, 8, 8) + 2;
-	if (isSelDir && isSelSub) {
-		PathTabControl->Tabs->Clear();
-		if (!StartsStr("\\\\", pnam)) PathTabControl->Tabs->Add("PC");
+	PathTabControl->Tabs->Clear();
+	isUNC = false;
+	if (!isOnlySub && !isFindSet && !isLibrary) {
+		isUNC = StartsStr("\\\\", pnam);
+		if (!isUNC) PathTabControl->Tabs->Add("PC");
 		TStringDynArray plst = split_path(pnam);
 		for (int i=0; i<plst.Length; i++) PathTabControl->Tabs->Add(plst[i] + " >");
 		PathTabControl->Visible  = true;
@@ -307,10 +319,12 @@ void __fastcall TNetShareDlg::PathTabControlDrawTab(TCustomTabControl *Control, 
 	cv->FillRect(Rect);
 
 	int yp = (Rect.Height() - cv->TextHeight("Q")) /2;
-	int xp = Rect.Left + SCALED_THIS(2);
-	UnicodeString s = yen_to_delimiter(get_tkn(PathTabControl->Tabs->Strings[TabIndex], ' '));
+	int xp = Rect.Left + SCALED_THIS(4);
+	UnicodeString s = get_tkn(PathTabControl->Tabs->Strings[TabIndex], " >");
+	bool is_dir = (TabIndex>0 || StartsStr("\\\\", s));
+	s = ReplaceStr(s, "\\", " ");
 	cv->TextOut(xp, yp, s);
-	if (TabIndex>0) {
+	if (is_dir) {
 		xp += cv->TextWidth(s);
 		cv->Brush->Style = bsClear;
 		cv->Font->Color  = AdjustColor(get_LabelColor(), ADJCOL_LIGHT);
@@ -324,15 +338,19 @@ void __fastcall TNetShareDlg::PathTabControlChange(TObject *Sender)
 	if (idx!=-1) {
 		UnicodeString pnam = GetBreadcrumbStr(idx);
 		if (is_computer_name(pnam)) {
-			isSelDir = isSelSub = false;
 			ComputerName = ExcludeTrailingPathDelimiter(pnam);
 			UpdateShareList(ComputerName);
 		}
 		else {
-			isSelDir = isSelSub = true;
 			UpdatePathList(pnam);
 		}
 	}
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::ListPanelResize(TObject *Sender)
+{
+	ShareListBox->Invalidate();
 }
 
 //---------------------------------------------------------------------------
@@ -378,48 +396,66 @@ void __fastcall TNetShareDlg::ShareListBoxDrawItem(TWinControl *Control, int Ind
 		if (isLibrary || (isPC && Index>=LibIdxBase)) {
 			draw_SmallIcon2(lbuf, cv, xp, std::max(yp + (cv->TextHeight("Q") - SCALED_THIS(16))/2, 0), this);
 			xp += SCALED_THIS(20);
-			lbuf = get_base_name(lbuf);
 			cv->Font->Color = col_Folder;
-		}
-		else if (isSelDir) {
-			//ドライブ
-			if (isPC) {
-				drive_info *dp = get_DriveInfo(lbuf);
-				if (dp) {
-					TIcon *ip = dp->small_ico;
-					if (ip && ip->Handle) {
-						::DrawIconEx(cv->Handle, xp, yp + 1, ip->Handle,
-										SCALED_THIS(16), SCALED_THIS(16), 0, NULL, DI_NORMAL);
-					}
-				}
-				xp += SCALED_THIS(20);
-				lbuf = get_tkn_r(lbuf, ' ');
-				cv->Font->Color = get_ListFgCol();
-			}
-			//ディレクトリ
-			else {
-				lbuf = ExtractFileName(lbuf);
-				int attr = (int)lp->Items->Objects[Index];
-				cv->Font->Color =
-					(attr & faSysFile)  ? col_System :
-					(attr & faHidden)   ? col_Hidden :
-					(attr & faReadOnly) ? col_ReadOnly :
-					(attr & faSymLink)  ? col_SymLink : col_Folder;
-			}
+			cv->TextOut(xp, yp, get_base_name(lbuf));
 		}
 		//検索設定
 		else if (isFindSet) {
 			TStringDynArray itm_buf = split_strings_tab(lbuf);
-			lbuf = get_base_name(get_array_item(itm_buf, 0));
 			cv->Font->Color = TColor(get_array_item(itm_buf, 1).ToIntDef((int)col_Folder));
+			cv->TextOut(xp, yp, get_base_name(get_array_item(itm_buf, 0)));
 		}
-		cv->TextOut(xp, yp, lbuf);
+		//ドライブ
+		else if (isPC) {
+			drive_info *dp = get_DriveInfo(lbuf);
+			if (dp) {
+				TIcon *ip = dp->small_ico;
+				if (ip && ip->Handle) {
+					::DrawIconEx(cv->Handle, xp, yp + 1, ip->Handle,
+									SCALED_THIS(16), SCALED_THIS(16), 0, NULL, DI_NORMAL);
+				}
+			}
+			xp += SCALED_THIS(20);
+			cv->Font->Color = get_ListFgCol();
+			cv->TextOut(xp, yp, get_tkn_r(lbuf, ' '));
+		}
+		//ディレクトリ、その他
+		else {
+			if (IconMode==1 || IconMode==2) {
+				HICON hIcon = get_folder_icon(lbuf);
+				if (hIcon) {
+					::DrawIconEx(cv->Handle, xp, yp + 1, hIcon,
+									SCALED_THIS(16), SCALED_THIS(16), 0, NULL, DI_NORMAL);
+				}
+				xp += SCALED_THIS(20);
+			}
+			int attr = (int)lp->Items->Objects[Index];
+			cv->Font->Color =
+				(attr & faSysFile) ? col_System :
+				(attr & faHidden)  ? col_Hidden :
+				(attr & faReadOnly)? col_ReadOnly :
+				(attr & faSymLink) ? col_SymLink : col_Folder;
+			cv->TextOut(xp, yp, ExtractFileName(lbuf));
+			xp += cv->TextWidth(ExtractFileName(lbuf));
+		}
+
+		//ディレクトリのタイムスタンプ
+		if (!isPC && !isLibrary && !isFindSet) {
+			TDateTime dt = get_file_age(lbuf);
+			if (dt!=(TDateTime)0) {
+				UnicodeString s = get_TimeStampStr(dt);
+				int x_t = ListPanel->ClientWidth - cv->TextWidth(s + "X");
+				x_t -= ((ScrBarStyle>0)? ListScrPanel->KnobWidth : get_SysMetricsForPPI(SM_CXVSCROLL, CurrentPPI));
+				if (x_t > xp) {
+					cv->Font->Color = get_TimeColor(dt, get_ListFgCol());
+					cv->TextOut(x_t, yp, s);
+				} 
+			}
+		}
 	}
 
 	//カーソル
 	draw_ListCursor(lp, Rect, Index, State);
-
-	OutDebugStr((State.Contains(odFocused)? "* " : "_ ") + lbuf);
 }
 
 //---------------------------------------------------------------------------
@@ -477,28 +513,21 @@ void __fastcall TNetShareDlg::ShareListBoxKeyDown(TObject *Sender, WORD &Key, TS
 				if (isLibrary || (isPC && idx>=LibIdxBase)) {
 					NyanFiForm->PopSelLibrary(lbuf, CurListTag, lp);
 				}
-				//ディレクトリ
-				else if (isSelDir) {
+				//検索設定
+				else if (isFindSet) {
+					FileName = get_pre_tab(lp->Items->Strings[idx]);
+				}
+				//ディレクトリ、共有
+				else {
 					UnicodeString pnam = GetListPathName(idx);
 					if (rqRetPath) {
 						PathName = pnam;
 					}
-					else if (isSelSub) {
+					else {
 						cursor_HourGlass();
-						NyanFiForm->UpdateCurPath(IncludeTrailingPathDelimiter(pnam));
+						NyanFiForm->UpdateCurPath(pnam);
 						cursor_Default();
 					}
-				}
-				//共有
-				else if (isShare) {
-					UnicodeString dnam = IncludeTrailingPathDelimiter(ComputerName) + lp->Items->Strings[idx];
-					cursor_HourGlass();
-					NyanFiForm->UpdateCurPath(IncludeTrailingPathDelimiter(dnam));
-					cursor_Default();
-				}
-				//検索設定
-				else if (isFindSet) {
-					FileName = get_pre_tab(lp->Items->Strings[idx]);
 				}
 				ModalResult = mrOk;
 			}
@@ -558,8 +587,20 @@ void __fastcall TNetShareDlg::ShareListBoxKeyDown(TObject *Sender, WORD &Key, TS
 		}
 	}
 	//頭文字サーチ
-	else if (isSelDir && is_IniSeaKey(KeyStr)) {
+	else if ((isOnlySub || PathTabControl->Visible) && is_IniSeaKey(KeyStr)) {
 		ListBoxInitialSearch(lp, KeyStr, true);
+	}
+	//コピー
+	else if (SameText(KeyStr, KeyStr_Copy) || SameText(cmd_F, "CopyFileName")) {
+		if (lp->ItemIndex!=-1) {
+			UnicodeString lbuf = lp->Items->Strings[lp->ItemIndex];
+			if (isPC) lbuf = IncludeTrailingPathDelimiter(get_tkn(lbuf, ' '));
+			copy_to_Clipboard(lbuf);
+		}
+	}
+	//プロパティ
+	else if (SameText(cmd_F, "PropertyDlg")) {
+		PropertyAction->Execute();
 	}
 	//閉じる
 	else if (SameText(cmd_F, "ReturnList")) {
@@ -597,14 +638,13 @@ void __fastcall TNetShareDlg::ShareListBoxDblClick(TObject *Sender)
 void __fastcall TNetShareDlg::CopyUncActionExecute(TObject *Sender)
 {
 	TListBox *lp = ShareListBox;
-	if (lp->ItemIndex!=-1)
-		Clipboard()->AsText = IncludeTrailingPathDelimiter(ComputerName) + lp->Items->Strings[lp->ItemIndex];
+	if (lp->ItemIndex!=-1) copy_to_Clipboard(lp->Items->Strings[lp->ItemIndex]);
 }
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::CopyUncActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction *)Sender;
-	ap->Visible = isShare;
+	ap->Visible = isUNC;
 	ap->Enabled = ap->Visible && (ShareListBox->ItemIndex!=-1);
 }
 //---------------------------------------------------------------------------
@@ -614,15 +654,16 @@ void __fastcall TNetShareDlg::CopyUncAllActionExecute(TObject *Sender)
 {
 	TListBox *lp = ShareListBox;
 	std::unique_ptr<TStringList> lst(new TStringList());
-	for (int i=0; i<lp->Count; i++)
+	for (int i=0; i<lp->Count; i++) {
 		lst->Add(IncludeTrailingPathDelimiter(ComputerName) + lp->Items->Strings[i]);
-	Clipboard()->AsText = lst->Text;
+	}
+	copy_to_Clipboard(lst->Text);
 }
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::CopyUncAllActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction *)Sender;
-	ap->Visible = isShare;
+	ap->Visible = isUNC;
 	ap->Enabled = ap->Visible && (ShareListBox->Count>0);
 }
 //---------------------------------------------------------------------------
@@ -634,14 +675,14 @@ void __fastcall TNetShareDlg::CopyPathActionExecute(TObject *Sender)
 	if (lp->ItemIndex!=-1) {
 		UnicodeString lbuf = lp->Items->Strings[lp->ItemIndex];
 		if (isPC) lbuf = IncludeTrailingPathDelimiter(get_tkn(lbuf, ' '));
-		Clipboard()->AsText = lbuf;
+		copy_to_Clipboard(lbuf);
 	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::CopyPathActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction *)Sender;
-	ap->Visible = isSelSub;
+	ap->Visible = isOnlySub || (PathTabControl->Visible && !isUNC);
 	ap->Enabled = ap->Visible && (ShareListBox->ItemIndex!=-1);
 }
 //---------------------------------------------------------------------------
@@ -658,13 +699,13 @@ void __fastcall TNetShareDlg::CopyPathAllActionExecute(TObject *Sender)
 		if (is_drv) lbuf = IncludeTrailingPathDelimiter(get_tkn(lbuf, ' '));
 		lst->Add(lbuf);
 	}
-	Clipboard()->AsText = lst->Text;
+	copy_to_Clipboard(lst->Text);
 }
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::CopyPathAllActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction *)Sender;
-	ap->Visible = isSelSub;
+	ap->Visible = isOnlySub || (PathTabControl->Visible && !isUNC);
 	ap->Enabled = ap->Visible && (ShareListBox->Count>0);
 }
 //---------------------------------------------------------------------------
@@ -685,7 +726,7 @@ void __fastcall TNetShareDlg::SetColorActionExecute(TObject *Sender)
 			UnicodeString sct = "FindSettings";
 			set_file->WriteString(sct, "Color", col);
 			set_file->UpdateFile(true);
-			lp->Items->Strings[idx] = fnam + "\t" + col + "\t" + set_file->ReadString(sct, "DirList"); 
+			lp->Items->Strings[idx] = fnam + "\t" + col + "\t" + set_file->ReadString(sct, "DirList");
 			lp->Repaint();
 		}
 	}
@@ -738,6 +779,22 @@ void __fastcall TNetShareDlg::SetSkipDirActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction *)Sender;
 	ap->Visible = isFindSet;
+	ap->Enabled = ap->Visible && (ShareListBox->ItemIndex!=-1);
+}
+
+//---------------------------------------------------------------------------
+//プロパティ
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::PropertyActionExecute(TObject *Sender)
+{
+	TListBox *lp = ShareListBox;
+	if (lp->ItemIndex!=-1) ShowPropertyDialog(lp->Items->Strings[lp->ItemIndex]);
+}
+//---------------------------------------------------------------------------
+void __fastcall TNetShareDlg::PropertyActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction *)Sender;
+	ap->Visible = isOnlySub || PathTabControl->Visible;
 	ap->Enabled = ap->Visible && (ShareListBox->ItemIndex!=-1);
 }
 //---------------------------------------------------------------------------

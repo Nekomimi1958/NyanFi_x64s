@@ -27,6 +27,7 @@ object NetShareDlg: TNetShareDlg
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    OnResize = ListPanelResize
     object ShareListBox: TListBox
       Left = 0
       Top = 0
@@ -98,6 +99,9 @@ object NetShareDlg: TNetShareDlg
     object EditListItem: TMenuItem
       Action = EditListAction
     end
+    object PropertyItem: TMenuItem
+      Action = PropertyAction
+    end
   end
   object ActionList1: TActionList
     Left = 32
@@ -136,6 +140,11 @@ object NetShareDlg: TNetShareDlg
       Caption = #12522#12473#12488#12501#12449#12452#12523#12398#32232#38598'(&E)...'
       OnExecute = EditListActionExecute
       OnUpdate = EditListActionUpdate
+    end
+    object PropertyAction: TAction
+      Caption = #12503#12525#12497#12486#12451'(&R)'
+      OnExecute = PropertyActionExecute
+      OnUpdate = PropertyActionUpdate
     end
   end
 end

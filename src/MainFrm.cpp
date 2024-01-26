@@ -294,7 +294,7 @@ __fastcall TNyanFiForm::TNyanFiForm(TComponent* Owner)
 	TmpEqualSize  = false;
 	ThumbExtended = false;
 	ThumbClicked  = false;
-	InhThumbGrid  = false;
+	InhThumbGrid  = 0;
 	isLoopHint	  = false;
 	IsEvenPage	  = true;
 	InhSeekBar	  = 0;
@@ -6618,7 +6618,7 @@ void __fastcall TNyanFiForm::ApplyInpDir()
 	UnicodeString dnam = cv_env_str(InpDirComboBox->Text);
 	if (is_computer_name(dnam)) {
 		NetShareDlg->ComputerName = dnam;
-		NetShareDlg->isShare = true;
+		NetShareDlg->isShare      = true;
 		NetShareDlg->ShowModal();
 	}
 	else {
@@ -11750,16 +11750,15 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 		return;
 	}
 
-	UnicodeString vfnam;
 	try {
 		int t_cnt = ThumbnailThread->Count;
 		if (t_cnt==0) Abort();
 
 		int v_idx = gp->ColCount * ARow + ACol;	if (v_idx>=ViewFileList->Count) Abort();
 		file_rec *vfp = (file_rec*)ViewFileList->Objects[v_idx];
-		vfnam = ViewFileList->Strings[v_idx];
-		UnicodeString fext = get_extension(vfnam);
-		bool is_forcus = gp->Col==ACol && gp->Row==ARow;
+		UnicodeString vfnam = ViewFileList->Strings[v_idx];
+		UnicodeString fext  = get_extension(vfnam);
+		bool is_forcus = gp->Col==ACol && gp->Row==ARow && SameText(vfnam, ViewFileName);
 		bool is_marked = IniFile->IsMarked(vfp->r_name);
 
 		//Exif情報を取得
@@ -11775,9 +11774,9 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 		vfp->failed = (t_idx==-1);	//ThumbnailList にない場合、読み込みに失敗している
 
 		//背景
-		cv->Brush->Color = is_forcus?	  RatioCol(col_Cursor, 0.5) :
-						   vfp->selected? col_selItem :
-						   is_marked?	  col_bgMark  : col_bgImage;
+		cv->Brush->Color = is_forcus? RatioCol(col_Cursor, 0.5) :
+					   vfp->selected? col_selItem :
+						   is_marked? col_bgMark  : col_bgImage;
 		cv->FillRect(Rect);
 
 		//ファイル名、Exif情報の背景を描画
@@ -11854,19 +11853,19 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 			cv->Brush->Color = col_bgImage;
 			out_Text(cv, Rect.Left + s_8, Rect.Top + s_8, _T("読込失敗"), col_Error);
 		}
+
+		//カーソル枠
+		cv->Brush->Style = bsClear;
+		if (is_forcus || (DoublePage && !ThumbExtended && !vfnam.IsEmpty() && SameText(vfnam, ViewFileName2))) {
+			cv->Pen->Width = s_2;
+			cv->Pen->Style = psSolid;
+			cv->Pen->Color = col_Cursor;
+			cv->Rectangle(Rect.Left + 1, Rect.Top + 1, Rect.Right, Rect.Bottom);
+		}
 	}
 	catch (EAbort &e) {
 		cv->Brush->Color = get_ListBgCol();
 		cv->FillRect(Rect);
-	}
-
-	//カーソル枠
-	cv->Brush->Style = bsClear;
-	if ((gp->Col==ACol && gp->Row==ARow) || (DoublePage && !ThumbExtended && !vfnam.IsEmpty() && SameText(vfnam, ViewFileName2))) {
-		cv->Pen->Width = s_2;
-		cv->Pen->Style = psSolid;
-		cv->Pen->Color = col_Cursor;
-		cv->Rectangle(Rect.Left + 1, Rect.Top + 1, Rect.Right, Rect.Bottom);
 	}
 
 	//境界線
@@ -11901,7 +11900,7 @@ void __fastcall TNyanFiForm::ThumbnailGridMouseDown(TObject *Sender, TMouseButto
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::ThumbnailGridClick(TObject *Sender)
 {
-	if (InhThumbGrid) return;
+	if (InhThumbGrid>0) return;
 
 	CancelKeySeq();
 	if (InhDrawImg>0 || usr_ARC->Busy) return;
@@ -14080,7 +14079,7 @@ void __fastcall TNyanFiForm::ChangeDirActionExecute(TObject *Sender)
 
 		if (is_computer_name(ActionParam)) {
 			NetShareDlg->ComputerName = IncludeTrailingPathDelimiter(ActionParam);
-			NetShareDlg->isShare = true;
+			NetShareDlg->isShare      = true;
 			NetShareDlg->ShowModal();
 		}
 		else {
@@ -17213,12 +17212,6 @@ void __fastcall TNyanFiForm::ExPopupMenuActionExecute(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TNyanFiForm::OdPopupMenuPopup(TObject *Sender)
-{
-	//
-}
-
-//---------------------------------------------------------------------------
 //リスト幅を左右均等に
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::EqualListWidthActionExecute(TObject *Sender)
@@ -19877,7 +19870,7 @@ void __fastcall TNyanFiForm::InputDirActionExecute(TObject *Sender)
 			if (StartsStr("\\\\", dnam)) {
 				if (is_computer_name(dnam)) {
 					NetShareDlg->ComputerName = dnam;
-					NetShareDlg->isShare = true;
+					NetShareDlg->isShare      = true;
 					NetShareDlg->ShowModal();
 					return;
 				}
@@ -25861,7 +25854,7 @@ void __fastcall TNyanFiForm::ShareListActionExecute(TObject *Sender)
 		}
 
 		NetShareDlg->ComputerName = cnam;
-		NetShareDlg->isShare = true;
+		NetShareDlg->isShare      = true;
 		NetShareDlg->ShowModal();
 	}
 	catch (EAbort &e) {
@@ -26415,8 +26408,6 @@ void __fastcall TNyanFiForm::SubDirListActionExecute(TObject *Sender)
 		//ダイアログ表示
 		else {
 			NetShareDlg->PathName = pnam;
-			NetShareDlg->isSelDir = true;
-			NetShareDlg->isSelSub = true;
 			NetShareDlg->ShowModal();
 		}
 	}
@@ -27181,7 +27172,7 @@ void __fastcall TNyanFiForm::ToParentActionExecute(TObject *Sender)
 					if (TEST_ActParam("DL")) {
 						if (StartsStr("\\\\", pnam)) {
 							NetShareDlg->ComputerName = get_root_name(pnam);
-							NetShareDlg->isShare = true;
+							NetShareDlg->isShare      = true;
 							NetShareDlg->ShowModal();
 						}
 						else {
@@ -27926,9 +27917,9 @@ UnicodeString __fastcall TNyanFiForm::GetDistDir(bool is_move, bool *to_flag)
 	}
 	//サブディレクトリの選択(SSパラメータ)
 	else if (TEST_DEL_ActParam("SS")) {
-		NetShareDlg->Caption   = tit;
+		NetShareDlg->Title     = tit;
 		NetShareDlg->PathName  = CurPath[CurListTag];
-		NetShareDlg->isSelDir  = true;
+		NetShareDlg->isOnlySub = true;
 		NetShareDlg->rqRetPath = true;
 		if (NetShareDlg->ShowModal()!=mrOk) SkipAbort();
 		dst_dir  = NetShareDlg->PathName;
@@ -27938,8 +27929,6 @@ UnicodeString __fastcall TNyanFiForm::GetDistDir(bool is_move, bool *to_flag)
 	else if (TEST_DEL_ActParam("SX")) {
 		NetShareDlg->Title     = tit;
 		NetShareDlg->PathName  = CurPath[CurListTag];
-		NetShareDlg->isSelDir  = true;
-		NetShareDlg->isSelSub  = true;
 		NetShareDlg->rqRetPath = true;
 		if (NetShareDlg->ShowModal()!=mrOk) SkipAbort();
 		dst_dir  = NetShareDlg->PathName;
@@ -34775,7 +34764,7 @@ void __fastcall TNyanFiForm::SetThumbnailIndex(int idx, int max_count,
 	int c1 = idx%gp->ColCount;
 	int r1 = idx/gp->ColCount;
 
-	InhThumbGrid = true;
+	InhThumbGrid++;
 	gp->LockDrawing();
 	try {
 		if ((r1*gp->ColCount + c0) >= max_count) {
@@ -34804,7 +34793,7 @@ void __fastcall TNyanFiForm::SetThumbnailIndex(int idx, int max_count,
 		gp->Col = 0; gp->Row = 0;
 	}
 	gp->UnlockDrawing();
-	InhThumbGrid = false;
+	InhThumbGrid--;
 
 	handling = false;
 }
@@ -34983,7 +34972,7 @@ bool __fastcall TNyanFiForm::ExeCommandI(UnicodeString cmd, UnicodeString prm)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::CloseIActionExecute(TObject *Sender)
 {
-	InhThumbGrid = true;
+	InhThumbGrid++;
 	Application->ProcessMessages();
 
 	ThumbnailThread->ReqClear = true;
@@ -35027,7 +35016,7 @@ void __fastcall TNyanFiForm::CloseIActionExecute(TObject *Sender)
 	isViewIcon = isViewAGif = false;
 	ViewFromArc = false;
 
-	InhThumbGrid = false;
+	InhThumbGrid--;
 
 	//イベント: イメージビューアを閉じた直後
 	ExeEventCommand(OnIvClosed);
@@ -35099,13 +35088,13 @@ void __fastcall TNyanFiForm::ColorPickerActionExecute(TObject *Sender)
 void __fastcall TNyanFiForm::TempTopThumbnailGrid(
 	bool sw_repaint)	//	(default = false)
 {
-	InhThumbGrid = true;
+	InhThumbGrid++;
 	InhDrawImg++;
 	ThumbnailGrid->Col = 0;
 	ThumbnailGrid->Row = 0;
 	if (sw_repaint) ThumbnailGrid->Repaint();
 	InhDrawImg--;
-	InhThumbGrid = false;
+	InhThumbGrid--;
 }
 
 //---------------------------------------------------------------------------
@@ -36151,19 +36140,14 @@ void __fastcall TNyanFiForm::ThumbnailActionUpdate(TObject *Sender)
 void __fastcall TNyanFiForm::ThumbnailExActionExecute(TObject *Sender)
 {
 	SetToggleAction(ThumbExtended);
-
 	ImgScrollPanel->Visible = !ThumbExtended;
+
+	TempTopThumbnailGrid();
+	ClearViewImage();
 	LoupeForm->DrawImage();
 
 	int idx = ViewFileList->IndexOf(ViewFileName);
 	SetupThumbnail(idx);
-
-	int retry = 10;
-	while (!ImgViewThread->IsReady() && retry>0) {
-		Sleep(50);
-		retry--;
-	}
-	if (retry==0) return;
 
 	if (idx!=-1) {
 		file_rec *cfp = GetFrecPtrFromViewList(idx);

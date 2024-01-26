@@ -325,7 +325,7 @@ void __fastcall TDirHistoryDlg::DirHistListBoxKeyDown(TObject *Sender, WORD &Key
 			}
 		}
 		//プロパティ
-		else if (SameText(cmd_F, "PropertyDlg"))		PropertyAction->Execute();
+		else if (SameText(cmd_F, "PropertyDlg")) PropertyAction->Execute();
 		//右クリックメニュー
 		else if (contained_wd_i(KeysStr_Popup, KeyStr))	show_PopupMenu(lp);
 		//閉じる

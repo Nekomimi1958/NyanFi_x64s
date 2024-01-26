@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------//
 // NyanFi																//
-//  共有フォルダ/サブディレクトリ選択/ライブラリ一覧/検索設定			//
+//  共有フォルダ/ライブラリ/検索設定/ディレクトリ選択					//
 //----------------------------------------------------------------------//
 #ifndef ShareDlgH
 #define ShareDlgH
@@ -29,6 +29,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *CopyUncAction;
 	TAction *CopyUncAllAction;
 	TAction *EditListAction;
+	TAction *PropertyAction;
 	TAction *SetColorAction;
 	TAction *SetSkipDirAction;
 	TActionList *ActionList1;
@@ -39,6 +40,7 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *CopyUncAllItem;
 	TMenuItem *CopyUncItem;
 	TMenuItem *EditListItem;
+	TMenuItem *PropertyItem;
 	TMenuItem *SetColorItem;
 	TMenuItem *SetSkipDirItem;
 	TPanel *ListPanel;
@@ -52,6 +54,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall PathTabControlDrawTab(TCustomTabControl *Control, int TabIndex, const TRect &Rect, bool Active);
 	void __fastcall PathTabControlChange(TObject *Sender);
+	void __fastcall ListPanelResize(TObject *Sender);
 	void __fastcall ShareListBoxDrawItem(TWinControl *Control, int Index, TRect &Rect, TOwnerDrawState State);
 	void __fastcall ShareListBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall ShareListBoxKeyPress(TObject *Sender, System::WideChar &Key);
@@ -71,6 +74,8 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall EditListActionUpdate(TObject *Sender);
 	void __fastcall SetSkipDirActionExecute(TObject *Sender);
 	void __fastcall SetSkipDirActionUpdate(TObject *Sender);
+	void __fastcall PropertyActionExecute(TObject *Sender);
+	void __fastcall PropertyActionUpdate(TObject *Sender);
 
 private:	// ユーザー宣言
 	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
@@ -96,7 +101,7 @@ private:	// ユーザー宣言
 		if (idx==-1) idx = PathTabControl->TabIndex;
 		int top = StartsStr("\\\\", PathTabControl->Tabs->Strings[0])? 0 : 1;
 		for (int i=top; i<PathTabControl->Tabs->Count && i<=idx; i++) {
-			pnam += IncludeTrailingPathDelimiter(get_tkn(PathTabControl->Tabs->Strings[i], ' '));
+			pnam += IncludeTrailingPathDelimiter(get_tkn(PathTabControl->Tabs->Strings[i], " >"));
 		}
 		return pnam;
 	}
@@ -118,10 +123,11 @@ public:		// ユーザー宣言
 	UnicodeString Title;
 
 	bool isShare;		//共有フォルダ
-	bool isSelDir;		//ディレクトリ選択
-	bool isSelSub;		//サブディレクトリ選択
+	bool isOnlySub;		//サブディレクトリ選択のみ
 	bool isLibrary;		//ライブラリ
 	bool isFindSet;		//検索設定
+
+	bool isUNC;
 	bool rqRetPath;		//選択したパスを返す(ディレクトリ変更は行わない)
 
 	__fastcall TNetShareDlg(TComponent* Owner);

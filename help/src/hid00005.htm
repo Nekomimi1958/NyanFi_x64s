@@ -1111,7 +1111,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
         パラメータに <b>ND</b> を指定すると、ダイアログの代わりに、アクセス可能なドライブを選択するポップアップメニューを表示します。<br>
         また <b>NS</b> を指定すると、<b>ND</b> と同様にポップアップメニューを表示しますが、空き容量を表示しません。アクセスの遅いドライブがある場合、表示が速くなるかもしれません。<a href="hid00004.htm#DirInfo">ディレクトリ情報</a>左端の▼ボタンを押した場合も、このポップアップメニューが表示されます。<br>
       </div>
-      <a href="#NextDrive">→ NextDrive</a>　<a href="#PrevDrive">→ PrevDrive</a>　<a href="#ChangeDrive">→ ChangeDrive</a>
+      <a href="#NextDrive">→ NextDrive</a>　<a href="#PrevDrive">→ PrevDrive</a>　<a href="#ChangeDrive">→ ChangeDrive</a>　<a href="#ShareList">→ ShareList</a>
     </dd>
 
     <dt id="Duplicate">Duplicate<span class="pram_text">[_{RA|DM}]</span></dt>
@@ -3392,7 +3392,8 @@ D:\Data\hoge.txt
 
     <dt id="ShareList">ShareList<span class="pram_text">[_コンピュータ名]</span></dt>
     <dd>カレントのコンピュータの共有フォルダ一覧を表示します。フォルダを選択すると、そのUNCパスに移動します。<br>
-      一覧でのキー操作は、<a href="hid00057.htm">ディレクトリ履歴</a>などと同様です。<br>
+      一覧でのキー操作は、<a href="hid00057.htm">ディレクトリ履歴</a>などと同様です(頭文字サーチも可能)。<br>
+      また<span class="btn_frame">←</span> / <span class="btn_frame">→</span>キーや、<a href="#ToLeft">ToLeft</a>/<a href="#ToRight">ToRight</a>、<a href="#ToParentOnLeft">ToParentOnLeft</a>/<a href="#ToParentOnRight">ToParentOnRight</a>、<a href="#PrevTab">PrevTab</a>/<a href="#NextTab">NextTab</a>、<a href="#ToParent">ToParent</a> コマンドが割り当てられているキーによって、ディレクトリをパンくずリストのようにたどって変更できます(マウスによる選択も可能)。<br>
       なお、右クリックメニューで、UNCパスのコピーが可能です。<br>
       一覧の表示位置はカレント側の中央になりますが、サイズは変更可能で保存されます。<br>
       <div class="spc_box">
@@ -3400,6 +3401,7 @@ D:\Data\hoge.txt
         先頭の <b>\\</b> は無くてもかまいません。<br>
         なお、アクセスを拒否された場合、可能ならネットワーク資格情報の入力ダイアログによる接続を試みます。<br>
       </div>
+      <a href="#DriveList">→ DriveList</a>　<a href="#SubDirList">→ SubDirList</a>
     </dd>
 
     <dt id="ShowByteSize">ShowByteSize<span class="pram_text">[_{ON|OFF}]</span></dt>
@@ -3618,7 +3620,7 @@ D:\Data\hoge.txt
 
       <div class="spc_box">
         一覧でのキー操作は、<a href="hid00057.htm">ディレクトリ履歴</a>などと同様です(頭文字サーチも可能)。<br>
-        また<span class="btn_frame">←</span> / <span class="btn_frame">→</span>キーや、<a href="#ToLeft">ToLeft</a>/<a href="#ToRight">ToRight</a>、<a href="#ToParentOnLeft">ToParentOnLeft</a>/<a href="#ToParentOnRight">ToParentOnRight</a>、<a href="#PrevTab">PrevTab</a>/<a href="#NextTab">NextTab</a> コマンドが割り当てられているキーによって、基準となるディレクトリをパンくずリストのように遡って変更できます(マウスによる選択も可能)。左端ではドライブの変更(UNCパスの場合は共有フォルダ)やライブラリへの移動が可能。<br>
+        また<span class="btn_frame">←</span> / <span class="btn_frame">→</span>キーや、<a href="#ToLeft">ToLeft</a>/<a href="#ToRight">ToRight</a>、<a href="#ToParentOnLeft">ToParentOnLeft</a>/<a href="#ToParentOnRight">ToParentOnRight</a>、<a href="#PrevTab">PrevTab</a>/<a href="#NextTab">NextTab</a>、<a href="#ToParent">ToParent</a> コマンドが割り当てられているキーによって、基準となるディレクトリをパンくずリストのように遡って変更できます(マウスによる選択も可能)。左端ではドライブの変更(UNCパスの場合は共有フォルダ)やライブラリへの移動が可能。<br>
         なお、右クリックメニューでパスのコピーが可能です。<br>
         一覧の表示位置はカレント側の中央になりますが、サイズは変更可能で保存されます。<br>
       </div>
@@ -3635,7 +3637,7 @@ D:\Data\hoge.txt
 
       <a href="#ChangeDir">→ ChangeDir</a>　<a href="#ChangeRegDir">→ ChangeRegDir</a>　<a href="#RegDirDlg">→
         RegDirDlg</a>　<a href="#RegDirPopup">→ RegDirPopup</a>　<a href="#InputDir">→ InputDir</a>　<a href="#Library">→
-        Library</a>
+        Library</a>　<a href="#ShareList">→ ShareList</a>
     </dd>
 
     <dt id="SubViewer">SubViewer<span class="pram_text">[_{ON|OFF|CB|LK|RL|RR|FH|FV}]</span></dt>
