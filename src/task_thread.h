@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  タスク処理スレッド													//
-//----------------------------------------------------------------------//
+/**
+ * @file task_thread.h
+ * @brief タスク処理スレッド
+ */
+//---------------------------------------------------------------------------
 #ifndef TaskThreadH
 #define TaskThreadH
 
@@ -14,6 +15,9 @@
 #define SLOW_INTERVAL	500
 
 //---------------------------------------------------------------------------
+/**
+ * @brief タスク設定
+ */
 class TaskConfig
 {
 public:
@@ -93,8 +97,9 @@ public:
 };
 
 //---------------------------------------------------------------------------
-// タスク処理スレッド
-//---------------------------------------------------------------------------
+/**
+ * @brief タスク処理スレッド
+ */
 class TTaskThread : public TThread
 {
 private:
@@ -243,37 +248,37 @@ private:
 
 public:
 	__property bool TaskReady	 = {read = GetTaskReady,	write = SetTaskReady};
-	__property bool TaskFinished = {read = GetTaskFinished,	write = SetTaskFinished};	//タスクが終了
-	__property bool TaskCancel	 = {read = GetTaskCancel,	write = SetTaskCancel};		//中断
-	__property bool TaskPause	 = {read = GetTaskPause,	write = SetTaskPause};		//一旦停止
-	__property bool TaskAskSame  = {read = GetTaskAskSame,	write = SetTaskAskSame};	//同名ファイル処理を要求
+	__property bool TaskFinished = {read = GetTaskFinished,	write = SetTaskFinished};	//!< タスクが終了
+	__property bool TaskCancel	 = {read = GetTaskCancel,	write = SetTaskCancel};		//!< 中断
+	__property bool TaskPause	 = {read = GetTaskPause,	write = SetTaskPause};		//!< 一旦停止
+	__property bool TaskAskSame  = {read = GetTaskAskSame,	write = SetTaskAskSame};	//!< 同名ファイル処理を要求
 
 	int Tag;
 	int ID;
 
-	bool TaskIsFast;			//高速実行中
-	bool ReqTaskSlow;			//低速実行を要求
-	bool DirDeleted;			//ディレクトリが削除された
-	bool LnkDeleted;			//ハードリンクが削除された
+	bool TaskIsFast;			//!< 高速実行中
+	bool ReqTaskSlow;			//!< 低速実行を要求
+	bool DirDeleted;			//!< ディレクトリが削除された
+	bool LnkDeleted;			//!< ハードリンクが削除された
 
 	int  TaskTime;
 	int  PreCount, SubCount, OkCount, SkipCount, RenCount, ErrCount;
 	int  StartCount;
 
-	int  Speed;					//転送速度(byte/ms)
-	int  RemCount;				//残り時間(ms)
+	int  Speed;					//!< 転送速度(byte/ms)
+	int  RemCount;				//!< 残り時間(ms)
 	__int64 CurTotalSize;
 
-	UnicodeString CurFileName;	//処理対象
-	double CurProgress;			//現在コピー/移動中ファイルの進捗率
+	UnicodeString CurFileName;	//!< 処理対象
+	double CurProgress;			//!< 現在コピー/移動中ファイルの進捗率
 
-	UnicodeString DstFileName;	//コピー/移動/変換先
+	UnicodeString DstFileName;	//!< コピー/移動/変換先
 
-	UnicodeString CurSrcName;	//コピー/移動元
-	UnicodeString CurDstName;	//コピー/移動先
+	UnicodeString CurSrcName;	//!< コピー/移動元
+	UnicodeString CurDstName;	//!< コピー/移動先
 
-	UnicodeString FirstDstName;	//最初にコピー/移動したファイル名
-	UnicodeString LastDstName;	//その時点で最後にコピー/移動したファイル名
+	UnicodeString FirstDstName;	//!< 最初にコピー/移動したファイル名
+	UnicodeString LastDstName;	//!< その時点で最後にコピー/移動したファイル名
 
 	TaskConfig *Config;
 
@@ -283,7 +288,13 @@ public:
 
 	UnicodeString CmdName;
 
+	/**
+	 * @brief コンストラクタ
+	 * @param CreateSuspended 
+	 */
 	__fastcall TTaskThread(bool CreateSuspended);
+
+	/** @brief タスクの開始 */
 	bool __fastcall TaskStart();
 
 	void WaitIfPause()

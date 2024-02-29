@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  登録ディレクトリ/特殊フォルダ一覧/参照								//
-//----------------------------------------------------------------------//
+/**
+ * @file DirDlg.h
+ * @brief 登録ディレクトリ/特殊フォルダ一覧/参照
+ */
+//---------------------------------------------------------------------------
 #ifndef DirDlgH
 #define DirDlgH
 
@@ -20,6 +21,9 @@
 #include "usr_scrpanel.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief 登録ディレクトリ/特殊フォルダ一覧/参照
+ */
 class TRegDirDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -128,6 +132,8 @@ private:	// ユーザー宣言
 
 	bool KeyHandled;
 
+	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
+
 	TStringList *EnvVarList;
 	TStringList *SpDirList;
 	TStringList *SpDirBuff;
@@ -149,12 +155,10 @@ private:	// ユーザー宣言
 	UnicodeString __fastcall GetCurDirItem(bool dsp_sw = false, bool nam_sw = false, bool exe_sw = false);
 
 public:		// ユーザー宣言
-	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
-
-	bool IsSpecial;		//特殊フォルダ一覧
-	bool IsAddMode;		//追加モード
-	bool IsSelect;		//選択モード
-	bool ToFilter;		//フィルタ欄にフォーカス
+	bool IsSpecial;		//!< 特殊フォルダ一覧
+	bool IsAddMode;		//!< 追加モード
+	bool IsSelect;		//!< 選択モード
+	bool ToFilter;		//!< フィルタ欄にフォーカス
 	UnicodeString CmdStr;
 
 	__fastcall TRegDirDlg(TComponent* Owner);

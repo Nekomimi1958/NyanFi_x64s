@@ -674,7 +674,7 @@ void __fastcall TCmdFileListDlg::EditCopyActionExecute(TObject *Sender)
 {
 	TListBox *lp = PreviewListBox->Focused() ? PreviewListBox :
 					 ReferListBox->Focused() ? ReferListBox : NULL;
-	ExeCmdListBox(lp, _T("ClipCopy"));
+	ExeCmdListBox(lp, "ClipCopy");
 }
 //---------------------------------------------------------------------------
 //‚·‚×‚Ä‘I‘ð

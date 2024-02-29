@@ -100,10 +100,10 @@ void __fastcall SttProgressBar::End(UnicodeString s, int wait)
 //---------------------------------------------------------------------------
 //ƒo[İ’è
 //---------------------------------------------------------------------------
-void __fastcall SttProgressBar::SetPosI(int idx, int count)
+void __fastcall SttProgressBar::SetPosI(int cnt, int max_cnt)
 {
 	if (PrgBox) {
-		BarRatio = std::min(((count>0)? 1.0 * idx/count : 0.0), 1.0);
+		BarRatio = std::min(((max_cnt>0)? 1.0 * cnt/max_cnt : 0.0), 1.0);
 		PrgBox->Repaint();
 	}
 }

@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// メッセージ															//
-//																		//
-//----------------------------------------------------------------------//
+/**
+ * @file usr_msg.h
+ * @brief メッセージ
+ */
+//---------------------------------------------------------------------------
 #ifndef UsrMsgH
 #define UsrMsgH
 
@@ -98,21 +99,21 @@ void CancelAbort();
 void EmptyAbort();
 
 //---------------------------------------------------------------------------
-extern bool SureCopy;
-extern bool SureMove;
-extern bool SureDelete;
-extern bool SureUnPack;
-extern bool SureExec;
-extern bool SureOther;
-extern bool SureExit;
-extern bool SureCmpDel;
-extern bool SureWorkList;
+extern bool SureCopy;		//!< コピー
+extern bool SureMove;		//!< 移動
+extern bool SureDelete;		//!< 削除
+extern bool SureUnPack;		//!< 解凍
+extern bool SureExec;		//!< 実行
+extern bool SureOther;		//!< その他
+extern bool SureExit;		//!< 終了
+extern bool SureCmpDel;		//!< 完全削除は2度確認
+extern bool SureWorkList;	//!< ワークリストの再読み込み
 
 //---------------------------------------------------------------------------
-extern bool SureCancel;
-extern bool SureDefNo;
-extern bool SureAdjPos;
-extern bool MsgPosCenter;
+extern bool SureCancel;		//!< キャンセルボタンを表示
+extern bool SureDefNo;		//!< 「いいえ」がデフォルト
+extern bool SureAdjPos;		//!< 表示位置を状況に合わせて調整
+extern bool MsgPosCenter;	//!< メイン画面の中央に表示
 
 //---------------------------------------------------------------------------
 void msgbox_ERR(UnicodeString msg);

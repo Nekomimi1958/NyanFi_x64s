@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  ファイル情報/項目の集計												//
-//----------------------------------------------------------------------//
+/**
+ * @file FileInfDlg.h
+ * @brief ファイル情報/項目の集計
+ */
+//---------------------------------------------------------------------------
 #ifndef FileInfDlgH
 #define FileInfDlgH
 
@@ -18,6 +19,9 @@
 #include "Global.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief ファイル情報/項目の集計
+ */
 class TFileInfoDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -72,6 +76,8 @@ __published:	// IDE で管理されるコンポーネント
 private:	// ユーザー宣言
 	bool DlgInitialized;
 
+	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
+
 	int Max_freq;
 	int MaxColWd0;
 	int MaxColWd1;
@@ -81,24 +87,24 @@ private:	// ユーザー宣言
 	bool __fastcall UpdateInfo();
 
 public:		// ユーザー宣言
-	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
 
 	file_rec *FileRec;
 	UnicodeString CmdStr;
-	bool isAppInfo;
-	bool isGitInfo;
-	bool inhNxtPre;					//Next/PreFile 禁止
-	bool inhImgPrv;					//イメージプレビューの禁止
+
+	bool isAppInfo;					//!< アプリケーション情報
+	bool isGitInfo;					//!< Gitコミット情報
+	bool inhNxtPre;					//!< Next/PreFile 禁止
+	bool inhImgPrv;					//!< イメージプレビューの禁止
 	bool useImgPrv;
 
-	bool isCalcItem;
-	int  CsvCol;
-	bool TopIsHeader;
+	bool isCalcItem;				//!< 項目の集計
+	int  CsvCol;					//!< 対象CSV列
+	bool TopIsHeader;				//!< 先頭行は項目名
 
 	UnicodeString JumpFileName;
 
-	TStringList *DataList;			//集計元データへのポインタ
-	TStringList *ItemList;			//表示項目リスト
+	TStringList *DataList;			//!< 集計元データへのポインタ
+	TStringList *ItemList;			//!< 表示項目リスト
 
 	__fastcall TFileInfoDlg(TComponent* Owner);
 	int __fastcall ShowModalEx(UnicodeString fnam);

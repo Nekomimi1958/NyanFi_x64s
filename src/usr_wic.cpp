@@ -10,7 +10,7 @@
 #pragma package(smart_init)
 
 //---------------------------------------------------------------------------
-//WIC 拡張コーデック一覧の取得
+//WIC拡張コーデック一覧の取得
 //---------------------------------------------------------------------------
 int WIC_get_ex_list(
 	TStringList *lst,		//情報一覧
@@ -67,7 +67,6 @@ int WIC_get_ex_list(
 			//PDF は除外
 			*fxstr = ReplaceStr(*fxstr, ".pdf", EmptyStr);
 		}
-
 	}
 	return cnt;
 }

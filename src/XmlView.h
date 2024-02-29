@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  XMLビューア															//
-//----------------------------------------------------------------------//
+/**
+ * @file XmlView.h
+ * @brief XMLビューア
+ */
+//---------------------------------------------------------------------------
 #ifndef XmlViewH
 #define XmlViewH
 
@@ -22,6 +23,9 @@
 #include <Vcl.Mask.hpp>
 
 //---------------------------------------------------------------------------
+/**
+ * @brief XMLビューア
+ */
 class TXmlViewer : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -99,14 +103,15 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall FindEditKeyPress(TObject *Sender, System::WideChar &Key);
 
 private:	// ユーザー宣言
-	//ViewBusy プロパティ  ツリービュー処理中
+	//ViewBusy プロパティ
 	bool FViewBusy;
 	void __fastcall SetViewBusy(bool Value);
+	/** @brief ツリービュー処理中 */
 	__property bool ViewBusy = {read = FViewBusy,  write = SetViewBusy};
 
-	int ViewMode;				//表示モード 0: 名前/ 1: 名前 [属性]/ 2:XML
+	int ViewMode;				//!< 表示モード(0: 名前/ 1: 名前 [属性]/ 2:XML)
 
-	TStringList *XmlnsList;		//名前空間リスト
+	TStringList *XmlnsList;		//!< 名前空間リスト
 	UnicodeString ErrMsg;
 	bool KeyHandled;
 

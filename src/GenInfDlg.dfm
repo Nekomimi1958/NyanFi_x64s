@@ -282,6 +282,9 @@ object GeneralInfoDlg: TGeneralInfoDlg
     object PropertyItem: TMenuItem
       Action = PropertyAction
     end
+    object OpenUrlItem: TMenuItem
+      Action = OpenUrlAction
+    end
     object Sep_6: TMenuItem
       Caption = '-'
     end
@@ -453,6 +456,11 @@ object GeneralInfoDlg: TGeneralInfoDlg
       Caption = #9655'||'
       OnExecute = PlayPauseActionExecute
       OnUpdate = PlayPauseActionUpdate
+    end
+    object OpenUrlAction: TAction
+      Caption = 'URL'#12434#38283#12367'(&W)'
+      OnExecute = OpenUrlActionExecute
+      OnUpdate = OpenUrlActionUpdate
     end
   end
   object Timer1: TTimer

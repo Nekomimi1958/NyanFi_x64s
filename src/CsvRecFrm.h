@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// CSV/TSVレコード														//
-//																		//
-//----------------------------------------------------------------------//
+/**
+ * @file CsvRecFrm.h
+ * @brief CSV/TSVレコード
+ */
+//---------------------------------------------------------------------------
 #ifndef CsvRecFrmH
 #define CsvRecFrmH
 
@@ -20,6 +21,9 @@
 #include "usr_scrpanel.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief CSV/TSVレコード
+ */
 class TCsvRecForm : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -73,7 +77,7 @@ private:	// ユーザー宣言
 	int __fastcall UpdateItemName();
 
 public:		// ユーザー宣言
-	UsrScrollPanel *GridScrPanel;	//シンプルスクロールバー
+	UsrScrollPanel *GridScrPanel;	//!< シンプルスクロールバー
 
 	__fastcall TCsvRecForm(TComponent* Owner);
 	void __fastcall UpdateRecord(TStringList *lst = NULL, int r_idx = -1, int i_idx = -1);

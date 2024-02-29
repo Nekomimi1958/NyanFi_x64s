@@ -9,7 +9,7 @@
 #pragma package(smart_init)
 
 //---------------------------------------------------------------------------
-UnicodeString ExePath;		//起動パス
+UnicodeString ExePath;
 
 //---------------------------------------------------------------------------
 //ファイル名主部によるソート用比較関数
@@ -221,7 +221,7 @@ bool match_path_list(
 //同一ファイルか?
 //---------------------------------------------------------------------------
 bool is_same_file(UnicodeString fnam1, UnicodeString fnam2,
-	UnicodeString rnam)		//基準ファイル名 (default = EmptyStr/ ExePath);
+	UnicodeString rnam)		//基準ディレクトリ名 (default = EmptyStr/ ExePath);
 {
 	fnam1 = to_absolute_name(exclude_quot(fnam1), rnam);
 	fnam2 = to_absolute_name(exclude_quot(fnam2), rnam);
@@ -406,7 +406,7 @@ bool test_FileExtSize(UnicodeString fext, UnicodeString list, __int64 size)
 	TStringDynArray xlst = SplitString(list, ".");
 	UnicodeString xstr;
 	for (int i=0; i<xlst.Length; i++) {
-		if (test_FileExt(fext, get_tkn(xlst[i], ':'))) xstr =xlst[i];
+		if (test_FileExt(fext, get_tkn(xlst[i], ':'))) xstr = xlst[i];
 	}
 	if (!xstr.IsEmpty()) {
 		__int64 sz = get_tkn_r(xstr, ':').ToIntDef(0) * 1048576ul;	//MB

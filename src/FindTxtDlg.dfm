@@ -67,9 +67,9 @@ object FindTextDlg: TFindTextDlg
   object CaseCheckBox: TCheckBox
     Left = 12
     Top = 42
-    Width = 211
+    Width = 111
     Height = 17
-    Caption = #22823#25991#23383#12539#23567#25991#23383#12434#21306#21029'(&C)'
+    Caption = #22823#23567#21306#21029'(&C)'
     TabOrder = 3
     OnClick = FindOptChangedClick
   end
@@ -79,7 +79,7 @@ object FindTextDlg: TFindTextDlg
     Width = 111
     Height = 17
     Caption = #27491#35215#34920#29694'(&R)'
-    TabOrder = 4
+    TabOrder = 5
     OnClick = RegExCheckBoxClick
   end
   object MigemoCheckBox: TCheckBox
@@ -88,7 +88,7 @@ object FindTextDlg: TFindTextDlg
     Width = 94
     Height = 17
     Caption = '&Migemo'
-    TabOrder = 5
+    TabOrder = 6
     OnClick = MigemoCheckBoxClick
   end
   object CloseCheckBox: TCheckBox
@@ -97,16 +97,16 @@ object FindTextDlg: TFindTextDlg
     Width = 132
     Height = 17
     Caption = #26908#32034#24460#12395#38281#12376#12427'(&X)'
-    TabOrder = 9
+    TabOrder = 10
     OnClick = SubOptClick
   end
   object FindDirGroupBox: TGroupBox
     Left = 232
     Top = 42
-    Width = 181
+    Width = 177
     Height = 44
     Caption = #26908#32034#26041#21521
-    TabOrder = 6
+    TabOrder = 7
     object UpRadioBtn: TRadioButton
       Left = 8
       Top = 18
@@ -131,7 +131,7 @@ object FindTextDlg: TFindTextDlg
     Height = 34
     Anchors = [akLeft, akBottom]
     BevelOuter = bvNone
-    TabOrder = 7
+    TabOrder = 8
     object BytesCheckBox: TCheckBox
       Left = 12
       Top = 4
@@ -158,8 +158,17 @@ object FindTextDlg: TFindTextDlg
     Width = 144
     Height = 17
     Caption = #24375#35519#34920#31034#12434#32173#25345'(&H)'
-    TabOrder = 8
+    TabOrder = 9
     OnClick = SubOptClick
+  end
+  object WordCheckBox: TCheckBox
+    Left = 128
+    Top = 42
+    Width = 94
+    Height = 17
+    Caption = #21336#35486'(&W)'
+    TabOrder = 4
+    OnClick = FindOptChangedClick
   end
   object ActionList1: TActionList
     Left = 480

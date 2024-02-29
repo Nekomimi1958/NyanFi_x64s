@@ -1,8 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  最近編集/閲覧した/使ったファイル一覧								//
-//  栞マーク一覧/ リポジトリ一覧/ ダイレクトタグジャンプ				//
-//----------------------------------------------------------------------//
+/**
+ * @file EditHistDlg.h
+ * @brief 最近編集/閲覧した/使ったファイル一覧/栞マーク一覧/ リポジトリ一覧/ ダイレクトタグジャンプ
+ */
+//---------------------------------------------------------------------------
 #ifndef EditHistDlgH
 #define EditHistDlgH
 
@@ -23,6 +23,9 @@
 #include "usr_scrpanel.h"
 
 //---------------------------------------------------------------------------
+/**
+* @brief 最近編集/閲覧した/使ったファイル一覧/栞マーク一覧/ リポジトリ一覧/ ダイレクトタグジャンプ
+ */
 class TEditHistoryDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -167,15 +170,15 @@ private:	// ユーザー宣言
 	bool __fastcall set_FileName(int idx);
 
 public:		// ユーザー宣言
-	UsrScrollPanel *GridScrPanel;	//シンプルスクロールバー
+	UsrScrollPanel *GridScrPanel;	//!< シンプルスクロールバー
 
-	bool isView;		//最近閲覧したファイル一覧(false = 編集した～)
-	bool isRecent;		//最近使ったファイル一覧
-	bool isMark;		//マーク一覧
-	bool isRepo;		//リポジトリ一覧
-	bool isTags;		//ダイレクトタグジャンプ
+	bool isView;		//!< 最近閲覧したファイル一覧(false = 編集した～)
+	bool isRecent;		//!< 最近使ったファイル一覧
+	bool isMark;		//!< マーク一覧
+	bool isRepo;		//!< リポジトリ一覧
+	bool isTags;		//!< ダイレクトタグジャンプ
 	bool isTagPtn;
-	bool ToFilter;		//フィルタ欄にフォーカス
+	bool ToFilter;		//!< フィルタ欄にフォーカス
 
 	TStringList *TagJumpList;
 

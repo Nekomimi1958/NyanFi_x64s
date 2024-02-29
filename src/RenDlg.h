@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  名前の変更															//
-//----------------------------------------------------------------------//
+/**
+ * @file RenDlg.h
+ * @brief 名前の変更ダイアログ
+ */
+//---------------------------------------------------------------------------
 #ifndef RenDlgH
 #define RenDlgH
 
@@ -23,6 +24,9 @@
 #include "Global.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief 名前の変更ダイアログ
+ */
 class TRenameDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -288,22 +292,22 @@ private:	// ユーザー宣言
 	bool __fastcall IsOptionSheet()	 { return (NamePageControl->ActivePage==OptionSheet); }
 
 public:		// ユーザー宣言
-	TStringList *CurNameList;	//カレントの全ファイルリスト
-	TStringList *ItemList;		//対象リスト
-	TStringList *NewNameList;	//新しい名前のリスト
+	TStringList *CurNameList;	//!< カレントの全ファイルリスト
+	TStringList *ItemList;		//!< 対象リスト
+	TStringList *NewNameList;	//!< 新しい名前のリスト
 
-	UnicodeString OppPath;		//反対パス(カレント側改名による反映のチェック用)
+	UnicodeString OppPath;		//!< 反対パス(カレント側改名による反映のチェック用)
 
-	TStringList *RepRenList;	//改名リスト
-	UnicodeString RenListFile;	//改名リストファイル名
+	TStringList *RepRenList;	//!< 改名リスト
+	UnicodeString RenListFile;	//!< 改名リストファイル名
 
-	bool EditedList;			//リスト編集による改名
-	bool IsMulti;				//複数の対象がある
-	bool NameChanged;			//連番改名で名前変更
-	bool FExtChanged;			//連番改名で拡張子変更
-	bool AttrChanged;			//属性変更
-	bool TimeChanged;			//タイムスタンプ変更
-	bool KeepCsr;				//単独改名後にカーソルを移動しない
+	bool EditedList;			//!< リスト編集による改名
+	bool IsMulti;				//!< 複数の対象がある
+	bool NameChanged;			//!< 連番改名で名前変更
+	bool FExtChanged;			//!< 連番改名で拡張子変更
+	bool AttrChanged;			//!< 属性変更
+	bool TimeChanged;			//!< タイムスタンプ変更
+	bool KeepCsr;				//!< 単独改名後にカーソルを移動しない
 
 	__fastcall TRenameDlg(TComponent* Owner);
 

@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  Gitビューア															//
-//----------------------------------------------------------------------//
+/**
+ * @file GitView.h
+ * @brief Gitビューア
+ */
+//---------------------------------------------------------------------------
 #ifndef GitViewH
 #define GitViewH
 
@@ -22,24 +23,24 @@
 
 //---------------------------------------------------------------------------
 struct git_rec {
-	UnicodeString graph;	//グラフ文字
-	UnicodeString msg;		//メッセージ
-	UnicodeString hash;		//コミットのハッシュ
-	UnicodeString parent;	//親コミットのハッシュ
-	UnicodeString branch;	//ブランチ
-	UnicodeString branch_r;	//リモート部ラッチ
-	UnicodeString tags;		//タグ(複数の場合 \t 区切り)
-	UnicodeString author;	//Author名
-	UnicodeString stash;	//Stash名
+	UnicodeString graph;	//!< グラフ文字
+	UnicodeString msg;		//!< メッセージ
+	UnicodeString hash;		//!< コミットのハッシュ
+	UnicodeString parent;	//!< 親コミットのハッシュ
+	UnicodeString branch;	//!< ブランチ
+	UnicodeString branch_r;	//!< リモート部ラッチ
+	UnicodeString tags;		//!< タグ(複数の場合 \t 区切り)
+	UnicodeString author;	//!< Author名
+	UnicodeString stash;	//!< Stash名
 	TDateTime f_time;
 	bool is_head;
 	bool is_work;
 	bool is_index;
 	bool is_stash;
-	UnicodeString diff_inf;	//差分情報
+	UnicodeString diff_inf;	//!< 差分情報
 };
 
-#define GIT_DEF_HISTLIMIT	100	//デフォルトのコミット履歴表示数
+#define GIT_DEF_HISTLIMIT	100	//!< デフォルトのコミット履歴表示数
 
 //ブランチ/タグリストの項目タグ
 #define GIT_FLAG_HEAD	0x0001
@@ -47,12 +48,15 @@ struct git_rec {
 #define GIT_FLAG_REMOTE	0x0200
 #define GIT_FLAG_TAG	0x0400
 #define GIT_FLAG_INVAL	0x0800
-#define GIT_FLAG_HDRLN	0x1000	//見出し
-#define GIT_FLAG_BLANK	0x2000	//空行
+#define GIT_FLAG_HDRLN	0x1000	//!< 見出し
+#define GIT_FLAG_BLANK	0x2000	//!< 空行
 
 #define GIT_NULL_ID	"4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief Gitビューア
+ */
 class TGitViewer : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -396,10 +400,10 @@ private:	// ユーザー宣言
 	}
 
 public:		// ユーザー宣言
-	UnicodeString WorkDir;		//Gitトップディレクトリ
-	UnicodeString FilterName;	//履歴絞り込み時の対象名
-	int HistoryLimit;			//履歴の表示制限数
-	UnicodeString RetArcFile;	//[o] 一時アーカイブ名
+	UnicodeString WorkDir;		//!< Gitトップディレクトリ
+	UnicodeString FilterName;	//!< 履歴絞り込み時の対象名
+	int HistoryLimit;			//!< 履歴の表示制限数
+	UnicodeString RetArcFile;	//!< [o] 一時アーカイブ名
 
 	bool FGitBusy;
 	void __fastcall SetGitBusy(bool Value)

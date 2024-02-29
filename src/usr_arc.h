@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// アーカイブ処理														//
-//																		//
-//----------------------------------------------------------------------//
+/**
+ * @file usr_arc.h
+ * @brief アーカイブ処理
+ */
+//---------------------------------------------------------------------------
 #ifndef UserArcUnitH
 #define UserArcUnitH
 
@@ -39,17 +40,17 @@ typedef struct {
 
 //ファイル属性
 #ifndef FA_RDONLY
-#define FA_RDONLY		0x01			//読み取り専用
-#define FA_HIDDEN		0x02			//隠しファイル
-#define FA_SYSTEM		0x04			//システムファイル
-#define FA_LABEL		0x08			//ボリュームラベル
-#define FA_DIREC		0x10			//ディレクトリ
-#define FA_ARCH 		0x20			//アーカイブ
-#define FA_ENCRYPTED	0x40			//パスワード保護
+#define FA_RDONLY		0x01			//!< 読み取り専用
+#define FA_HIDDEN		0x02			//!< 隠しファイル
+#define FA_SYSTEM		0x04			//!< システムファイル
+#define FA_LABEL		0x08			//!< ボリュームラベル
+#define FA_DIREC		0x10			//!< ディレクトリ
+#define FA_ARCH 		0x20			//!< アーカイブ
+#define FA_ENCRYPTED	0x40			//!< パスワード保護
 #endif
 
 //OpenArchiveモード
-#define M_ERROR_MESSAGE_OFF		0x00800000L	//エラーを表示しない
+#define M_ERROR_MESSAGE_OFF		0x00800000L	//!< エラーを表示しない
 
 //エラー
 #define ERROR_USER_CANCEL		0x8020
@@ -75,18 +76,18 @@ typedef struct {
 #define FEXT_RAR	_T(".rar.cbr")
 #define FEXT_ISO	_T(".iso")
 
-#define FEXT_ZIPIMG	_T(".zip.cbz.epub.gdtf")	//画像を持つ可能性のあるZIPファイル
+#define FEXT_ZIPIMG	_T(".zip.cbz.epub.gdtf")	//!< 画像を持つ可能性のあるZIPファイル
 
-#define ARC_OUTBUF_SIZE_L	1048576	//1MB
+#define ARC_OUTBUF_SIZE_L	1048576	//!< 1MB
 #define ARC_OUTBUF_SIZE_S	4096
 
 //---------------------------------------------------------------------------
 struct arc_find_inf {
-	UnicodeString f_name;		//パス付ファイル名
-	bool is_dir;				//ディレクトリ
-	__int64 f_size;				//サイズ
-	int  f_attr;				//属性
-	TDateTime f_time;			//タイムスタンプ
+	UnicodeString f_name;		//!< パス付ファイル名
+	bool is_dir;				//!< ディレクトリ
+	__int64 f_size;				//!< サイズ
+	int  f_attr;				//!< 属性
+	TDateTime f_time;			//!< タイムスタンプ
 };
 
 //---------------------------------------------------------------------------
@@ -130,8 +131,8 @@ struct arc_func {
 	FUNC_ArcSetBackGroundMode		SetBackGroundMode;
 	FUNC_ArcCheckArchive			CheckArchive;
 	FUNC_ArcGetLastError			GetLastError;
-	FUNC_ArcGetArchiveType			GetArchiveType;		//7-zip32.dll/tar32.dll 独自
-	FUNC_SevenZipExists7zdll		Exists7zdll;		//7z.dll対応版7-zip32.dll 独自
+	FUNC_ArcGetArchiveType			GetArchiveType;		//!< 7-zip32.dll/tar32.dll 独自
+	FUNC_SevenZipExists7zdll		Exists7zdll;		//!< 7z.dll対応版7-zip32.dll 独自
 
 /*	※確実でない場合があるため以下は使用しない(TAR,CAB)
 	FUNC_ArcGetArcFileSize			GetArcFileSize;
@@ -159,6 +160,10 @@ struct arc_func {
 typedef void (*FUNC_AddDebugLog)(UnicodeString, UnicodeString, UnicodeString);
 
 //---------------------------------------------------------------------------
+/**
+ * @brief アーカイブ処理クラス
+ * 
+ */
 class UserArcUnit
 {
 private:
@@ -178,24 +183,24 @@ private:
 public:
 	arc_func ArcFunc[MAX_ARC_DLL];
 
-	UnicodeString ResMsg;		//コマンドの応答メッセージ
-	UnicodeString ErrMsg;		//エラーメッセージ
+	UnicodeString ResMsg;		//!< コマンドの応答メッセージ
+	UnicodeString ErrMsg;		//!< エラーメッセージ
 
-	FUNC_AddDebugLog fpAddDebugLog;		//デバッグ情報出力関数
+	FUNC_AddDebugLog fpAddDebugLog;		//!<デバッグ情報出力関数
 
 	bool Busy;
-	bool RarUnpacking;			//RAR 解凍中
+	bool RarUnpacking;			//!<RAR 解凍中
 
-	bool Use7zDll;				//7z.dll を利用可能
-	UnicodeString FExt7zDll;	//7z.dll 対応拡張子
+	bool Use7zDll;				//!< 7z.dll を利用可能
+	UnicodeString FExt7zDll;	//!< 7z.dll 対応拡張子
 
-	bool ZipPrm_sfx;			//ZIP自己解凍
-	int  ZipPrm_x;				//ZIP圧縮レベル
-	int  SevenPrm_x;			//7z圧縮レベル
-	int  TarPrm_z;				//TAR圧縮レベル(gzip)
-	int  CabPrm_z;				//CAB圧縮レベル(0=MSZIP/ 15～21=LZX)
+	bool ZipPrm_sfx;			//!< ZIP自己解凍
+	int  ZipPrm_x;				//!< ZIP圧縮レベル
+	int  SevenPrm_x;			//!< 7z圧縮レベル
+	int  TarPrm_z;				//!< TAR圧縮レベル(gzip)
+	int  CabPrm_z;				//!< CAB圧縮レベル(0=MSZIP/ 15～21=LZX)
 
-	UnicodeString ExSw_Zip;		//追加スイッチオプション
+	UnicodeString ExSw_Zip;		//!< 追加スイッチオプション
 	UnicodeString ExSw_7z;
 	UnicodeString ExSw_Lha;
 	UnicodeString ExSw_Tar;

@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  文字列検索(テキストビューア)										//
-//----------------------------------------------------------------------//
+/**
+ * @file FindTxtDlg.h
+ * @brief 文字列検索ダイアログ(テキストビューア)
+ */
+//---------------------------------------------------------------------------
 #ifndef FindTxtDlgH
 #define FindTxtDlgH
 
@@ -18,6 +19,9 @@
 #include "TxtViewer.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief 文字列検索ダイアログ(テキストビューア)
+ */
 class TFindTextDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -31,6 +35,7 @@ __published:	// IDE で管理されるコンポーネント
 	TCheckBox *HighlightCheckBox;
 	TCheckBox *MigemoCheckBox;
 	TCheckBox *RegExCheckBox;
+	TCheckBox *WordCheckBox;
 	TComboBox *CodePageComboBox;
 	TComboBox *FindComboBox;
 	TGroupBox *FindDirGroupBox;
@@ -63,8 +68,15 @@ private:	// ユーザー宣言
 		if (msg.WParamHi==MF_POPUP) TForm::Dispatch(&msg); else msg.Result = MAKELONG(0, MNC_CLOSE);
 	}
 
+	void __fastcall SetFindFocus()
+	{
+		FindComboBox->SetFocus();
+		FindComboBox->SelStart  = FindComboBox->Text.Length();
+		FindComboBox->SelLength = 0;
+	}
+
 public:		// ユーザー宣言
-	bool fromTV;		//テキストビューアから
+	bool fromTV;		//!< テキストビューアから
 
 	TExTxtViewer *ExTViewer;
 

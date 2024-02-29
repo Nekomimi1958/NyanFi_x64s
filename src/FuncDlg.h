@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  関数／ユーザ定義文字列／マーク行一覧								//
-//----------------------------------------------------------------------//
+/**
+ * @file FuncDlg.h
+ * @brief 関数／ユーザ定義文字列／マーク行一覧
+ */
+//---------------------------------------------------------------------------
 #ifndef FuncDlgH
 #define FuncDlgH
 
@@ -21,6 +22,9 @@
 #include "usr_scrpanel.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief 関数／ユーザ定義文字列／マーク行一覧
+ */
 class TFuncListDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -105,15 +109,15 @@ private:	// ユーザー宣言
 	void __fastcall GetStrList(TStringList *lst);
 
 public:		// ユーザー宣言
-	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
+	UsrScrollPanel *ListScrPanel;	//!< シンプルスクロールバー
 
-	int  ListMode;			//0:関数  1:ユーザ定義  2:マーク行一覧
+	int  ListMode;					//!< モード(0:関数  1:ユーザ定義  2:マーク行一覧)
 	int  LineNo;
 	bool ToFilter;
 	bool ReqEdit;
 	bool isFuzzy;
 	UnicodeString UserDefStr;
-	UnicodeString NamePtn;	//関数名の強調パターン
+	UnicodeString NamePtn;			//!< 関数名の強調パターン
 
 	bool is_DFM;
 

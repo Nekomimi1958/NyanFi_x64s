@@ -76,6 +76,7 @@ TTxtViewer::TTxtViewer(
 	StickyBox = new TPaintBox(OwnerForm);
 	StickyBox->Parent  = StickyPanel;
 	StickyBox->Align   = alClient;
+	StickyBox->Cursor  = crHandPoint;
 	StickyBox->OnPaint = onStickyPaint;
 	StickyBox->OnClick = onStickyClick;
 
@@ -154,7 +155,7 @@ TTxtViewer::TTxtViewer(
 	BoxEnd		= BoxStart;
 	CsvCol		= -1;
 
-	isRegEx 	= isCase = isMigemo = isBytes = false;
+	isRegEx 	= isCase = isWord = isMigemo = isBytes = false;
 	isIncSea	= false;
 	FoundPos	= Point(-1, -1);
 
@@ -360,7 +361,7 @@ void __fastcall TTxtViewer::Clear()
 //---------------------------------------------------------------------------
 void __fastcall TTxtViewer::ClearDispLine()
 {
-	ScrPanel->HitLines->Clear();
+	ScrPanel->ClearHitLine();
 
 	for (int i=0; i<DispLines->Count; i++) delete (line_rec*)DispLines->Objects[i];
 	DispLines->Clear();
@@ -1924,8 +1925,6 @@ void __fastcall TTxtViewer::PaintText()
 {
 	if (!isReady || !ViewBox->Parent->Showing) return;
 
-	OutDebugStr("==> PaintText");
-
 	std::unique_ptr<Graphics::TBitmap> tmp_bmp(new Graphics::TBitmap());
 	tmp_bmp->SetSize(ViewBox->ClientWidth - (ScrBar->Visible? 1 : 0), LineHeight);
 	TRect    tmp_rc	= Rect(0, 0, tmp_bmp->Width, tmp_bmp->Height);
@@ -1946,6 +1945,10 @@ void __fastcall TTxtViewer::PaintText()
 	bool mt_Case[MAX_EM_PTN] = {ReservedCase, false, false, false, false, false, UsrKeywdCase2};
 	mt_Case[2] = isIncSea? IncSeaCaseSens : isCase;
 	mt_Case[5] = (!isBinary && !isAozora && !isLog)? UsrKeywdCase : false;
+
+	bool mt_Word[MAX_EM_PTN] = {false, false, false, false, false, false, false};
+	mt_Word[2] = !isIncSea && isWord;
+
 	int  mt_Len[MAX_EM_PTN]  = {0, 0, 0, 0, 0, 0, 0};
 	int  mt_Idx[MAX_EM_PTN]  = {0, 0, 0, 0, 0, 0, 0};
 
@@ -1974,7 +1977,6 @@ void __fastcall TTxtViewer::PaintText()
 
 	//行内容の描画
 	int v_yp = 0;
-	OutDebugStr("  ## > for");
 	for (int i=top_idx; i<=btm_idx; i++, v_yp+=LineHeight) {
 		//余白
 		tmp_cv->Brush->Color = color_Margin;
@@ -2239,6 +2241,12 @@ void __fastcall TTxtViewer::PaintText()
 						for (int i_m=0; i_m<mts.Count; i_m++) {
 							mt_Len[i_p] = mts.Item[i_m].Length;
 							mt_Idx[i_p] = mts.Item[i_m].Index;
+
+							if (mt_Word[i_p] && !is_word(lbuf2, mt_Idx[i_p], mt_Len[i_p])) { 
+								mt_Len[i_p] = 0;
+								continue;
+							}
+
 							if (mt_Idx[i_p]<=lbuf_len) {
 								for (int i_x=mt_Idx[i_p]; mt_Len[i_p]>0 && i_x<=lbuf_len; i_x++,mt_Len[i_p]--) {
 									//文字
@@ -2365,7 +2373,6 @@ void __fastcall TTxtViewer::PaintText()
 		}
 		ViewCanvas->CopyRect(v_rc, tmp_cv, tmp_rc);
 	}
-	OutDebugStr("  ## < for");
 
 	//現在の画面をバッファにコピー
 	ImgBuff->SetSize(img_rc.Width(), img_rc.Height());
@@ -2392,8 +2399,6 @@ void __fastcall TTxtViewer::PaintText()
 	LastPos = CurPos;
 	LastTop = top_idx;
 	LastSel = (SelStart!=SelEnd);
-
-	OutDebugStr("<== PaintText");
 }
 
 //---------------------------------------------------------------------------
@@ -2774,7 +2779,6 @@ void __fastcall TTxtViewer::UpdatePos(
 //---------------------------------------------------------------------------
 void __fastcall TTxtViewer::UpdateSticky()
 {
-	OutDebugStr(" => UpdateSticky");
 	StickyStr  = EmptyStr;
 	StickyLine = 0;
 	if (isReady && ShowSticky && !FuncPtn.IsEmpty() && CurTop>1) {
@@ -2820,7 +2824,6 @@ void __fastcall TTxtViewer::UpdateSticky()
 	else {
 		StickyPanel->Visible = false;
 	}
-	OutDebugStr(" <= UpdateSticky");
 }
 
 //---------------------------------------------------------------------------
@@ -4137,20 +4140,17 @@ int __fastcall TTxtViewer::to_Bytes(
 bool __fastcall TTxtViewer::SearchCore(
 	bool is_down,		//下方向
 	UnicodeString kwd,	//検索語
-	bool case_sw,		//大小文字を区別
-	bool reg_sw,		//正規表現
-	bool bytes_sw,		//バイト列検索
-	bool from_pos)		//現在位置から検索	(default = false)
+	SearchOption opt)	//オプション
 {
 	LastFound = false;
 
-	if (!kwd.IsEmpty() && (!reg_sw || chk_RegExPtn(kwd))) {
+	if (!kwd.IsEmpty() && (!opt.Contains(soRegEx) || chk_RegExPtn(kwd))) {
 		//バイト列検索
-		if (isBinary && bytes_sw) {
-			LastFound = is_down? SearchDownBytes(kwd, case_sw, reg_sw) : SearchUpBytes(kwd, case_sw, reg_sw);
-
+		if (isBinary && opt.Contains(soBytes)) {
+			LastFound = is_down? SearchDownBytes(kwd, opt.Contains(soCaseSens)) : SearchUpBytes(kwd, opt.Contains(soCaseSens));
 			//ヒット行リストの更新
-			if (ScrPanel->KeyWordChanged(kwd, MaxDispLine, case_sw, BinCodePage)
+			bool case_sw = opt.Contains(soCaseSens);
+			if (ScrPanel->KeyWordChanged(kwd, MaxDispLine, opt.Contains(soCaseSens), opt.Contains(soWord), BinCodePage)
 				&& to_Bytes(kwd, case_sw, BinCodePage)>0)
 			{
 				cursor_HourGlass();
@@ -4181,8 +4181,8 @@ bool __fastcall TTxtViewer::SearchCore(
 		//文字列検索
 		else {
 			cursor_HourGlass();
-			TRegExOptions opt;
-			if (!case_sw) opt << roIgnoreCase;
+			TRegExOptions x_opt;
+			if (!opt.Contains(soCaseSens)) x_opt << roIgnoreCase;
 			for (int i=CurPos.y; i>=0 && i<MaxDispLine; i += (is_down? 1 : -1)) {
 				UnicodeString lbuf, sbuf;
 				int p = 0, ofs = 0;
@@ -4195,7 +4195,7 @@ bool __fastcall TTxtViewer::SearchCore(
 						}
 					}
 
-					p = (i==CurPos.y)? CurPos.x + (from_pos? 1 : 2) : 1;
+					p = (i==CurPos.y)? CurPos.x + (opt.Contains(soFromPos)? 1 : 2) : 1;
 					sbuf = lbuf.SubString(p, lbuf.Length() - p + 1);
 				}
 				else {
@@ -4210,16 +4210,17 @@ bool __fastcall TTxtViewer::SearchCore(
 
 				int match_p;
 				int match_len;
-				if (reg_sw) {
+				if (opt.Contains(soRegEx)) {
 					if (is_down) {
 						if (StartsStr('^', kwd) && p>1) {
 							match_p = 0;
 						}
 						else {
-							TMatch mt = TRegEx::Match(sbuf, kwd, opt);
+							TMatch mt = TRegEx::Match(sbuf, kwd, x_opt);
 							if (mt.Success) {
 								match_p   = mt.Index;
 								match_len = mt.Length;
+								if (opt.Contains(soWord) && !is_word(sbuf, match_p, match_len)) match_p = 0;
 							}
 							else {
 								match_p = 0;
@@ -4227,10 +4228,11 @@ bool __fastcall TTxtViewer::SearchCore(
 						}
 					}
 					else {
-						TMatchCollection mts = TRegEx::Matches(lbuf, kwd, opt);
+						TMatchCollection mts = TRegEx::Matches(lbuf, kwd, x_opt);
 						if (mts.Count>0) {
 							match_p   = mts.Item[mts.Count - 1].Index;
 							match_len = mts.Item[mts.Count - 1].Length;
+							if (opt.Contains(soWord) && !is_word(lbuf, match_p, match_len)) match_p = 0;
 						}
 						else {
 							match_p = 0;
@@ -4238,9 +4240,15 @@ bool __fastcall TTxtViewer::SearchCore(
 					}
 				}
 				else {
-					match_p = is_down? (case_sw? sbuf.Pos(kwd) : pos_i(kwd, sbuf)) :
-									   (case_sw? pos_r(kwd, lbuf) : pos_r_i(kwd, lbuf));
 					match_len = kwd.Length();
+					if (is_down) {
+						match_p = opt.Contains(soCaseSens)? sbuf.Pos(kwd) : pos_i(kwd, sbuf);
+						if (opt.Contains(soWord) && !is_word(sbuf, match_p, match_len)) match_p = 0;
+					}
+					else {
+						match_p = opt.Contains(soCaseSens)? pos_r(kwd, lbuf) : pos_r_i(kwd, lbuf);
+						if (opt.Contains(soWord) && !is_word(lbuf, match_p, match_len)) match_p = 0;
+					}
 				}
 
 				if (match_p>0) {
@@ -4258,15 +4266,21 @@ bool __fastcall TTxtViewer::SearchCore(
 			cursor_Default();
 
 			//ヒット行リストの更新
-			if (ScrPanel->KeyWordChanged(kwd, MaxDispLine, case_sw)) {
+			if (ScrPanel->KeyWordChanged(kwd, MaxDispLine, opt.Contains(soCaseSens), opt.Contains(soWord))) {
 				cursor_HourGlass();
-				TRegExOptions opt;
-				if (!case_sw) opt << roIgnoreCase;
 				for (int i=0; i<MaxDispLine; i++) {
 					UnicodeString lbuf = get_DispLine(i);
-					if (reg_sw? TRegEx::IsMatch(lbuf, kwd, opt) : case_sw? lbuf.Pos(kwd) : pos_i(kwd, lbuf)) {
-						ScrPanel->AddHitLine(i);
+					bool is_match = false;
+					if (opt.Contains(soRegEx)) {
+						TMatch mt = TRegEx::Match(lbuf, kwd, x_opt);
+						is_match = (mt.Success && (!opt.Contains(soWord) || is_word(lbuf, mt.Index, mt.Length)));
 					}
+					else {
+						int p = opt.Contains(soCaseSens)? lbuf.Pos(kwd) : pos_i(kwd, lbuf);
+						is_match = (p>0 && (!opt.Contains(soWord) || is_word(lbuf, p, kwd.Length())));
+					}
+
+					if (is_match) ScrPanel->AddHitLine(i);
 				}
 				ScrPanel->Repaint();
 				cursor_Default();
@@ -4287,25 +4301,22 @@ bool __fastcall TTxtViewer::SearchCore(
 //---------------------------------------------------------------------------
 bool __fastcall TTxtViewer::SearchDown(
 	UnicodeString kwd,	//検索語
-	bool case_sw,		//大小文字を区別	(default = false)
-	bool reg_sw,		//正規表現			(default = false)
-	bool bytes_sw,		//バイト列検索		(default = false)
-	bool from_pos)		//現在位置から検索	(default = false)
+	SearchOption opt)	//オプション
 {
-	return SearchCore(true, kwd, case_sw, reg_sw, bytes_sw, from_pos);
+	return SearchCore(true, kwd, opt);
 }
 //---------------------------------------------------------------------------
 //上方向に文字列検索
 //---------------------------------------------------------------------------
-bool __fastcall TTxtViewer::SearchUp(UnicodeString kwd, bool case_sw, bool reg_sw, bool bytes_sw)
+bool __fastcall TTxtViewer::SearchUp(UnicodeString kwd, SearchOption opt)
 {
-	return SearchCore(false, kwd, case_sw, reg_sw, bytes_sw);
+	return SearchCore(false, kwd, opt);
 }
 
 //---------------------------------------------------------------------------
 //下方向にバイト列検索
 //---------------------------------------------------------------------------
-bool __fastcall TTxtViewer::SearchDownBytes(UnicodeString kwd, bool case_sw, bool reg_sw)
+bool __fastcall TTxtViewer::SearchDownBytes(UnicodeString kwd, bool case_sw)
 {
 	if (to_Bytes(kwd, case_sw, BinCodePage)==0) return false;
 
@@ -4336,7 +4347,7 @@ bool __fastcall TTxtViewer::SearchDownBytes(UnicodeString kwd, bool case_sw, boo
 //---------------------------------------------------------------------------
 //上方向にバイト列検索
 //---------------------------------------------------------------------------
-bool __fastcall TTxtViewer::SearchUpBytes(UnicodeString kwd, bool case_sw, bool reg_sw)
+bool __fastcall TTxtViewer::SearchUpBytes(UnicodeString kwd, bool case_sw)
 {
 	if (to_Bytes(kwd, case_sw, BinCodePage)==0) return false;
 	unsigned int adr = get_CurAddrR();	if (adr==0) return false;
@@ -4380,7 +4391,8 @@ bool __fastcall TTxtViewer::SearchSel(
 		Repaint(true);
 	}
 
-	return (up_sw? SearchUp(s, false) : SearchDown(s, false));
+	SearchOption opt;
+	return (up_sw? SearchUp(s, opt) : SearchDown(s, opt));
 }
 
 //---------------------------------------------------------------------------
@@ -4908,7 +4920,11 @@ void __fastcall TTxtViewer::IncSearch(UnicodeString keystr)
 		//下方向へサーチ
 		if (chg_wd || csr_down) {
 			if (chg_wd) Repaint(true);
-			found = SearchDown((isIncMigemo? RegExPtn : IncSeaWord), IncSeaCaseSens, isIncMigemo, false, chg_wd);
+			SearchOption opt;
+			if (IncSeaCaseSens)	opt << soCaseSens;
+			if (isIncMigemo)    opt << soRegEx;
+			if (chg_wd)			opt << soFromPos;
+			found = SearchDown((isIncMigemo? RegExPtn : IncSeaWord), opt);
 			//通常モードで見つからない場合、警告して一文字後退
 			if (!found && chg_wd && !isIncMigemo) {
 				SttHeader->Tag = SHOW_WARN_TAG;
@@ -4920,7 +4936,10 @@ void __fastcall TTxtViewer::IncSearch(UnicodeString keystr)
 		}
 		//上方向へサーチ
 		else if (csr_up) {
-			found = SearchUp((isIncMigemo? RegExPtn : IncSeaWord), IncSeaCaseSens, isIncMigemo);
+			SearchOption opt;
+			if (IncSeaCaseSens)	opt << soCaseSens;
+			if (isIncMigemo)    opt << soRegEx;
+			found = SearchUp((isIncMigemo? RegExPtn : IncSeaWord), opt);
 		}
 
 		if (found)
@@ -4933,7 +4952,7 @@ void __fastcall TTxtViewer::IncSearch(UnicodeString keystr)
 		IniSelected();
 		Repaint(true);
 		FoundPos = Point(-1, -1);
-		ScrPanel->HitLines->Clear();
+		ScrPanel->ClearHitLine();
 		ScrPanel->Repaint();
 	}
 
@@ -5142,10 +5161,15 @@ bool __fastcall TTxtViewer::ExeCommand(const _TCHAR *t_cmd, UnicodeString prm)
 			Repaint(true);
 		}
 
+		SearchOption opt;
+		if (isCase)				opt << soCaseSens;
+		if (isWord)				opt << soWord;
+		if (isRegEx||isMigemo)	opt << soRegEx;
+		if (isBytes)			opt << soBytes;
 		if (SameText(cmd, "FindDown"))
-			SearchDown((isRegEx||isMigemo)? RegExPtn : FindWord, isCase, isRegEx||isMigemo, isBytes);
+			SearchDown((isRegEx||isMigemo)? RegExPtn : FindWord, opt);
 		else
-			SearchUp((isRegEx||isMigemo)? RegExPtn : FindWord, isCase, isRegEx||isMigemo, isBytes);
+			SearchUp((isRegEx||isMigemo)? RegExPtn : FindWord, opt);
 	}
 	//マーク
 	else if (SameText(cmd, "Mark")) {
@@ -5226,10 +5250,12 @@ bool __fastcall TTxtViewer::ExeCommand(const _TCHAR *t_cmd, UnicodeString prm)
 		}
 		//リンク先を検索
 		else if (SameText(cmd, "FindLinkDown")) {
-			SearchDown(LINK_MATCH_PTN, false, true);
+			SearchOption opt; opt << soRegEx;
+			SearchDown(LINK_MATCH_PTN, opt);
 		}
 		else if (SameText(cmd, "FindLinkUp")) {
-			SearchUp(LINK_MATCH_PTN, false, true);
+			SearchOption opt; opt << soRegEx;
+			SearchUp(LINK_MATCH_PTN, opt);;
 		}
 		else if (SameText(cmd, "SetUserDefStr")) {
 			FuncListDlg->UserDefStr = prm;
@@ -5308,7 +5334,8 @@ bool __fastcall TTxtViewer::ExeCommand(const _TCHAR *t_cmd, UnicodeString prm)
 		else if (contained_wd_i("NextErr|PrevErr", cmd)) {
 			if (isLog) {
 				UnicodeString ptn = "^.>([ECW]|(     [45]\\d{2})) .*";
-				if (SameText(cmd, "NextErr")) SearchDown(ptn, true, true); else SearchUp(ptn, true, true);
+				SearchOption opt; opt << soCaseSens << soRegEx;
+				if (SameText(cmd, "NextErr")) SearchDown(ptn, opt); else SearchUp(ptn, opt);
 			}
 		}
 		//無効

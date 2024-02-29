@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  パスマスク															//
-//----------------------------------------------------------------------//
+/**
+ * @file MaskDlg.h
+ * @brief パスマスク・ダイアログ
+ */
+//---------------------------------------------------------------------------
 #ifndef MaskDlgH
 #define MaskDlgH
 
@@ -19,6 +20,9 @@
 #include "usr_scrpanel.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief パスマスク・ダイアログ
+ */
 class TPathMaskDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -63,6 +67,8 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall ChgOptBtnClick(TObject *Sender);
 
 private:	// ユーザー宣言
+	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
+
 	void __fastcall WmMenuChar(TMessage &msg)
 	{
 		if (msg.WParamHi==MF_POPUP) TForm::Dispatch(&msg); else msg.Result = MAKELONG(0, MNC_CLOSE);
@@ -71,8 +77,6 @@ private:	// ユーザー宣言
 	void __fastcall SetOptBtn();
 
 public:		// ユーザー宣言
-	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
-
 	__fastcall TPathMaskDlg(TComponent* Owner);
 
 	BEGIN_MESSAGE_MAP

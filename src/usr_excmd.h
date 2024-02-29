@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  ExeCommands 用関数													//
-//----------------------------------------------------------------------//
+/**
+ * @file usr_excmd.h
+ * @brief ExeCommands 用関数
+ */
+//---------------------------------------------------------------------------
 #ifndef UsrExeCmdsH
 #define UsrExeCmdsH
 
@@ -9,9 +10,12 @@
 #include "Global.h"
 
 //---------------------------------------------------------------------------
-#define MAX_REPEAT_LEVEL 8	//Repeat文の最大多重レベル
+#define MAX_REPEAT_LEVEL 8	//!< Repeat文の最大多重レベル
 
 //---------------------------------------------------------------------------
+/**
+ * @brief ExeCommands の処理
+ */
 class ExeCmdsList
 {
 private:
@@ -26,17 +30,25 @@ public:
 	UnicodeString CmdStr;
 	bool EndOfCmds;
 
-	int RepLevel;					//Repeat レベル -1:なし
-	int RepCnt[MAX_REPEAT_LEVEL];	//  繰り返し数  -1:YN/ -2:無限
-	int RepTop[MAX_REPEAT_LEVEL];	//  繰り返し先頭位置
-	int IfCnt;						//If文内
+	int RepLevel;					//!< Repeat レベル -1:なし
+	int RepCnt[MAX_REPEAT_LEVEL];	//!<   繰り返し数  -1:YN/ -2:無限
+	int RepTop[MAX_REPEAT_LEVEL];	//!<   繰り返し先頭位置
+	int IfCnt;						//!< If文内
 
 	UnicodeString ErrMsg;
 
 	ExeCmdsList(UnicodeString cmds);
 	~ExeCmdsList();
 
+	/**
+	 * @brief 前処理、コマンド/パラメータの取り出し
+	 * @param[out] cmd コマンド
+	 * @param[out] prm パラメータ
+	 * @return true コマンドの終わり
+	 * @return false
+	 */
 	bool Preproc(UnicodeString &cmd, UnicodeString &prm);
+
 	bool IncPC();
 	bool proc_Repeat(UnicodeString cmd, UnicodeString prm);
 	bool proc_Goto(UnicodeString label);
@@ -45,7 +57,7 @@ public:
 };
 
 //---------------------------------------------------------------------------
-//補助コマンドリスト
+/** 補助コマンドリスト */
 extern const UnicodeString XCMD_SubCmds;
 #define XCMDID_ActivateWnd		0
 #define XCMDID_Add				1
@@ -128,23 +140,23 @@ extern const UnicodeString XCMD_SubCmds;
 #define XCMDID_WriteINI			78
 
 //---------------------------------------------------------------------------
-extern bool XCMD_IsBusy;
-extern bool XCMD_Aborted;
-extern bool XCMD_MsgOff;
-extern bool XCMD_BufChanged;
-extern bool XCMD_FileChanged;
+extern bool XCMD_IsBusy;				//!< ExeCommands 実行中 (NyanFiForm->ExeCmdsBusyを反映)
+extern bool XCMD_Aborted;				//!< ExeCommands 中断要求
+extern bool XCMD_MsgOff;				//!< 確認なし
+extern bool XCMD_BufChanged;			//!< Buffer が変更された
+extern bool XCMD_FileChanged;			//!< カレントファイルが変更された
 
-extern TForm *LastModalForm;
+extern TForm *LastModalForm;			//!< 最後に開かれたモーダルフォーム
 extern TModalResult XCMD_ModalResult;
 
-extern bool XCMD_Debugging;
+extern bool XCMD_Debugging;				//!< デバッグモード
 extern bool XCMD_Debug_Step, XCMD_Debug_Go, XCMD_Debug_List, XCMD_Debug_Exit, XCMD_Debug_Quit, XCMD_Debug_Help;
 
-extern TStringList *XCMD_XList;
-extern TStringList *XCMD_WatchList;
-extern TStringList *XCMD_IdxStack;
-extern TStringList *XCMD_TopIdxStack;
-extern TStringList *XCMD_VarStack;
+extern TStringList *XCMD_XList;			//!< コマンドリストのリスト
+extern TStringList *XCMD_WatchList;		//!< 監視変数リスト
+extern TStringList *XCMD_IdxStack;		//!< インデックス・スタック
+extern TStringList *XCMD_TopIdxStack;	//!< トップインデックス・スタック
+extern TStringList *XCMD_VarStack;		//!< 変数スタック
 
 extern ExeCmdsList *XCMD_xlp;
 extern UnicodeString XCMD_cmd, XCMD_prm;
@@ -153,10 +165,13 @@ extern int XCMD_last_task_id;
 extern int XCMD_tim_cnt;
 extern int XCMD_start_cnt;
 extern TDateTime XCMD_tim_t;
-extern bool XCMD_echo_on;
-extern bool XCMD_echo_lno;
-extern bool XCMD_view_log;
-extern bool XCMD_view_clip;
+
+extern bool XCMD_echo_on;				//!< エコーが有効
+extern bool XCMD_echo_lno;				//!< エコーでコマンドファイルの行番号を付加
+extern bool XCMD_view_log;				//!< テキストビューアでログを開く際のイベント
+extern bool XCMD_view_clip;				//!< テキストビューアでクリップボードを開く際のイベント
+extern bool XCMD_clip_changed;			//!< クリップボードのテキスト内容が変更された
+
 extern file_rec *XCMD_cfp;
 
 extern UnicodeString XCMD_cur_f_name, XCMD_cur_r_name;
@@ -166,11 +181,20 @@ extern bool XCMD_matched, XCMD_marked;
 extern bool XCMD_is_top, XCMD_is_end;
 extern bool XCMD_fromGrep;
 extern int  XCMD_box_res;
+extern bool XCMD_chg_CodePage;			//!< コードページが変更された(TVモードでの対策)
 extern __int64   XCMD_f_size;
 extern TDateTime XCMD_f_time;
 
 //---------------------------------------------------------------------------
+/**
+ * @brief 初期化
+ * @param opt
+ */
 void XCMD_Initialize(UnicodeString &opt);
+
+/**
+ * @brief 終了処理
+ */
 void XCMD_Uninitialize();
 
 bool XCMD_TestDelParam(UnicodeString prm);
@@ -178,20 +202,74 @@ bool XCMD_TestDelParam(UnicodeString prm);
 void XCMD_set_Var(const _TCHAR *name, UnicodeString v);
 void XCMD_set_Var(const _TCHAR *name, int v);
 
+/**
+ * @brief コマンドリストを追加
+ * @param cmds
+ * @param is_call
+ * @return ExeCmdsList*
+ */
 ExeCmdsList *XCMD_AddCmdsList(UnicodeString cmds, bool is_call = true);
+
+/**
+ * @brief 呼び出し元に戻る
+ * @return ExeCmdsList*
+ */
 ExeCmdsList *XCMD_Return();
 
+/**
+ * @brief カレントのファイル項目を設定
+ * @param fnam
+ * @param cnam
+ * @param cfp
+ * @return file_rec*
+ */
 file_rec *XCMD_set_cfp(UnicodeString fnam, UnicodeString cnam, file_rec *cfp);
+
+/**
+ * @brief 変数の解決
+ * @param prm
+ * @return UnicodeString
+ */
 UnicodeString XCMD_eval_Var(UnicodeString prm);
+
+/**
+ * @brief 定義済み変数の更新
+ */
 void XCMD_upd_Var();
 
+/**
+ * @brief 行エコー
+ */
 void XCMD_EchoLn();
+
+/**
+ * @brief デバッグ情報の表示
+ * @param err エラー
+ */
 void XCMD_ShowDebugInf(UnicodeString err = EmptyStr);
 
+/**
+ * @brief 論理式の評価
+ * @param lst
+ * @return true
+ * @return false
+ */
 bool XCMD_EvalCnd(TStringDynArray lst);
+
+/**
+ * @brief If文の処理
+ * @return true 
+ * @return false 
+ */
 bool XCMD_Control();
 
+/**
+ * @brief 文字列マッチ
+ * @param prm 
+ * @param s 
+ */
 void XCMD_match_Str(UnicodeString prm, UnicodeString s);
+
 void XCMD_match_Buffer(UnicodeString prm);
 void XCMD_MatchExt(UnicodeString prm, UnicodeString fext);
 

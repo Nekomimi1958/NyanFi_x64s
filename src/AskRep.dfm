@@ -86,6 +86,7 @@ object AskRepDlg: TAskRepDlg
     Height = 36
     Align = alBottom
     BevelOuter = bvNone
+    Caption = #65361
     TabOrder = 2
     DesignSize = (
       528
@@ -107,7 +108,7 @@ object AskRepDlg: TAskRepDlg
       Width = 90
       Height = 26
       Anchors = [akLeft, akBottom]
-      Caption = #20840#12390#32622#25563'(&A)'
+      Caption = #12377#12409#12390#32622#25563'(&A)'
       ModalResult = 12
       TabOrder = 1
     end

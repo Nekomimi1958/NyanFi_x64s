@@ -188,7 +188,7 @@ void __fastcall TDebugForm::ReferListBoxKeyDown(TObject *Sender, WORD &Key, TShi
 //---------------------------------------------------------------------------
 void __fastcall TDebugForm::EditCopyActionExecute(TObject *Sender)
 {
-	ExeCmdListBox(ReferListBox, _T("ClipCopy"));
+	ExeCmdListBox(ReferListBox, "ClipCopy");
 }
 //---------------------------------------------------------------------------
 void __fastcall TDebugForm::EditCopyActionUpdate(TObject *Sender)

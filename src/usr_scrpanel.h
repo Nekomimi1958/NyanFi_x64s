@@ -1,8 +1,8 @@
-//----------------------------------------------------------------------//
-// シンプルスクロールバー・パネル										//
-//																		//
-//  TListBox、TStringGrid、TScrollBar の何れかに関連付け可能			//
-//----------------------------------------------------------------------//
+/**
+ * @file usr_scrpanel.h
+ * @brief シンプルスクロールバー・パネル
+ */
+//---------------------------------------------------------------------------
 #ifndef UsrScrollPanelH
 #define UsrScrollPanelH
 
@@ -12,46 +12,52 @@
 #include "usr_scale.h"
 
 //---------------------------------------------------------------------------
-//Flag
-#define USCRPNL_FLAG_FL		0x0001	//ファイルリスト
-#define USCRPNL_FLAG_GL		0x0002	//一覧リスト
-#define USCRPNL_FLAG_TV		0x0004	//テキストビューア
-
-#define USCRPNL_FLAG_P_WP	0x0020	//親パネルの WindowProc 入れ替え
-#define USCRPNL_FLAG_L_WP	0x0040	//リストボックスの WindowProc 入れ替え
-#define USCRPNL_FLAG_G_WP	0x0080	//グリッドの WindowProc 入れ替え
-#define USCRPNL_FLAG_HS		0x0100	//水平スクロールバー付(ListBox or Grid)
-
-//---------------------------------------------------------------------------
-#define USCRPNL_SCRTYPE_V	0		//垂直スクロールバー
-#define USCRPNL_SCRTYPE_H	1		//水平スクロールバー
+/** @name Flag の設定ビット */
+#define USCRPNL_FLAG_FL		0x0001	//!< ファイルリスト
+#define USCRPNL_FLAG_GL		0x0002	//!< 一覧リスト
+#define USCRPNL_FLAG_TV		0x0004	//!< テキストビューア
+#define USCRPNL_FLAG_P_WP	0x0020	//!< 親パネルの WindowProc 入れ替え
+#define USCRPNL_FLAG_L_WP	0x0040	//!< リストボックスの WindowProc 入れ替え
+#define USCRPNL_FLAG_G_WP	0x0080	//!< グリッドの WindowProc 入れ替え
+#define USCRPNL_FLAG_HS		0x0100	//!< 水平スクロールバー付(ListBox or Grid)
 
 //---------------------------------------------------------------------------
-#define WM_NYANFI_USCROLL	(WM_APP + 500)	//ファイルリストのノブ処理用
-#define WM_NYANFI_UPDKNOB	(WM_APP + 501)	//ファイルリストのノブ更新用
+/** @name Tag 値 */
+#define USCRPNL_SCRTYPE_V	0	//!< 垂直スクロールバー
+#define USCRPNL_SCRTYPE_H	1	//!< 水平スクロールバー
 
 //---------------------------------------------------------------------------
+/** @name ユーザ定義メッセージ */
+#define WM_NYANFI_USCROLL	(WM_APP + 500)	//!< ファイルリストのノブ処理
+#define WM_NYANFI_UPDKNOB	(WM_APP + 501)	//!< ファイルリストのノブ更新
+
+//---------------------------------------------------------------------------
+/**
+ * @brief シンプルスクロールバー・パネル
+ * @details シンプルスクロールバーを表示するためのパネルです。@n
+ * TListBox、TStringGrid、TScrollBar のいずれかに関連付けることができます。
+ */
 class UsrScrollPanel
 {
 private:
-	TPanel     *ScrPanelV;			//垂直スクロールパネル
-	TPaintBox  *ScrPaintBoxV;		//描画領域
+	TPanel     *ScrPanelV;			//!< 垂直スクロールパネル
+	TPaintBox  *ScrPaintBoxV;		//!< 描画領域
 
-	TPanel     *ScrPanelH;			//水平スクロールパネル
-	TPaintBox  *ScrPaintBoxH;		//描画領域
+	TPanel     *ScrPanelH;			//!< 水平スクロールパネル
+	TPaintBox  *ScrPaintBoxH;		//!< 描画領域
 
-	TRect ScrKnobRectV;				//ノブの長方形
-	TRect ScrKnobRectH;
-	int   ScrKnobMaxY;				//最大ノブ位置
-	int   ScrKnobMaxX;
+	TRect ScrKnobRectV;				//!< ノブの長方形(垂直)
+	TRect ScrKnobRectH;				//!< ノブの長方形(水平)
+	int   ScrKnobMaxY;				//!< 最大ノブY位置
+	int   ScrKnobMaxX;				//!< 最大ノブX位置
 
-	bool  ScrCatchKnob;				//ノブをつかんでいる
+	bool  ScrCatchKnob;				//!< ノブをつかんでいる
 	int	  ScrCatchTag;
 	int   ScrCatchYp;
 	int   ScrCatchXp;
 	int   ScrPage;
 
-	int   UsKnobWidth;				//スケーリング100%時のノブ幅
+	int   UsKnobWidth;				//!< スケーリング100\%時のノブ幅
 	int   LastPPI;
 
 	TWndMethod org_ParentPanelWndProc;
@@ -112,37 +118,38 @@ private:
 	void __fastcall ScrPaintBoxMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
 
 public:
-	TPanel			*ParentPanel;		//親パネル
-	TListBox		*AssoListBox;		//関連リストボックス
-	TCheckListBox	*AssoChkListBox;	//関連チェックリストボックス
-	TStringGrid		*AssoStrGrid;		//関連グリッド
-	TScrollBar		*AssoScrollBar;		//関連スクロールバー
+	TPanel			*ParentPanel;		//!< 親パネル
+	TListBox		*AssoListBox;		//!< 関連リストボックス
+	TCheckListBox	*AssoChkListBox;	//!< 関連チェックリストボックス
+	TStringGrid		*AssoStrGrid;		//!< 関連グリッド
+	TScrollBar		*AssoScrollBar;		//!< 関連スクロールバー
 
-	int Flag;							//設定フラグ
+	int Flag;							//!< 設定フラグ
 
-	int FKnobWidth;						//ノブ幅
+	int FKnobWidth;
 	void __fastcall SetKnobWidth(int Value)
 	{
 		FKnobWidth  = Value;
 		UsKnobWidth = UnscaledInt(Value, ParentPanel);
 		LastPPI     = ParentPanel->CurrentPPI;
 	}
+	/** ノブ幅 */
 	__property int KnobWidth = {read = FKnobWidth,  write = SetKnobWidth};
 
-	Graphics::TBitmap *KnobImgBuffV;	//垂直ノブ画像
-	Graphics::TBitmap *KnobImgBuffH;	//水平ノブ画像
+	Graphics::TBitmap *KnobImgBuffV;	//!< 垂直ノブ画像
+	Graphics::TBitmap *KnobImgBuffH;	//!< 水平ノブ画像
 
-	TColor Color;						//背景色
-	TColor KnobColor;					//ノブ色
-	TColor KnobBdrColor;				//ノブ輪郭色
-	TColor KnobActColor;				//ドラッグ時のノブ色
-	TColor HitLineColor;				//ヒット位置色
-	TColor SelLineColor;				//選択位置色
-	int    PosLineAlpha;				//位置表示アルファ
+	TColor Color;						//!< 背景色
+	TColor KnobColor;					//!< ノブ色
+	TColor KnobBdrColor;				//!< ノブ輪郭色
+	TColor KnobActColor;				//!< ドラッグ時のノブ色
+	TColor HitLineColor;				//!< ヒット位置色
+	TColor SelLineColor;				//!< 選択位置色
+	int    PosLineAlpha;				//!< 位置表示アルファ
 
-	bool ListCsrVisible;				//リストボックスのカーソルを常に可視領域に
+	bool ListCsrVisible;				//!< リストボックスのカーソルを常に可視領域に
 
-	TMouseEvent OnRButtonUp;			//右クリックイベント
+	TMouseEvent OnRButtonUp;			//!< 右クリックイベント
 
 	bool FVisible;
 	void __fastcall SetVisible(bool Value)
@@ -155,10 +162,11 @@ public:
 	}
 	__property bool Visible = {read = FVisible,  write = SetVisible};
 
-	bool VisibleV, VisibleH;			//スクロールバーの表示状態
+	bool VisibleV;						//!< 垂直スクロールバーの表示状態
+	bool VisibleH;						//!< 水平スクロールバーの表示状態
 
-	TStringList *HitLines;				//検索結果位置リスト
-	TStringList *SelLines;				//選択項目位置リスト
+	TStringList *HitLines;				//!< 検索結果位置リスト
+	TStringList *SelLines;				//!< 選択項目位置リスト
 
 	UsrScrollPanel(TPanel *pp, TListBox *lp,      int flag);
 	UsrScrollPanel(TPanel *pp, TCheckListBox *lp, int flag);
@@ -167,13 +175,15 @@ public:
 	~UsrScrollPanel();
 
 	void __fastcall InitializePanel();
+
 	void __fastcall UpdateKnob();
 	void __fastcall Repaint();
 
 	void __fastcall SetRBCornerPanel(TPanel *pp);
 
-	bool __fastcall KeyWordChanged(UnicodeString kwd, int max_cnt, bool case_sw = false, int code_page = 0);
+	bool __fastcall KeyWordChanged(UnicodeString kwd, int max_cnt, bool case_sw = false, bool word_sw = false, int code_page = 0);
 	void __fastcall AddHitLine(int n);
+	void __fastcall ClearHitLine();
 };
 //---------------------------------------------------------------------------
 #endif

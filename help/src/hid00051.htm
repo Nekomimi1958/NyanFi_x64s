@@ -38,7 +38,7 @@
 
   <p>
     画面の上側にあるタブページでは、名前の変更を行います。<br>
-    対象が一つの場合は<span class="tab_frame"><a href="#Name">名前</a></span>、<span class="tab_frame"><a href="#Replace">置換</a></span>、<span class="tab_frame"><a href="#RenList">リスト</a></span>タブが、複数選択している場合は<span class="tab_frame"><a href="#Serial">連番</a></span>、<span class="tab_frame"><a href="#Replace">置換</a></span>、<span class="tab_frame"><a href="#RenList">リスト</a></span>タブが表示されます。<br>
+    対象が1つの場合は<span class="tab_frame"><a href="#Name">名前</a></span>、<span class="tab_frame"><a href="#Replace">置換</a></span>、<span class="tab_frame"><a href="#RenList">リスト</a></span>タブが、複数選択している場合は<span class="tab_frame"><a href="#Serial">連番</a></span>、<span class="tab_frame"><a href="#Replace">置換</a></span>、<span class="tab_frame"><a href="#RenList">リスト</a></span>タブが表示されます。<br>
     また、対象がすべてMP3ファイルの場合は<span class="tab_frame"><a href="#MP3">MP3</a></span>タブが、FLACファイルの場合は<span class="tab_frame"><a href="#MP3">FLAC</a></span>タブが表示されます(混在不可)。<br>
     なお <a href="hid00005.htm#RenameDlg">RenameDlg</a>_ED を実行した場合は、<span class="tab_frame"><a href="#RenList">リスト</a></span>タブだけが利用できます。<br>
   </p>
@@ -65,11 +65,11 @@
 
   <h3 id="Name">名前</h3>
   <p>
-    対象が一つの場合、単純にその名前を変更します。<br>
+    対象が1つの場合、単純にその名前を変更します。<br>
   </p>
   <p>
     入力欄で<span class="btn_frame">F2</span>キーを押すと、ファイル名主部の末尾/先頭/主部を選択/全体を選択 の順番で状態が切り替わります。初期状態は、後述の<span class="tab_frame"><a href="#Option">設定</a></span>タブで変更できます。<br>
-    入力欄で<span class="btn_frame">Ctrl</span>+<span class="btn_frame">U</span>を押すとキャレット位置の１文字が大文字化、
+    入力欄で<span class="btn_frame">Ctrl</span>+<span class="btn_frame">U</span>を押すとキャレット位置の1文字が大文字化、
     <span class="btn_frame">Ctrl</span>+<span class="btn_frame">L</span>を押すと小文字化されます。<br>
     これらの機能は、名前の変更ダイアログによらない単純な改名を行う際の入力ボックスなどでも利用できます(例: FTPリモート側の改名)。
   </p>
@@ -273,7 +273,7 @@
 
   <p>
     <img src="chkbox.png" alt=""> <b>カーソル保持</b>
-    単独改名時にチェックしていると、改名後にカーソルを元の位置から移動しません。なお、改名後の対象がソートによって上方に移動すると、結果として一つ前の対象がカーソル位置に下りてきますので、注意が必要かもしれません。<br>
+    単独改名時にチェックしていると、改名後にカーソルを元の位置から移動しません。なお、改名後の対象がソートによって上方に移動すると、結果として1つ前の対象がカーソル位置に下りてきますので、注意が必要かもしれません。<br>
     チェックを外すと、改名された対象の位置にカーソルが移動します。
   </p>
 
@@ -361,7 +361,7 @@
     <dd><span class="tab_frame"><a href="#Name">名前</a></span>タブを開いた際の、入力欄の初期状態(キャレット位置、選択範囲)を設定できます。<br>
       「<b>指定語の後</b>」や「<b>指定語の前</b>」を選んだ場合は、下の「<b>指定語</b>」に文字列を設定してください。文字列は <b>;</b>
       (セミコロン)で区切って複数設定することも可能です。その場合、先のものほど優先順位が高くなります。<br>
-      <img src="chkbox.png" alt=""> <b>最後の語にマッチ</b> をチェックしていると、同じ語が名前に複数含まれている場合、一番最後のものにマッチします。<br>
+      <img src="chkbox.png" alt=""> <b>最後の語にマッチ</b> をチェックしていると、同じ語が名前に複数含まれている場合、最後のものにマッチします。<br>
       名前に指定語が含まれていない場合の状態は、「<b>次候補</b>」で指定できます。<br>
     </dd>
 

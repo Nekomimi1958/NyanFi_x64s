@@ -27,7 +27,7 @@
 #pragma package(smart_init)
 
 //---------------------------------------------------------------------------
-UnicodeString RstBatName;	//再起動用バッチファイル名
+UnicodeString RstBatName;
 
 //---------------------------------------------------------------------------
 //HTMLヘルプ
@@ -66,19 +66,18 @@ UnicodeString KeysStr_Popup   = "APP|Shift+F10";
 UnicodeString SortIdStr = "FEDSAU";
 
 //---------------------------------------------------------------------------
-HWND  MainHandle = NULL;		//メインウィンドウのハンドル
-DWORD ProcessId  = 0;			//プロセスID
-bool  IsAdmin	 = false;		//管理者権限
-int   StartedCount;				//実行開始カウント(m秒)
-int   NyanFiIdNo = 0;			//多重 NyanFi 識別ID
-bool  IsPrimary  = true;		//最初に起動された
-bool  GitExists  = false;		//Git がインストールされている
-bool  GrepExists = false;		//grep.exe がインストールされている
-bool  IsMuted	 = false;		//音量ミュート
+HWND  MainHandle = NULL;
+DWORD ProcessId  = 0;
+bool  IsAdmin	 = false;
+bool  IsPrimary  = true;
+bool  GitExists  = false;
+bool  GrepExists = false;
+bool  IsMuted	 = false;
+int   StartedCount;
+int   NyanFiIdNo = 0;
+bool  NoRoundWin = false;
 
-int   ScrMode  = SCMD_FLIST;	//画面モード
-
-bool NoRoundWin = false;		 //角丸ウィンドウ抑止
+int   ScrMode = SCMD_FLIST;
 
 UnicodeString VclStyle;
 
@@ -86,953 +85,935 @@ MarkList *ErrMarkList = NULL;
 
 TRichEdit *TempRichEdit = NULL;
 
-TTaskThread *TaskThread[MAX_TASK_THREAD];	//タスク処理スレッド
-int  MaxTasks;								//最大タスク数
-bool RsvSuspended = false;					//予約の保留
-TaskConfigList *TaskReserveList;			//タスク予約リスト
-int  LastOpCount;							//最後に操作した時のカウント値
+TTaskThread *TaskThread[MAX_TASK_THREAD];
+int  MaxTasks;
+bool RsvSuspended = false;
+TaskConfigList *TaskReserveList;
+int  LastOpCount;
 
-TImgViewThread   *ImgViewThread   = NULL;	//画像ビュー処理スレッド
-TThumbnailThread *ThumbnailThread = NULL;	//サムネイル取得スレッド
-TGetIconThread   *GetIconThread   = NULL;	//アイコン取得スレッド
+TImgViewThread   *ImgViewThread   = NULL;
+TThumbnailThread *ThumbnailThread = NULL;
+TGetIconThread   *GetIconThread   = NULL;
 
-UserArcUnit *usr_ARC;			//アーカイブ処理ユニット
-UnicodeString FExt7zDll;		//7z.dll で対応する拡張子
+UserArcUnit *usr_ARC;
+UnicodeString FExt7zDll;
 
-MigemoUnit  *usr_Migemo;		//Migemo処理ユニット
+MigemoUnit  *usr_Migemo;
 UnicodeString MigemoPath;
 bool LastMigemoMode;
 bool LastMigemoModeF;
 
-int  WicScaleOpt;				//WICの縮小・拡大アルゴリズム
-UnicodeString WicFextStr;		//WICが対応している拡張子
+int  WicScaleOpt;
+UnicodeString WicFextStr;
 
 bool gCopyAll;
 bool gCopyCancel;
 
-int  gCopyMode	= CPYMD_OW;		//左右が別ディレクトリの場合のコピーモード
-int  gCopyMode2 = CPYMD_OW;		//左右が同一ディレクトリの場合のコピーモード
-int  xCopyMode	= -1;			//ExeCommand 内で用いる強制モード
+int  gCopyMode	= CPYMD_OW;
+int  gCopyMode2 = CPYMD_OW;	
+int  xCopyMode	= -1;
 
 UnicodeString gCopyFmt = "\\N_\\SN(1)";
 
-int  OptionPageIndex = 0;		//オプション設定ダイアログのページインデックス
+int  OptionPageIndex = 0;
 
-bool SyncLR = false;			//左右のディレクトリ変更を同期
+bool SyncLR = false;
 
 UnicodeString GlobalErrMsg;
 
-bool Initialized	= false;	//初期化が完了した
-bool UnInitializing = false;	//終了処理が開始された
-bool Closing		= false;	//終了処理中
+bool Initialized	= false;
+bool UnInitializing = false;
+bool Closing		= false;
 
-int  InhReload = 0;				//Reload の抑止
-bool DisReload = false;			//Reload の無効化
+int  InhReload = 0;
+bool DisReload = false;
 
-bool InhUpdate     = false;  	//UpdateList 抑止
-bool InhCmdHistory = false;  	//コマンド履歴の抑止
+bool InhUpdate     = false;
+bool InhCmdHistory = false;
 
 UnicodeString FindPath;
-bool FindAborted;				//検索中断要求
-bool FindDiff;					//DiffDir 実行中
+bool FindAborted;
+bool FindDiff;
 int  FindTag;
-int  FindCount;					//マッチ数
+int  FindCount;
 
-bool CalcAborted;				//計算中断要求
+bool CalcAborted;
 int  CalcTag;
 
-bool GitGrepAborted = false;	//GitGrep の中断要求
+bool GitGrepAborted = false;
 
-bool MultiInstance;				//二重起動を許す
-bool CloseOthers;				//他のNyanFiを終了
-bool StoreTaskTray;				//最小化時にタスクトレイに格納
-bool ShowDirType;				//DIR種別を表示
-bool ShowSpace;					//空白を表示
-bool UseIndIcon;				//ファイル固有のアイコンを使用
-bool ShowHideAtr;				//隠しファイルを表示
-bool ShowSystemAtr;				//システムファイルを表示
-bool DispRegName;				//パスの表示に登録名を用いる
-bool UncToNetDrive;				//UNCをネットワークドライブ名に
-bool CompInTitleBar;			//タイトルバーにコンピュータ名を表示
-bool PathInTitleBar;			//タイトルバーにカレントパスを表示
-bool TabGrInTitleBar;			//タイトルバーにタググループ名を表示
-bool OmitEndOfName;				//長い名前は末尾を省略
-bool ShowAdsInf;				//代替データストリーム情報を表示
-bool ShowUseProcInf;			//プロセス使用情報を表示
-bool ShowDirJumboIco;			//ディレクトリは特大アイコンを表示
-bool ShowInZipImg;				//ZIP内の画像を表示
-bool PreviewAniGif;				//アニメーションGIFのプレビュー
-bool SetPrvCursor;				//プレビュー内でマウスカーソルを設定
-bool ForceDel;					//読込専用ファイルも強制的に上書き・削除
-bool RemoveCdReadOnly;			//CD-ROMからのコピー時に読込専用属性を解除
-bool CopyTags;					//タグをコピー
-bool CopyNoBuffering;			//バッファーなしI/Oを使用してコピー
+bool MultiInstance;
+bool CloseOthers;
+bool StoreTaskTray;
+bool ShowDirType;
+bool ShowSpace;
+bool UseIndIcon;
+bool ShowHideAtr;
+bool ShowSystemAtr;
+bool DispRegName;
+bool UncToNetDrive;
+bool CompInTitleBar;
+bool PathInTitleBar;
+bool TabGrInTitleBar;
+bool OmitEndOfName;
+bool ShowAdsInf;
+bool ShowUseProcInf;
+bool ShowDirJumboIco;
+bool ShowInZipImg;
+bool PreviewAniGif;
+bool SetPrvCursor;
+bool ForceDel;
+bool RemoveCdReadOnly;
+bool CopyTags;
+bool CopyNoBuffering;
 bool ShowArcCopyProg;
-bool DelUseTrash;				//ファイルの削除にゴミ箱を使う
-bool EditNewText;				//新規テキスト作成後にエディタで開く
-bool ViewArcInf;				//アーカイブ内のファイル情報を表示
-bool CheckTS;					//拡張子 .ts (MPEG2-TS/TypeScript)の判別を行う
-bool ReloadOnActive;			//アクティブ時に最新の情報に
-bool OpenAddedDrive;			//ドライブが追加されたらカレントに表示
-bool CheckUnc;					//UNCパスをチェック
-bool ShowMsgHint;				//警告などをヒント表示
-bool ShowKeyHint;				//2ストローク操作のヒント表示
-bool ShowNoKeyHint;				//無効な2ストローク操作の警告を出す
-bool ShowCopyHint;				//クリップボードへのコピー情報をヒント表示
-bool ShowDuplNotify;			//二重起動されたNyanFiからの通知を表示
-bool ShowTooltip;				//ツールチップを表示
-bool LogErrOnly;				//タスクでエラー箇所のみをログ表示
-bool LogErrMsg;					//ログにエラーメッセージを出力
-bool LogDebugInf;				//ログにデバッグ情報を出力
-bool LogHideSkip;				//ログにスキップ項目を出力しない
-bool LogFullPath;				//ログの処理内容をフルパスで表示
-bool LogDestination;			//ログに処理先を表示
-bool SaveLog;					//終了時にログを保存
-bool AppendLog;					//同日のログは追記保存
-bool NotSortWorkList;			//ワークリスト項目をソートしない
-bool RegWorkCsrPos;				//カーソル位置に登録
-bool AutoDelWorkList;			//存在しない項目を自動削除
-bool NoCheckWorkUnc;			//ワークリストのUNCをチェックしない
-bool AddToRecent;				//最近使った項目に追加
-bool NoCheckRecentUnc;			//UNCパスをチェックしない
-bool DirHistCsrPos;				//ディレクトリ履歴でカーソル位置を記憶
-bool DirHistSortMode;			//ディレクトリ履歴でソート方法を記憶
-bool DelDplDirHist;				//重複するディレクトリ履歴を削除
-bool WorkToDirHist;				//ワークリストを履歴に含める
-bool NoCheckDirHist;			//ディレクトリ履歴の存在チェックを行わない
-bool ExtSaveDirHist;			//全体履歴を別ファイルに保存
-bool LoopFilerCursor;			//ファイラーでカーソルをループ移動
-bool FlCursorVisible;			//ファイラーでカーソルを常に可視領域に
-bool AutoCompComboBox;			//コンボボックス入力を自動補完
-bool DialogCenter;				//ダイアログをメイン画面の中央に
-bool InhbitAltMenu;				//ALTキーでメニューにフォーカスしない
-bool SelectByMouse;				//マウスでファイラーの項目を選択
-bool SelectBaseOnly;			//ファイル名主部でのみ選択
-bool SelectIconSngl;			//アイコン部分で個別に選択
-bool TimColEnabled;				//タイムスタンプの配色を有効
-bool PriorFExtCol;				//拡張子部分は属性色より優先
-bool ColorOnlyFExt;				//拡張子別配色は拡張子部分のみに適用
-bool SymColorToName;			//ファイル名主部にシンボリックリンク色を適用
-bool RevTagColor;				//タグ色の反転表示
-bool InactiveGray;				//非アクティブなメイン画面の一部をグレー化
-bool ShowMainMenu;				//メインメニューを表示
-bool ShowImgPreview;			//イメージプレビューを表示
-bool ShowProperty;				//ファイル情報を表示
-bool ShowLogWin;				//ログウィンドウを表示
-bool ShowFileListOnly;			//ファイルリストのみを表示
+bool DelUseTrash;
+bool EditNewText;
+bool ViewArcInf;
+bool CheckTS;
+bool ReloadOnActive;
+bool OpenAddedDrive;
+bool CheckUnc;
+bool ShowMsgHint;
+bool ShowKeyHint;
+bool ShowNoKeyHint;
+bool ShowCopyHint;
+bool ShowDuplNotify;
+bool ShowTooltip;
+bool LogErrOnly;
+bool LogErrMsg;
+bool LogDebugInf;
+bool LogHideSkip;
+bool LogFullPath;
+bool LogDestination;
+bool SaveLog;
+bool AppendLog;
+bool NotSortWorkList;
+bool RegWorkCsrPos;
+bool AutoDelWorkList;
+bool NoCheckWorkUnc;
+bool AddToRecent;
+bool NoCheckRecentUnc;
+bool DirHistCsrPos;
+bool DirHistSortMode;
+bool DelDplDirHist;
+bool WorkToDirHist;
+bool NoCheckDirHist;
+bool ExtSaveDirHist;
+bool LoopFilerCursor;
+bool FlCursorVisible;
+bool AutoCompComboBox;
+bool DialogCenter;
+bool InhbitAltMenu;
+bool SelectByMouse;
+bool SelectBaseOnly;
+bool SelectIconSngl;
+bool TimColEnabled;
+bool PriorFExtCol;
+bool ColorOnlyFExt;
+bool SymColorToName;
+bool RevTagColor;
+bool InactiveGray;
+bool ShowMainMenu;
+bool ShowImgPreview;
+bool ShowProperty;
+bool ShowLogWin;
+bool ShowFileListOnly;
 bool ShowFileListOnly2;
-bool ShowSttBar;				//ステータスバーを表示
-bool ShowToolBar;				//ツールバーを表示
+bool ShowSttBar;
+bool ShowToolBar;
 bool ShowToolBarV;
 bool ShowToolBarI;
 bool ToolBarISide;
-bool ShowTabBar;				//タブバーを表示
-bool ShowFKeyBar;				//ファンクションキーバーを表示
-bool ShowClsTabBtn;				//タブの閉じるボタンを表示
-bool ShowPopTabBtn;				//タブの▼ボタンを表示
-bool ShowPopDirBtn;				//ディレクトリ情報の▼ボタンを表示
-bool HideScrBar;				//縦スクロールバーを隠す
-bool ShowByteSize;				//バイト単位表示
-bool ShowTargetInf;				//実体の情報で表示
-bool ShowHeader;				//ヘッダを表示
-bool FixListWidth;				//リスト幅を固定
-bool KeepOnResize;				//ウィンドウサイズ変更時に比率を維持
-bool KeepCurListWidth;			//カレント側のリスト幅を維持
-bool NoSpaceFExt;				//拡張子を分離しない
-bool HideTitleMenu;				//最大化時にタイトルバーとメニューを隠す
-bool ShowLineNo;				//行番号を表示
-bool ShowLineCursor;			//行カーソルを表示
-bool ShowTAB;					//タブを表示
-bool ShowCR;					//改行を表示
-bool ShowIndent;				//インデントガイドを表示
-bool ShowTextRuler;				//ルーラを表示
-bool ShowSticky;				//スティッキーを表示
-bool ScrBarToFoldPos;			//スクロールバーを折り返し位置に表示
-bool TxtSttIsBottom;			//情報ヘッダを下部に表示(TV)
-bool ChkAozora;					//青空文庫形式を考慮する
-bool UseXd2tx;					//xd2txlib.dll でテキスト表示
-bool ClickableUrl;				//ダブルクリックでURLを開く
-bool RestoreViewLine;			//ビューアでカーソルの行位置を復元
-bool TvCursorVisible;			//ビューアでカーソルを常に可視領域に
-bool LimitBinCsr;				//バイナリ表示でカーソル移動を制限
-bool TxtColorHint;				//カーソル位置数値のカラーをヒント表示
-bool AltBackSlash;				//\ を ＼(U+2216)で表示
-bool FormatJson;				//.json ファイルを整形
-bool DecodeDfmStr;				//.dfm ファイルの文字列をデコード
-bool BinMemMaped;				//バイナリではメモリマップドファイルとして開く
-bool EmpComment;				//コメントを強調表示
-bool EmpStrings;				//文字列を強調表示
-bool EmpReserved;				//予約語を強調表示
-bool EmpSymbol;					//シンボルを強調表示
-bool EmpNumeric;				//数値を強調表示
-bool EmpHeadline;				//見出しを強調表示
-bool EmpRuby;					//ルビを強調表示
-bool RotViewImg;				//Exif情報にしたがって画像を回転
-bool KeepZoomRatio;				//別の画像に移った時にズーム倍率を維持する
-bool ShowThumbName;				//サムネイルにファイル名を表示
-bool ShowThumbExif;				//サムネイルに簡易Exif情報を表示
-bool ShowThumbTags;				//サムネイルにタグを表示
-bool ShowThumbFExt;				//サムネイルに拡張子を強調表示
-bool NotThumbIfArc;				//アーカイブ内は一括取得しない
-bool CacheThumbADS;				//サムネイルをADSにキャッシュする
-bool LoopViewCursor;			//イメージビューアでカーソルをループ移動
-bool HintTopEndImg;				//先頭・最後でヒント表示
-bool BeepTopEndImg;				//警告音
-bool ImgSttIsBottom;			//情報ヘッダを下部に表示(IV)
-bool SeekBindDir;				//シークバーの始点を綴じ方向に合わせる
-bool SeekSwapNxtPrv;			//右綴じでNext/PrevFile入替
-bool HideCsrInFull;				//全画面表示でマウスカーソルを隠す
-bool HideThumbInFull;			//全画面表示でサムネイルを隠す
-bool AnimateGif;				//イメージビューアでアニメーションGIFを表示
-bool ShowThumbScroll;			//サムネイルのスクロールバーを表示
-bool ShowHistogram;				//ヒストグラムを表示
-bool ShowLoupe;					//ルーペを表示
-bool ShowSubViewer;				//GIFビューアを表示
-bool ShowSeekBar;				//シークバーを表示
-bool WarnHighlight;				//白飛び警告
-bool DoublePage;				//見開き表示
-bool RightBind;					//右綴じ
+bool ShowTabBar;
+bool ShowFKeyBar;
+bool ShowClsTabBtn;
+bool ShowPopTabBtn;
+bool ShowPopDirBtn;
+bool HideScrBar;
+bool ShowByteSize;
+bool ShowTargetInf;
+bool ShowHeader;
+bool FixListWidth;
+bool KeepOnResize;
+bool KeepCurListWidth;
+bool NoSpaceFExt;
+bool HideTitleMenu;
+bool ShowLineNo;
+bool ShowLineCursor;
+bool ShowTAB;
+bool ShowCR;
+bool ShowIndent;
+bool ShowTextRuler;
+bool ShowSticky;
+bool ScrBarToFoldPos;
+bool TxtSttIsBottom;
+bool ChkAozora;
+bool UseXd2tx;
+bool ClickableUrl;
+bool RestoreViewLine;
+bool TvCursorVisible;
+bool LimitBinCsr;
+bool TxtColorHint;
+bool AltBackSlash;
+bool FormatJson;
+bool DecodeDfmStr;
+bool BinMemMaped;
+bool EmpComment;
+bool EmpStrings;
+bool EmpReserved;
+bool EmpSymbol;
+bool EmpNumeric;
+bool EmpHeadline;
+bool EmpRuby;
+bool RotViewImg;
+bool KeepZoomRatio;
+bool ShowThumbName;
+bool ShowThumbExif;
+bool ShowThumbTags;
+bool ShowThumbFExt;
+bool NotThumbIfArc;
+bool CacheThumbADS;
+bool LoopViewCursor;
+bool HintTopEndImg;
+bool BeepTopEndImg;
+bool ImgSttIsBottom;
+bool SeekBindDir;
+bool SeekSwapNxtPrv;
+bool HideCsrInFull;
+bool HideThumbInFull;
+bool AnimateGif;
+bool ShowThumbScroll;
+bool ShowHistogram;
+bool ShowLoupe;
+bool ShowSubViewer;
+bool ShowSeekBar;
+bool WarnHighlight;
+bool DoublePage;
+bool RightBind;
 
-UnicodeString JpWrapChar1;		//行頭禁則文字
-UnicodeString JpWrapChar2;		//行末禁則文字
-bool WordWrap;					//ワードラップ
+UnicodeString JpWrapChar1;
+UnicodeString JpWrapChar2;
+bool WordWrap;
 
-bool PermitDotCmds;				//.nyanfi でコマンド実行を許可
-bool InheritDotNyan;			//上位ディレクトリから .nyanfi を継承
-bool DotNyanPerUser;			//ユーザ名別に .nyanfi を作成
+bool PermitDotCmds;
+bool InheritDotNyan;
+bool DotNyanPerUser;
 
-int  ScrBarStyle;				//スクロールバー・スタイル	0:標準/ 1:シンプル/ 2:3/4幅/ 3:1/2幅/ 4:画像
-int  IconMode;					//アイコンの表示モード		0:非表示/ 1:表示/ 2:ディレクトリのみ表示
+int  ScrBarStyle;
+int  IconMode;
 
-bool ModalScreen;				//モーダル表示効果
-int  ModalScrAlpha;				//スクリーンの透明度
+bool ModalScreen;
+int  ModalScrAlpha;
 
-int  TlWinBorderWidth;			//ツールウインドウの境界線幅
+int  TlWinBorderWidth;
 
-int  InitialModeI;				//イメージビューアを開いた時の初期状態
-int  LastZoomRatio;				//前回のズーム
+int  InitialModeI;
+int  LastZoomRatio;
 
-bool MarkImgClose;				//イメージビューアを閉じる時に栞マークを設定
-UnicodeString MarkImgPath;		//マークするパス
-UnicodeString MarkImgFExt;		//マークする拡張子
+bool MarkImgClose;
+UnicodeString MarkImgPath;
+UnicodeString MarkImgFExt;
 UnicodeString MarkImgMemo;
 
-UnicodeString DlgMoveShift;		//ダイアログ移動のシフトキー
-UnicodeString DlgSizeShift;		//ダイアログのサイズ変更のシフトキー
+UnicodeString DlgMoveShift;
+UnicodeString DlgSizeShift;
 int  DlgMovePrm;
 int  DlgSizePrm;
 
-int  DblClickFlMode;			//ファイルリストでのダブルクリック
+int  DblClickFlMode;
 
-UnicodeString WheelCmdF[4];		//ホイールコマンド
+UnicodeString WheelCmdF[4];
 UnicodeString WheelCmdV[4];
 UnicodeString WheelCmdI[4];
 
-UnicodeString WheelBtnCmdF[4];	//ホイールボタンを押した時のコマンド
+UnicodeString WheelBtnCmdF[4];
 UnicodeString WheelBtnCmdV;
 UnicodeString WheelBtnCmdI;
 
-UnicodeString X1BtnCmdF;		//X1ボタンを押した時のコマンド
-UnicodeString X2BtnCmdF;		//X2ボタンを押した時のコマンド
+UnicodeString X1BtnCmdF;
+UnicodeString X2BtnCmdF;
 UnicodeString X1BtnCmdV;
 UnicodeString X2BtnCmdV;
 UnicodeString X1BtnCmdI;
 UnicodeString X2BtnCmdI;
 
-UnicodeString EmpBinPtn1;		//バイナリ強調パターン1
-UnicodeString EmpBinPtn2;		//バイナリ強調パターン2
-UnicodeString EmpBinPtn3;		//バイナリ強調パターン3
+UnicodeString EmpBinPtn1;
+UnicodeString EmpBinPtn2;
+UnicodeString EmpBinPtn3;
 
-UnicodeString HtmInsHrCls;		//ブロックの前に罫線を挿入するクラス
-UnicodeString HtmHdrStr;		//見出し文字
-bool HtmInsHrSct;				//<section>の前に罫線挿入
-bool HtmInsHrArt;				//<article>の前に罫線挿入
-bool HtmInsHrNav;				//<nav>の前に罫線挿入
-bool ToMarkdown;				//Markdown記法に変換
+UnicodeString HtmInsHrCls;
+UnicodeString HtmHdrStr;
+bool HtmInsHrSct;
+bool HtmInsHrArt;
+bool HtmInsHrNav;
+bool ToMarkdown;
 
-UnicodeString HtmDelBlkCls;		//削除するブロックの class
-UnicodeString HtmDelBlkId;		//削除するブロックの id
+UnicodeString HtmDelBlkCls;
+UnicodeString HtmDelBlkId;
 
-UnicodeString NoWatchPath;		//ディレクトリ監視から除外するパス
+UnicodeString NoWatchPath;
 
-UnicodeString FExtGetInf;		//ファイル情報を取得する拡張子
-UnicodeString FExtNoInf;		//ファイル情報を取得しない拡張子
-UnicodeString NoInfPath;		//ファイル情報を取得しないパス
-UnicodeString EmpInfItems;		//強調表示するファイル情報項目(|区切り)
-TStringList  *HideInfItems;		//隠すファイル情報項目(拡張子=|区切り形式のリスト)
+UnicodeString FExtGetInf;
+UnicodeString FExtNoInf;
+UnicodeString NoInfPath;
+UnicodeString EmpInfItems;
+TStringList  *HideInfItems;
 
-UnicodeString FExtImgPrv;		//イメージプレビューを行う拡張子
-UnicodeString FExtNoImgPrv;		//イメージプレビューを行わない拡張子
-UnicodeString NoImgPrvPath;		//イメージプレビューを行わないパスリスト
+UnicodeString FExtImgPrv;
+UnicodeString FExtNoImgPrv;
+UnicodeString NoImgPrvPath;
 
-UnicodeString FExtNoIView;		//イメージビューアで閲覧しない拡張子
-UnicodeString NoCachePath;		//サムネイルキャッシュしないパス
+UnicodeString FExtNoIView;
+UnicodeString NoCachePath;
 
-UnicodeString DrvInfFmtR;		//ドライブ情報の書式 : ルート
-UnicodeString DrvInfFmtS;		//ドライブ情報の書式 : 選択時
-UnicodeString DrvInfFmtN;		//ドライブ情報の書式 : その他
+UnicodeString DrvInfFmtR;
+UnicodeString DrvInfFmtS;
+UnicodeString DrvInfFmtN;
 
-UnicodeString SttBarFmt;		//ステータスバーの書式
-UnicodeString SttClockFmt;		//時計の書式
+UnicodeString SttBarFmt;
+UnicodeString SttClockFmt;
 
-UnicodeString TabPinMark;		//タブ固定ピンマーク
-UnicodeString HEAD_Mark;		//git HEAD マーク
-UnicodeString PLAY_Mark;		//再生中マーク
+UnicodeString TabPinMark;
+UnicodeString HEAD_Mark;
+UnicodeString PLAY_Mark;
 
-int  MaxLogFiles;				//ログファイルの保存世代数
-int  MaxDirHistory;				//ディレクトリ履歴の保存数
+int  MaxLogFiles;
+int  MaxDirHistory;
 
-int  ProtectDirMode;			//ディレクトリの削除制限モード
-bool ProtectSubDir;				//下位ディレクトリも制限
-bool ProtectFile;				//ファイルも制限
+int  ProtectDirMode;
+bool ProtectSubDir;
+bool ProtectFile;
 
-int  BorderMoveWidth;			//BorderLeft、BorderRight: １回の移動幅
-UnicodeString AutoRenFmt;		//Copy、Move: 同名時の自動改名書式
+int  BorderMoveWidth;
+UnicodeString AutoRenFmt;
 
-int  RemoteWaitTime;			//コールバック時のウェイトタイム
+int  RemoteWaitTime;
 int  NormalWaitTime;
-int  NopDtctTime;				//無操作だとみなす時間
-int  TimeTolerance;				//タイムスタンプの許容誤差
+int  NopDtctTime;
+int  TimeTolerance;
 
-bool AppListChgMin;				//AppList:   他アプリに切り替えたときに最小化
-bool CreDirChg;					//CreateDir: ディレクトリ作成後にカレント変更
-bool CreDirCnvChar;				//CreateDir: 文字置換を適用
-UnicodeString FExtExeFile;		//ExeCommandLine: 実行ファイルとみなす拡張子
-bool OpenOnlyCurEdit;			//FileEdit:  選択状態にかかわらずカーソル位置のみを開く
-bool DontClrSelEdit;			//FileEdit:  選択を解除しない
-int  OpenByMode;				//OpenByApp:  関連付けされていない場合の動作モード
-bool OpenDirByStd;				//OpenByApp:  ディレクトリでは標準 Enter キー動作
-bool OpenOnlyCurApp;			//OpenByApp:  選択状態にかかわらずカーソル位置のみを開く
-bool DontClrSelApp;				//OpenByApp:  選択を解除しない
-bool OpenOnlyCurWin;			//OpenByWin:  選択状態にかかわらずカーソル位置のみを開く
-bool DontClrSelWin;				//OpenByWin:  選択を解除しない
-bool OpenStdTabGroup;			//OpenStandard: タブグループを開く
-bool OpenStdMenuFile;			//OpenStandard: メニューファイルを開く
-bool OpenStdResultList;			//OpenStandard: 結果リストを開く
-bool OpenStdFindSet;			//OpenStandard: 検索設定を開く
-bool DownAfterOpenStd;			//OpenStandard: 実行後にカーソルを下に移動
-bool OpenStdOnResList;			//OpenStandard: 結果リストでも通常動作
-UnicodeString IniSeaShift;		//IniSearch:  頭文字サーチのシフトキー
-bool IniSeaByNum;				//  数字キーでも頭文字サーチ
-bool IniSeaBySign;				//  Shift+数字キーの記号もサーチ
-bool IncSeaCaseSens;			//IncSearch: 大小文字を区別
-bool IncSeaFuzzy;				//IncSearch: あいまい検索
-bool IncSeaLoop;				//IncSearch: 上下端でループ
-bool IncSeaMatch1Exit;			//IncSearch: マッチ数1で抜ける
-int  IncSeaMigemoMin;			//IncSearch: migemo の検索開始文字数
-bool SyncItem;					//SyncLR : 項目位置も同期
-bool NotShowNoTask;				//TaskMan: タスクを実行していないときはマネージャを表示しない
+bool AppListChgMin;
+bool CreDirChg;
+bool CreDirCnvChar;
+UnicodeString FExtExeFile;
+bool OpenOnlyCurEdit;
+bool DontClrSelEdit;
+int  OpenByMode;
+bool OpenDirByStd;
+bool OpenOnlyCurApp;
+bool DontClrSelApp;
+bool OpenOnlyCurWin;
+bool DontClrSelWin;
+bool OpenStdTabGroup;
+bool OpenStdMenuFile;
+bool OpenStdResultList;
+bool OpenStdFindSet;
+bool DownAfterOpenStd;
+bool OpenStdOnResList;
+UnicodeString IniSeaShift;
+bool IniSeaByNum;
+bool IniSeaBySign;
+bool IncSeaCaseSens;
+bool IncSeaFuzzy;
+bool IncSeaLoop;
+bool IncSeaMatch1Exit;
+int  IncSeaMigemoMin;
+bool SyncItem;
+bool NotShowNoTask;
 
-UnicodeString GetFaviconUrl;	//favicon 取得API
+UnicodeString GetFaviconUrl;
 
-bool FindPathColumn;			//結果リストに「場所」列を表示
-int  FindPathWidth;				//「場所」の最小列幅
-bool FindTagsColumn;			//結果リストに「タグ」列を表示
-int  FindTagsWidth;				//「タグ」の最小列幅
+bool FindPathColumn;
+int  FindPathWidth;
+bool FindTagsColumn;
+int  FindTagsWidth;
 
-bool GrepNotUpdList;			//GREP検索中に結果リストを更新しない
-bool RepNotUpdList;				//一括置換中に結果リストを更新しない
-bool GrepShowItemNo;			//GREP結果に項目番号を表示
-bool GrepFileItemNo;			//項目番号をファイル単位で表示
-bool GrepShowSubDir;			//GREP結果にサブディレクトリ名を表示
-bool GrepTrimTop;				//GREP結果で行頭のタブや空白を削除
-bool GrepOmitTop;				//GREP結果でマッチ語が見えないとき前部分を省略
-bool GrepEmFilter;				//GREP結果でフィルタの語を強調表示
-bool GrepAdjNextLn;				//GREP結果で次行表示部分の明度を加減
-int  GrepOutMode;				//GREP 出力先	0:無し/ 1:ファイル/ 2:クリップボード
-UnicodeString GrepFileName;		//出力ファイル名
-UnicodeString GrepAppName;		//起動アプリ名
-UnicodeString GrepAppParam;		//アプリの起動パラメータ
-UnicodeString GrepAppDir;		//アプリの作業ディレクトリ
-bool GrepAppEnabled;			//アプリ有効
-bool GrepAppend;				//既存ファイルに追加
+bool GrepNotUpdList;
+bool RepNotUpdList;
+bool GrepShowItemNo;
+bool GrepFileItemNo;
+bool GrepShowSubDir;
+bool GrepTrimTop;
+bool GrepOmitTop;
+bool GrepEmFilter;
+bool GrepAdjNextLn;
+int  GrepOutMode;
+UnicodeString GrepFileName;
+UnicodeString GrepAppName;
+UnicodeString GrepAppParam;
+UnicodeString GrepAppDir;
+bool GrepAppEnabled;
+bool GrepAppend;
 
-UnicodeString GrepFileFmt;		//ファイル情報の書式
-UnicodeString GrepInsStrW;		//マッチ語前の挿入文字列
-UnicodeString GrepInsStrW2;		//マッチ語後の挿入文字列
-bool GrepTrimLeft;				//行頭のタブや空白を削除
-bool GrepReplaceTab;			//タブを空白1文字に置換
-bool GrepReplaceCr;				//改行を文字列に置換
-UnicodeString GrepRepCrStr;		//改行の置換文字列
+UnicodeString GrepFileFmt;
+UnicodeString GrepInsStrW;
+UnicodeString GrepInsStrW2;
+bool GrepTrimLeft;
+bool GrepReplaceTab;
+bool GrepReplaceCr;
+UnicodeString GrepRepCrStr;
 
-bool BackupReplace;				//置換バックアップ作成
-UnicodeString FExtRepBackup;	//置換バックアップの拡張子
-UnicodeString RepBackupDir;		//置換バックアップ先
-UnicodeString ReplaceLogName;	//置換ログファイル名
+bool BackupReplace;
+UnicodeString FExtRepBackup;
+UnicodeString RepBackupDir;
+UnicodeString ReplaceLogName;
 
-bool SaveReplaceLog;			//置換ログを保存
-bool ReplaceAppend;				//既存ファイルに追加
-bool OpenReplaceLog;			//ログをテキストエディタで開く
+bool SaveReplaceLog;
+bool ReplaceAppend;
+bool OpenReplaceLog;
 
-UnicodeString UserName;			//ユーザ名
-UnicodeString TempPath;			//一時ディレクトリ
-UnicodeString TempPathA;		//一時ディレクトリ(絶対)
-UnicodeString TempPathFTP;		//FTP用一時ディレクトリ(絶対)
+UnicodeString UserName;
+UnicodeString TempPath;
+UnicodeString TempPathA;
+UnicodeString TempPathFTP;
 
-UnicodeString DownloadPath;		//ダウンロード用
-UnicodeString LibraryPath;		//ライブラリ
-UnicodeString WorkListPath;		//ワークリスト参照パス
-UnicodeString ResultListPath;	//結果リスト参照パス
-UnicodeString ListFilePath;		//リストファイル参照パス
-UnicodeString FindSetPath;		//検索結果参照パス
-UnicodeString RefParamPath;		//パラメータ参照パス
-UnicodeString CmdFilePath;		//コマンドファイル参照パス
+UnicodeString DownloadPath;
+UnicodeString LibraryPath;
+UnicodeString WorkListPath;
+UnicodeString ResultListPath;
+UnicodeString ListFilePath;
+UnicodeString FindSetPath;
+UnicodeString RefParamPath;
+UnicodeString CmdFilePath;
 
 int VersionNo;
-UnicodeString VersionStr;		//バージョン表示
-UnicodeString OSVerInfStr;		//OSバージョン情報
-bool IsWin11 = false;			//Windows 11 か?
+UnicodeString VersionStr;
+UnicodeString OSVerInfStr;
+bool IsWin11 = false;
 
-UnicodeString DirBraStr;		//ディレクトリ括弧文字
+UnicodeString DirBraStr;
 UnicodeString DirKetStr;
-UnicodeString TimeStampFmt;		//タイムスタンプの表示書式
+UnicodeString TimeStampFmt;
 
-UnicodeString CallHotKey;		//呼び出しホットキー
-UnicodeString AppListHotKey;	//アプリ一覧ホットキー
-UnicodeString AppListHotPrm;	//アプリ一覧パラメータ
+UnicodeString CallHotKey;
+UnicodeString AppListHotKey;
+UnicodeString AppListHotPrm;
 
-UnicodeString SaveTxtPath;		//テキスト保存パス
-int SaveEncIndex;				//エンコーディングのインデックス
+UnicodeString SaveTxtPath;
+int SaveEncIndex;
 
-UnicodeString NoDirHistPath;	//ディレクトリ履歴に入れないパス
-UnicodeString NoEditHistPath;	//編集履歴に入れないパス
-UnicodeString NoViewHistPath;	//閲覧履歴に入れないパス
-UnicodeString NoRepoListPath;	//リポジトリ一覧に表示しないパス
+UnicodeString NoDirHistPath;
+UnicodeString NoEditHistPath;
+UnicodeString NoViewHistPath;
+UnicodeString NoRepoListPath;
 
-UnicodeString DirDelimiter;		//ディレクトリ区切りの表示文字
-
-//---------------------------------------------------------------------------
-bool NoCheckUncRPT;				//UNCパスのリパースポイント情報をチェックしない
-int  InactiveAdjust;			//非アクティブ時グレー化の最の加減値
+UnicodeString DirDelimiter;
 
 //---------------------------------------------------------------------------
-UnicodeString FTPTextModeFExt;	//テキストモードで転送する拡張子
-bool FTPDlKeepTime;				//ダウンロードファイルのタイムスタンプを維持
-bool FTPUpKeepTime;				//アップロードファイルのタイムスタンプを維持
-bool FTPUpToLower;				//ファイル名を小文字化してアップロードする
-bool FTPLogResponse;			//応答メッセージをログに表示
-int  FTPRemoteSide;				//リモート側 0:カレント/ 1:左/ 2:右
-int  FTPDisconTimeout;			//FTPが無操作の場合切断する時間
-UnicodeString FTPSndConnect;	//接続時の通知音
-UnicodeString FTPSndDiscon;		//切断時の通知音
-UnicodeString FTPSndTransfer;	//転送完了時の通知音
+bool NoCheckUncRPT;
+int  InactiveAdjust;
+
+//---------------------------------------------------------------------------
+UnicodeString FTPTextModeFExt;
+bool FTPDlKeepTime;
+bool FTPUpKeepTime;
+bool FTPUpToLower;
+bool FTPLogResponse;
+int  FTPRemoteSide;
+int  FTPDisconTimeout;
+UnicodeString FTPSndConnect;
+UnicodeString FTPSndDiscon;
+UnicodeString FTPSndTransfer;
 
 UnicodeString FTPPathName;
-
-//---------------------------------------------------------------------------
-int CurTabIndex = 0;			//タブインデックス(0～
+int CurTabIndex = 0;
 
 UnicodeString CurPathName;
-int CurListTag = 0;				//カレント側タグ  0:左/ 1:右
-int OppListTag = 1;				//反対側タグ
-int LastCurTag = 0;				//前回終了時のカレント
-int WorkingTag = 0;				//作業側のタグ(CurWorking = true 時)
+int CurListTag = 0;
+int OppListTag = 1;
+int LastCurTag = 0;
+int WorkingTag = 0;
 
-TListBox *FileListBox[MAX_FILELIST];	//ファイルリストボックス
+TListBox *FileListBox[MAX_FILELIST];
 TPanel	 *FileListPanel[MAX_FILELIST];
 
-UnicodeString ViewFileName;		//表示中のファイル名
+UnicodeString ViewFileName;
 UnicodeString ViewFileName2;
-bool ViewFromArc = false;		//アーカイブから表示
+bool ViewFromArc = false;
 
 //---------------------------------------------------------------------------
-TStringList *GeneralList;				//TStringList のリスト(一括破棄用)
+TStringList *GeneralList;
 
-TStringList *FileList[MAX_FILELIST];	//ファイルリスト
-TStringList *ArcFileList[MAX_FILELIST];	//仮想ディレクトリのファイルリスト
-TStringList *AdsFileList[MAX_FILELIST];	//代替データストリームのファイルリスト
-TStringList *ResultList[MAX_FILELIST];	//検索結果リスト
-TStringList *SelMaskList[MAX_FILELIST];	//選択マスクリスト
-TStringList *TmpBufList[MAX_FILELIST];	//一時退避リスト
+TStringList *FileList[MAX_FILELIST];
+TStringList *ArcFileList[MAX_FILELIST];
+TStringList *AdsFileList[MAX_FILELIST];
+TStringList *ResultList[MAX_FILELIST];
+TStringList *SelMaskList[MAX_FILELIST];
+TStringList *TmpBufList[MAX_FILELIST];
 
-TStringList *TabList;					//タブリスト
-TStringList *TabBuff;					//固定復帰用バッファ
-int FlTabWidth;							//タブの幅
-int FlTabStyle;							//タブのスタイル
-UnicodeString TabGroupName;				//タブグループ・ファイル名
+TStringList *DriveInfoList;
+TStringList *DriveLogList;
+UnicodeString DriveLogName;
 
-TStringList *DriveInfoList;				//ドライブ情報
-TStringList *DriveLogList;				//ドライブ容量ログ
-UnicodeString DriveLogName;				//ドライブ容量ログのファイル名
+TStringList *WatchTailList;
+UnicodeString LastWatchLog;
 
-TStringList *WatchTailList;				//末尾監視リスト
-UnicodeString LastWatchLog;				//直前の監視ログ
+TStringList *InvalidUncList;
 
-TStringList *InvalidUncList;			//無効なUNCリスト
+TStringList *GitCfgUrlList;
+TStringList *GitInfList;
 
-TStringList *GitCfgUrlList;				//.Git\config - URL 対応リスト (ファイル名=URL \t yyyy/mm/dd hh:nn:ss)
-TStringList *GitInfList;				//Git情報のキャッシュ
+TStringList *TabList;
+TStringList *TabBuff;
+int FlTabWidth;
+int FlTabStyle;
+UnicodeString TabGroupName;
 
-//ファイル固有アイコンのキャッシュ (必ず IconRWLock で保護すること)
 TStringList *CachedIcoList;
 TMultiReadExclusiveWriteSynchronizer *IconRWLock;
-int IconCache;							//アイコンキャシュ数
+int IconCache;
 
-//フォルダアイコン
-UsrIniFile  *FolderIconFile;			//フォルダアイコン設定ファイル
-TStringList *FolderIconList;			//フォルダアイコンリスト
+UsrIniFile  *FolderIconFile;
+TStringList *FolderIconList;
 TMultiReadExclusiveWriteSynchronizer *FldIcoRWLock;
-UnicodeString DefFldIcoName;			//デフォルトのフォルダアイコン
-HICON hLinkIcon = NULL;					//リンクマーク(Shell32.dll,29)
+UnicodeString DefFldIcoName;
+HICON hLinkIcon = NULL;	
 
-TStringList *GeneralIconList;			//ファイルリスト表示用の一般アイコン
+TStringList *GeneralIconList;
 TStringList *MenuBtnIcoList;
+TStringList *UsrIcoList;
+TStringList *DrvIcoList;
 
-TStringList *UsrIcoList;				//メニュー、ツールボタン用アイコン
-TStringList *DrvIcoList;				//ドライブのアイコンリスト
+TStringList *BakSetupList;
+TStringList *SyncDirList;
+TStringList *AssRenList;
+TStringList *DistrDefList;
 
-TStringList *BakSetupList;				//バックアップ設定リスト
-TStringList *SyncDirList;				//同期コピー先リスト
-TStringList *AssRenList;				//関連ファイル同時改名設定リスト
-TStringList *DistrDefList;				//振り分け正義リスト
+TStringList *GrepPathList;
+TStringList *GrepFileList;	
+TStringList *GrepResultBuff;
+TStringList *GrepResultList;
+TStringList *GrepStashBuff;
+TStringList *GrepUnsortBuff;
+TStringList *GrepMatchList;
+int  ResultListMode = 0;
 
-TStringList *GrepPathList;				//GREP 対象パスのリスト
-TStringList *GrepFileList; 				//GREP 対象ファイルリスト
-TStringList *GrepResultBuff;			//GREP 結果リスト表示用バッファ
-TStringList *GrepResultList;			//GREP の結果リスト
-TStringList *GrepStashBuff;				//GREP 結果の退避バッファ
-TStringList *GrepUnsortBuff;			//GREP ソート前バッファ
-TStringList *GrepMatchList;				//GREP ファイル別マッチ数リスト
-int  ResultListMode = 0;				//結果リストの内容	0:未定/ 1:GREP/ 2:置換
+TStringList *ViewFileList;
+bool isViewIcon   = false;
+bool isViewAGif   = false;
+bool isViewClip   = false;
+bool isViewFTP	  = false;
+bool rqThumbnail  = false;
+bool nrmThumbnail = false;
 
-TStringList *ViewFileList;				//イメージビューアでのファイル名リスト
-bool isViewIcon   = false;				//イメージビューアでアイコンを表示中
-bool isViewAGif   = false;				//イメージビューアでアニメーションGIFを表示中
-bool isViewClip   = false;				//イメージビューアでクリップボードを表示中
-bool isViewFTP	  = false;				//イメージビューアでFTPのファイルを表示中
-bool rqThumbnail  = false;				//クリップボード/FTP閲覧後のサムネイル復帰要求
-bool nrmThumbnail = false;				//通常画面時のサムネイル表示
+TStringList *LaunchList;
 
-TStringList *LaunchList;				//ランチャーリスト(アプリケーション一覧)
+TStringList *CmdFileList;
+TStringList *XCMD_VarList = NULL;
 
-TStringList *CmdFileList;				//コマンドファイルのリスト
-TStringList *XCMD_VarList = NULL;		//変数リスト
-
-UnicodeString PathMask[MAX_FILELIST];	//パスマスク
-UnicodeString DriveInf[MAX_FILELIST];	//ドライブ情報
+UnicodeString PathMask[MAX_FILELIST];
+UnicodeString DriveInf[MAX_FILELIST];
 
 flist_stt ListStt[MAX_FILELIST];
 flist_stt *CurStt;
 flist_stt *OppStt;
 
-TStringList *WorkList;					//ワークリスト
-UnicodeString WorkListName;				//ワークリストのファイル名
-TDateTime WorkListTime;					//ワークリストのタイムスタンプ
-bool WorkListChanged;					//ワークリストの内容が変更された
-bool WorkListFiltered;					//ワークリストにフィルタが適用されている
-bool WorkListHasSep;					//ワークリストにセパレータがある
-bool rqWorkListDirInf;					//ワークリストのディレクトリ情報更新を要求
+TStringList *WorkList;
+UnicodeString WorkListName;
+TDateTime WorkListTime;
+bool WorkListChanged;
+bool WorkListFiltered;
+bool WorkListHasSep;
+bool rqWorkListDirInf;
 
-TStringList  *PlayList;					//プレイリスト
-UnicodeString PlayListFile;				//プレイリストのファイル名
-UnicodeString PlayFile;					//再生中ファイル名
+TStringList  *PlayList;
+UnicodeString PlayListFile;
+UnicodeString PlayFile;
 int  PlayStbIdx;
-bool PlayRepeat;						//リピート再生
-bool PlayShuffle;						//シャッフル再生
-bool ListShuffled;						//シャッフルされた
+bool PlayRepeat;
+bool PlayShuffle;
+bool ListShuffled;
 
-TStringList *PopMenuList;				//ExeMenuFile コマンド用メニュー項目
-TStringList *ToolBtnList;				//ツールボタン定義リスト
+TStringList *PopMenuList;
+TStringList *ToolBtnList;
 TStringList *ToolBtnListV;
 TStringList *ToolBtnListI;
 
 //---------------------------------------------------------------------------
-//起動時オプション
-int  IniPathMode[MAX_FILELIST];			//パスモード
+int  IniPathMode[MAX_FILELIST];	
 UnicodeString InitialPath[MAX_FILELIST];
 UnicodeString InitialMask[MAX_FILELIST];
 int  IniSortMode[MAX_FILELIST];
-int  IniWorkMode;						//ワークリスト 0:前回/ 1:指定
+int  IniWorkMode;
 UnicodeString HomeWorkList;
-int  IniWinMode;						//サイズモード 0:前回/ 1:指定
+int  IniWinMode;
 int  IniWinLeft, IniWinTop, IniWinWidth, IniWinHeight;
-bool FixWinPos;							//ウィンドウサイズを固定
-bool IniPathToTab1;						//初期パスをタブ1に設定
-bool IniTabHomeAll;						//初期パス以外のタブをホームに戻す
-bool ShowSplash;						//スプラッシュを表示
+bool FixWinPos;
+bool IniPathToTab1;
+bool IniTabHomeAll;
+bool ShowSplash;
 
-//ファイルリストのソートモード
-int  SortMode[MAX_FILELIST];			//0:名前/ 1:拡張子/ 2:更新日時/ 3:サイズ/ 4:属性/ 5:なし
-int  DirSortMode[MAX_FILELIST];			//0:ファイルと同じ/ 1:名前/ 2:更新日時/ 3:サイズ/ 4:属性/
-										//	5:ディレクトリを区別しない/ 6:フォルダアイコン
-int  SubSortMode[5];					//第2ソートモード
-int  PrimeSortMode;						//第1ソートモード
+int  SortMode[MAX_FILELIST];
+int  DirSortMode[MAX_FILELIST];
+int  SubSortMode[5];
+int  PrimeSortMode;
 
-//ファイルリストのソート順
-bool FlOdrNatural[MAX_FILELIST];		//自然順
-bool FlOdrDscName[MAX_FILELIST];		//降順
-bool FlOdrSmall[MAX_FILELIST];			//小さい順
-bool FlOdrOld[MAX_FILELIST];			//古い順
-bool FlOdrDscAttr[MAX_FILELIST];		//属性降順
-bool FlOdrDscPath[MAX_FILELIST];		//場所降順
+bool FlOdrNatural[MAX_FILELIST];
+bool FlOdrDscName[MAX_FILELIST];
+bool FlOdrSmall[MAX_FILELIST];
+bool FlOdrOld[MAX_FILELIST];
+bool FlOdrDscAttr[MAX_FILELIST];
+bool FlOdrDscPath[MAX_FILELIST];
 
-bool SortBoth;					//左右とも変更
-bool SortLogical;				//論理ソート(自然順ソート無効時)
+bool SortBoth;
+bool SortLogical;
 UnicodeString SortSymList;
-UnicodeString SortExtList;		//拡張子順で優先する拡張子
+UnicodeString SortExtList;
 
-//比較関数のソート順
-bool NaturalOrder = true;		//自然順
-bool DscNameOrder = false;		//名前降順
-bool SmallOrder   = false;		//小さい順
-bool OldOrder	  = false;		//古い順
-bool DscAttrOrder = false;		//属性降順
-bool DscPathOrder = false;		//場所降順
+bool NaturalOrder = true;
+bool DscNameOrder = false;
+bool SmallOrder   = false;
+bool OldOrder	  = false;
+bool DscAttrOrder = false;
+bool DscPathOrder = false;
 
-TStringList *OptionList;		//オプション
-TStringList *KeyFuncList;		//キー割り当て
-TStringList *FKeyLabelList;		//ファンクションキー名
-TStringList *HotKeyList;		//ホットキー
-TStringList *DirStack;			//ディレクトリスタック
-TStringList *PathMaskList;		//パスマスクリスト
-TStringList *RegDirList;		//登録ディレクトリ
-TStringList *ProtectDirList;	//削除制限ディレクトリ
-TStringList *VirDriveList;		//仮想ドライブリスト
-TStringList *ColorList;			//配色
-TStringList *ExtColList;		//拡張子別配色
-TStringList *AssociateList;		//関連付け
-TStringList *OpenStdCmdList;	//OpenStandard のコマンド関連付け
-TStringList *EtcEditorList;		//その他のエディタリスト
-TStringList *ExtToolList;		//外部ツール
-TStringList *ExtMenuList;		//追加メニュー
-TStringList *CommandList;		//コマンドリスト
-TStringList *CmdSetList;		//コマンド一覧リスト
-TStringList *TaskCmdList;		//タスクコマンド名リスト
-TStringList *DriveList;			//変化監視用ドライブリスト
-TStringList *NetDriveList;		//現在有効なネットドライブリスト
-TStringList *AllDirHistory;		//全体のディレクトリ履歴
-TStringList *TextViewHistory;	//テキスト閲覧履歴
-TStringList *TextEditHistory;	//テキスト編集履歴
-TStringList *WorkListHistory;	//ワークリスト履歴
-TStringList *CopyPathHistory;	//コピーしたパス名の履歴
-TStringList *InputDirHistory;	//ディレクトリ入力の履歴
-TStringList *InputCmdsHistory;	//コマンド入力の履歴
+TStringList *OptionList;
+TStringList *KeyFuncList;
+TStringList *FKeyLabelList;
+TStringList *HotKeyList;
+TStringList *DirStack;
+TStringList *PathMaskList;
+TStringList *RegDirList;
+TStringList *ProtectDirList;
+TStringList *VirDriveList;
+TStringList *ColorList;
+TStringList *ExtColList;
+TStringList *AssociateList;
+TStringList *OpenStdCmdList;
+TStringList *EtcEditorList;
+TStringList *ExtToolList;
+TStringList *ExtMenuList;
+TStringList *CommandList;
+TStringList *CmdSetList;
+TStringList *TaskCmdList;
+TStringList *DriveList;
+TStringList *NetDriveList;
+TStringList *AllDirHistory;
+TStringList *TextViewHistory;
+TStringList *TextEditHistory;
+TStringList *WorkListHistory;
+TStringList *CopyPathHistory;
+TStringList *InputDirHistory;
+TStringList *InputCmdsHistory;
 TStringList *InputCmdsHistoryV;
 TStringList *InputCmdsHistoryI;
-TStringList *IncSeaHistory;		//インクリメンタルサーチのキーワード履歴
-TStringList *FilterHistory;		//フィルタのキーワード履歴
-TStringList *WebSeaHistory;		//Web検索語の履歴
-TStringList *LatLngHistory;		//緯度経度検索の履歴
-TStringList *HeadlineList;		//見出しリスト (拡張子=正規表現パターン)
-TStringList *ZoomRatioList;		//ズーム倍率リスト
-TStringList *InterpolationList;	//縮小・拡大アルゴリズムのリスト
-TStringList *CnvCharList;		//禁止文字／ユーザ定義文字変換リスト
-TStringList *RenCmdFileList;	//改名したコマンドファイルのリスト
-TStringList *RenArcFileList;	//改名したアーカイブファイルのリスト
-TStringList *RedrawList;		//描画抑止用リスト
-TStringList *CmdRequestList;	//コマンド要求リスト
-TStringList *CommandHistory;	//コマンド履歴
+TStringList *IncSeaHistory;
+TStringList *FilterHistory;
+TStringList *WebSeaHistory;
+TStringList *LatLngHistory;
+TStringList *HeadlineList;
+TStringList *ZoomRatioList;
+TStringList *InterpolationList;
+TStringList *CnvCharList;
+TStringList *RenCmdFileList;
+TStringList *RenArcFileList;
+TStringList *RedrawList;
+TStringList *CmdRequestList;
+TStringList *CommandHistory;
 
-//タスクからのログ書込バッファ (必ず LogRWLock で保護すること)
 UnicodeString LogBufStr;
 TMultiReadExclusiveWriteSynchronizer *LogRWLock;
 
-TListBox     *LogWndListBox;	//ログウィンドウ用リストボックス
-TStringList  *LogBufList;		//ログリストボックス(仮想)用バッファ
-UsrScrollPanel *LogWndScrPanel;	//シンプルスクロールバー
+TListBox     *LogWndListBox;
+TStringList  *LogBufList;
+UsrScrollPanel *LogWndScrPanel;
 
-int  LayoutMode;		//画面レイアウトモード
-bool DivFileListUD;		//ファイルリストを上下に分割
-bool DivDirInfUD;		//ディレクトリ情報を上下に分割
+int  LayoutMode;
+bool DivFileListUD;
+bool DivDirInfUD;
 
-//フォント
-TFont *ListFont;		//ファイルリスト等
-TFont *FileInfFont;		//ファイル情報
-TFont *TxtPrvFont;		//テキストプレビュー
-TFont *LogFont;			//ログ
-TFont *ViewerFont;		//テキストビューア
-TFont *GrepResFont;		//GREP結果リスト
-TFont *DirInfFont;		//ディレクトリ情報
-TFont *DrvInfFont;		//ドライブ情報
-TFont *LstHdrFont;		//一覧のヘッダ
-TFont *ViewHdrFont;		//ビューア情報ヘッダ
-TFont *GenListFont;		//一覧ダイアログ
-TFont *HintFont;		//ヒント
-TFont *SttBarFont;		//ステータスバー
-TFont *CalcFont;		//電卓
-TFont *ToolBarFont;		//ツールバー
-TFont *TabBarFont;		//タブバー
-TFont *CharInfFont;		//文字情報
+TFont *ListFont;
+TFont *FileInfFont;
+TFont *TxtPrvFont;
+TFont *LogFont;
+TFont *ViewerFont;
+TFont *GrepResFont;
+TFont *DirInfFont;
+TFont *DrvInfFont;
+TFont *LstHdrFont;
+TFont *ViewHdrFont;
+TFont *GenListFont;
+TFont *HintFont;
+TFont *SttBarFont;
+TFont *CalcFont;
+TFont *ToolBarFont;
+TFont *TabBarFont;
+TFont *CharInfFont;
 TStringList *FontList;
+TColor col_bgList;
+TColor col_bgList2;
+TColor col_fgList;
+TColor col_Splitter;
+TColor col_bgArc;
+TColor col_bgFind;
+TColor col_bgWork;
+TColor col_bgFTP;
+TColor col_bgADS;
+TColor col_selItem;
+TColor col_oppItem;
+TColor col_fgSelItem;
+TColor col_bgMark;
+TColor col_matchItem;
+TColor col_Differ;
+TColor col_DifferN;
+TColor col_Cursor;
+TColor col_bgScrBar;
+TColor col_bgScrKnob;
+TColor col_frScrKnob;
+TColor col_bgActKnob;
+TColor col_lnScrHit;
+TColor col_lnScrSel;
+TColor col_Folder;
+TColor col_SymLink;
+TColor col_Protect;
+TColor col_ReadOnly;
+TColor col_Compress;
+TColor col_Hidden;
+TColor col_System;
+TColor col_fgSpace;
+TColor col_fgTagNam;
+TColor col_InvItem;
+TColor col_bgTabBar;
+TColor col_bgActTab;
+TColor col_bgInAcTab;
+TColor col_frmTab;
+TColor col_fgTab;
+TColor col_bgListHdr;
+TColor col_fgListHdr;
+TColor col_bgDirInf;
+TColor col_fgDirInf;
+TColor col_bgDirRel;
+TColor col_fgDirRel;
+TColor col_bdrDirB;
+TColor col_bgDrvInf;
+TColor col_fgDrvInf;
+TColor col_bdrDrvT;
+TColor col_bgInf;
+TColor col_fgInf;
+TColor col_fgInfNam;
+TColor col_fgInfEmp;
+TColor col_bgTxtPrv;
+TColor col_fgTxtPrv;
+TColor col_bgLog;
+TColor col_fgLog;
+TColor col_bgTask;
+TColor col_fgPrgBar;
+TColor col_bgPrgBar;
+TColor col_Error;
+TColor col_TlBorder;
 
-//カラー
-TColor col_bgList;		//一覧の背景色
-TColor col_bgList2;		//一覧の背景色(交互)
-TColor col_fgList;		//一覧の文字色
-TColor col_Splitter;	//分割境界線
-TColor col_bgArc;		//仮想ディレクトリの背景色
-TColor col_bgFind;		//検索結果リストの背景色
-TColor col_bgWork;		//ワークリストの背景色
-TColor col_bgFTP;		//FTPリモート側の背景色
-TColor col_bgADS;		//代替データストリーム一覧の背景色
-TColor col_selItem;		//選択項目の背景色
-TColor col_oppItem;		//反対パス選択項目の背景色
-TColor col_fgSelItem;	//選択項目の文字色
-TColor col_bgMark;		//栞マーク項目の背景色
-TColor col_matchItem;	//INC.サーチのマッチ項目背景色
-TColor col_Differ;		//結果リストの相違箇所背景色
-TColor col_DifferN;		//結果リストの注目箇所背景色
-TColor col_Cursor;		//ラインカーソルの色
-TColor col_bgScrBar;	//シンプルスクロールバーの背景色
-TColor col_bgScrKnob;	//シンプルスクロールノブの色
-TColor col_frScrKnob;	//シンプルスクロールノブの輪郭色
-TColor col_bgActKnob;	//ドラッグ時のシンプルスクロールノブ色
-TColor col_lnScrHit;	//シンプルスクロールバーのヒット行色
-TColor col_lnScrSel;	//シンプルスクロールバーの選択行色
-TColor col_Folder;		//ディレクトリの文字色
-TColor col_SymLink;		//シンボリックリンク/ジャンクションの文字色
-TColor col_Protect;		//削除制限ディレクトリの文字色
-TColor col_ReadOnly;	//読み込み専用属性の文字色
-TColor col_Compress;	//圧縮属性の文字色
-TColor col_Hidden;		//隠し属性の文字色
-TColor col_System;		//システム属性の文字色
-TColor col_fgSpace;		//空白記号の文字色
-TColor col_fgTagNam;	//デフォルトのタグ色
-TColor col_InvItem;		//無効な項目の文字色
-TColor col_bgTabBar;	//タブバーの背景色
-TColor col_bgActTab;	//アクティブなタブの背景色
-TColor col_bgInAcTab;	//非アクティブなタブの背景色
-TColor col_frmTab;		//タブの輪郭色
-TColor col_fgTab;		//タブの文字色
-TColor col_bgListHdr;	//リストヘッダの背景色
-TColor col_fgListHdr;	//リストヘッダの文字色
-TColor col_bgDirInf;	//ディレクトリ情報の背景色
-TColor col_fgDirInf;	//ディレクトリ情報の文字色
-TColor col_bgDirRel;	//ディレクトリ関係の背景色
-TColor col_fgDirRel;	//ディレクトリ関係の文字色
-TColor col_bdrDirB;		//ディレクトリ情報の下境界線
-TColor col_bgDrvInf;	//ドライブ情報の背景色
-TColor col_fgDrvInf;	//ドライブ情報の文字色
-TColor col_bdrDrvT;		//ドライブ情報の上境界線
-TColor col_bgInf;		//ファイル情報の背景色
-TColor col_fgInf;		//ファイル情報の文字色
-TColor col_fgInfNam;	//ファイル情報の項目名文字色
-TColor col_fgInfEmp;	//ファイル情報の強調文字色
-TColor col_bgTxtPrv;	//テキストプレビューの背景色
-TColor col_fgTxtPrv;	//テキストプレビューの文字色
-TColor col_bgLog;		//ログの背景色
-TColor col_fgLog;		//ログの文字色
-TColor col_bgTask;		//タスク状態表示の背景色
-TColor col_fgPrgBar;	//タスク進捗バー色
-TColor col_bgPrgBar;	//タスク進捗背景色
-TColor col_Error;		//エラー/注意の文字色
-TColor col_TlBorder;	//ツールウインドウの境界線
+TColor col_bgView;
+TColor col_fgView;
+TColor col_Margin;
+TColor col_bgRuler;
+TColor col_fgRuler;
+TColor col_bgLineNo;
+TColor col_LineNo;
+TColor col_Mark;
+TColor col_bdrLine;
+TColor col_bdrFold;
+TColor col_bdrFixed;
+TColor col_Indent;
+TColor col_Indent2;
+TColor col_Comment;
+TColor col_Strings;
+TColor col_Reserved;
+TColor col_Symbol;
+TColor col_Numeric;
+TColor col_fgEmpBin1;
+TColor col_fgEmpBin2;
+TColor col_fgEmpBin3;
+TColor col_Headline;
+TColor col_URL;
+TColor col_LocalLink;
+TColor col_fgEmp;
+TColor col_bgEmp;
+TColor col_Ruby;
+TColor col_TAB;
+TColor col_CR;
+TColor col_HR;
+TColor col_Ctrl;
+TColor col_fgPair;
 
-TColor col_bgView;		//テキストビューアの背景色
-TColor col_fgView;		//テキストビューアの文字色
-TColor col_Margin;		//テキストビューアの余白白
-TColor col_bgRuler;		//ルーラの背景色
-TColor col_fgRuler;		//ルーラの目盛色
-TColor col_bgLineNo;	//行番号背景色
-TColor col_LineNo;		//行番号文字色
-TColor col_Mark;		//行マーク
-TColor col_bdrLine;		//行番号の境界線
-TColor col_bdrFold;		//折り返し境界線
-TColor col_bdrFixed;	//固定長表示の縦罫線
-TColor col_Indent;		//インデントガイド
-TColor col_Indent2;		//インデントガイド(交互)
-TColor col_Comment;		//コメントの文字色
-TColor col_Strings;		//文字列の文字色
-TColor col_Reserved;	//予約語の文字色
-TColor col_Symbol;		//シンボルの文字色
-TColor col_Numeric;		//数値の文字色
-TColor col_fgEmpBin1;	//バイナリ強調文字色1
-TColor col_fgEmpBin2;	//バイナリ強調文字色2
-TColor col_fgEmpBin3;	//バイナリ強調文字色3
-TColor col_Headline;	//見出しの文字色
-TColor col_URL;			//URLの文字色
-TColor col_LocalLink;	//ローカファイルへのリンク
-TColor col_fgEmp;		//強調文字色
-TColor col_bgEmp;		//強調背景色
-TColor col_Ruby;		//ルビ
-TColor col_TAB;			//タブ表示色
-TColor col_CR;			//改行表示色
-TColor col_HR;			//罫線の色
-TColor col_Ctrl;		//コントロールコード
-TColor col_fgPair;		//対応する括弧の文字色
+TColor col_bgImage;
+TColor col_bgDblPg;
+TColor col_bgWMF;
+TColor col_bdrThumb;
+TColor col_ThumbExif;
+TColor col_ImgGrid;
+TColor col_OptFind;
+TColor col_bgTips;
+TColor col_fgTips;
+TColor col_bgHint;
+TColor col_fgHint;
+TColor col_bgWarn;
+TColor col_Tim1H;
+TColor col_Tim3H;
+TColor col_Tim6H;
+TColor col_Tim1D;
+TColor col_Tim3D;
+TColor col_Tim7D;
+TColor col_Tim1M;
+TColor col_Tim3M;
+TColor col_Tim6M;
+TColor col_Tim1Y;
+TColor col_Tim3Y;
+TColor col_TimOld;
+TColor col_Size4G;
+TColor col_Size2G;
+TColor col_Size1G;
+TColor col_Size512M;
+TColor col_Size256M;
+TColor col_Size128M;
+TColor col_Size64M;
+TColor col_Size32M;
+TColor col_Size16M;
+TColor col_Size1M;
+TColor col_Size1K;
+TColor col_SizeLT;
+TColor col_Size0;
 
-TColor col_bgImage;		//画像の背景色
-TColor col_bgDblPg;		//見開き表示の余白色
-TColor col_bgWMF;		//メタファイルの背景色
-TColor col_bdrThumb;	//サムネイルの境界線
-TColor col_ThumbExif;	//サムネイルのEixf情報
-TColor col_ImgGrid;		//画像分割グリッド
-TColor col_OptFind;		//オプション設定の検索結果
-TColor col_bgTips;		//ツールチップの背景色
-TColor col_fgTips;		//ツールチップの文字色
-TColor col_bgHint;		//ヒント表示の背景色
-TColor col_fgHint;		//ヒント表示の文字色
-TColor col_bgWarn;		//警告表示の背景色
-TColor col_Tim1H;		//1時間以内のタイムスタンプ色
-TColor col_Tim3H;		//3時間以内の～
-TColor col_Tim6H;		//6時間以内の～
-TColor col_Tim1D;		//1日以内の～
-TColor col_Tim3D;		//3日以内の～
-TColor col_Tim7D;		//7日以内の～
-TColor col_Tim1M;		//1ヶ月以内の～
-TColor col_Tim3M;		//3ヶ月以内の～
-TColor col_Tim6M;		//6ヶ月以内の～
-TColor col_Tim1Y;		//1年以内の～
-TColor col_Tim3Y;		//3年以内の～
-TColor col_TimOld;		//それより前の～
-TColor col_Size4G;		//4GB以上
-TColor col_Size2G;		//2GB以上
-TColor col_Size1G;		//1GB以上
-TColor col_Size512M;	//512MB以上
-TColor col_Size256M;	//256MB以上
-TColor col_Size128M;	//128MB以上
-TColor col_Size64M;		//64MB以上
-TColor col_Size32M;		//32MB以上
-TColor col_Size16M;		//16MB以上
-TColor col_Size1M;		//1MB以上
-TColor col_Size1K;		//1KB以上
-TColor col_SizeLT;		//1KB未満
-TColor col_Size0;		//0
+TColor col_GrBack;
+TColor col_GrLine;
+TColor col_GrGrid;
+TColor col_GrText;
 
-TColor col_GrBack;		//グラフの背景色
-TColor col_GrLine;		//グラフのライン
-TColor col_GrGrid;		//グラフのグリッド
-TColor col_GrText;		//グラフの文字色
+TColor col_GitHEAD;
+TColor col_GitMark;
+TColor col_GitBra;
+TColor col_GitBraR;
+TColor col_GitTag;
+TColor col_GitHash;
+TColor col_GitIns;
+TColor col_GitDel;
 
-TColor col_GitHEAD;		//Gitビューア : ヘッド
-TColor col_GitMark;		//  グラフマーク
-TColor col_GitBra;		//  ブランチ
-TColor col_GitBraR;		//  リモートブランチ
-TColor col_GitTag;		//  タグ
-TColor col_GitHash;		//  ハッシュ
-TColor col_GitIns;		//  - 行
-TColor col_GitDel;		//  + 行
+TColor col_bgTlBar1;
+TColor col_bgTlBar2;
+TColor col_fgTlBar;
+TColor col_htTlBar;
+TColor col_bgInfHdr;
+TColor col_fgInfHdr;
 
-TColor col_bgTlBar1;	//ツールバーのグラデーション開始色
-TColor col_bgTlBar2;	//ツールバーのグラデーション終了色
-TColor col_fgTlBar;		//ツールバーの文字色
-TColor col_htTlBar;		//ツールバーのホットトラッキング色
-TColor col_bgInfHdr;	//情報ヘッダの背景色
-TColor col_fgInfHdr;	//情報ヘッダの文字色
+TColor col_bgChInf;
+TColor col_fgChInf;
+TColor col_bgEdBox;
+TColor col_fgEdBox;
 
-TColor col_bgChInf;		//文字情報サンプルの背景色
-TColor col_fgChInf;		//文字情報サンプルの文字色
-TColor col_bgEdBox;		//Edit ボックスの背景色
-TColor col_fgEdBox;		//Edit ボックスの文字色
+TColor col_ModalScr;
 
-TColor col_ModalScr;	//モーダル表示効果色
+TColor col_bgOptTab;
+TColor col_fgOptTab;
 
-TColor col_bgOptTab;	//アクティブな設定タブの背景色
-TColor col_fgOptTab;	//アクティブな設定タブの文字色
-
-//背景画像
 Graphics::TBitmap *BgImgBuff[MAX_BGIMAGE];
 UnicodeString BgImgName[MAX_BGIMAGE];
 
-int  BgImgMode;			//モード
+int  BgImgMode;
 int  BgImgSubMode;
-int  BgColAlpha;		//背景色アルファ
-bool BgImgGray;			//グレースケール化
-bool BgImgHideScr;		//スクロール時に隠す
-int  BgHideTime;		//復帰時間
-bool BgImgTileIf;		//指定サイズ以下なら並べて表示
+int  BgColAlpha;
+bool BgImgGray;
+bool BgImgHideScr;
+int  BgHideTime;
+bool BgImgTileIf;
 int  BgTileSize;
 
-bool AlphaForm;			//メイン画面を透明に
-int  AlphaValue;		//メイン画面アルファ
+bool AlphaForm;
+int  AlphaValue;
 
-//フォントのサンプル表示
 UnicodeString FontSampleTxt = "0123456789(!?)+-\r\nABCDEFGabcdefg\r\nあいうえおアイウエオ\r\n春夏秋冬花鳥風月黒猫";
 UnicodeString FontSampleSym = "!\"#$%&'()*+,-./\r\n0123456789:;<=>\r\n?@ABCDEFGHIJKLM\r\nNOPQRSTUVWXYZ[\\\r\n";
 
 int    FontSampleSize	  = 20;
-TColor FontSampleFgCol	  = col_None;	//文字色
-TColor FontSampleBgCol	  = col_None;	//背景色
-TColor FontSampleGridCol  = col_None;	//基準線色
-bool   FontSampleShowGrid = false;		//基準線を表示
+TColor FontSampleFgCol	  = col_None;
+TColor FontSampleBgCol	  = col_None;
+TColor FontSampleGridCol  = col_None;
+bool   FontSampleShowGrid = false;
 
-//外部ツール
-UnicodeString TextEditor;		//テキストエディタ
-UnicodeString TextEditorFrmt;	//パラメータ(Grep用)
-UnicodeString TextEditorFrmt2;	//パラメータ(ファラー用)
+UnicodeString TextEditor;
+UnicodeString TextEditorFrmt;
+UnicodeString TextEditorFrmt2;
 
-UnicodeString ImageEditor;		//イメージエディタ
-UnicodeString FExtImgEidt;		//イメージエディタの対応拡張子
-bool ImageEditSgl;				//イメージエディタをファイル毎に個別起動
+UnicodeString ImageEditor;
+UnicodeString FExtImgEidt;
+bool ImageEditSgl;
 
-UnicodeString FExtViewTab4;		//タブ4の拡張子
-UnicodeString FExtViewTabX;		//任意タブ幅の拡張子
-int  ViewTabWidthX;				//任意タブ幅
+UnicodeString FExtViewTab4;
+UnicodeString FExtViewTabX;
+int  ViewTabWidthX;
 
-UnicodeString BinaryEditor;		//バイナリエディタ
+UnicodeString BinaryEditor;
 
-UnicodeString CmdGitExe;		//git.exe
-UnicodeString GitBashExe;		//git-bash.exe
-UnicodeString GitGuiExe;		//git-gui.exe
+UnicodeString CmdGitExe;
+UnicodeString GitBashExe;
+UnicodeString GitGuiExe;
 
-UnicodeString CmdGrepExe;		//grep.exe
+UnicodeString CmdGrepExe;
 
-//サウンド
-UnicodeString SoundTaskFin;		//タスク終了時の通知音
-UnicodeString SoundFindFin;		//検索終了時の通知音
-UnicodeString SoundWarning;		//警告音
-UnicodeString SoundWatch;		//ファイル監視
+UnicodeString SoundTaskFin;
+UnicodeString SoundFindFin;
+UnicodeString SoundWarning;
+UnicodeString SoundWatch;
 
-int  FlashCntWarning;			//警告の点滅回数
-int  FlashTimeWarning;			//警告の点滅間隔
-int  FlashCntTaskfin;			//タスク終了時の点滅回数
-int  FlashTimeTaskfin;			//タスク終了時の点滅間隔
+int  FlashCntWarning;
+int  FlashTimeWarning;
+int  FlashCntTaskfin;
+int  FlashTimeTaskfin;
 
-bool WarnPowerFail;				//電源切断警告
-bool WarnDisconnect;			//インターネット接続切れ
-bool WarnLowBattery;			//バッテリー低下
+bool WarnPowerFail;
+bool WarnDisconnect;
+bool WarnLowBattery;
 int  BatLowerLimit;
 
-int  MaxLogLines;				//ログの最大行数
-int  MsgHintTime;				//ヒントの表示時間
-int  KeyHintTime;				//2ストロークヒントの待機時間
-int  NotifyTaskTime;			//～秒以上かかったタスクの終了時に鳴らす
-int  CmpDelOwCnt;				//完全削除の上書き回数
-int  ViewTxtInterLn;			//ビューアの行間
-int  ViewLeftMargin;			//ビューアの左余白
-int  ViewFoldWidth;				//折り返し幅(半角単位)
-bool ViewFoldFitWin;			//折り返しをウィンドウ幅に合わせる
-int  ViewFixedLimit;			//固定長表示の最大幅
-int  ViewTxtLimitSize;			//テキストの最大読込サイズ
-int  ViewBinLimitSize;			//バイナリの最大読込(or マップ)サイズ
-int  ListWheelScrLn;			//ホイールによるスクロール行数(リスト)
-int  ViewWheelScrLn;			//ホイールによるスクロール行数(ビューア)
-int  PlaySndLimitTime;			//サウンド再生タイム制限
-bool ShowTextPreview;			//テキストプレビューを表示
-int  PrvTxtInfLn;				//テキストプレビューの行数
-bool ShowTailPreview;			//末尾プレビューを表示
-int  PrvTxtTailLn;				//末尾プレビュー行数
-int  PrvActTailLn;				//末尾プレビューを有効にする行数
-int  WatchInterval;				//ディレクトリ監視間隔
-int  InfPrvWait;				//情報取得/プレビューの遅延
-int  LogInterval;				//ログの更新間隔
-int  ListInterLn;				//ファイルリストの行間
-int  CursorWidth;				//カーソル線の幅
-int  CursorAlpha;				//カーソル行背景アルファ
-int  CellAlpha;					//セルの背景アルファ
-int  SplitterWidth;				//境界線の幅
+int  MaxLogLines;
+int  MsgHintTime;
+int  KeyHintTime;
+int  NotifyTaskTime;
+int  CmpDelOwCnt;
+int  ViewTxtInterLn;
+int  ViewLeftMargin;
+int  ViewFoldWidth;
+bool ViewFoldFitWin;
+int  ViewFixedLimit;
+int  ViewTxtLimitSize;
+int  ViewBinLimitSize;
+int  ListWheelScrLn;
+int  ViewWheelScrLn;
+int  PlaySndLimitTime;
+bool ShowTextPreview;
+int  PrvTxtInfLn;
+bool ShowTailPreview;
+int  PrvTxtTailLn;
+int  PrvActTailLn;
+int  WatchInterval;
+int  InfPrvWait;
+int  LogInterval;
+int  ListInterLn;
+int  CursorWidth;
+int  CursorAlpha;
+int  CellAlpha;
+int  SplitterWidth;
 int  SplitterWidth2;
-int  FExtMaxWidth;				//拡張子の最大文字数
+int  FExtMaxWidth;
 int  SizeFormatMode;
-int  SizeDecDigits;				//サイズ表示における小数点以下の桁数
-int  ListPercent;				//ファイルリスト幅の比率
-int  ImgFrameMargin;			//フィット表示時の余白幅
-int  ImgFitMaxZoom;				//フィット表示時の許容倍率
-int  ImgGridHorzN;				//グリッドの横分割数
-int  ImgGridVertN;				//グリッドの縦分割数
-int  MinShowTime;				//最小表示タイム
-int  ThumbnailSize;				//サムネイルのサイズ
-int  ThumbBdrWidth;				//サムネイルの境界線幅
-int  ThumbScaleOpt;				//サムネイルの縮小アルゴリズム
-int  ThumbnailPos;				//サムネイルの表示位置
-int  ImgDblMargin;				//見開き間隔
+int  SizeDecDigits;
+int  ListPercent;
+int  ImgFrameMargin;
+int  ImgFitMaxZoom;
+int  ImgGridHorzN;
+int  ImgGridVertN;
+int  MinShowTime;
+int  ThumbnailSize;
+int  ThumbBdrWidth;
+int  ThumbScaleOpt;
+int  ThumbnailPos;
+int  ImgDblMargin;
 
-bool ShowImgSidebar;			//サイドバーを表示
-bool ImgSidebarIsLeft;			//サイドバーは左
+bool ShowImgSidebar;
+bool ImgSidebarIsLeft;
 
-bool HasCallHotkey;				//呼び出しホットキーがあるか？
+bool HasCallHotkey;
 
-bool HideSizeTime;				//サイズと更新日時を隠す
+bool HideSizeTime;
 
 //---------------------------------------------------------------------------
 //イベント発生時に実行するコマンド
@@ -4555,27 +4536,12 @@ TStringList* GetCurList(
 	return ((!only_filer && ScrMode==SCMD_IVIEW)? ViewFileList : GetFileList(CurListTag));
 }
 //---------------------------------------------------------------------------
-//反対パスのリストを取得
+//反対側のリストを取得
 //---------------------------------------------------------------------------
 TStringList* GetOppList()
 {
 	return GetFileList(OppListTag);
 }
-
-//---------------------------------------------------------------------------
-//ファイルリストの背景色を取得
-//---------------------------------------------------------------------------
-TColor get_FlBgColor(flist_stt *lst_stt, int idx)
-{
-	return lst_stt->is_Find?	col_bgFind :
-		   (lst_stt->is_Arc)?	col_bgArc :
-		   lst_stt->is_Work?	col_bgWork :
-		   lst_stt->is_FTP?		col_bgFTP :
-		   lst_stt->is_ADS?		col_bgADS :
-		   (col_bgList2!=col_None && idx%2==1)? col_bgList2
-		   									  : get_ListBgCol();
-}
-
 //---------------------------------------------------------------------------
 //ファイルリストのソート
 //---------------------------------------------------------------------------
@@ -4635,7 +4601,7 @@ void SortList(TStringList *lst, int tag)
 }
 
 //---------------------------------------------------------------------------
-//ファイルストで項目サーチ
+//ファイルリストで項目を見つける
 //---------------------------------------------------------------------------
 int IndexOfFileList(
 	UnicodeString fnam,	//ファイル名
@@ -4785,7 +4751,7 @@ void ClrSelect(TStringList *lst)
 }
 
 //---------------------------------------------------------------------------
-//選択中の項目数
+//マッチ項目数
 //---------------------------------------------------------------------------
 int GetMatchCount(TStringList *lst)
 {
@@ -4797,7 +4763,7 @@ int GetMatchCount(TStringList *lst)
 }
 
 //---------------------------------------------------------------------------
-//file_rec を生成して初期化
+//file_rec を作成して初期化
 //  copy_fp を指定すると、その内容をコピー
 //---------------------------------------------------------------------------
 file_rec* cre_new_file_rec(file_rec *copy_fp)
@@ -4838,7 +4804,7 @@ file_rec* cre_new_file_rec(file_rec *copy_fp)
 	return fp;
 }
 //---------------------------------------------------------------------------
-//ファイル名から file_rec を生成
+//ファイル名から file_rec を作成
 //---------------------------------------------------------------------------
 file_rec* cre_new_file_rec(
 	UnicodeString fnam,		//ファイル名(末尾が \ の場合はディレクトリ名)
@@ -4984,7 +4950,7 @@ void inv_file_rec(file_rec *fp)
 }
 
 //---------------------------------------------------------------------------
-// FileListの内容を入れ替える
+// ファイルリストの内容を入れ替える
 //---------------------------------------------------------------------------
 void swap_FileList(TStringList *lst1, TStringList *lst2, bool swap_tag)
 {
@@ -6939,7 +6905,7 @@ void get_FindListF(UnicodeString pnam, flist_stt *lst_stt, TStrings *lst, int ta
 				}
 			}
 			else {
-				FindPath  = pnam;
+				FindPath = pnam;
 			}
 
 			//※FindFirst での誤マッチを除外
@@ -8194,7 +8160,7 @@ int to_PrevSelItem(TStringList *lst, int idx)
 }
 
 //---------------------------------------------------------------------------
-//関連付けされているアプリのリストを取得
+//拡張子に関連付けされているアプリのリストを取得
 //---------------------------------------------------------------------------
 TStringDynArray get_AssociatedApps(UnicodeString fext)
 {
@@ -8259,7 +8225,20 @@ void make_AssoMenuList(TStringDynArray app_lst, TStringList *lst)
 }
 
 //---------------------------------------------------------------------------
-//ファイル名の色を取得
+//ファイルリスト項目の背景色を取得
+//---------------------------------------------------------------------------
+TColor get_FlBgColor(flist_stt *lst_stt, int idx)
+{
+	return lst_stt->is_Find?	col_bgFind :
+		   (lst_stt->is_Arc)?	col_bgArc :
+		   lst_stt->is_Work?	col_bgWork :
+		   lst_stt->is_FTP?		col_bgFTP :
+		   lst_stt->is_ADS?		col_bgADS :
+		   (col_bgList2!=col_None && idx%2==1)? col_bgList2
+		   									  : get_ListBgCol();
+}
+//---------------------------------------------------------------------------
+//ファイル名の文字色を取得
 //---------------------------------------------------------------------------
 TColor get_FileColor(file_rec *fp, TColor col_x)
 {
@@ -8314,7 +8293,7 @@ TColor get_ExtColor(
 }
 
 //---------------------------------------------------------------------------
-//タイムスタンプ色を取得
+//タイムスタンプの文字色を取得
 //---------------------------------------------------------------------------
 TColor get_TimeColor(TDateTime dt, TColor col_def)
 {
@@ -8340,7 +8319,7 @@ TColor get_TimeColor(TDateTime dt, TColor col_def)
 	return col_t;
 }
 //---------------------------------------------------------------------------
-//サイズ色を取得
+//サイズの文字色を取得
 //---------------------------------------------------------------------------
 TColor get_SizeColor(__int64 size, TColor col_def)
 {
@@ -8363,7 +8342,7 @@ TColor get_SizeColor(__int64 size, TColor col_def)
 }
 
 //---------------------------------------------------------------------------
-//ログの表示色を取得
+//ログの文字色を取得
 //---------------------------------------------------------------------------
 TColor get_LogColor(UnicodeString s)
 {
@@ -8906,7 +8885,7 @@ void GetFileInfList(
 UnicodeString get_FileInfValue(
 	file_rec *fp,
 	UnicodeString tit,		//タイトル
-	UnicodeString dlmt)		// dlmt: 値の区切り文字 (default = EmptyStr)
+	UnicodeString dlmt)		//値の区切り文字 (default = EmptyStr)
 {
 	UnicodeString ret_str;
 
@@ -9114,7 +9093,7 @@ void draw_InputPaintBox(TPaintBox *pp, UnicodeString s)
 }
 
 //---------------------------------------------------------------------------
-//タイムスタンプ文字列を取得
+//タイムスタンプの表示文字列を取得
 //---------------------------------------------------------------------------
 UnicodeString get_TimeStampStr(TDateTime dt)
 {
@@ -9662,7 +9641,7 @@ bool is_selectable(file_rec *fp)
 	return true;
 }
 //---------------------------------------------------------------------------
-//選択可能なら選択
+//選択可能なら選択状態を設定
 //---------------------------------------------------------------------------
 bool set_select(file_rec *fp, bool sw)
 {
@@ -10108,7 +10087,7 @@ bool is_SoundID(UnicodeString s)
 }
 
 //---------------------------------------------------------------------------
-//ビューアで表示可能か？ (アイコンは除く)
+//ビューアで表示可能か(アイコンは除く)？
 //---------------------------------------------------------------------------
 bool is_ViewableFext(UnicodeString fext)
 {
@@ -10132,7 +10111,7 @@ bool is_ExtractIcon(file_rec *fp)
 }
 
 //---------------------------------------------------------------------------
-//統合アーカイバの対応拡張子か?
+//アーカイバの対応拡張子か?
 //---------------------------------------------------------------------------
 bool test_ArcExt(UnicodeString fext)
 {
@@ -10260,7 +10239,7 @@ int load_ImageFile(
 	UnicodeString fnam,
 	Graphics::TBitmap *o_bmp,
 	int wic_type,		//				(default = WICIMG_PREVIEW)
-	TColor trans_bg)	//透過Gの背景色	(default = clNone)
+	TColor trans_bg)	//透過背景色	(default = clNone)
 {
 	int res = 0;
 	try {
@@ -11752,9 +11731,9 @@ void EmphasisTextOut(
 	UnicodeString s,		//表示文字列
 	TStringList *kw_lst,	//強調語のリスト
 	TCanvas *cv,
-	int &x,				//[i/o] 表示X位置
-	int y,				//[i]	表示Y位置
-	bool case_sns)		//大小文字を区別   (default = false)
+	int &x,					//[i/o] 表示X位置
+	int y,					//[i]	表示Y位置
+	bool case_sns)			//大小文字を区別   (default = false)
 {
 	if (s.IsEmpty()) return;
 
@@ -13455,7 +13434,7 @@ bool Execute_ex(
 							//			 A=管理者として実行 (W,O 無効)
 							//							(default = EmptyStr)
 	DWORD *exit_code,		//  exit_code: 終了コード	(default = NULL)
-	TStringList *o_lst)		//  o_lst: コンソール出力	(default = NULL)
+	TStringList *o_lst)		//  o_lst: 出力リスト		(default = NULL)
 {
 	if (cmd.IsEmpty()) return false;
 
@@ -13719,9 +13698,12 @@ bool Execute_demote(
 //---------------------------------------------------------------------------
 //git.exe を実行
 //---------------------------------------------------------------------------
-bool GitShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst,
+bool GitShellExe(
+	UnicodeString prm,		//パラメータ
+	UnicodeString wdir, 	//作業ディレクトリ
+	TStringList *o_lst,		//出力リスト
 	DWORD *exit_cd, 		//終了コード	(default = NULL)
-	TStringList *w_lst,		//警告			(警告を分離して取得		default = NULL)
+	TStringList *w_lst,		//警告リスト	(出力から分離して取得	default = NULL)
 	bool *rq_abort)			//中断要求		(default = NULL)
 {
 	if (!GitExists) return false;
@@ -14064,7 +14046,7 @@ int get_TopMargin2(TCanvas *cv)
 }
 
 //---------------------------------------------------------------------------
-//時計用文字列を取得
+//時計パネル用文字列を取得
 //---------------------------------------------------------------------------
 UnicodeString GetClockStr()
 {
@@ -14373,7 +14355,7 @@ UnicodeString get_Alias_KeyStr(UnicodeString alias, TStringList *k_lst)
 }
 
 //---------------------------------------------------------------------------
-//説明や引用符を外すしてパラメータを抽出
+//説明や引用符を外してパラメータを抽出
 //---------------------------------------------------------------------------
 UnicodeString extract_ExeParam(UnicodeString prm, UnicodeString *dsc)
 {
@@ -15123,11 +15105,6 @@ bool ExeCmdListBox(TListBox *lp, UnicodeString cmd, UnicodeString prm)
 
 	return true;
 }
-//---------------------------------------------------------------------------
-bool ExeCmdListBox(TListBox *lp, const _TCHAR *cmd, UnicodeString prm)
-{
-	return ExeCmdListBox(lp, UnicodeString(cmd), prm);
-}
 
 //---------------------------------------------------------------------------
 //クリップボードにコピー
@@ -15138,6 +15115,7 @@ void copy_to_Clipboard(UnicodeString s)
 	if (s.IsEmpty()) return;
 
 	Clipboard()->AsText = s;
+	XCMD_clip_changed = true;
 
 	//ファイル名なら履歴に追加
 	std::unique_ptr<TStringList> lst(new TStringList());
@@ -15205,7 +15183,7 @@ bool IsNyanfi2Wnd(HWND hWnd)
 }
 
 //---------------------------------------------------------------------------
-//最初に起動された NyanFi へ文字列を送出
+//最初に起動された NyanFi に文字列を送出
 //---------------------------------------------------------------------------
 bool NotifyPrimNyan(UnicodeString msg)
 {
@@ -15956,7 +15934,7 @@ bool AddPathToTreeList(TStringList *lst)
 }
 
 //---------------------------------------------------------------------------
-//検索リスト情報を取得
+//検索リスト情報文字列を取得
 //---------------------------------------------------------------------------
 UnicodeString get_FindInfStr(bool pnam_sw)
 {

@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  タスクマネージャ													//
-//----------------------------------------------------------------------//
+/**
+ * @file TaskDlg.h
+ * @brief タスクマネージャ
+ */
+//---------------------------------------------------------------------------
 #ifndef TaskDlgH
 #define TaskDlgH
 
@@ -18,6 +19,9 @@
 #include "usr_scrpanel.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief タスクマネージャ
+ */
 class TTaskManDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -77,7 +81,7 @@ private:	// ユーザー宣言
 	void __fastcall WmFormShowed(TMessage &msg);
 
 public:		// ユーザー宣言
-	UsrScrollPanel *GridScrPanel;	//シンプルスクロールバー
+	UsrScrollPanel *GridScrPanel;	//!< シンプルスクロールバー
 
 	__fastcall TTaskManDlg(TComponent* Owner);
 

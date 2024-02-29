@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  アプリケーション一覧												//
-//----------------------------------------------------------------------//
+/**
+ * @file AppDlg.h
+ * @brief アプリケーション一覧
+ */
+//---------------------------------------------------------------------------
 #ifndef AppDlgH
 #define AppDlgH
 //---------------------------------------------------------------------------
@@ -51,6 +52,9 @@ struct PEB_INTERNAL {
 #define ISWOW64_STR	_T(" \u208d\u2083\u2082\u208e")
 
 //---------------------------------------------------------------------------
+/**
+ * @brief アプリケーション情報
+ */
 class AppWinInf
 {
 public:
@@ -76,8 +80,8 @@ public:
 	bool isUWP;
 	bool topMost;
 	bool Exist;
-	bool toClose;		//終了要求
-	bool isNoRes;		//無応答かも
+	bool toClose;			//!< 終了要求
+	bool isNoRes;			//!< 無応答かも
 
 	SIZE_T mem_WS;
 	SIZE_T mem_pWS;
@@ -119,8 +123,9 @@ public:
 };
 
 //---------------------------------------------------------------------------
-// TAppListDlg
-//---------------------------------------------------------------------------
+/**
+ * @brief アプリケーション一覧
+ */
 class TAppListDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -289,8 +294,8 @@ private:	// ユーザー宣言
 	void __fastcall UpdateLaunchSttBar();
 
 public:		// ユーザー宣言
-	UsrScrollPanel *AppScrPanel;	//シンプルスクロールバー
-	UsrScrollPanel *LaunchScrPanel;	//シンプルスクロールバー
+	UsrScrollPanel *AppScrPanel;	//!< シンプルスクロールバー
+	UsrScrollPanel *LaunchScrPanel;	//!< シンプルスクロールバー
 
 	UnicodeString LaunchPath;
 	UnicodeString CurLaunchPath;

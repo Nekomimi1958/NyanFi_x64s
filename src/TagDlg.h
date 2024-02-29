@@ -1,8 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  タグ設定/検索														//
-//  フォルダアイコン検索												//
-//----------------------------------------------------------------------//
+/**
+ * @file TagDlg.h
+ * @brief タグ設定/検索/フォルダアイコン検索
+ */
+//---------------------------------------------------------------------------
 #ifndef TagDlgH
 #define TagDlgH
 
@@ -23,6 +23,9 @@
 #include <Vcl.Imaging.pngimage.hpp>
 
 //---------------------------------------------------------------------------
+/**
+ * @brief タグ設定/検索/フォルダアイコン検索
+ */
 class TTagManDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -129,6 +132,7 @@ private:	// ユーザー宣言
 	bool IsFolderIcon;
 	bool KeyHandled;
 
+	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
 	UsrSwatchPanel *SwatchPanel;
 
 	void __fastcall WmFormShowed(TMessage &msg);
@@ -142,8 +146,6 @@ private:	// ユーザー宣言
 	void __fastcall SetOptBtn();
 
 public:		// ユーザー宣言
-	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
-
 	UnicodeString CmdStr;
 
 	__fastcall TTagManDlg(TComponent* Owner);

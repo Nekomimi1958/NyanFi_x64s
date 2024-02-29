@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  Gitタグ設定															//
-//----------------------------------------------------------------------//
+/**
+ * @file GitTag.h
+ * @brief Gitタグ設定
+ */
+//---------------------------------------------------------------------------
 #ifndef GitTagH
 #define GitTagH
 
@@ -40,10 +41,10 @@ __published:	// IDE で管理されるコンポーネント
 private:	// ユーザー宣言
 
 public:		// ユーザー宣言
-	bool IsCommit;				//true=コミット / false=タグ
+	bool IsCommit;				//!< true:コミット/ false:タグ
 	UnicodeString CommitID;
-	UnicodeString EditMsgFile;	//メッセージ編集用ファイル
-	UnicodeString GitParam;		//[o] git実行用パラメータ
+	UnicodeString EditMsgFile;	//!< メッセージ編集用ファイル
+	UnicodeString GitParam;		//!< [o] git実行用パラメータ
 
 	__fastcall TSetGitTagDlg(TComponent* Owner);
 };

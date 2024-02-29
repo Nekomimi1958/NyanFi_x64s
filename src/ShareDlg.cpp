@@ -592,8 +592,8 @@ void __fastcall TNetShareDlg::ShareListBoxKeyDown(TObject *Sender, WORD &Key, TS
 	}
 	//コピー
 	else if (SameText(KeyStr, KeyStr_Copy) || SameText(cmd_F, "CopyFileName")) {
-		if (lp->ItemIndex!=-1) {
-			UnicodeString lbuf = lp->Items->Strings[lp->ItemIndex];
+		UnicodeString lbuf = ListBoxGetStr(lp);
+		if (!lbuf.IsEmpty()) {
 			if (isPC) lbuf = IncludeTrailingPathDelimiter(get_tkn(lbuf, ' '));
 			copy_to_Clipboard(lbuf);
 		}
@@ -637,8 +637,7 @@ void __fastcall TNetShareDlg::ShareListBoxDblClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::CopyUncActionExecute(TObject *Sender)
 {
-	TListBox *lp = ShareListBox;
-	if (lp->ItemIndex!=-1) copy_to_Clipboard(lp->Items->Strings[lp->ItemIndex]);
+	copy_to_Clipboard(ListBoxGetStr(ShareListBox));
 }
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::CopyUncActionUpdate(TObject *Sender)
@@ -671,9 +670,8 @@ void __fastcall TNetShareDlg::CopyUncAllActionUpdate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNetShareDlg::CopyPathActionExecute(TObject *Sender)
 {
-	TListBox *lp = ShareListBox;
-	if (lp->ItemIndex!=-1) {
-		UnicodeString lbuf = lp->Items->Strings[lp->ItemIndex];
+	UnicodeString lbuf = ListBoxGetStr(ShareListBox);
+	if (!lbuf.IsEmpty()) {
 		if (isPC) lbuf = IncludeTrailingPathDelimiter(get_tkn(lbuf, ' '));
 		copy_to_Clipboard(lbuf);
 	}
@@ -745,7 +743,7 @@ void __fastcall TNetShareDlg::EditListActionExecute(TObject *Sender)
 {
 	TListBox *lp = ShareListBox;
 	if (lp->ItemIndex!=-1) {
-		if (!open_by_TextEditor(get_tsv_item(lp->Items->Strings[lp->ItemIndex], 2))) msgbox_ERR(GlobalErrMsg);
+		if (!open_by_TextEditor(get_tsv_item(ListBoxGetStr(lp), 2))) msgbox_ERR(GlobalErrMsg);
 	}
 }
 //---------------------------------------------------------------------------
@@ -753,8 +751,7 @@ void __fastcall TNetShareDlg::EditListActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction *)Sender;
 	ap->Visible = isFindSet;
-	TListBox *lp = ShareListBox;
-	ap->Enabled = (ap->Visible && lp->ItemIndex!=-1 && !get_tsv_item(lp->Items->Strings[lp->ItemIndex], 2).IsEmpty());
+	ap->Enabled = (ap->Visible && !get_tsv_item(ListBoxGetStr(ShareListBox), 2).IsEmpty());
 }
 //---------------------------------------------------------------------------
 //除外ディレクトリの設定

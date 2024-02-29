@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// 各種フォーマットのファイル情報取得									//
-//																		//
-//----------------------------------------------------------------------//
+/**
+ * @file usr_file_inf.h
+ * @brief 各種フォーマットのファイル情報を取得
+ */
+//---------------------------------------------------------------------------
 #ifndef UsrFileInfH
 #define UsrFileInfH
 
@@ -9,51 +10,51 @@
 #include "usr_arc.h"
 
 //---------------------------------------------------------------------------
-#define FILE_RBUF_SIZE	32768		//ファイル読み込み用バッファサイズ(32KB)
-#define TXT_DETECT_SIZE	0x10000		//テキスト判定の読み込みサイズ(64KB)
+#define FILE_RBUF_SIZE	32768			//!< ファイル読み込み用バッファサイズ(32KB)
+#define TXT_DETECT_SIZE	0x10000			//!< テキスト判定の読み込みサイズ(64KB)
 
 //---------------------------------------------------------------------------
 //ストリーム名
-#define NYANFIDEF_ADS ":nyanfi.def"		//設定情報
-#define THUMB_JPG_ADS ":thumbnail.jpg"	//サムネイル画像
-#define THUMB_TXT_ADS ":thumbnail.txt"	//サムネイル情報
+#define NYANFIDEF_ADS ":nyanfi.def"		//!< 設定情報
+#define THUMB_JPG_ADS ":thumbnail.jpg"	//!< サムネイル画像
+#define THUMB_TXT_ADS ":thumbnail.txt"	//!< サムネイル情報
 #define FAVICON_ADS   ":favicon"
 
 #define DROPBOX_ADS   ":com.dropbox.attrs"
 
 //---------------------------------------------------------------------------
 //拡張子
-#define FEXT_ARCHIVE	FEXT_ZIP FEXT_7Z FEXT_TAR FEXT_RAR						//アーカイブ
-#define FEXT_EXECUTE	_T(".exe.com.bat.cmd.msi.msu.lnk.scr")					//実行可能
-#define FEXT_JPEG		_T(".jpg.jpeg.jpe.jif.jfif")							//Jpeg
-#define FEXT_META		_T(".wmf.emf")											//メタファイル
+#define FEXT_ARCHIVE	FEXT_ZIP FEXT_7Z FEXT_TAR FEXT_RAR						//!< アーカイブ
+#define FEXT_EXECUTE	_T(".exe.com.bat.cmd.msi.msu.lnk.scr")					//!< 実行可能
+#define FEXT_JPEG		_T(".jpg.jpeg.jpe.jif.jfif")							//!< Jpeg
+#define FEXT_META		_T(".wmf.emf")											//!< メタファイル
 #define FEXT_RAW		_T(".3fr.arw.cr2.crw.dng.erf.mef.nef.nrw.orf.pef.raf.raw.rw2.sr2.srw.x3f")
-																				//RAW
-#define FEXT_PSP		_T(".psp.pspimage")										//Paint Shop Pro
-#define FEXT_WICSTD		FEXT_JPEG _T(".bmp.png.gif.tif.wdp.hdp")				//WICが標準で表示可能
-#define FEXT_EXIF		FEXT_JPEG FEXT_RAW _T(".heic")							//Exif情報取得可能
-#define FEXT_IMAGE		FEXT_WICSTD FEXT_RAW FEXT_META _T(".heic.webp")			//画像
-#define FEXT_WEBIMG		FEXT_JPEG _T(".gif.png.webp.ico")						//Webで用いられる画像
-#define FEXT_FONT		_T(".ttf.ttc.fon.otf")									//フォント
-#define FEXT_MCISND		_T(".wav.wma.mp3.mid.rmi")								//MCI対応サウンド
+																				//!< RAW
+#define FEXT_PSP		_T(".psp.pspimage")										//!< Paint Shop Pro
+#define FEXT_WICSTD		FEXT_JPEG _T(".bmp.png.gif.tif.wdp.hdp")				//!< WICが標準で表示可能
+#define FEXT_EXIF		FEXT_JPEG FEXT_RAW _T(".heic")							//!< Exif情報取得可能
+#define FEXT_IMAGE		FEXT_WICSTD FEXT_RAW FEXT_META _T(".heic.webp")			//!< 画像
+#define FEXT_WEBIMG		FEXT_JPEG _T(".gif.png.webp.ico")						//!< Webで用いられる画像
+#define FEXT_FONT		_T(".ttf.ttc.fon.otf")									//!< フォント
+#define FEXT_MCISND		_T(".wav.wma.mp3.mid.rmi")								//!< MCI対応サウンド
 #define FEXT_VIDEO		_T(".avi.asf.flv.mkv.mov.mp4.mpg.mts.ogm.ts.m2ts.vob.webm.wmv")
-																				//動画
+																				//!< 動画
 
-#define FEXT_DURATION	FEXT_MCISND FEXT_VIDEO _T(".cda.opus.flac")				//長さを持つ
-#define FEXT_ICONVIEW	_T(".exe.dll.bpl.dpl.cpl.ico.cur.ani")					//アイコン抽出可能
-#define FEXT_ICON_CNT	_T(".exe.dll.bpl.dpl.cpl.ico.cur")						//アイコン数取得可能
-#define FEXT_APPINFO	_T(".exe.dll.ax.rll.bpl.dpl.cpl.ocx.spi.sph.scr")		//アプリ情報取得可能
-#define FEXT_INDIVICO	_T(".exe.ico.cur.ani.lnk.url.library-ms")				//固有のアイコンを持つ
+#define FEXT_DURATION	FEXT_MCISND FEXT_VIDEO _T(".cda.opus.flac")				//!< 長さを持つ
+#define FEXT_ICONVIEW	_T(".exe.dll.bpl.dpl.cpl.ico.cur.ani")					//!< アイコン抽出可能
+#define FEXT_ICON_CNT	_T(".exe.dll.bpl.dpl.cpl.ico.cur")						//!< アイコン数取得可能
+#define FEXT_APPINFO	_T(".exe.dll.ax.rll.bpl.dpl.cpl.ocx.spi.sph.scr")		//!< アプリ情報取得可能
+#define FEXT_INDIVICO	_T(".exe.ico.cur.ani.lnk.url.library-ms")				//!< 固有のアイコンを持つ
 
-#define FEXT_CSV		_T(".csv.tsv")											//CSV
+#define FEXT_CSV		_T(".csv.tsv")											//!< CSV
 
 #define FEXT_TEXT		FEXT_PROGRAM FEXT_HTML FEXT_XML FEXT_CSV _T(".txt.ini.md.inf.json.def.log.nbt.bat.cmd.reg.cbproj.dfm.dsp.dsw.css.hhp.hex.m3u.m3u8.mot.wpl.yml.yaml")
-																				//テキストファイル
+																				//!< テキストファイル
 
 #define FEXT_NONTEXT	_T(".ani.bin.chm.cur.hlp.ico.lnk.pdf.res.swf") FEXT_APPINFO FEXT_ARCHIVE FEXT_IMAGE FEXT_VIDEO FEXT_MCISND FEXT_FONT
-																				//非テキストファイル
+																				//!< 非テキストファイル
 
-#define FEXT_ARCVIEW	FEXT_TEXT _T(".ico.cur.wav.mp3")						//アーカイブ内表示
+#define FEXT_ARCVIEW	FEXT_TEXT _T(".ico.cur.wav.mp3")						//!< アーカイブ内表示
 
 //---------------------------------------------------------------------------
 #define FEXT_C_SRC	_T(".c.cc.cpp.cxx")
@@ -62,15 +63,16 @@
 #define FEXT_PASCAL	_T(".pas.dpr.dpk.inc")
 
 #define FEXT_PROGRAM	FEXT_C_SH FEXT_PASCAL _T(".ahk.as.asm.awk.bas.bsh.cgi.cs.d.fs.go.hs.hsp.inc.java.js.jsx.kt.kts.lisp.lsp.lua.mac.php.pl.pm.ps1.psm1.py.qml.rb.rc.drc.rs.sh.swift.scala.sql.st.vb.vbs.v.vhd.ts.PspScript")
-															//プログラム
+															//!< プログラム
 
 #define FEXT_HTML	_T(".htm.html.sht.shtm.shtml.hta.xhtml.xht.hhc.hhk.php")
-															//HTML文書
+															//!< HTML文書
 #define FEXT_XML	_T(".xml.xsd.xsl.xslt.dtd.svg.rdf.manifest.library-ms.cdxml.ps1xml.ptxml.csproj.vbproj.vcxproj.cbproj.xaml")
-															//XML
+															//!< XML
 
-#define FEXT_NRM_REM	FEXT_C_SH _T(".as.cs.css.d.go.idl.java.js.jsx.kt.qml.rc.rs.scala.swift.ts.v")	//コメントが // or /*～*/
-#define FEXT_SMCL_REM	_T(".as.asm.h51.h32.hsp.nbt.qbt")	//コメントが ;
+#define FEXT_NRM_REM	FEXT_C_SH _T(".as.cs.css.d.go.idl.java.js.jsx.kt.qml.rc.rs.scala.swift.ts.v")	
+															//!< コメントが // or /*～*/
+#define FEXT_SMCL_REM	_T(".as.asm.h51.h32.hsp.nbt.qbt")	//!< コメントが ;
 
 //---------------------------------------------------------------------------
 bool test_ExifExt(UnicodeString fext);
@@ -164,9 +166,9 @@ UnicodeString get_TextHashStr(UnicodeString s, ALG_ID algid);
 UnicodeString get_TextHashStr(UnicodeString s, UnicodeString idstr);
 
 //---------------------------------------------------------------------------
-int  get_duration(UnicodeString fnam);
+int get_duration(UnicodeString fnam);
 
-int  get_filename_warn(UnicodeString fnam, TStringList *lst = NULL, bool is_dir = false);
+int get_filename_warn(UnicodeString fnam, TStringList *lst = NULL, bool is_dir = false);
 
 //---------------------------------------------------------------------------
 int get_ADS_count(UnicodeString fnam);

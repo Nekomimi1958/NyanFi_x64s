@@ -378,7 +378,7 @@ void __fastcall TFindTagForm::PopupItemUpdate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TFindTagForm::CopyActionExecute(TObject *Sender)
 {
-	if (TagsListBox->Focused())  ExeCmdListBox(TagsListBox, _T("ClipCopy"));
+	if (TagsListBox->Focused())  ExeCmdListBox(TagsListBox, "ClipCopy");
 
 	TagCmd = "COPY";
 	ModalResult = mrOk;

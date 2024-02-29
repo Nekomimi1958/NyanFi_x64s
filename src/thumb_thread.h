@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  サムネイル取得スレッド												//
-//----------------------------------------------------------------------//
+/**
+ * @file thumb_thread.h
+ * @brief サムネイル取得スレッド
+ */
+//---------------------------------------------------------------------------
 #ifndef ThumbnailThreadH
 #define ThumbnailThreadH
 
@@ -9,6 +10,9 @@
 #include <System.Classes.hpp>
 
 //---------------------------------------------------------------------------
+/**
+ * @brief サムネイル取得スレッド
+ */
 class TThumbnailThread : public TThread
 {
 private:
@@ -89,22 +93,27 @@ private:
 public:
 	HWND CallbackWnd;
 
-	__property bool ReqClear = {read = GetReqClear, write = SetReqClear};	//リストのクリア要求
-	__property bool ReqStart = {read = GetReqStart, write = SetReqStart};	//取得スタート要求
-	__property bool ReqMake  = {read = GetReqMake,  write = SetReqMake};	//個別作成要求
-	__property bool IsEmpty  = {read = GetIsEmpty,  write = SetIsEmpty};	//サムネイル未取得
-	__property int  Count    = {read = GetCount};							//リスト項目数
+	__property bool ReqClear = {read = GetReqClear, write = SetReqClear};	//!< リストのクリア要求
+	__property bool ReqStart = {read = GetReqStart, write = SetReqStart};	//!< 取得スタート要求
+	__property bool ReqMake  = {read = GetReqMake,  write = SetReqMake};	//!< 個別作成要求
+	__property bool IsEmpty  = {read = GetIsEmpty,  write = SetIsEmpty};	//!< サムネイル未取得
+	__property int  Count    = {read = GetCount};							//!< リスト項目数
 
 	int MakeIndex;
 	int StartIndex;
 
-	TStringList *ThumbnailList;	//サムネイルリスト
+	TStringList *ThumbnailList;	//!< サムネイルリスト
 	UnicodeString __fastcall GetListItem(int idx);
 	void __fastcall SetListItem(int idx, UnicodeString s);
 	Graphics::TBitmap* __fastcall GetListBitmap(int idx);
 	Graphics::TBitmap* __fastcall GetListBitmap(UnicodeString fnam);
 
+	/**
+	 * @brief コンストラクタ
+	 * @param CreateSuspended 
+	 */
 	__fastcall TThumbnailThread(bool CreateSuspended);
+
 	bool __fastcall FitSize(int *wd, int *hi);
 	void __fastcall MakeThumbnail(int idx);
 };

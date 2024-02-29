@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// MIGEMO																//
-//																		//
-//----------------------------------------------------------------------//
+/**
+ * @file usr_migemo.h
+ * @brief Migemo 処理
+ */
+//---------------------------------------------------------------------------
 #ifndef UsrMigemoH
 #define UsrMigemoH
 
@@ -13,6 +14,9 @@ typedef unsigned char*	(WINAPI *FUNC_migemo_query)(migemo*, const unsigned char*
 typedef void 			(WINAPI *FUNC_migemo_release)(migemo*, unsigned char*);
 
 //---------------------------------------------------------------------------
+/**
+ * @brief Migemo 処理
+ */
 class MigemoUnit
 {
 private:
@@ -31,10 +35,24 @@ public:
 	UnicodeString FileName;
 	int  MinLength;
 
+	/**
+	 * @brief コンストラクタ
+	 * @param dnam Migemoディレクトリ
+	 */
 	MigemoUnit(UnicodeString dnam);
+
 	~MigemoUnit();
 
 	UnicodeString Query(UnicodeString qstr);
+
+	/**
+	 * @brief 正規表現パターンを取得
+	 * 
+	 * @param sw Migemoを利用
+	 * @param w 検索語
+	 * @param minlen 検索開始文字数
+	 * @return UnicodeString 正規表現パターン
+	 */
 	UnicodeString GetRegExPtn(bool sw, UnicodeString w, int minlen = 0);
 };
 

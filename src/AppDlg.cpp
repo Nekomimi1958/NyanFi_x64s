@@ -287,12 +287,12 @@ void __fastcall TAppListDlg::FormMouseWheel(TObject *Sender, TShiftState Shift, 
 	TPoint &MousePos, bool &Handled)
 {
 	if (AppListBox->Focused()) {
-		ExeCmdListBox(AppListBox, (WheelDelta<0)? _T("CursorDown") : _T("CursorUp"));
+		ExeCmdListBox(AppListBox, (WheelDelta<0)? "CursorDown" : "CursorUp");
 		UpdateAppSttBar();
 		Handled = true;
 	}
 	else if (LaunchListBox->Focused()) {
-		ExeCmdListBox(LaunchListBox, (WheelDelta<0)? _T("CursorDown") : _T("CursorUp"));
+		ExeCmdListBox(LaunchListBox, (WheelDelta<0)? "CursorDown" : "CursorUp");
 		UpdateLaunchSttBar();
 		Handled = true;
 	}
@@ -1555,7 +1555,7 @@ void __fastcall TAppListDlg::AppInfoActionExecute(TObject *Sender)
 		tmp = ExtractFileName(c_ap->FileName);
 		if (c_ap->isWow64) tmp += "  (32-bit)"; else tmp += "  (64-bit)";
 		add_PropLine(_T("実行ファイル"),tmp, i_lst.get(), LBFLG_PATH_FIF);
-		add_PropLine(_T("場所"),		yen_to_delimiter(ExtractFilePath(c_ap->FileName)), i_lst.get(), LBFLG_PATH_FIF);
+		add_PropLine(_T("場所"),		ExtractFilePath(c_ap->FileName), i_lst.get(), LBFLG_PATH_FIF);
 		add_PropLine(_T("パラメータ"),	c_ap->CmdParam,	i_lst.get());
 
 		i_lst->Add(get_img_size_str(c_ap->win_wd, 	c_ap->win_hi, "画面サイズ"));

@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  振り分けダイアログ													//
-//----------------------------------------------------------------------//
+/**
+ * @file DistrDlg.h
+ * @brief 振り分けダイアログ
+ */
+//---------------------------------------------------------------------------
 #ifndef DistrDlgH
 #define DistrDlgH
 
@@ -21,6 +22,9 @@
 #include <Vcl.Mask.hpp>
 
 //---------------------------------------------------------------------------
+/**
+ * @brief 振り分けダイアログ
+ */
 class TDistributionDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -146,12 +150,12 @@ private:	// ユーザー宣言
 	void __fastcall UpdateListItem(int idx);
 
 public:		// ユーザー宣言
-	TStringList *ItemList;			// IN 対象リスト
-	TStringList *DistrList;			//OUT 振り分けリスト(ファイル名 \t 振り分け先)
-	UnicodeString OppPath;			//反対パス
-	bool IsMove;					//true=移動/ false=コピー
-	bool ImmediateExe;				//確認無しで直ちに実行
-	int  SkipCount;					//振り分け先不在によるスキップ数
+	TStringList *ItemList;			//!< IN 対象リスト
+	TStringList *DistrList;			//!< OUT 振り分けリスト(ファイル名 \t 振り分け先)
+	UnicodeString OppPath;			//!< 反対パス
+	bool IsMove;					//!< true=移動/ false=コピー
+	bool ImmediateExe;				//!< 確認無しで直ちに実行
+	int  SkipCount;					//!< 振り分け先不在によるスキップ数
 
 	__fastcall TDistributionDlg(TComponent* Owner);
 

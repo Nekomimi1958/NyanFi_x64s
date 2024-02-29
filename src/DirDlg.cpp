@@ -862,14 +862,13 @@ void __fastcall TRegDirDlg::EditItemActionExecute(TObject *Sender)
 void __fastcall TRegDirDlg::EditItemActionUpdate(TObject *Sender)
 {
 	TAction *ap = (TAction *)Sender;
-	TListBox *lp = RegDirListBox;
 	if (IsAddMode) {
 		ap->Caption = "‘}“ü";
-		ap->Enabled = (!IsSpecial && lp->ItemIndex!=-1 && !DescEdit->Text.IsEmpty());
+		ap->Enabled = (!IsSpecial && RegDirListBox->ItemIndex!=-1 && !DescEdit->Text.IsEmpty());
 	}
 	else {
 		ap->Caption = "•ÏX";
-		ap->Enabled = (!IsSpecial && lp->ItemIndex!=-1 && !lp->Items->Strings[lp->ItemIndex].IsEmpty());
+		ap->Enabled = (!IsSpecial && !ListBoxGetStr(RegDirListBox).IsEmpty());
 	}
 }
 //---------------------------------------------------------------------------
@@ -885,9 +884,7 @@ void __fastcall TRegDirDlg::DelItemActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TRegDirDlg::DelItemActionUpdate(TObject *Sender)
 {
-	TListBox *lp = RegDirListBox;
-	((TAction*)Sender)->Enabled =
-		(!IsSpecial && lp->ItemIndex!=-1 && !lp->Items->Strings[lp->ItemIndex].IsEmpty());
+	((TAction*)Sender)->Enabled = (!IsSpecial && !ListBoxGetStr(RegDirListBox).IsEmpty());
 }
 
 //---------------------------------------------------------------------------

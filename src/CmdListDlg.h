@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  コマンドファイル一覧												//
-//----------------------------------------------------------------------//
+/**
+ * @file CmdListDlg.h
+ * @brief コマンドファイル一覧
+ */
+//---------------------------------------------------------------------------
 #ifndef CmdListDlgH
 #define CmdListDlgH
 
@@ -20,6 +21,9 @@
 #include "usr_scrpanel.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief コマンドファイル一覧
+ */
 class TCmdFileListDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -107,9 +111,9 @@ private:	// ユーザー宣言
 	int  __fastcall GetGridIndex();
 
 public:		// ユーザー宣言
-	UsrScrollPanel *GridScrPanel;	//シンプルスクロールバー
-	UsrScrollPanel *PrevScrPanel;
-	UsrScrollPanel *ReferScrPanel;
+	UsrScrollPanel *GridScrPanel;	//!< シンプルスクロールバー
+	UsrScrollPanel *PrevScrPanel;	//!< シンプルスクロールバー
+	UsrScrollPanel *ReferScrPanel;	//!< シンプルスクロールバー
 
 	UnicodeString CmdFileName;
 	bool ToFilter;

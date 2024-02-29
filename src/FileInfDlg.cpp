@@ -536,10 +536,7 @@ void __fastcall TFileInfoDlg::CopyInfoActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TFileInfoDlg::CopyValueActionExecute(TObject *Sender)
 {
-	TListBox *lp = InfListBox;
-	if (lp->ItemIndex!=-1) {
-		copy_to_Clipboard(Trim(get_tkn_r(lp->Items->Strings[lp->ItemIndex], ": ")));
-	}
+	copy_to_Clipboard(Trim(get_tkn_r(ListBoxGetStr(InfListBox), ": ")));
 }
 
 //---------------------------------------------------------------------------
@@ -547,8 +544,7 @@ void __fastcall TFileInfoDlg::CopyValueActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TFileInfoDlg::EmpItemActionExecute(TObject *Sender)
 {
-	TListBox *lp = InfListBox;
-	UnicodeString inam = Trim(get_tkn(lp->Items->Strings[lp->ItemIndex], ':'));
+	UnicodeString inam = Trim(get_tkn(ListBoxGetStr(InfListBox), ':'));
 	if (!inam.IsEmpty()) {
 		std::unique_ptr<TStringList> n_lst(new TStringList());
 		n_lst->Delimiter = '|';
@@ -557,18 +553,15 @@ void __fastcall TFileInfoDlg::EmpItemActionExecute(TObject *Sender)
 		int idx = n_lst->IndexOf(inam);
 		if (idx!=-1) n_lst->Delete(idx); else n_lst->Add(inam);
 		EmpInfItems = n_lst->DelimitedText;
-		lp->Invalidate();
+		InfListBox->Invalidate();
 	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TFileInfoDlg::EmpItemActionUpdate(TObject *Sender)
 {
 	TAction *ap  = (TAction *)Sender;
-	TListBox *lp = InfListBox;
-	int idx = lp->ItemIndex;
-	int flag = (idx!=-1)? (int)lp->Items->Objects[idx] : 0;
-	UnicodeString inam = (idx!=-1 && (flag & LBFLG_STD_FINF)==0)?
-							Trim(get_tkn(lp->Items->Strings[idx], ':')) : EmptyStr;
+	int flag = (int)ListBoxGetObj(InfListBox);
+	UnicodeString inam = ((flag & LBFLG_STD_FINF)==0)? Trim(get_tkn(ListBoxGetStr(InfListBox), ':')) : EmptyStr;
 	ap->Enabled = !inam.IsEmpty();
 	ap->Checked = test_word_i(inam, EmpInfItems);
 }
@@ -578,7 +571,7 @@ void __fastcall TFileInfoDlg::EmpItemActionUpdate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TFileInfoDlg::CopyActionExecute(TObject *Sender)
 {
-	ExeCmdListBox(InfListBox, _T("ClipCopy"));
+	ExeCmdListBox(InfListBox, "ClipCopy");
 }
 //---------------------------------------------------------------------------
 void __fastcall TFileInfoDlg::CopyActionUpdate(TObject *Sender)
@@ -666,4 +659,3 @@ void __fastcall TFileInfoDlg::ImgPreviewActionUpdate(TObject *Sender)
 	ap->Checked = ap->Enabled && SubViewer->Visible;
 }
 //---------------------------------------------------------------------------
-

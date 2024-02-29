@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  タグ名の検索														//
-//----------------------------------------------------------------------//
+/**
+ * @file FindTag.h
+ * @brief タグ名の検索
+ */
+//---------------------------------------------------------------------------
 #ifndef FindTagH
 #define FindTagH
 
@@ -16,6 +17,9 @@
 #include <Vcl.Menus.hpp>
 
 //---------------------------------------------------------------------------
+/**
+ * @brief タグ名の検索
+ */
 class TFindTagForm : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -80,8 +84,8 @@ public:		// ユーザー宣言
 	UnicodeString FileName;
 	UnicodeString TagInfo;
 
-	UsrScrollPanel *TagsScrPanel;	//シンプルスクロールバー
-	UsrScrollPanel *InfoScrPanel;
+	UsrScrollPanel *TagsScrPanel;	//!< シンプルスクロールバー
+	UsrScrollPanel *InfoScrPanel;	//!< シンプルスクロールバー
 
 	__fastcall TFindTagForm(TComponent* Owner);
 };

@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// 汎用共用モジュール													//
-//																		//
-//----------------------------------------------------------------------//
+/**
+ * @file UserMdl.h
+ * @brief 汎用共用モジュール
+ */
+//---------------------------------------------------------------------------
 #ifndef UserMdlH
 #define UserMdlH
 
@@ -21,22 +22,22 @@
 
 //---------------------------------------------------------------------------
 //リストボックスのオプションタグ
-#define LBTAG_OPT_FOCS	0x10000000		//操作後、リストボックスにフォーカス
-#define LBTAG_OPT_INHI	0x20000000		//変更禁止
+#define LBTAG_OPT_FOCS	0x10000000		//!< 操作後、リストボックスにフォーカス
+#define LBTAG_OPT_INHI	0x20000000		//!< 変更禁止
 
 //コンボボックスのオプションタグ
-#define CBTAG_RGEX_V	0x01000000		//正規表現参照を表示
-#define CBTAG_RGEX_E	0x02000000		//正規表現参照を有効
-#define CBTAG_HISTORY	0x08000000		//履歴を持つ
-#define CBTAG_NO_CALC	0x10000000		//電卓を表示しない
-#define CBTAG_HAS_POP	0x40000000		//ポップアップが割り当てられている
+#define CBTAG_RGEX_V	0x01000000		//!< 正規表現参照を表示
+#define CBTAG_RGEX_E	0x02000000		//!< 正規表現参照を有効
+#define CBTAG_HISTORY	0x08000000		//!< 履歴を持つ
+#define CBTAG_NO_CALC	0x10000000		//!< 電卓を表示しない
+#define CBTAG_HAS_POP	0x40000000		//!< ポップアップが割り当てられている
 
 //エディットボックスのオプションタグ
-#define EDTAG_RGEX_V	0x01000000		//正規表現参照を表示
-#define EDTAG_RGEX_E	0x02000000		//正規表現参照を有効
-#define EDTAG_DST_FMT	0x04000000		//振分先の書式文字列参照
-#define EDTAG_REF_CDIR	0x08000000		//カレントのパス無しディレクトリ名
-#define EDTAG_NO_CALC	0x10000000		//電卓を表示しない
+#define EDTAG_RGEX_V	0x01000000		//!< 正規表現参照を表示
+#define EDTAG_RGEX_E	0x02000000		//!< 正規表現参照を有効
+#define EDTAG_DST_FMT	0x04000000		//!< 振分先の書式文字列参照
+#define EDTAG_REF_CDIR	0x08000000		//!< カレントのパス無しディレクトリ名
+#define EDTAG_NO_CALC	0x10000000		//!< 電卓を表示しない
 
 //ファイルダイアログ用フィルタ
 #define F_FILTER_EXE	_T("実行ファイル (*.exe)|*.EXE")
@@ -65,6 +66,9 @@ extern code_page_inf SaveCodePages[MAX_SAVE_CODEPAGES];
 typedef BOOL (WINAPI *FUNC_PickIconDlg)(HWND, LPWSTR, DWORD, LPDWORD);
 
 //---------------------------------------------------------------------------
+/**
+ * @brief 汎用共用モジュール
+ */
 class TUserModule : public TDataModule
 {
 __published:	// IDE で管理されるコンポーネント
@@ -262,51 +266,88 @@ public:		// ユーザー宣言
 	TCursor crSpuitTool;
 	TCursor crHandGrabR;
 
-	UnicodeString ExePath;		//NyanFi実行パス
-	UnicodeString CurFileName;	//カーソル位置のファイル名
-	UnicodeString CurPathName;	//現在のカレントパス名
-	UnicodeString OppPathName;	//現在の反対パス名
-	UnicodeString RefFileName;	//メニュー参照用ファイル名
+	UnicodeString ExePath;			//!< NyanFi実行パス
+	UnicodeString CurFileName;		//!< カーソル位置のファイル名
+	UnicodeString CurPathName;		//!< 現在のカレントパス名
+	UnicodeString OppPathName;		//!< 現在の反対パス名
+	UnicodeString RefFileName;		//!< メニュー参照用ファイル名
 
-	UnicodeString IconFilePath;	//アイコン参照パス
+	UnicodeString IconFilePath;		//!< アイコン参照パス
 
-	TStringList *RefRegExList;	//正規表現の参照リスト
-	TStringList *CmdParamList;	//コマンドパラメータの参照リスト
+	TStringList *RefRegExList;		//!< 正規表現の参照リスト
+	TStringList *CmdParamList;		//!< コマンドパラメータの参照リスト
 
-	TRect FileListRect;			//ファイルリスト部分のスクリーン座標Rect
+	TRect FileListRect;				//!< ファイルリスト部分のスクリーン座標Rect
 
-	int ScrMode;				//画面モード
+	int ScrMode;					//!< 画面モード
 
 	__fastcall TUserModule(TComponent* Owner);
 
+	/** @brief リストボックスの初期化*/
 	void __fastcall InitializeListBox(TCustomListBox *lp, UsrScrollPanel *sp = NULL);
 	void __fastcall UninitializeListBox();
 
 	bool __fastcall ListBoxOpeItem(UnicodeString keystr);
 
+	/**
+	 * @brief スポイト処理の開始
+	 * @param pp スポイトパネル
+	 * @param ip スポイトイメージ
+	 * @param col_def デフォルト色
+	 */
 	void __fastcall BeginSpuit(TPanel *pp, TImage *ip, TColor col_def);
+
+	/** @brief スポイト処理の終了 */
 	TColor __fastcall EndSpuit();
+
+	/** @brief スポイト動作中？ */
 	bool __fastcall SpuitEnabled();
 
 	void __fastcall SetUsrPopupMenu(TForm *fp);
 	bool __fastcall ShowPopupMenu();
 
+	/** @brief 画像フィルタを設定 */
 	void __fastcall SetOpenImgFilter(UnicodeString fnam);
+
+	/** @brief ディレクトリの選択 */
 	bool __fastcall SelectDirEx(const _TCHAR *tit, UnicodeString &dnam, bool to_rel = false);
 
+	/** @brief フィルタからデフォルトの拡張子を取得 */
 	UnicodeString __fastcall get_DlgDefExt(UnicodeString filter);
+
+	/**
+	 * @brief 開くダイアログの準備
+	 * @param tit タイトル
+	 * @param filter フィルタ
+	 * @param fnam ファイル名
+	 * @param inidir 初期パス
+	 */
 	void __fastcall PrepareOpenDlg(const _TCHAR *tit, const _TCHAR *filter, const _TCHAR *fnam = NULL, UnicodeString inidir = EmptyStr);
+
 	UnicodeString __fastcall OpenDlgExecute();
+
+	/** @brief 開くダイアログの結果を設定 */
 	bool __fastcall OpenDlgToEdit(TWinControl *ep, bool to_rel = false);
+
 	bool __fastcall OpenDlgToStr(UnicodeString &s, bool to_rel = false);
 	bool __fastcall OpenImgDlgToEdit(TWinControl *ep, bool to_rel = false);
 	bool __fastcall FontDlgToFont(TFont *f);
 	UnicodeString __fastcall OpenDlgIconIndex(bool to_rel = false);
 
+	/**
+	 * @brief 保存ダイアログの準備
+	 * @param tit タイトル
+	 * @param filter フィルタ
+	 * @param fnam ファイル名
+	 * @param inidir 初期パス
+	 */
 	void __fastcall PrepareSaveDlg(const _TCHAR *tit, const _TCHAR *filter, const _TCHAR *fnam = NULL, UnicodeString inidir = EmptyStr);
+
 	UnicodeString __fastcall SaveDlgExecute();
 
+	/** @brief コンボボックスの選択状態を保存 */
 	void __fastcall SaveLastComboBox();
+	/** @brief コンボボックスの選択状態を復帰 */
 	void __fastcall RestoreLastComboBox();
 
 	void __fastcall SetBlinkTimer(TComponent *cp);

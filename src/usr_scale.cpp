@@ -24,8 +24,8 @@ void AssignScaledFont(
 //指定フォントの描画高を取得
 //---------------------------------------------------------------------------
 int get_FontHeightMgn(TFont *font,
-	int mgn,		//	マージン		(default = 0)
-	int min_mgn)	//	最小マージン	(default = 2)
+	int mgn,		//マージン		(default = 0)
+	int min_mgn)	//最小マージン	(default = 2)
 {
 	std::unique_ptr<Graphics::TBitmap> bmp(new Graphics::TBitmap());
 	TCanvas *cv = bmp->Canvas;

@@ -263,7 +263,7 @@ TColor get_WinColor(
 }
 //---------------------------------------------------------------------------
 TColor get_TextColor(
-	bool is_hl)	//ハイライト	(default = false)
+	bool is_hl)		//ハイライト	(default = false)
 {
 	return TStyleManager::ActiveStyle->GetSystemColor(is_hl? clHighlightText : clWindowText);
 }

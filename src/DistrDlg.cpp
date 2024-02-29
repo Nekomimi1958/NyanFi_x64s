@@ -611,9 +611,8 @@ void __fastcall TDistributionDlg::PrvListBoxData(TWinControl *Control, int Index
 void __fastcall TDistributionDlg::PrvListBoxDblClick(TObject *Sender)
 {
 	//ŠY“–‚·‚é“o˜^€–Ú‚ðŒŸõ
-	TListBox *lp = (TListBox*)Sender;
-	if (lp->ItemIndex!=-1) {
-		UnicodeString nnam = get_dir_name(get_pre_tab(lp->Items->Strings[lp->ItemIndex]));
+	UnicodeString nnam = get_dir_name(get_pre_tab(ListBoxGetStr(PrvListBox)));
+	if (!nnam.IsEmpty()) {
 		TCheckListBox *cp = RegListBox;
 		cp->ItemIndex = -1;
 		for (int i=0; i<cp->Count && cp->ItemIndex==-1; i++) {

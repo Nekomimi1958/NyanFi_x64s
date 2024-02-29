@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  サブビューア														//
-//----------------------------------------------------------------------//
+/**
+ * @file SubView.h
+ * @brief サブイメージビューア
+ */
+//---------------------------------------------------------------------------
 #ifndef SubViewH
 #define SubViewH
 
@@ -16,6 +17,9 @@
 #include <Vcl.ActnList.hpp>
 
 //---------------------------------------------------------------------------
+/**
+ * @brief サブイメージビューア
+ */
 class TSubViewer : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -69,17 +73,18 @@ private:	// ユーザー宣言
 	double __fastcall GetZoomRatio();
 
 public:		// ユーザー宣言
-	UnicodeString FileName;
-	bool formFileInf;
-	bool isClip;				//クリップボード
+	UnicodeString FileName;		//!< 表示ファイル名
+	bool formFileInf;			//!< ファイル情報ダイアログから表示
+	bool isClip;				//!< クリップボード
 
 	bool FImgLocked;
 	void __fastcall SetImgLocked(bool Value);
+	/** @brief 表示のロック */
 	__property bool ImgLocked = {read = FImgLocked,  write = SetImgLocked};
 
-	void __fastcall DrawImage(UnicodeString fnam = EmptyStr);
-	void __fastcall RotateImage(int rn);
-	void __fastcall LockImage();
+	void __fastcall DrawImage(UnicodeString fnam = EmptyStr);	//!< 画像の描画
+	void __fastcall RotateImage(int rn);						//!< 回転
+	void __fastcall LockImage();								//!< ロック
 
 	__fastcall TSubViewer(TComponent* Owner);
 

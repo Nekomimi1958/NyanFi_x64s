@@ -771,27 +771,30 @@ void __fastcall UsrScrollPanel::SetRBCornerPanel(TPanel *pp)
 //---------------------------------------------------------------------------
 //検索語が変化したか?
 //  変化した場合 HitLines を初期化
+//  先頭項目 = 検索語 [TAB] オプションなど
 //---------------------------------------------------------------------------
 bool __fastcall UsrScrollPanel::KeyWordChanged(
 	UnicodeString kwd,	//検索語
 	int  max_cnt,		//最大行数
 	bool case_sw,		//大小文字を区別	(default = false)
-	int  code_page)		//コードページ		(default = 0)
+	bool word_sw,		//単語単位			(default = false)
+	int  code_page)		//バイナリ・コードページ	(default = 0)
 {
 	if (HitLineColor==Graphics::clNone) {
 		HitLines->Clear();
 		return false;
 	}
 
-	UnicodeString lst_kwd = (HitLines->Count>0)? HitLines->Strings[0] : EmptyStr;
+	UnicodeString lst_stt = (HitLines->Count>0)? HitLines->Strings[0] : EmptyStr;
 	int           lst_cnt = (HitLines->Count>0)? (int)HitLines->Objects[0] : 0;
-	if (!kwd.IsEmpty()) kwd.cat_sprintf(_T("\t%u:%u"), (case_sw? 1 : 0), code_page);
+	UnicodeString new_stt = kwd;
+	if (!kwd.IsEmpty()) new_stt.cat_sprintf(_T("\t%u:%u:%u"), (case_sw? 1 : 0), (word_sw? 1 : 0), code_page);
 
 	bool ret = false;
-	if (kwd.IsEmpty() || max_cnt==0 || !SameStr(kwd, lst_kwd) || max_cnt!=lst_cnt) {
+	if (new_stt.IsEmpty() || max_cnt==0 || !SameStr(new_stt, lst_stt) || max_cnt!=lst_cnt) {
 		HitLines->Clear();
-		if (!kwd.IsEmpty() && max_cnt>0) {
-			HitLines->AddObject(kwd, (TObject *)(NativeInt)max_cnt);
+		if (!new_stt.IsEmpty() && max_cnt>0) {
+			HitLines->AddObject(new_stt, (TObject *)(NativeInt)max_cnt);
 			ret = true;
 		}
 	}
@@ -803,5 +806,13 @@ bool __fastcall UsrScrollPanel::KeyWordChanged(
 void __fastcall UsrScrollPanel::AddHitLine(int n)
 {
 	HitLines->AddObject(EmptyStr, (TObject *)(NativeInt)n);
+}
+//---------------------------------------------------------------------------
+//ヒット行をクリア
+//---------------------------------------------------------------------------
+void __fastcall UsrScrollPanel::ClearHitLine()
+{
+	HitLines->Clear();
+	Repaint();
 }
 //---------------------------------------------------------------------------

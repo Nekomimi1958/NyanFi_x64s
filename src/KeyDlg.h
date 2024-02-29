@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  キー割り当て一覧													//
-//----------------------------------------------------------------------//
+/**
+ * @file KeyDlg.h
+ * @brief キー割り当て一覧
+ */
+//---------------------------------------------------------------------------
 #ifndef KeyDlgH
 #define KeyDlgH
 
@@ -21,6 +22,9 @@
 #include <Vcl.Mask.hpp>
 
 //---------------------------------------------------------------------------
+/**
+ * @brief キー割り当て一覧
+ */
 class TKeyListDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -97,7 +101,7 @@ private:	// ユーザー宣言
 	void __fastcall GetStrList(TStringList *lst);
 
 public:		// ユーザー宣言
-	UsrScrollPanel *GridScrPanel;	//シンプルスクロールバー
+	UsrScrollPanel *GridScrPanel;	//!< シンプルスクロールバー
 
 	UnicodeString CommandStr;
 	bool ToFilter;

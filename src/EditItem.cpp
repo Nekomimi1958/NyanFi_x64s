@@ -191,8 +191,6 @@ void __fastcall TEditItemDlg::ItemListBoxKeyDown(TObject *Sender, WORD &Key, TSh
 //---------------------------------------------------------------------------
 void __fastcall TEditItemDlg::ItemListBoxClick(TObject *Sender)
 {
-	TListBox *lp = (TListBox*)Sender;
-	if (lp->ItemIndex!=-1) ItemEdit->Text = lp->Items->Strings[lp->ItemIndex];
+	ItemEdit->Text = ListBoxGetStr(ItemListBox);
 }
 //---------------------------------------------------------------------------
-

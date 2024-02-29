@@ -293,7 +293,7 @@ void __fastcall TGitViewer::UpdateCommitList(
 	UnicodeString commit_id)	//対象コミットID	(default = EmptyStr : HEAD)
 {
 	ClearCommitList();
-	CommitScrPanel->HitLines->Clear();
+	CommitScrPanel->ClearHitLine();
 
 	TListBox *c_lp = CommitListBox;
 	MsgHint->ShowMsgHint("ファイル抽出中...", c_lp, col_bgHint);

@@ -216,7 +216,7 @@
         パラメータには、<a href="#CalcDirSize">CalcDirSize</a> コマンドと同じものを使用できます。<br>
         そのほかに <b>SG</b> を指定すると、タイムスタンプの代わりにディレクトリ容量のグラフが表示されます。パーセントは、カレントで表示されている項目の合計サイズに対する相対値です。<br>
         また <b>DG</b> (仮想ディレクトリでは無効)を指定すると、カレントドライブの全体容量に対するグラフが表示されます。<br>
-        複数のパラメータを指定する場合は <b>;</b> (セミコロン)で区切ってください(FC、SG、DG は何れか一つ)。<br>
+        複数のパラメータを指定する場合は <b>;</b> (セミコロン)で区切ってください(FC、SG、DG はいずれか1つ)。<br>
       </div>
       <b>例</b>: CalcDirSizeAll_SG;LO<br>
       <a href="#CalcDirSize">→ CalcDirSize</a>　<a href="#ReloadList">→ ReloadList</a>
@@ -360,7 +360,7 @@ NyanFi.exe -XCalculator_CB
       </div>
       <div class="spc_box">
         パラメータに <b>IN</b> を指定すると、入力ボックスで書式を指定できます。<br>
-        対象が一つの場合、その名前がデフォルトとして表示され、任意に改名してクローン化できます。この場合、同名ファイルがなくても改名が適用されます。<br>
+        対象が1つの場合、その名前がデフォルトとして表示され、任意に改名してクローン化できます。この場合、同名ファイルがなくても改名が適用されます。<br>
         対象が複数の場合は、<b>\N</b> がデフォルトになります。<br>
         「<b>デフォルトを選択状態に</b>」をチェックしていると、入力欄の初期状態が全選択になります。<br>
       </div>
@@ -468,7 +468,7 @@ NyanFi.exe -XCalculator_CB
 
     <dt id="CompressDir">CompressDir<span class="pram_text">[_{UN|AL}]</span></dt>
     <dd>選択中(無ければカーソル位置)のディレクトリをNTFS圧縮します。対象ディレクトリおよびその階層下にあるすべてのサブディレクトリとファイルに対して圧縮属性が設定されます。<br>
-      デフォルトの圧縮では、アーカイブファイル、.bmp 以外の画像、.wav 以外のサウンド、動画ファイルは除外されます。ただし圧縮されたディレクトリに後から追加されたファイルには圧縮属性が付加されますので注意してください。<br>
+      デフォルトの圧縮では、アーカイブファイル、.bmp 以外の画像、.wav 以外のサウンド、動画ファイルは除外されます。ただし、圧縮されたディレクトリに後から追加されたファイルには圧縮属性が付加されますので注意してください。<br>
       処理はバックグラウンド・タスクで行われます。<br>
       対象デフォルトのみに圧縮属性を設定したい場合は、<a href="hid00051.htm">名前の変更ダイアログ</a>で行ってください。<br>
       <div class="spc_box">
@@ -480,13 +480,12 @@ NyanFi.exe -XCalculator_CB
     <dt id="ContextMenu">ContextMenu<span class="pram_text">[_ファイル名]</span></dt>
     <dd>選択中(無ければカーソル位置)の項目に対するコンテキストメニューを表示します([..]位置ではカレントが対象)。<br>
       <div class="note_text">
-        <a href="hid00060.htm">ワークリスト</a>では異なるディレクトリの項目が混在する可能性があるため、対象項目が一つの場合にのみ実行できます。
+        <a href="hid00060.htm">ワークリスト</a>では異なるディレクトリの項目が混在する可能性があるため、対象項目が1つの場合にのみ実行できます。
       </div>
 
       <div class="spc_box">
         パラメータに<b>メニュー定義ファイル</b>(ドライブ名がない場合、<b>NyanFi</b> ディレクトリ相対)を指定すると、定義されている項目をコンテキストメニューに追加できます。<br>
-        ファイルの書式は、<a href="#ExeMenuFile">ExeMenuFile</a> コマンドの場合と基本的に同じです。項目ごとに１行ずつ、タイトル、コマンド、また必要ならアイコン用ファイル(*.ico、*.exe
-        等)を、タブで区切って記述してください。なお、タイトルの末尾に <b>|</b> で区切って拡張子を指定すると、対象の拡張子がそれに該当する場合にのみ、そのメニュー項目が表示されます。拡張子は <b>.</b>
+        ファイルの書式は、<a href="#ExeMenuFile">ExeMenuFile</a> コマンドの場合と基本的に同じです。項目ごとに1行ずつ、タイトル、コマンド、また必要ならアイコン用ファイル(*.ico、*.exe など)を、タブで区切って記述してください。なお、タイトルの末尾に <b>|</b> で区切って拡張子を指定すると、対象の拡張子がそれに該当する場合にのみ、そのメニュー項目が表示されます。拡張子は <b>.</b>
         (ピリオド)で区切って複数指定できます。<b>\</b> はディレクトリに相当します。<br>
         また <b>!</b> だけの行があると、以降の項目はコンテキストメニューの先頭に表示されます。<br>
         なお、右クリック時に表示されるコンテキストメニューに項目を追加したい場合は、<a href="hid00021.htm">オプション設定 - イベント</a> - 「<b>ファイルリストで右クリック</b>」に
@@ -506,7 +505,7 @@ NyanFi.exe -XCalculator_CB
 </pre>
       <div class="spc_box">
         コンテキストメニューは、ファイルリスト上で右クリックしたときにも表示されます。その場合、選択項目がなく、かつカーソル位置項目以外の場所を右クリックしたときは、カレントディレクトリに対するコンテキストメニューが表示されます。また、選択項目がなく、カーソル位置項目を右クリックしたときは、それが対象となります。<br>
-        また、アプリケーションキーや<span class="btn_frame">Shft</span>+<span class="btn_frame">F10</span>キー(無設定の場合)を押した時にも表示されます。<br>
+        また、アプリケーションキーや<span class="btn_frame">Shft</span>+<span class="btn_frame">F10</span>キー(無設定の場合)を押したときにも表示されます。<br>
       </div>
       <div class="spc_box">
         <span class="tips">Tips</span><b>ContextMenu</b> コマンドに割り当てたキーは、他の画面やダイアログのリストボックスで右クリックメニューを表示するのにも利用できます。<br>
@@ -809,7 +808,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
       </div>
       <div class="spc_box">
         なおハードリンクのファイル情報には、「種類」の末尾にリンク数が表示されます。
-        例えば、あるファイルに対してハードリンクを一つ作成すると、元のファイルとハードリンクの両方に "(Link Count=2)"
+        例えば、あるファイルに対してハードリンクを1つ作成すると、元のファイルとハードリンクの両方に "(Link Count=2)"
         と表示されます。この場合、両者は同等で、両方とも削除してリンク数が0になったときにファイルの実体が削除されます。<br>
       </div>
       <a href="#FindHardLink">→ FindHardLink</a>　<a href="#CreateJunction">→ CreateJunction</a>　<a href="#CreateSymLink">→ CreateSymLink</a>　<a href="#CompareDlg">→ CompareDlg</a>
@@ -832,10 +831,10 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
     </dd>
 
     <dt id="CreateTestFile">CreateTestFile</dt>
-    <dd>ファイル名、サイズ、個数を指定して、カレントにテスト用のファイルを作成します(データ内容は全て 00)。<br>
+    <dd>ファイル名、サイズ、個数を指定して、カレントにテスト用のファイルを作成します(データ内容はすべて 00)。<br>
       サイズは、末尾に <b>K</b>、<b>M</b>、<b>G</b> を付けて指定することも可能(例: 8G)。数値は整数で指定してください。<br>
       個数に1より大きな値を指定すると、ファイル名の末尾に連番を付けて複数作成します。連番の桁数は入力内容にしたがいます(例: 010 なら 001～010 を付加)。<br>
-      作成には fsutil を利用し、非表示で実行しています。ファイルシステムがNTFSなら、GB単位の巨大ファイルもすぐに作成できるはずです。FATでは時間がかかるので、NTFSで一旦作成してからコピーした方が良いかもしれません。
+      作成には fsutil を利用し、非表示で実行しています。ファイルシステムがNTFSなら、GB単位の巨大ファイルもすぐに作成できるはずです。FATでは時間がかかるので、NTFSで一旦作成してからコピーした方がよいかもしれません。
     </dd>
 
     <dt id="CsrDirToOpp">CsrDirToOpp<span class="pram_text">[_{TO|LK}]</span></dt>
@@ -1012,7 +1011,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
     </dd>
 
     <dt id="DelTab">DelTab</dt>
-    <dd>現在のタブを削除します。最後に残った一つは削除できません。<br>
+    <dd>現在のタブを削除します。最後に残った1つは削除できません。<br>
       タブ右上隅のマウスオーバーで削除ボタンが表示される場合、それによってもタブを削除できます。<br>
       <a href="hid00010.htm#TabBar">→ オプション設定 - デザイン - 「タブバー」</a><br>
       <a href="#AddTab">→ AddTab</a>　<a href="#MoveTab">→ MoveTab</a>　<a href="#SoloTab">→ SoloTab</a>　<a href="#TabDlg">→ TabDlg</a>　<a href="#ShowTabBar">→ ShowTabBar</a>
@@ -1117,7 +1116,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
     <dt id="Duplicate">Duplicate<span class="pram_text">[_{RA|DM}]</span></dt>
     <dd><a href="hid00017.htm#Duplicate">オプション設定 - 起動時</a> で二重起動が許可されている場合、新たに <b>NyanFi</b> を起動します。<br>
       パラメータに <b>RA</b> を指定すると、管理者として起動します。<br>
-      パラメータに <b>DM</b> を指定すると、<b>NyanFi</b> を管理者として実行している場合に、一般ユーザーに降格して起動します。<br>
+      パラメータに <b>DM</b> を指定すると、<b>NyanFi</b> を管理者として実行している場合に、一般ユーザに降格して起動します。<br>
       <a href="#ExitDupl">→ ExitDupl</a>　<a href="#NextNyanFi">→ NextNyanFi</a>　<a href="#PrevNyanFi">→ PrevNyanFi</a>
     </dd>
 
@@ -1212,14 +1211,13 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
 
     <dt id="ExeMenuFile">ExeMenuFile<span class="pram_text">_ファイル名</span></dt>
     <dd>指定した<b>メニュー定義ファイル</b>(ドライブ名がない場合は <b>NyanFi</b> ディレクトリ相対)を読み込んで、ポップアップメニューを表示し、選択された項目を実行します。<br>
-      メニュー定義ファイルは、項目ごとに１行ずつ、タイトル、コマンド、また必要ならアイコン用ファイルを、タブで区切って記述してください。<br>
+      メニュー定義ファイルは、項目ごとに1行ずつ、タイトル、コマンド、また必要ならアイコン用ファイルを、タブで区切って記述してください。<br>
       アイコン用ファイルにドライブ名がない場合、<b>NyanFi</b> ディレクトリからの相対指定とみなされます。<b>.exe</b> や <b>.dll</b> ではアイコンのインデックス番号も指定可能(例:
       %WINDIR%\system32\shell32.dll,21)。なおアイコンを指定していなくても、<a href="#OpenByWin">OpenByWin</a>、<a href="#FileEdit">FileEdit</a> コマンドや <a href="hid00063.htm#SetExeFile">SetExeFile</a>
       補助コマンドなどでファイルが指定されていたら、デフォルトでそのアイコンが表示されます。
       <div class="spc_box">
         コマンドは、<a href="#ExeCommands">ExeCommands</a> のパラメータとして実行されます。先頭が <b>@</b> の場合は<b>コマンドファイル</b>、<b>$</b> の場合は<a href="hid00014.htm">追加メニュー</a>または<a href="hid00015.htm">外部ツール</a>の<b>エイリアス</b>とみなされます。<br>
-        また <b>{</b> を指定すると、それ以降の <b>}</b> で始まる行までの間にある行内容をコマンドと見なします(読み込み時に : 区切りの一行に連結)。アイコンを指定したい場合は <b>}</b>
-        の後にタブで区切って記述してください。長いコマンドを複数行に分けて見やすくしたり、既存のコマンドファイルの内容を埋め込むことも可能。<br>
+        また <b>{</b> を指定すると、それ以降の <b>}</b> で始まる行までの間にある行内容をコマンドと見なします(読み込み時に : 区切りの一行に連結)。アイコンを指定したい場合は <b>}</b> の後にタブで区切って記述してください。長いコマンドを複数行に分けて見やすくしたり、既存のコマンドファイルの内容を埋め込んだりすることも可能。<br>
       </div>
 
       <div class="spc_box">
@@ -1297,7 +1295,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
 
     <dt id="ExPopupMenu">ExPopupMenu<span class="pram_text">[_{MN|TL}]</span></dt>
     <dd><a href="hid00014.htm">オプション設定 - 追加メニュー</a> と <a href="hid00015.htm">オプション設定 - 外部ツール</a>
-      で設定したメニュー項目を合わせ、一つのポップアップメニューとして表示します。<br>
+      で設定したメニュー項目を合わせ、1つのポップアップメニューとして表示します。<br>
       パラメータに <b>MN</b> を指定すると追加メニューのみを、また <b>TL</b> を指定すると外部ツールのみを表示します。<br>
       <a href="#ExeExtMenu">→ ExeExtMenu</a>　<a href="#ExeExtTool">→ ExeExtTool</a>　<a href="#ExeMenuFile">→
         ExeMenuFile</a>　<a href="#PopupMainMenu">→ PopupMainMenu</a>
@@ -1528,7 +1526,7 @@ nyanfi_imgview.jpg 129,806 800 × 600  (4 : 3)
     <dt id="FindFolderIcon">FindFolderIcon</dt>
     <dd>「<b>フォルダアイコン検索</b>」ダイアログを開きます。<br>
       <a href="#SetFolderIcon">SetFolderIcon</a> コマンドで設定されているアイコンの一覧が表示されますので、検索したいアイコンをチェックボックスで選んでください。<br>
-      なお一つも選択していない状態で<span class="btn_frame">OK</span>ボタンや<span class="btn_frame">ENTER</span>キーを押した場合は、カーソル位置のアイコンを検索します。<br>
+      なお1つも選択していない状態で<span class="btn_frame">OK</span>ボタンや<span class="btn_frame">ENTER</span>キーを押した場合は、カーソル位置のアイコンを検索します。<br>
       <div class="spc_box">
         「<b>結果リストから反対側へ反映</b>」をチェックしていると、検索の結果リストでカーソルを移動した際に、反対側がカーソル位置のディレクトリのパスに自動的に変更されます。チェックしていない場合でも、<a href="#CurrToOpp">CurrToOpp</a> コマンドを実行すると、個々に同様の動作が可能です。<br>
         なお右下隅の<span class="btn_frame">∨</span>/<span class="btn_frame">∧</span>ボタン(<span class="btn_frame">Alt</span>+<span class="btn_frame">O</span>キーでも可)で設定パネルを開閉できます。
@@ -1853,7 +1851,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 
       <div class="spc_box">
         入力を行うとフルパスの補完機能が働きます。ドライブ指定がない場合は、カレントパスからの相対とみなして絶対パスに補完します。候補がドロップダウン表示されているとき、<span class="btn_frame">ENTER</span>キーを押すか項目をクリックするとそれが入力欄に設定されます。末尾に "<b>\</b>"
-        を追加するとサブディレクトが候補としてさらに表示され、前方一致で候補を絞り込めます。なお、"<b>\</b>" の代わりに "<b>/</b>"
+        を追加するとサブディレクトリが候補としてさらに表示され、前方一致で候補を絞り込めます。なお、"<b>\</b>" の代わりに "<b>/</b>"
         もディレクトリ区切りとして使えます。<br>
         「<b>→で補完</b>」をチェックしていると、<span class="btn_frame">→</span>キーを押したときに補完リストがドロップダウンします。チェックしていない場合は自動的にドロップダウンしますが、空欄の場合(カレントのすべてのサブディレクトリが候補)のみ<span class="btn_frame">→</span>キーでのドロップダウンとなります。<br>
         補完候補が表示されていない場合、<span class="btn_frame">↓</span>キーで入力履歴が表示されます。なお、コンボボックス上の右クリックメニューで入力履歴を削除したりできます。<br>
@@ -1889,7 +1887,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
     </dd>
 
     <dt id="ItemTmpDown">ItemTmpDown</dt>
-    <dd>選択中(無ければカーソル位置)の項目を一時的に一つ下に移動します。ファイルリストが更新されると元に戻ります。<br>
+    <dd>選択中(無ければカーソル位置)の項目を一時的に1つ下に移動します。ファイルリストが更新されると元に戻ります。<br>
       なお、<a href="hid00009.htm#WorkList">オプション設定 - 一般 - ワークリスト</a>
       で「<b>項目をソートしない</b>」がチェックされているか、ワークリストにセパレータが含まれている場合は、一時的な移動ではなく変更が保存されます。<br>
       <a href="#WorkItemDown">→ WorkItemDown</a>　<a href="#ReloadList">→ ReloadList</a>
@@ -1902,7 +1900,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       <a href="#WorkItemMove">→ WorkItemMove</a>　<a href="#ReloadList">→ ReloadList</a>
     </dd>
     <dt id="ItemTmpUp">ItemTmpUp</dt>
-    <dd>選択中(無ければカーソル位置)の項目を一時的に一つ上に移動します。ファイルリストが更新されると元に戻ります。<br>
+    <dd>選択中(無ければカーソル位置)の項目を一時的に1つ上に移動します。ファイルリストが更新されると元に戻ります。<br>
       なお、<a href="hid00009.htm#WorkList">オプション設定 - 一般 - ワークリスト</a>
       で「<b>項目をソートしない</b>」がチェックされているか、ワークリストにセパレータが含まれている場合は、一時的な移動ではなく変更が保存されます。<br>
       <a href="#WorkItemUp">→ WorkItemUp</a>　<a href="#ReloadList">→ ReloadList</a>
@@ -2071,7 +2069,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 
     <dt id="ListTail">ListTail<span class="pram_text">[_[R]行数][;TE][;FF][;/見出しパターン/][;ファイル名]</span></dt>
     <dd>カーソル位置のテキストファイルの末尾から指定行数分を<a href="hid00073.htm">一覧ダイアログ</a>で表示します。<br>
-      表示部分のみを読み込むので、巨大なログファイルなどもすばやく確認できます。またフィルタによる絞り込み表示が可能。<br>
+      表示部分のみを読み込むので、巨大なログファイルなども素早く確認できます。またフィルタによる絞り込み表示が可能。<br>
 
       <div class="spc_box">
         パラメータで行数を指定しない場合、デフォルトの100行になります。<br>
@@ -2364,8 +2362,8 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
 
     <dt id="MoveTab">MoveTab<span class="pram_text">_{PR|TP|ED}</span></dt>
     <dd>現在のタブの位置を移動します。<br>
-      パラメータが指定されていないと、一つ次の位置に移動(交換)します。<br>
-      パラメータに <b>PR</b> を指定すると一つ前、<b>TP</b> では先頭、<b>TP</b> では最後に移動します。<br>
+      パラメータが指定されていないと、1つ次の位置に移動(交換)します。<br>
+      パラメータに <b>PR</b> を指定すると1つ前、<b>TP</b> では先頭、<b>TP</b> では最後に移動します。<br>
       なお、タブの移動はドラッグ＆ドロップでも可能です。<br>
       <a href="#AddTab">→ AddTab</a>　<a href="#DelTab">→ DelTab</a>　<a href="#SoloTab">→ SoloTab</a>　<a href="#MoveTab">→ MoveTab</a>　<a href="#ShowTabBar">→ ShowTabBar</a>
     </dd>
@@ -2505,7 +2503,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       OpenByApp<span class="pram_text">_DM[;ファイル名[;_ファイル名...]]</span>
     </dt>
     <dd>選択中(無ければカーソル位置)の項目を、独自の関連付けで開きます。関連付けは、<a href="hid00013.htm">オプション設定 -
-        関連付け</a>で行ってください。一つの拡張子に対して複数の関連付けが設定されていると、ポップアップメニューで選択できます。<br>
+        関連付け</a>で行ってください。1つの拡張子に対して複数の関連付けが設定されていると、ポップアップメニューで選択できます。<br>
       アーカイブ内のファイルは、一時ディレクトリ下に解凍したものが開かれます。仮想ディレクトリから抜けると一時ディレクトリのファイルは削除されますので注意してください(排他的に開かれていると削除できず残ります)。<br>
 
       <div class="spc_box">
@@ -2634,7 +2632,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
         <a href="hid00019.htm#OpenStandard">オプション設定 - コマンド - OpenStandard</a> で、特定のファイル拡張子に対し、標準とは異なる動作(<a href="#OpenByWin">OpenByWin</a>、<a href="#OpenByApp">OpenByApp</a>、<a href="#TextViewer">TextViewer</a>、<a href="#FileEdit">FileEdit</a>、<a href="#BinaryEdit">BinaryEdit</a>、<a href="#ExeCommands">ExeCommands</a>)を指定することも可能です。<br>
         <b>xd2txlib.dll</b> を利用して <b>.docx</b>、<b>.pptx</b>、<b>.xlsx</b>
         ファイルをテキスト表示したい場合は、これらの拡張子に対して「<b>テキストビューアで開く(TextViewer)</b>」を設定してください。<br>
-        なお、「<b>実行後にカーソルを下に移動</b>」をチェックしていると、実行後にカーソルが一つ下に移動します。<br>
+        なお、「<b>実行後にカーソルを下に移動</b>」をチェックしていると、実行後にカーソルが1つ下に移動します。<br>
       </div>
 
       <div class="spc_box">
@@ -2680,7 +2678,7 @@ NyanFi.exe -Ld:\hoge -CL -XGrep_"にゃぁ":GrepSetMask_*.txt:GrepStart
       フォーマットは、<b>ZIP</b>、<b>7z</b>、<b>TAR</b> に対応しています(要 7-zip64.dll、tar64.dll)。<br>
 
       <div class="note_text">
-        高い圧縮レベルを用いたり巨大なファイルを扱ったりすると、アーカイバDLLでエラーが発生する可能性があります。そのような場合は外部ツールを利用することをおすすめします。コマンドライン版の 7z.exe
+        高い圧縮レベルを用いたり巨大なファイルを扱ったりすると、アーカイバDLLでエラーが発生する可能性があります。そのような場合は外部ツールを利用することをお勧めします。コマンドライン版の 7z.exe
         などを登録して用いるのもよいかもしれません。
       </div>
 
@@ -3608,7 +3606,7 @@ D:\Data\hoge.txt
       <div class="spc_box">
         パラメータに <b>FF</b> を指定すると、開いたときフィルタ欄にフォーカスします。<br>
         フィルタ欄でのキー操作は <a href="hid00073.htm">一覧ダイアログ</a> などの場合と同様です。<br>
-        なお項目が一つだけに絞られている場合は、フィルタ欄で<span class="btn_frame">ENTER</span>キーを押してもそのディレクトリに移動できます。<br>
+        なお項目が1つだけに絞られている場合は、フィルタ欄で<span class="btn_frame">ENTER</span>キーを押してもそのディレクトリに移動できます。<br>
       </div>
       <a href="#RegDirDlg">→ RegDirDlg</a>　<a href="#Library">→ Library</a>
     </dd>
@@ -3678,7 +3676,7 @@ D:\Data\hoge.txt
     <dt id="SwapName">SwapName<span class="pram_text">[_LR]</span></dt>
     <dd>選択している2項目の名前を入れ替えます。<span class="note_text">対象がファイルの場合、拡張子はそのままです。</span><br>
       パラメータに <b>LR</b>
-      を指定すると、左右のファイルリストで一つずつ選択している項目の名前を入れ替えます。これは、左右とも通常のファイルリストの場合のみ可能です。また左右が親子関係にあって、一方のパスが改名される場合には対応していません。<br>
+      を指定すると、左右のファイルリストで1つずつ選択している項目の名前を入れ替えます。これは、左右とも通常のファイルリストの場合のみ可能です。また左右が親子関係にあって、一方のパスが改名される場合には対応していません。<br>
       <a href="#RenameDlg">→ RenameDlg</a>　<a href="#NameFromClip">→ NameFromClip</a>　<a href="#UndoRename">→
         UndoRename</a>
     </dd>
@@ -3772,7 +3770,7 @@ D:\Data\hoge.txt
       <div class="spc_box">
         パラメータに <b>CB</b> を指定すると、クリップボードのテキストを表示します。<br>
         パラメータに <b>XW</b> を付加すると、テキストビューアを別ウィンドウで開きます。詳しくは <a href="hid00006.htm#XW">テキストビューア</a> のページを参照してください。<br>
-        ２番目の書式のように、表示対象に追加指定することもできます。<br>
+        2番目の書式のように、表示対象に追加指定することもできます。<br>
       </div>
       <b>例</b>: クリップボードを別ウィンドウで表示<br>
       　TextViewer_CB;XW<br>
@@ -3798,7 +3796,7 @@ D:\Data\hoge.txt
     <dt id="ToLeft">ToLeft<span class="pram_text">[_RP[;{DL|DP}]]</span></dt>
     <dd>左ファイルリストへ移動します。<br>
       <div class="spc_box">
-        パラメータに <b>RP</b> を指定すると、カレントが左ファイルリストの場合、親ディレクトリ(一つ上の階層)へ移ります。<span class="btn_frame">←</span>キーに割り当てていれば、「逆カーソルで親ディレクトリに移動」になります(= <a href="#ToParentOnLeft">ToParentOnLeft</a>)。<br>
+        パラメータに <b>RP</b> を指定すると、カレントが左ファイルリストの場合、親ディレクトリ(1つ上の階層)へ移ります。<span class="btn_frame">←</span>キーに割り当てていれば、「逆カーソルで親ディレクトリに移動」になります(= <a href="#ToParentOnLeft">ToParentOnLeft</a>)。<br>
         さらに、<b>DL</b> を追加指定すると、左側がルートディレクトリだった場合は<a href="hid00064.htm">ドライブ一覧</a>を、UNCパスのルートレベルだった場合は共有フォルダ一覧(<a href="#ShareList">ShareList</a>)を表示します。また、<b>DP</b> を追加指定すると、左側がルートディレクトリだった場合にドライブ選択ポップアップメニューを表示します。<br>
         <b>例</b>: ToLeft_RP;DL<br>
       </div>
@@ -3848,7 +3846,7 @@ D:\Data\hoge.txt
     </dd>
 
     <dt id="ToParent">ToParent<span class="pram_text">[_{DL|DP}]</span></dt>
-    <dd>親ディレクトリ(一つ上の階層)に移ります。また検索結果リストから抜けることもできます。<br>
+    <dd>親ディレクトリ(1つ上の階層)に移ります。また検索結果リストから抜けることもできます。<br>
       <a href="hid00060.htm">ワークリスト</a>の場合は、そのワークリスト・ファイルの位置に移動します。<br>
       ライブラリファイル(<b>.library-ms</b>)から開いた登録場所で実行した場合は、そのライブラリファイルの位置に戻ります。<br>
 
@@ -3860,7 +3858,7 @@ D:\Data\hoge.txt
     </dd>
 
     <dt id="ToParentOnLeft">ToParentOnLeft<span class="pram_text">[_{DL|DP}]</span></dt>
-    <dd><a href="#ToLeft">ToLeft</a>_RP と同じです。カレントが左ファイルリストの場合、親ディレクトリ(一つ上の階層)へ移ります。右ファイルリストの場合は左ファイルリストへ移動します。<br>
+    <dd><a href="#ToLeft">ToLeft</a>_RP と同じです。カレントが左ファイルリストの場合、親ディレクトリ(1つ上の階層)へ移ります。右ファイルリストの場合は左ファイルリストへ移動します。<br>
       <div class="spc_box">
         パラメータに <b>DL</b> を指定すると、左側がルートディレクトリだった場合は<a href="hid00064.htm">ドライブ一覧</a>を、UNCパスのルートレベルだった場合は、共有フォルダ一覧(<a href="#ShareList">ShareList</a>)を表示します<br>
         パラメータに <b>DP</b> を指定すると、左側がルートディレクトリだった場合にドライブ選択ポップアップメニューを表示します。<br>
@@ -3869,7 +3867,7 @@ D:\Data\hoge.txt
     </dd>
 
     <dt id="ToParentOnRight">ToParentOnRight<span class="pram_text">[_{DL|DP}]</span></dt>
-    <dd><a href="#ToRight">ToRight</a>_RP と同じです。カレントが右ファイルリストの場合、親ディレクトリ(一つ上の階層)へ移ります。左ファイルリストの場合は右ファイルリストへ移動します。<br>
+    <dd><a href="#ToRight">ToRight</a>_RP と同じです。カレントが右ファイルリストの場合、親ディレクトリ(1つ上の階層)へ移ります。左ファイルリストの場合は右ファイルリストへ移動します。<br>
       <div class="spc_box">
         パラメータに <b>DL</b> を指定すると、右側がルートディレクトリだった場合は<a href="hid00064.htm">ドライブ一覧</a>を、UNCパスのルートレベルだった場合は、共有フォルダ一覧(<a href="#ShareList">ShareList</a>)を表示します<br>
         パラメータに <b>DP</b> を指定すると、右側がルートディレクトリだった場合にドライブ選択ポップアップメニューを表示します。<br>
@@ -3887,7 +3885,7 @@ D:\Data\hoge.txt
     <dd>右ファイルリストへ移動します。<br>
 
       <div class="spc_box">
-        パラメータに <b>RP</b> を指定すると、カレントが右ファイルリストの場合、親ディレクトリ(一つ上の階層)へ移ります。<span class="btn_frame">→</span>キーに割り当てていれば、「逆カーソルで親ディレクトリに移動」になります(= <a href="#ToParentOnRight">ToParentOnRight</a>)。<br>
+        パラメータに <b>RP</b> を指定すると、カレントが右ファイルリストの場合、親ディレクトリ(1つ上の階層)へ移ります。<span class="btn_frame">→</span>キーに割り当てていれば、「逆カーソルで親ディレクトリに移動」になります(= <a href="#ToParentOnRight">ToParentOnRight</a>)。<br>
         さらに、<b>DL</b> を追加指定すると、右側がルートディレクトリだった場合は<a href="hid00064.htm">ドライブ一覧</a>を、UNCパスのルートレベルだった場合は共有フォルダ一覧(<a href="#ShareList">ShareList</a>)を表示します。また、<b>DP</b> を追加指定すると、右側がルートディレクトリだった場合にドライブ選択ポップアップメニューを表示します。<br>
       </div>
 
@@ -3943,7 +3941,7 @@ D:\Data\hoge.txt
         パラメータに <b>CD</b> を指定すると、対象アーカイブのファイル名主部と同じ名前のディレクトリを作成し、その中に解凍します。また <b>CD2</b>
         を指定すると、アーカイブのルートに複数の対象がある場合にディレクトリを作成して解凍します。<br>
         <div class="note_text">
-          <b>ZIP</b>、<b>7Z</b> では、解凍先ディレクトリ名に連続した空白が含まれていると、それが一つの空白と解釈されてしまうため(<b>7-zip64.dll</b>
+          <b>ZIP</b>、<b>7Z</b> では、解凍先ディレクトリ名に連続した空白が含まれていると、それが1つの空白と解釈されてしまうため(<b>7-zip64.dll</b>
           の仕様?)、一時的にディレクトリ名を変更(空白×2 を "~x~"(x=A～Z) に置換)して処理しています。<br>
         </div>
       </div>
@@ -4006,7 +4004,7 @@ D:\Data\hoge.txt
 
     <dt id="ViewTail">ViewTail<span class="pram_text">[_[R][行数]]</span></dt>
     <dd>カーソル位置のテキストファイルの末尾から指定行数分を<a href="hid00006.htm">テキストビューア</a>で表示します。<br>
-      表示部分のみを読み込むので、巨大なログファイルなどもすばやく確認できます。<br>
+      表示部分のみを読み込むので、巨大なログファイルなども素早く確認できます。<br>
       パラメータで<b>行数</b>を指定しない場合、デフォルトの100行になります。<br>
       行数の頭に <b>R</b> を付けると、逆順で表示します。<br>
       開いたときのカーソル行は、逆順では先頭、そうでない場合は最後になります。<br>
@@ -4170,7 +4168,7 @@ var marker = L.marker([$Latitude$, $Longitude$]).addTo(map);
     </dd>
 
     <dt id="WorkItemDown">WorkItemDown</dt>
-    <dd><a href="hid00060.htm">ワークリスト</a>で、選択中(無ければカーソル位置)の項目を一つ下に移動します(<a href="#ItemTmpDown">ItemTmpDown</a>
+    <dd><a href="hid00060.htm">ワークリスト</a>で、選択中(無ければカーソル位置)の項目を1つ下に移動します(<a href="#ItemTmpDown">ItemTmpDown</a>
       で代替可能)。<br>
       <a href="#ItemTmpDown">→ ItemTmpDown</a>　<a href="#InsSeparator">→ InsSeparator</a>　<a href="#SetAlias">→
         SetAlias</a>　<a href="#WorkList">→ WorkList</a>
@@ -4183,7 +4181,7 @@ var marker = L.marker([$Latitude$, $Longitude$]).addTo(map);
     </dd>
 
     <dt id="WorkItemUp">WorkItemUp</dt>
-    <dd><a href="hid00060.htm">ワークリスト</a>で、選択中(無ければカーソル位置)の項目を一つ上に移動します(<a href="#ItemTmpUp">ItemTmpUp</a> で代替可能)。<br>
+    <dd><a href="hid00060.htm">ワークリスト</a>で、選択中(無ければカーソル位置)の項目を1つ上に移動します(<a href="#ItemTmpUp">ItemTmpUp</a> で代替可能)。<br>
       <a href="#ItemTmpUp">→ ItemTmpUp</a>　<a href="#InsSeparator">→ InsSeparator</a>　<a href="#SetAlias">→
         SetAlias</a>　<a href="#WorkList">→ WorkList</a>
     </dd>

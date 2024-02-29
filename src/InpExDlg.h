@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  拡張入力ボックス													//
-//----------------------------------------------------------------------//
+/**
+ * @file InpExDlg.h
+ * @brief 拡張入力ボックス
+ */
+//---------------------------------------------------------------------------
 #ifndef InpExDlgH
 #define InpExDlgH
 
@@ -31,6 +32,10 @@
 #define INPEX_CLIP_PASTE	14
 
 //---------------------------------------------------------------------------
+/**
+ * @brief 拡張入力ボックス
+ * 
+ */
 class TInputExDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -84,8 +89,8 @@ private:	// ユーザー宣言
 	void __fastcall WmFormShowed(TMessage &msg);
 
 public:		// ユーザー宣言
-	int  IpuntExMode;	//拡張モード	(0 の場合は単純な入力ボックス)
-	int  CustomWidth;	//カスタム表示幅
+	int  IpuntExMode;		//!< 拡張モード (0 の場合は単純な入力ボックス)
+	int  CustomWidth;		//!< カスタム表示幅
 
 	UnicodeString PathName;
 

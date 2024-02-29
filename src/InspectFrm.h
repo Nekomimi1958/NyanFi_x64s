@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// インスペクタ															//
-//																		//
-//----------------------------------------------------------------------//
+/**
+ * @file InspectFrm.h
+ * @brief インスペクタ
+ */
+//---------------------------------------------------------------------------
 #ifndef InspectFrmH
 #define InspectFrmH
 
@@ -20,7 +21,10 @@
 #include <Vcl.ToolWin.hpp>
 #include "usr_scrpanel.h"
 
-//-----------------------------------------------
+//---------------------------------------------------------------------------
+/**
+ * @brief インスペクタ
+ */
 class TInspectForm : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -71,11 +75,11 @@ private:	// ユーザー宣言
 	TColor ColorRef;
 
 public:		// ユーザー宣言
-	UsrScrollPanel *InspectScrPanel;	//シンプルスクロールバー
+	UsrScrollPanel *InspectScrPanel;	//!< シンプルスクロールバー
 	UsrScrollPanel *CodeScrPanel;
 
-	__int64 Address;	//アドレス
-	TBytes  Bytes;		//バイトデータ
+	__int64 Address;	//!< アドレス
+	TBytes  Bytes;		//!< バイトデータ
 
 	__fastcall TInspectForm(TComponent* Owner);
 

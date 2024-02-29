@@ -3818,9 +3818,9 @@ object OptionDlg: TOptionDlg
       object ShowStickyCheckBox: TCheckBox
         Left = 249
         Top = 116
-        Width = 205
+        Width = 181
         Height = 17
-        Caption = #38306#25968'/'#35211#20986#12375#31561#12434#12473#12486#12451#12483#12461#12540#34920#31034
+        Caption = #38306#25968#12394#12393#12434#12473#12486#12451#12483#12461#12540#34920#31034
         TabOrder = 8
       end
       object ShowIndentCheckBox: TCheckBox
@@ -7051,7 +7051,7 @@ object OptionDlg: TOptionDlg
         580)
       object EvEditBtn: TButton
         Left = 788
-        Top = 438
+        Top = 439
         Width = 90
         Height = 24
         Action = EditFileAction
@@ -7062,7 +7062,6 @@ object OptionDlg: TOptionDlg
         Top = 439
         Width = 730
         Height = 23
-        Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 327
         EditLabel.Height = 15
         EditLabel.Caption = #12452#12505#12531#12488#30330#29983#26178#12395#23455#34892#12377#12427#12467#12510#12531#12489' (ExeCommands '#12398#12497#12521#12513#12540#12479')'
@@ -7118,7 +7117,7 @@ object OptionDlg: TOptionDlg
       object RefCmdsBtn: TButton
         Tag = 100
         Left = 746
-        Top = 439
+        Top = 440
         Width = 38
         Height = 22
         Caption = '...'
@@ -7147,7 +7146,7 @@ object OptionDlg: TOptionDlg
         object RefCmdsT1Btn: TButton
           Tag = 101
           Left = 736
-          Top = 31
+          Top = 33
           Width = 38
           Height = 22
           Caption = '...'
@@ -7157,7 +7156,7 @@ object OptionDlg: TOptionDlg
         object EvEditT1Btn: TButton
           Tag = 1
           Left = 778
-          Top = 30
+          Top = 32
           Width = 90
           Height = 24
           Action = EditFile1Action
@@ -7177,7 +7176,7 @@ object OptionDlg: TOptionDlg
         object EvEditT2Btn: TButton
           Tag = 2
           Left = 778
-          Top = 58
+          Top = 60
           Width = 90
           Height = 24
           Action = EditFile2Action
@@ -7186,7 +7185,7 @@ object OptionDlg: TOptionDlg
         object RefCmdsT2Btn: TButton
           Tag = 102
           Left = 736
-          Top = 59
+          Top = 61
           Width = 38
           Height = 22
           Caption = '...'

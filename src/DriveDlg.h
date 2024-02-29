@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  ドライブ一覧														//
-//----------------------------------------------------------------------//
+/**
+ * @file DriveDlg.h
+ * @brief ドライブ一覧
+ */
+//---------------------------------------------------------------------------
 #ifndef DriveDlgH
 #define DriveDlgH
 
@@ -23,6 +24,9 @@
 #define COL_WD_HIDE	16
 
 //---------------------------------------------------------------------------
+/**
+ * @brief ドライブ一覧
+ */
 class TSelDriveDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -92,7 +96,7 @@ private:	// ユーザー宣言
 	void __fastcall ShowDriveGraph();
 
 public:		// ユーザー宣言
-	UsrScrollPanel *GridScrPanel;	//シンプルスクロールバー
+	UsrScrollPanel *GridScrPanel;	//!< シンプルスクロールバー
 
 	__fastcall TSelDriveDlg(TComponent* Owner);
 	void __fastcall UpdateDriveList();

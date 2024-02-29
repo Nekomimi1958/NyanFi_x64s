@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  ディレクトリ履歴/ スタック											//
-//----------------------------------------------------------------------//
+/**
+ * @file HistDlg.h
+ * @brief ディレクトリ履歴/スタック
+ */
+//---------------------------------------------------------------------------
 #ifndef HistDlgH
 #define HistDlgH
 
@@ -17,6 +18,9 @@
 #include "usr_scrpanel.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief ディレクトリ履歴/スタック
+ */
 class TDirHistoryDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -69,6 +73,8 @@ __published:	// IDE で管理されるコンポーネント
 private:	// ユーザー宣言
 	TStringList *ListBuff;
 
+	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
+
 	UnicodeString IncSeaWord;
 	bool IsMigemo;
 
@@ -79,12 +85,10 @@ private:	// ユーザー宣言
 	void __fastcall AddDirsCore(UnicodeString pnam, TStrings *lst, TStringDynArray ex_lst);
 
 public:		// ユーザー宣言
-	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
-
-	bool IsDirStack;		//ディレクトリ・スタック
-	bool IsAllDirHist;		//全体履歴
-	bool IsFindDirHist;		//全体履歴(インクリメンタルサーチ)
-	bool IdRecentDir;		//最近使ったディレクトリ
+	bool IsDirStack;				//!< ディレクトリ・スタック
+	bool IsAllDirHist;				//!< 全体履歴
+	bool IsFindDirHist;				//!< 全体履歴(インクリメンタルサーチ)
+	bool IdRecentDir;				//!< 最近使ったディレクトリ
 
 	int  RefListTag;
 	UnicodeString WorkListName;

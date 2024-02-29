@@ -357,7 +357,7 @@ bool __fastcall TGeneralInfoDlg::UpdateList(bool reload)
 	SortMode  = 0;
 	ListWidth = 0;
 
-	ListScrPanel->HitLines->Clear();
+	ListScrPanel->ClearHitLine();
 
 	TListBox *lp = GenListBox;
 	int idx = lp->ItemIndex;
@@ -467,7 +467,10 @@ UnicodeString __fastcall TGeneralInfoDlg::GetBuffText()
 bool __fastcall TGeneralInfoDlg::FindText(
 	bool down)		//true = 下方向/ false = 上方向
 {
-	if (FindWord.IsEmpty() && RegExPtn.IsEmpty()) return false;
+	if (FindWord.IsEmpty() && RegExPtn.IsEmpty()) {
+		ListScrPanel->ClearHitLine();
+		return false;
+	}
 
 	cursor_HourGlass();
 
@@ -476,6 +479,7 @@ bool __fastcall TGeneralInfoDlg::FindText(
 	if (idx0==-1) idx0 = 0;
 	int idx1 = -1;
 	bool case_sw = FindTextDlg->CaseCheckBox->Checked;
+	bool word_sw = FindTextDlg->WordCheckBox->Checked;
 
 	//正規表現
 	if ((FindTextDlg->MigemoCheckBox->Enabled && FindTextDlg->MigemoCheckBox->Checked)
@@ -485,13 +489,20 @@ bool __fastcall TGeneralInfoDlg::FindText(
 			TRegExOptions opt;
 			if (!case_sw) opt << roIgnoreCase;
 			for (int i = (down? idx0 + 1 : idx0 - 1); i>=0 && i<lp->Count; i += (down? 1 : -1)) {
-				if (TRegEx::IsMatch(lp->Items->Strings[i], RegExPtn, opt)) { idx1 = i; break; }
+				UnicodeString lbuf = lp->Items->Strings[i];
+				TMatch mt = TRegEx::Match(lbuf, RegExPtn, opt);
+				if (mt.Success) {
+					if (word_sw && !is_word(lbuf, mt.Index, mt.Length)) continue;
+					idx1 = i;
+					break;
+				}
 			}
 
-			if (ListScrPanel->KeyWordChanged(RegExPtn, lp->Count, case_sw)) {
+			if (ListScrPanel->KeyWordChanged(RegExPtn, lp->Count, case_sw, word_sw)) {
 				for (int i=0; i<lp->Count; i++) {
-					if (TRegEx::IsMatch(lp->Items->Strings[i], RegExPtn, opt))
-						ListScrPanel->AddHitLine(i);
+					UnicodeString lbuf = lp->Items->Strings[i];
+					TMatch mt = TRegEx::Match(lbuf, RegExPtn, opt);
+					if (mt.Success && (!word_sw || is_word(lbuf, mt.Index, mt.Length))) ListScrPanel->AddHitLine(i);
 				}
 				ListScrPanel->Repaint();
 			}
@@ -503,15 +514,18 @@ bool __fastcall TGeneralInfoDlg::FindText(
 	//通常
 	else if (!FindWord.IsEmpty()) {
 		for (int i = (down? idx0 + 1 : idx0 - 1); i>=0 && i<lp->Count; i += (down? 1 : -1)) {
-			if (case_sw? ContainsStr(lp->Items->Strings[i], FindWord) : ContainsText(lp->Items->Strings[i], FindWord)) {
+			UnicodeString lbuf = lp->Items->Strings[i];
+			int p = case_sw? lbuf.Pos(FindWord) : pos_i(FindWord, lbuf);
+			if (p>0 && (!word_sw || is_word(lbuf, p, FindWord.Length()))) {
 				 idx1 = i; break;
 			}
 		}
 
-		if (ListScrPanel->KeyWordChanged(FindWord, lp->Count, case_sw)) {
+		if (ListScrPanel->KeyWordChanged(FindWord, lp->Count, case_sw, word_sw)) {
 			for (int i=0; i<lp->Count; i++) {
-				if (case_sw? ContainsStr(lp->Items->Strings[i], FindWord) : ContainsText(lp->Items->Strings[i], FindWord))
-					ListScrPanel->AddHitLine(i);
+				UnicodeString lbuf = lp->Items->Strings[i];
+				int p = case_sw? lbuf.Pos(FindWord) : pos_i(FindWord, lbuf);
+				if (p>0 && (!word_sw || is_word(lbuf, p, FindWord.Length()))) ListScrPanel->AddHitLine(i);
 			}
 			ListScrPanel->Repaint();
 		}
@@ -564,7 +578,7 @@ void __fastcall TGeneralInfoDlg::SetStatusBar(UnicodeString msg)
 
 	StatusBar1->Panels->Items[2]->Text = LineBreakStr;
 
-	UnicodeString lbuf = (lp->ItemIndex!=-1)? lp->Items->Strings[lp->ItemIndex] : EmptyStr;
+	UnicodeString lbuf = ListBoxGetStr(lp);
 	UnicodeString fnam = (isTree || isFileList)? get_post_tab(lbuf) : EmptyStr;
 
 	UnicodeString id3_str;
@@ -1066,10 +1080,10 @@ void __fastcall TGeneralInfoDlg::GenListBoxKeyDown(TObject *Sender, WORD &Key, T
 		PropertyAction->Execute();
 	}
 	//キー
-	else if (equal_ENTER(KeyStr)) {
-		TListBox *lp = GenListBox;
-		if (lp->ItemIndex!=-1) {
-			UnicodeString fnam = lp->Items->Strings[lp->ItemIndex];
+	else if (equal_ENTER(KeyStr) && (isFileList || isDirs || isTree || isPlayList)) {
+		UnicodeString fnam = ListBoxGetStr(GenListBox);
+		if (!fnam.IsEmpty()) {
+			TListBox *lp = GenListBox;
 			UnicodeString cmd;
 			//カーソル位置に移動
 			if (isFileList) {
@@ -1159,7 +1173,7 @@ void __fastcall TGeneralInfoDlg::GenListBoxExit(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TGeneralInfoDlg::CopyActionExecute(TObject *Sender)
 {
-	ExeCmdListBox(GenListBox, _T("ClipCopy"));
+	ExeCmdListBox(GenListBox, "ClipCopy");
 	SetStatusBar();
 }
 //---------------------------------------------------------------------------
@@ -1173,17 +1187,14 @@ void __fastcall TGeneralInfoDlg::CopyActionUpdate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TGeneralInfoDlg::CopyValActionExecute(TObject *Sender)
 {
-	TListBox *lp = GenListBox;
-	int idx = lp->ItemIndex;
-	if (idx!=-1) copy_to_Clipboard(get_tkn_r(lp->Items->Strings[idx], '='));
+	copy_to_Clipboard(get_tkn_r(ListBoxGetStr(GenListBox), '='));
 }
 //---------------------------------------------------------------------------
 void __fastcall TGeneralInfoDlg::CopyValActionUpdate(TObject *Sender)
 {
 	TAction *ap  = (TAction*)Sender;
 	ap->Visible  = isVarList;
-	TListBox *lp = GenListBox;
-	ap->Enabled  = ap->Visible && (lp->ItemIndex!=-1) && lp->Items->Strings[lp->ItemIndex].Pos('=');
+	ap->Enabled = ap->Visible && ListBoxGetStr(GenListBox).Pos('=');
 }
 
 //---------------------------------------------------------------------------
@@ -1353,10 +1364,9 @@ void __fastcall TGeneralInfoDlg::EditFileActionUpdate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TGeneralInfoDlg::ShowFileInfoActionExecute(TObject *Sender)
 {
-	TListBox *lp = GenListBox;
-	if (lp->ItemIndex!=-1) {
-		UnicodeString fnam = lp->Items->Strings[lp->ItemIndex];
-		if (lp->Tag & LBTAG_TAB_FNAM) fnam = get_post_tab(fnam);
+	UnicodeString fnam = ListBoxGetStr(GenListBox);
+	if (!fnam.IsEmpty()) {
+		if (GenListBox->Tag & LBTAG_TAB_FNAM) fnam = get_post_tab(fnam);
 		if (isPlayList && PlayList->IndexOf(fnam)==-1) fnam = EmptyStr;
 		if (!fnam.IsEmpty()) FileInfoDlg->ShowModalEx(fnam);
 	}
@@ -1366,13 +1376,12 @@ void __fastcall TGeneralInfoDlg::ShowFileInfoActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TGeneralInfoDlg::PropertyActionExecute(TObject *Sender)
 {
-	TListBox *lp = GenListBox;
-	if (lp->ItemIndex!=-1) {
-		UnicodeString fnam = lp->Items->Strings[lp->ItemIndex];
-		if (lp->Tag & LBTAG_TAB_FNAM) fnam = get_post_tab(fnam);
+	UnicodeString fnam = ListBoxGetStr(GenListBox);
+	if (!fnam.IsEmpty()) {
+		if (GenListBox->Tag & LBTAG_TAB_FNAM) fnam = get_post_tab(fnam);
 		if (isPlayList && PlayList->IndexOf(fnam)==-1) fnam = EmptyStr;
 		if (!fnam.IsEmpty()) {
-			pos_ListBoxItem(lp);
+			pos_ListBoxItem(GenListBox);
 			ShowPropertyDialog(fnam);
 		}
 	}
@@ -1384,7 +1393,20 @@ void __fastcall TGeneralInfoDlg::PropertyActionUpdate(TObject *Sender)
 	ap->Visible = isFileList || isPlayList || isTree;
 	ap->Enabled = ap->Visible;
 }
-
+//---------------------------------------------------------------------------
+//URLを開く
+//---------------------------------------------------------------------------
+void __fastcall TGeneralInfoDlg::OpenUrlActionExecute(TObject *Sender)
+{
+	Execute_ex(ListBoxGetURL(GenListBox));
+}
+//---------------------------------------------------------------------------
+void __fastcall TGeneralInfoDlg::OpenUrlActionUpdate(TObject *Sender)
+{
+	TAction *ap = (TAction*)Sender;
+	ap->Visible = !ListBoxGetURL(GenListBox).IsEmpty();
+	ap->Enabled = ap->Visible;
+}
 //---------------------------------------------------------------------------
 //行番号を表示
 //---------------------------------------------------------------------------

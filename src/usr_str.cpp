@@ -6,7 +6,7 @@
 #include "usr_str.h"
 
 //---------------------------------------------------------------------------
-bool DebugOut   = false;		//デバッグ文字列送信(隠し設定)
+bool DebugOut = false;
 
 //---------------------------------------------------------------------------
 //デバッグ文字列送信
@@ -68,9 +68,9 @@ int __fastcall comp_ObjectsOrder(TStringList *List, int Index1, int Index2)
 //---------------------------------------------------------------------------
 //CSV用比較関数
 //---------------------------------------------------------------------------
-int  USR_CsvCol 	 = 0;		//ソート対象列
-int  USR_CsvSortMode = 1;		//ソートモード 1:昇順/ -1降順
-bool USR_CsvTopIsHdr = false;	//先頭行は項目名
+int  USR_CsvCol 	 = 0;
+int  USR_CsvSortMode = 1;
+bool USR_CsvTopIsHdr = false;
 
 //---------------------------------------------------------------------------
 //文字列を数値として比較
@@ -1306,6 +1306,8 @@ TStringDynArray get_csv_array(UnicodeString src, int size,
 //---------------------------------------------------------------------------
 UnicodeString get_csv_item(UnicodeString src, int idx)
 {
+	if (src.IsEmpty()) return EmptyStr;
+
 	std::unique_ptr<TStringList> rec(new TStringList());
 	rec->Delimiter		 = ',';
 	rec->QuoteChar		 = '\"';
@@ -1316,6 +1318,8 @@ UnicodeString get_csv_item(UnicodeString src, int idx)
 //---------------------------------------------------------------------------
 UnicodeString get_tsv_item(UnicodeString src, int idx)
 {
+	if (src.IsEmpty()) return EmptyStr;
+
 	TStringDynArray rec = SplitString(src, "\t");
 	return (idx>=0 && idx<rec.Length)? rec[idx] : EmptyStr;
 }
@@ -1505,11 +1509,13 @@ bool is_alnum_str(UnicodeString s)
 bool is_word(UnicodeString s, int p, int len)
 {
     int flag = 0;
-    WideChar c = (p>1)? s[p - 1] : ' ';
-    if (!isalnum(c) && c!='_') flag++;
-    int p2 = p + len - 1;
-    c = (p2<s.Length())? s[p2 + 1] : ' ';
-    if (!isalnum(c) && c!='_') flag++;
+	if (p>0 && len>0) {
+		WideChar c = (p>1)? s[p - 1] : ' ';
+		if (!isalnum(c) && c!='_') flag++;
+		int p2 = p + len - 1;
+		c = (p2<s.Length())? s[p2 + 1] : ' ';
+		if (!isalnum(c) && c!='_') flag++;
+	}
     return (flag==2);
 }
 
@@ -2435,7 +2441,7 @@ UnicodeString get_UnicodeBlockName(int code)
 	};
 
 	UnicodeString ret_str;
-	int cnt  = sizeof(blk_list)/sizeof(blk_list[0]);
+	int cnt = sizeof(blk_list)/sizeof(blk_list[0]);
 	for (int i=0; i<cnt; i++) {
 		if (code>=blk_list[i].bgn_cd && code<=blk_list[i].end_cd) {
 			ret_str = blk_list[i].name;

@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  汎用一覧ダイアログ													//
-//----------------------------------------------------------------------//
+/**
+ * @file GenInfDlg.h
+ * @brief 汎用一覧ダイアログ
+ */
+//---------------------------------------------------------------------------
 #ifndef GenInfDlgH
 #define GenInfDlgH
 
@@ -23,6 +24,9 @@
 #include "Global.h"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief 汎用一覧ダイアログ
+ */
 class TGeneralInfoDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -40,6 +44,7 @@ __published:	// IDE で管理されるコンポーネント
 	TAction *MigemoAction;
 	TAction *NotifyAction;
 	TAction *OmitComPathAction;
+	TAction *OpenUrlAction;
 	TAction *OrgOrderAction;
 	TAction *PlayNextAction;
 	TAction *PlayPauseAction;
@@ -72,6 +77,7 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *InfEditSelectAllItem;
 	TMenuItem *KeepIndexItem;
 	TMenuItem *OmitComPathItem;
+	TMenuItem *OpenUrlItem;
 	TMenuItem *OrgOrderItem;
 	TMenuItem *PropertyItem;
 	TMenuItem *RestoreListItem;
@@ -144,11 +150,14 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall ViewListActionExecute(TObject *Sender);
 	void __fastcall ViewListActionUpdate(TObject *Sender);
 	void __fastcall ViewFileActionExecute(TObject *Sender);
+	void __fastcall ViewFileActionUpdate(TObject *Sender);
 	void __fastcall EditFileActionExecute(TObject *Sender);
 	void __fastcall EditFileActionUpdate(TObject *Sender);
 	void __fastcall ShowFileInfoActionExecute(TObject *Sender);
 	void __fastcall PropertyActionExecute(TObject *Sender);
 	void __fastcall PropertyActionUpdate(TObject *Sender);
+	void __fastcall OpenUrlActionExecute(TObject *Sender);
+	void __fastcall OpenUrlActionUpdate(TObject *Sender);
 	void __fastcall ShowLineNoActionExecute(TObject *Sender);
 	void __fastcall FileName1stActionExecute(TObject *Sender);
 	void __fastcall FileName1stActionUpdate(TObject *Sender);
@@ -172,7 +181,6 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall PlayNextActionExecute(TObject *Sender);
 	void __fastcall PlayPrevActionExecute(TObject *Sender);
 	void __fastcall PlayActionUpdate(TObject *Sender);
-	void __fastcall ViewFileActionUpdate(TObject *Sender);
 
 private:	// ユーザー宣言
 	int  MaxNameWidth;
@@ -215,38 +223,38 @@ private:	// ユーザー宣言
 	UnicodeString __fastcall GetSelcetedCmd(TStringList *lst = NULL);
 
 public:		// ユーザー宣言
-	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
+	UsrScrollPanel *ListScrPanel;	//!< シンプルスクロールバー
 
-	bool isVarList;		//「名前=値」形式
-	bool isLog;			//ログ
-	bool isGit;			//git の出力 (先頭行が "$ git ")
-	bool isFileList;	//ファイル名一覧
-	bool isPlayList;	//プレイリスト
-	bool isDirs;		//ディレクトリ一覧
-	bool isTree;		//ディレクトリツリー表示
-	bool isCmdHistory;	//コマンド履歴
-	bool isFTP;			//FTP
-	bool isTail;		//末尾表示
-	bool isReverse;		//逆順表示
-	bool fromGitView;	//GitViewerから表示
-	bool isNonFile;		//ファイルは存在しない
-	bool fromPopWnd;	//ポップアップ画面から表示
-	bool ErrOnly;		//エラー部分のみ(ログ)
-	bool ToEnd;			//最後に移動
-	bool ToFilter;		//フィルタ欄にフォーカス
+	bool isVarList;		//!< 「名前=値」形式
+	bool isLog;			//!< ログ
+	bool isGit;			//!< git の出力 (先頭行が "$ git ")
+	bool isFileList;	//!< ファイル名一覧
+	bool isPlayList;	//!< プレイリスト
+	bool isDirs;		//!< ディレクトリ一覧
+	bool isTree;		//!< ディレクトリツリー表示
+	bool isCmdHistory;	//!< コマンド履歴
+	bool isFTP;			//!< FTP
+	bool isTail;		//!< 末尾表示
+	bool isReverse;		//!< 逆順表示
+	bool fromGitView;	//!< GitViewerから表示
+	bool isNonFile;		//!< ファイルは存在しない
+	bool fromPopWnd;	//!< ポップアップ画面から表示
+	bool ErrOnly;		//!< エラー部分のみ(ログ)
+	bool ToEnd;			//!< 最後に移動
+	bool ToFilter;		//!< フィルタ欄にフォーカス
 
 	UnicodeString ComPathName;
 
 	UnicodeString FileName;
 	UnicodeString RetStr;
-	int  LineIndex;				//行インデックス(0ベース)
-	int  TailLine;				//末尾表示行数
-	int  CodePage;				//コードページ
-	bool HasBOM;				//BOM
-	UnicodeString LineBreakStr;	//改行コード
-	UnicodeString FindWord;		//検索文字列
-	UnicodeString RegExPtn;		//正規表現パターン
-	UnicodeString HdrLnStr;		//見出し行開始文字列(/～/ の場合正規表現)
+	int  LineIndex;				//!< 行インデックス(0ベース)
+	int  TailLine;				//!< 末尾表示行数
+	int  CodePage;				//!< コードページ
+	bool HasBOM;				//!< BOM
+	UnicodeString LineBreakStr;	//!< 改行コード
+	UnicodeString FindWord;		//!< 検索文字列
+	UnicodeString RegExPtn;		//!< 正規表現パターン
+	UnicodeString HdrLnStr;		//!< 見出し行開始文字列(/～/ の場合正規表現)
 	UnicodeString ErrMsg;
 
 	TStringList *GenInfoList;

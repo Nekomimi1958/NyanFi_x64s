@@ -135,7 +135,7 @@ ExeCmdsList::~ExeCmdsList()
 };
 
 //---------------------------------------------------------------------------
-//前処理、コマンド/パラメータと取り出し
+//前処理、コマンド/パラメータの取り出し
 //---------------------------------------------------------------------------
 bool ExeCmdsList::Preproc(UnicodeString &cmd, UnicodeString &prm)
 {
@@ -268,8 +268,9 @@ bool ExeCmdsList::search_EndRepeat()
 bool ExeCmdsList::proc_Goto(UnicodeString label)
 {
 	PC = -1;
-	for (int i=0; i<CmdList->Count; i++)
+	for (int i=0; i<CmdList->Count; i++) {
 		if (SameText("#" + label, CmdList->Strings[i])) { PC = i; break; }
+	}
 
 	if (PC==-1) {
 		ErrMsg.sprintf(_T("ラベル %s が見つかりません"), label.c_str());
@@ -464,23 +465,23 @@ const UnicodeString XCMD_VarNames =
 //---------------------------------------------------------------------------
 //ExeCommands の処理
 //---------------------------------------------------------------------------
-bool XCMD_IsBusy;				//ExeCommands 実行中 (NyanFiForm->ExeCmdsBusyを反映)
-bool XCMD_Aborted;				//ExeCommands 中断要求
-bool XCMD_MsgOff;				//確認なし
-bool XCMD_BufChanged;			//Buffer が変更された
-bool XCMD_FileChanged;			//カレントファイルが変更された
+bool XCMD_IsBusy;
+bool XCMD_Aborted;
+bool XCMD_MsgOff;
+bool XCMD_BufChanged;
+bool XCMD_FileChanged;
 
-TForm *LastModalForm = NULL;	//最後に開かれたモーダルフォーム
+TForm *LastModalForm = NULL;
 TModalResult XCMD_ModalResult;
 
-bool XCMD_Debugging;			//デバッグモード
+bool XCMD_Debugging;
 bool XCMD_Debug_Step, XCMD_Debug_Go, XCMD_Debug_List, XCMD_Debug_Exit, XCMD_Debug_Quit, XCMD_Debug_Help;
 
-TStringList *XCMD_XList;			//コマンドリストのリスト
-TStringList *XCMD_WatchList;		//監視変数リスト
-TStringList *XCMD_IdxStack;			//インデックス・スタック
-TStringList *XCMD_TopIdxStack;		//トップインデックス・スタック
-TStringList *XCMD_VarStack;			//変数スタック
+TStringList *XCMD_XList;
+TStringList *XCMD_WatchList;
+TStringList *XCMD_IdxStack;
+TStringList *XCMD_TopIdxStack;
+TStringList *XCMD_VarStack;
 
 ExeCmdsList *XCMD_xlp;
 UnicodeString XCMD_cmd, XCMD_prm;
@@ -490,6 +491,7 @@ int  XCMD_tim_cnt;
 int  XCMD_start_cnt;
 TDateTime XCMD_tim_t;
 bool XCMD_echo_on, XCMD_echo_lno, XCMD_view_log, XCMD_view_clip;
+bool XCMD_clip_changed;
 file_rec *XCMD_cfp;
 
 UnicodeString XCMD_cur_f_name, XCMD_cur_r_name;
@@ -499,9 +501,7 @@ bool XCMD_matched, XCMD_marked;
 bool XCMD_is_top, XCMD_is_end;
 bool XCMD_fromGrep;
 TModalResult XCMD_box_res;
-
-bool XCMD_chg_CodePage;			//コードページが変更された(TVモードでの対策)
-
+bool XCMD_chg_CodePage;
 __int64   XCMD_f_size;
 TDateTime XCMD_f_time;
 
@@ -575,6 +575,8 @@ void XCMD_Initialize(UnicodeString &opt)
 	XCMD_fromGrep = false;
 
 	XCMD_Debugging = XCMD_Debug_Step = XCMD_Debug_Go = XCMD_Debug_List = XCMD_Debug_Exit = XCMD_Debug_Quit = XCMD_Debug_Help = false;
+
+	XCMD_clip_changed = false;
 }
 
 //---------------------------------------------------------------------------
@@ -642,7 +644,7 @@ ExeCmdsList *XCMD_AddCmdsList(UnicodeString cmds, bool is_call)
 	return XCMD_xlp;
 }
 //---------------------------------------------------------------------------
-//呼び出し元へ戻る
+//呼び出し元に戻る
 //---------------------------------------------------------------------------
 ExeCmdsList *XCMD_Return()
 {
@@ -665,7 +667,7 @@ ExeCmdsList *XCMD_Return()
 }
 
 //---------------------------------------------------------------------------
-//カレントのファイルレコードを設定
+//カレントのファイル項目を設定
 //---------------------------------------------------------------------------
 file_rec *XCMD_set_cfp(UnicodeString fnam, UnicodeString cnam, file_rec *cfp)
 {
@@ -842,9 +844,13 @@ void XCMD_upd_Var()
 	XCMD_set_Var(_T("SelText"), 	(ScrMode==SCMD_TVIEW && TxtViewer->isReady)? TxtViewer->get_SelText() : EmptyStr);
 	XCMD_set_Var(_T("WinWidth"), 	Application->MainForm->Width);
 	XCMD_set_Var(_T("WinHeight"), 	Application->MainForm->Height);
-	XCMD_set_Var(_T("Clipboard"),	GetClipboardText());
 	XCMD_set_Var(_T("LastWatchLog"),LastWatchLog);
 	XCMD_set_Var(_T("ModalResult"),	(int)XCMD_ModalResult);
+
+	if (XCMD_clip_changed) {
+		XCMD_set_Var(_T("Clipboard"),	GetClipboardText());
+		XCMD_clip_changed = false;
+	}
 
 	UnicodeString lbuf;
 	for (int i=LogWndListBox->Count-1; i>=0; i--) {

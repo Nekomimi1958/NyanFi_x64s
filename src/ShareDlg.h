@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  共有フォルダ/ライブラリ/検索設定/ディレクトリ選択					//
-//----------------------------------------------------------------------//
+/**
+ * @file ShareDlg.h
+ * @brief 共有フォルダ/ライブラリ/検索設定/ディレクトリ選択
+ */
+//---------------------------------------------------------------------------
 #ifndef ShareDlgH
 #define ShareDlgH
 
@@ -20,7 +21,10 @@
 #include <Vcl.Dialogs.hpp>
 #include "usr_scrpanel.h"
 
-//-----------------------------------------------
+//---------------------------------------------------------------------------
+/**
+ * @brief 共有フォルダ/ライブラリ/検索設定/ディレクトリ選択
+ */
 class TNetShareDlg : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -122,13 +126,13 @@ public:		// ユーザー宣言
 	UnicodeString FileName;
 	UnicodeString Title;
 
-	bool isShare;		//共有フォルダ
-	bool isOnlySub;		//サブディレクトリ選択のみ
-	bool isLibrary;		//ライブラリ
-	bool isFindSet;		//検索設定
+	bool isShare;		//!< 共有フォルダ
+	bool isOnlySub;		//!< サブディレクトリ選択のみ
+	bool isLibrary;		//!< ライブラリ
+	bool isFindSet;		//!< 検索設定
 
 	bool isUNC;
-	bool rqRetPath;		//選択したパスを返す(ディレクトリ変更は行わない)
+	bool rqRetPath;		//!< 選択したパスを返す(ディレクトリ変更は行わない)
 
 	__fastcall TNetShareDlg(TComponent* Owner);
 

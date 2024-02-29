@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  GitGrep																//
-//----------------------------------------------------------------------//
+/**
+ * @file GitGrep.h
+ * @brief Git GREP ダイアログ
+ */
+//---------------------------------------------------------------------------
 #ifndef GitGrepH
 #define GitGrepH
 //---------------------------------------------------------------------------
@@ -20,6 +21,9 @@
 #define RESLINE_MATCH_PTN	"^([0-9a-f]{7,}:)?(.+/)?(.+):(\\d+):(.+)"
 
 //---------------------------------------------------------------------------
+/**
+ * @brief Git GREP ダイアログ
+ */
 class TGitGrepForm : public TForm
 {
 __published:	// IDE で管理されるコンポーネント
@@ -97,7 +101,7 @@ private:	// ユーザー宣言
 	}
 
 public:		// ユーザー宣言
-	UnicodeString WorkDir;		//Gitトップディレクトリ
+	UnicodeString WorkDir;		//!< Gitトップディレクトリ
 	UnicodeString CommitID;
 
 	bool FGitBusy;
@@ -113,6 +117,7 @@ public:		// ユーザー宣言
 			cursor_Default();
 		}
 	}
+	/** @brief git grep 検索中 */
 	__property bool GitBusy = {read = FGitBusy,  write = SetGitBusy};
 
 	__fastcall TGitGrepForm(TComponent* Owner);

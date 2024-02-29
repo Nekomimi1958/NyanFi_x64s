@@ -196,7 +196,7 @@ bool HighlightFile::GetCommentList(
 	TStringList *bgn_lst,	//ブロック開始
 	TStringList *end_lst,	//ブロック終了
 	bool is_h2t,			//HTML→TEXT変換モード	(default = false)
-	bool only_def)			//デフォルトのみを取得	(default = false)
+	bool only_def)			//デフォルトのみ取得	(default = false)
 {
 	if (fnam.IsEmpty()) return false;
 

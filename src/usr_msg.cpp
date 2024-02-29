@@ -151,21 +151,21 @@ void EmptyAbort()
 //---------------------------------------------------------------------------
 //確認メッセージ
 //---------------------------------------------------------------------------
-bool SureCopy;					//コピー
-bool SureMove;					//移動
-bool SureDelete;				//削除
-bool SureUnPack;				//解凍
-bool SureExec;					//実行
-bool SureOther;					//その他
-bool SureExit;					//終了
-bool SureCmpDel;				//完全削除は2度確認
-bool SureWorkList;				//ワークリストの再読み込み
+bool SureCopy;
+bool SureMove;
+bool SureDelete;
+bool SureUnPack;
+bool SureExec;
+bool SureOther;
+bool SureExit;
+bool SureCmpDel;
+bool SureWorkList;
 
 //---------------------------------------------------------------------------
-bool SureCancel;				//キャンセルボタンを表示
-bool SureDefNo;					//「いいえ」がデフォルト
-bool SureAdjPos;				//表示位置を状況に合わせて調整
-bool MsgPosCenter = false;		//メイン画面の中央に表示
+bool SureCancel;
+bool SureDefNo;
+bool SureAdjPos;
+bool MsgPosCenter = false;
 
 //---------------------------------------------------------------------------
 //エラーメッセージ

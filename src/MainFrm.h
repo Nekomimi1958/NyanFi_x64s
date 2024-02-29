@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// 2画面ファイラー NyanFi x64 VCL Style									//
-//  メインフォーム														//
-//----------------------------------------------------------------------//
+/**
+ * @file MainFrm.h
+ * @brief 2画面ファイラー NyanFi x64 VCL Style
+ */
+//---------------------------------------------------------------------------
 #ifndef MainFrmH
 #define MainFrmH
 
@@ -64,9 +65,7 @@
 #define OTHERS_BASE		5000
 
 //---------------------------------------------------------------------------
-#define IS_FullScr()			(BorderStyle==bsNone)
-#define TEST_ActParam(s)		TestActionParam(_T(s))
-#define TEST_DEL_ActParam(s)	TestDelActionParam(_T(s))
+#define IS_FullScr()			(BorderStyle==bsNone)		//!< 全画面表示か？
 
 //---------------------------------------------------------------------------
 class TNyanFiForm : public TForm
@@ -1169,14 +1168,15 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall GrepStatusBarDrawPanel(TStatusBar *StatusBar, TStatusPanel *Panel, const TRect &Rect);
 	void __fastcall RepT1PanelResize(TObject *Sender);
 	void __fastcall GrepT11PanelResize(TObject *Sender);
-	void __fastcall TaskSttTimerTimer(TObject *Sender);
-	void __fastcall WaitTimerTimer(TObject *Sender);
-	void __fastcall UpdLogTimerTimer(TObject *Sender);
-	void __fastcall WatchDirTimerTimer(TObject *Sender);
-	void __fastcall WatchTailTimerTimer(TObject *Sender);
-	void __fastcall MsgHintTimerTimer(TObject *Sender);
-	void __fastcall KeyHintTimerTimer(TObject *Sender);
-	void __fastcall BlinkTimerTimer(TObject *Sender);
+	void __fastcall TaskSttTimerTimer(TObject *Sender);			//!< タスクの監視・表示/検索状態の表示/時計パネル/警告/
+																//!< コマンド要求の処理/タイマーイベント処理/FTPの接続監視
+	void __fastcall WaitTimerTimer(TObject *Sender);			//!< ファイル情報表示の遅延
+	void __fastcall UpdLogTimerTimer(TObject *Sender);			//!< ログ表示更新
+	void __fastcall WatchDirTimerTimer(TObject *Sender);		//!< ディレクトリ監視
+	void __fastcall WatchTailTimerTimer(TObject *Sender);		//!< ファイル追加更新の監視
+	void __fastcall MsgHintTimerTimer(TObject *Sender);			//!< メッセージヒント表示
+	void __fastcall KeyHintTimerTimer(TObject *Sender);			//!< ２ストロークキーのヒント表示
+	void __fastcall BlinkTimerTimer(TObject *Sender);			//!< 白飛び警告
 	void __fastcall ToolBtnClick(TObject *Sender);
 	void __fastcall FKeyBtnClick(TObject *Sender);
 	void __fastcall FKeyBtnMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
@@ -2439,10 +2439,12 @@ private:	// ユーザー宣言
 	void __fastcall ViewCurFileInf();
 
 	bool __fastcall OpenTxtViewer(file_rec *fp, bool bin_mode = false, int code_page = 0, int lno = 0, bool force_txt = false);
+	bool __fastcall OpenTxtViewerFind(file_rec *fp, UnicodeString kwd);
 	bool __fastcall SetAndOpenTxtViewer(UnicodeString fnam, int lno = 0, bool pop_dir = false);
 	bool __fastcall OpenTxtViewerTail(file_rec *fp, int limit_ln, bool reverse);
 	bool __fastcall OpenTxtViewerTail(UnicodeString fnam, int limit_ln, bool reverse);
 	void __fastcall SetViewFileList(bool clr_thumb = true, bool draw_img = false);
+
 	void __fastcall WaitForImgReady(bool reload = false);
 	bool __fastcall OpenImgViewer(file_rec *fp, bool fitted = false, int zoom = 0);
 	bool __fastcall OpenImgViewer(int idx);
@@ -2484,8 +2486,8 @@ private:	// ユーザー宣言
 	void __fastcall ShowExPopupMenu(TPoint p);
 	void __fastcall ShowExPopupMenu();
 
-	bool __fastcall TestActionParam(const _TCHAR *prm);
-	bool __fastcall TestDelActionParam(const _TCHAR *prm);
+	bool __fastcall TestActionParam(const UnicodeString prm);
+	bool __fastcall TestDelActionParam(const UnicodeString prm);
 	UnicodeString __fastcall ExceptActionParam(UnicodeString ex_list);
 	UnicodeString __fastcall GetFileNameFromActionParam(file_rec *fp = NULL);
 	bool __fastcall FextInActionParam(UnicodeString fext);
@@ -2615,45 +2617,50 @@ public:		// ユーザー宣言
 	UnicodeString FCurPath[MAX_FILELIST];
 	UnicodeString __fastcall GetCurPath(int Index) { return FCurPath[Index]; }
 	void __fastcall SetCurPath(int Index, UnicodeString Value);
+	/** @brief カレントパス */
 	__property UnicodeString CurPath[int Index] = {read = GetCurPath, write = SetCurPath};
 
-	//FindBusy プロパティ		検索中(ファイル名、ディレクトリ名、GREP)
+	//FindBusy プロパティ
 	bool FFindBusy;
 	void __fastcall SetFindBusy(bool Value);
+	/** @brief 検索中(ファイル名、ディレクトリ名、GREP) */
 	__property bool FindBusy = {read = FFindBusy, write = SetFindBusy};
 
-	//CalcBusy プロパティ		計算中(ディレクトリ容量、ファイル再生時間)
+	//CalcBusy プロパティ
 	bool FCalcBusy;
 	void __fastcall SetCalcBusy(bool Value);
+	/** @brief 計算中(ディレクトリ容量、ファイル再生時間) */
 	__property bool CalcBusy = {read = FCalcBusy, write = SetCalcBusy};
 
-	//CurWorking プロパティ		カレントで処理中
+	//CurWorking プロパティ
 	bool FCurWorking;
 	void __fastcall SetCurWorking(bool Value);
+	/** カレントで処理中 */
 	__property bool CurWorking = {read = FCurWorking, write = SetCurWorking};
 
-	//ExeCmdsBusy プロパティ	ExeCommands 実行中
+	//ExeCmdsBusy プロパティ
 	bool FExeCmdsBusy;
 	void __fastcall SetExeCmdsBusy(bool Value);
+	/** ExeCommands 実行中 */
 	__property bool ExeCmdsBusy = {read = FExeCmdsBusy, write = SetExeCmdsBusy};
 
-	Graphics::TBitmap *ImgBuff;					//イメージバッファ(元サイズ)
-	Graphics::TBitmap *BgBuff[MAX_FILELIST];	//背景表示バッファ
+	Graphics::TBitmap *ImgBuff;					//!< イメージバッファ(元サイズ)
+	Graphics::TBitmap *BgBuff[MAX_FILELIST];	//!< 背景表示バッファ
 
-	UsrScrollPanel *FlScrPanel[MAX_FILELIST];	//独自スクロールバー(ファイルリスト)
-	UsrScrollPanel *TxtPrvScrPanel;				//独自スクロールバー(テキストプレビュー)
-	UsrScrollPanel *TxtTailScrPanel;			//独自スクロールバー(テキストプレビュー(末尾))
-	UsrScrollPanel *InfScrPanel;				//独自スクロールバー(ファイル情報)
-	UsrScrollPanel *LogScrPanel;				//独自スクロールバー(ログ)
-	UsrScrollPanel *ImgInfScrPanel;				//独自スクロールバー(ファイル情報)
-	UsrScrollPanel *TxtViewScrPanel;			//独自スクロールバー(テキストビューア)
-	UsrScrollPanel *ResultScrPanel;				//独自スクロールバー(Grep結果)
+	UsrScrollPanel *FlScrPanel[MAX_FILELIST];	//!< 独自スクロールバー(ファイルリスト)
+	UsrScrollPanel *TxtPrvScrPanel;				//!< 独自スクロールバー(テキストプレビュー)
+	UsrScrollPanel *TxtTailScrPanel;			//!< 独自スクロールバー(テキストプレビュー(末尾))
+	UsrScrollPanel *InfScrPanel;				//!< 独自スクロールバー(ファイル情報)
+	UsrScrollPanel *LogScrPanel;				//!< 独自スクロールバー(ログ)
+	UsrScrollPanel *ImgInfScrPanel;				//!< 独自スクロールバー(ファイル情報)
+	UsrScrollPanel *TxtViewScrPanel;			//!< 独自スクロールバー(テキストビューア)
+	UsrScrollPanel *ResultScrPanel;				//!< 独自スクロールバー(Grep結果)
 
 	int CurListWidth, CurListHeight;
 	int PreviewWidth, PreviewHeight;
 	int InfPanelWidth, InfPanelHeight;
 
-	int useFontSize;							//ファイルリストの通常フォントサイズ
+	int useFontSize;							//!< ファイルリストの通常フォントサイズ
 
 	__fastcall TNyanFiForm(TComponent* Owner);
 
@@ -2704,32 +2711,32 @@ public:		// ユーザー宣言
 	void __fastcall SetPrvImgCursor(bool sw);
 
 	BEGIN_MESSAGE_MAP
-		VCL_MESSAGE_HANDLER(WM_FORM_SHOWED, 	TMessage,			WmFormShowed)
-		VCL_MESSAGE_HANDLER(WM_DPICHANGED,		TMessage,			WmDpiChanged)
-		VCL_MESSAGE_HANDLER(WM_ACTIVATE,		TMessage,			WmActivate)
-		VCL_MESSAGE_HANDLER(WM_QUERYENDSESSION, TMessage,			WmQueryEndSession)
+		VCL_MESSAGE_HANDLER(WM_FORM_SHOWED, 	TMessage,			WmFormShowed)		//!< フォームが表示された
+		VCL_MESSAGE_HANDLER(WM_DPICHANGED,		TMessage,			WmDpiChanged)		//!< DPIが変化
+		VCL_MESSAGE_HANDLER(WM_ACTIVATE,		TMessage,			WmActivate)			//!< アクティブ/非アクティブ化
+		VCL_MESSAGE_HANDLER(WM_QUERYENDSESSION, TMessage,			WmQueryEndSession)	//!< Windows終了時
 		VCL_MESSAGE_HANDLER(WM_SYSCOMMAND, 		TWMSysCommand, 		WmSysCommand)
 		VCL_MESSAGE_HANDLER(WM_FORM_DROPPED,	TMessage,			WmDropped)
 		VCL_MESSAGE_HANDLER(WM_SETTINGCHANGE,	TMessage,			WmSettingChange)
-		VCL_MESSAGE_HANDLER(WM_DEVICECHANGE, 	TMessage,			WmDeviceChange)
+		VCL_MESSAGE_HANDLER(WM_DEVICECHANGE, 	TMessage,			WmDeviceChange)		//!< ドライブが変更された
 		VCL_MESSAGE_HANDLER(WM_MOVING,			TMessage,			WmFormMoving)
 		VCL_MESSAGE_HANDLER(WM_SIZING,			TMessage,			WmFormMoving)
 		VCL_MESSAGE_HANDLER(WM_ENTERSIZEMOVE,	TMessage,			WmEnterSizeMove)
-		VCL_MESSAGE_HANDLER(WM_EXITSIZEMOVE,	TMessage,			WmExitSizeMove)
+		VCL_MESSAGE_HANDLER(WM_EXITSIZEMOVE,	TMessage,			WmExitSizeMove)		//!< サイズ変更/移動終了
 		VCL_MESSAGE_HANDLER(WM_GETMINMAXINFO,	TWMGetMinMaxInfo,	WmGetMinMaxInfo)
 		VCL_MESSAGE_HANDLER(WM_COPYDATA,		TMessage,			WmCopyData)
-		VCL_MESSAGE_HANDLER(WM_HOTKEY,	 		TMessage,			WmHotKey)
+		VCL_MESSAGE_HANDLER(WM_HOTKEY,	 		TMessage,			WmHotKey)			//!< 呼び出しホットキー
 		VCL_MESSAGE_HANDLER(WM_MENUCHAR,		TMessage,			WmMenuChar)
 		VCL_MESSAGE_HANDLER(WM_INITMENUPOPUP,	TMessage,			WmContextMnueProc)
 		VCL_MESSAGE_HANDLER(WM_DRAWITEM,		TMessage,			WmContextMnueProc)
 		VCL_MESSAGE_HANDLER(WM_MEASUREITEM,		TMessage,			WmContextMnueProc)
 		VCL_MESSAGE_HANDLER(MM_MCINOTIFY,		TMessage,			MmMciNotify)
-		VCL_MESSAGE_HANDLER(WM_NYANFI_APPEAR,	TMessage,			WmNyanFiAppearance)
-		VCL_MESSAGE_HANDLER(WM_NYANFI_FLICON,	TMessage,			WmNyanFiFlIcon)
-		VCL_MESSAGE_HANDLER(WM_NYANFI_THUMBNAIL,TMessage,			WmNyanFiThumbnail)
-		VCL_MESSAGE_HANDLER(WM_NYANFI_CLPCOPIED,TMessage,			WmNyanFiClpCopied)
-		VCL_MESSAGE_HANDLER(WM_NYANFI_LOCKKEY,	TMessage,			WmNyanFiLockKey)
-		VCL_MESSAGE_HANDLER(WM_NYANFI_GREP_END,	TMessage,			WmNyanFiGrepEnd)
+		VCL_MESSAGE_HANDLER(WM_NYANFI_APPEAR,	TMessage,			WmNyanFiAppearance)	//!< デザインなとの変更
+		VCL_MESSAGE_HANDLER(WM_NYANFI_FLICON,	TMessage,			WmNyanFiFlIcon)		//!< アイコンを取得
+		VCL_MESSAGE_HANDLER(WM_NYANFI_THUMBNAIL,TMessage,			WmNyanFiThumbnail)	//!< サムネイルを取得
+		VCL_MESSAGE_HANDLER(WM_NYANFI_CLPCOPIED,TMessage,			WmNyanFiClpCopied)	//!< クリップボードにコピー
+		VCL_MESSAGE_HANDLER(WM_NYANFI_LOCKKEY,	TMessage,			WmNyanFiLockKey)	//!< LockKeyMouse でのキー処理
+		VCL_MESSAGE_HANDLER(WM_NYANFI_GREP_END,	TMessage,			WmNyanFiGrepEnd)	//!< GREPスレッド完了
 	END_MESSAGE_MAP(TForm)
 };
 //---------------------------------------------------------------------------

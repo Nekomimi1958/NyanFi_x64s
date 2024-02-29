@@ -1041,7 +1041,22 @@ int ListBoxInitialSearch(
 }
 
 //---------------------------------------------------------------------------
-//InfListBox の現在行からディレクトリ名を取得
+//ListBox の現在行文字列を取得
+//---------------------------------------------------------------------------
+UnicodeString ListBoxGetStr(TListBox *lp)
+{
+	return (lp->ItemIndex!=-1)? lp->Items->Strings[lp->ItemIndex] : EmptyStr;
+} 
+//---------------------------------------------------------------------------
+//ListBox の現在行のオブジェクトを取得
+//---------------------------------------------------------------------------
+TObject * ListBoxGetObj(TListBox *lp)
+{
+	return (lp->ItemIndex!=-1)? lp->Items->Objects[lp->ItemIndex] : NULL;
+} 
+
+//---------------------------------------------------------------------------
+//ListBox の現在行からディレクトリ名を取得
 //---------------------------------------------------------------------------
 UnicodeString InfListBoxGetDir(TListBox *lp)
 {
@@ -1054,7 +1069,7 @@ UnicodeString InfListBoxGetDir(TListBox *lp)
 //---------------------------------------------------------------------------
 UnicodeString ListBoxGetURL(TListBox *lp)
 {
-	return (lp->ItemIndex!=-1)? extract_URL(lp->Items->Strings[lp->ItemIndex]) : EmptyStr;
+	return extract_URL(ListBoxGetStr(lp));
 }
 
 //---------------------------------------------------------------------------
@@ -1544,65 +1559,6 @@ bool EjectDrive2(UnicodeString drvnam, bool eject)
 		::SetupDiDestroyDeviceInfoList(hDevInfo);
 	}
 	return res;
-}
-
-//---------------------------------------------------------------------------
-//コントロールのクラスチェック
-//---------------------------------------------------------------------------
-bool class_is_LabeledEdit(TObject *op)
-{
-	return (op && op->ClassNameIs("TLabeledEdit"));
-}
-//---------------------------------------------------------------------------
-bool class_is_MaskEdit(TObject *op)
-{
-	return (op && op->ClassNameIs("TMaskEdit"));
-}
-//---------------------------------------------------------------------------
-bool class_is_CustomEdit(TObject *op)
-{
-	return (op && op->InheritsFrom(__classid(TCustomEdit)));
-}
-//---------------------------------------------------------------------------
-bool class_is_Edit(TObject *op)
-{
-	return (op && op->ClassNameIs("TEdit"));
-}
-//---------------------------------------------------------------------------
-bool class_is_CheckBox(TObject *op)
-{
-	return (op && op->ClassNameIs("TCheckBox"));
-}
-//---------------------------------------------------------------------------
-bool class_is_ComboBox(TObject *op)
-{
-	return (op && op->ClassNameIs("TComboBox"));
-}
-//---------------------------------------------------------------------------
-bool class_is_ListBox(TObject *op)
-{
-	return (op && op->ClassNameIs("TListBox"));
-}
-//---------------------------------------------------------------------------
-bool class_is_CheckListBox(TObject *op)
-{
-	return (op && op->ClassNameIs("TCheckListBox"));
-}
-//---------------------------------------------------------------------------
-bool class_is_RadioGroup(TObject *op)
-{
-	return (op && op->ClassNameIs("TRadioGroup"));
-}
-
-//---------------------------------------------------------------------------
-void cursor_HourGlass()
-{
-	Screen->Cursor = crHourGlass;
-}
-//---------------------------------------------------------------------------
-void cursor_Default()
-{
-	Screen->Cursor = crDefault;
 }
 
 //---------------------------------------------------------------------------

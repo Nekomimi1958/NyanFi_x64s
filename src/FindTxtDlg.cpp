@@ -54,6 +54,7 @@ void __fastcall TFindTextDlg::FormShow(TObject *Sender)
 	IniFile->LoadPosInfo(this, DialogCenter, (ExTViewer? _T("ExFindText"): null_TCHAR));
 
 	CaseCheckBox->Checked  = IniFile->ReadBoolGen(_T("FindTxtDlgCase"));
+	WordCheckBox->Checked  = IniFile->ReadBoolGen(_T("FindTxtDlgWord"));
 	RegExCheckBox->Checked = IniFile->ReadBoolGen(_T("FindTxtDlgRegEx"));
 	set_MigemoCheckBox(MigemoCheckBox, _T("FindTxtDlgMigemo"));
 
@@ -91,6 +92,7 @@ void __fastcall TFindTextDlg::FormClose(TObject *Sender, TCloseAction &Action)
 
 	IniFile->WriteIntGen(_T("FindTxtDlgUpDown"),		DownRadioBtn->Checked? 1 : 0);
 	IniFile->WriteBoolGen(_T("FindTxtDlgCase"),			CaseCheckBox);
+	IniFile->WriteBoolGen(_T("FindTxtDlgWord"),			WordCheckBox);
 	IniFile->WriteBoolGen(_T("FindTxtDlgRegEx"),		RegExCheckBox);
 	IniFile->WriteBoolGen(_T("FindTxtDlgMigemo"),		MigemoCheckBox);
 	IniFile->WriteBoolGen(_T("FindTxtDlgBytes"),		BytesCheckBox);
@@ -107,6 +109,7 @@ void __fastcall TFindTextDlg::FormKeyDown(TObject *Sender, WORD &Key, TShiftStat
 {
 	SpecialKeyProc(this, Key, Shift);
 }
+
 //---------------------------------------------------------------------------
 //オプションの変更
 //---------------------------------------------------------------------------
@@ -116,15 +119,17 @@ void __fastcall TFindTextDlg::FindOptChangedClick(TObject *Sender)
 
 	BinPanel->Visible = Viewer && Viewer->isBinary;
 	bool not_bytes = !BinPanel->Visible || !BytesCheckBox->Checked;
+	WordCheckBox->Enabled   = not_bytes;
+	MigemoCheckBox->Enabled = not_bytes;
+	RegExCheckBox->Enabled  = not_bytes;
+
 	set_FormTitle(this, not_bytes? _T("文字列検索") : _T("バイト列検索"));
 	HighlightCheckBox->Enabled = not_bytes;
 	if (Viewer) Viewer->Highlight = not_bytes;
 	CodePageComboBox->Enabled  = !not_bytes;
-
-	FindComboBox->SetFocus();
+	SetFindFocus();
 	FindComboBoxChange(FindComboBox);
 }
-
 //---------------------------------------------------------------------------
 void __fastcall TFindTextDlg::MigemoCheckBoxClick(TObject *Sender)
 {
@@ -140,8 +145,6 @@ void __fastcall TFindTextDlg::MigemoCheckBoxClick(TObject *Sender)
 	FindComboBoxChange(FindComboBox);
 }
 //---------------------------------------------------------------------------
-//検索履歴の入れ換え
-//---------------------------------------------------------------------------
 void __fastcall TFindTextDlg::RegExCheckBoxClick(TObject *Sender)
 {
 	if (DlgInitialized) {
@@ -153,7 +156,7 @@ void __fastcall TFindTextDlg::RegExCheckBoxClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TFindTextDlg::SubOptClick(TObject *Sender)
 {
-	FindComboBox->SetFocus();
+	SetFindFocus();
 }
 
 //---------------------------------------------------------------------------
@@ -165,6 +168,7 @@ void __fastcall TFindTextDlg::FindComboBoxChange(TObject *Sender)
 
 	if (Viewer) {
 		Viewer->isCase		= CaseCheckBox->Checked;
+		Viewer->isWord		= WordCheckBox->Checked;
 		Viewer->isRegEx 	= RegExCheckBox->Checked;
 		Viewer->isMigemo	= MigemoCheckBox->Enabled && MigemoCheckBox->Checked;
 		Viewer->isBytes 	= BinPanel->Visible && BytesCheckBox->Checked;
@@ -234,14 +238,16 @@ void __fastcall TFindTextDlg::FindComboBoxChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TFindTextDlg::FindComboBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
-	switch (idx_of_word_i("Ctrl+N|Ctrl+D|Ctrl+P|Ctrl+U|Ctrl+M|Ctrl+R|Ctrl+B", get_KeyStr(Key, Shift))) {
+	switch (idx_of_word_i("Ctrl+N|Ctrl+D|Ctrl+P|Ctrl+U|Ctrl+M|Ctrl+R|Ctrl+W|Ctrl+B", get_KeyStr(Key, Shift))) {
 	case 0: case 1:
 		DownRadioBtn->Checked = true;
-		Repaint();  FindNextAction->Execute();
+		Repaint();
+		FindNextAction->Execute();
 		break;
 	case 2: case 3:
 		UpRadioBtn->Checked = true;
-		Repaint();  FindNextAction->Execute();
+		Repaint();
+		FindNextAction->Execute();
 		break;
 	case 4:
 		if (MigemoCheckBox->Enabled) MigemoCheckBox->Checked = !MigemoCheckBox->Checked;
@@ -250,6 +256,9 @@ void __fastcall TFindTextDlg::FindComboBoxKeyDown(TObject *Sender, WORD &Key, TS
 		RegExCheckBox->Checked = !RegExCheckBox->Checked;
 		break;
 	case 6:
+		WordCheckBox->Checked = !WordCheckBox->Checked;
+		break;
+	case 7:
 		if (BinPanel->Visible) BytesCheckBox->Checked = !BytesCheckBox->Checked;
 		break;
 	default:
@@ -295,7 +304,10 @@ void __fastcall TFindTextDlg::FindNextActionExecute(TObject *Sender)
 
 	if (to_save) IniFile->SaveComboBoxItems(FindComboBox, RegExCheckBox->Checked? _T("FindPtnHistory") : _T("FindTxtHistory"));
 
-	if (CloseCheckBox->Checked) Close();
+	if (CloseCheckBox->Checked)
+		Close();
+	else
+		SetFindFocus();
 }
 //---------------------------------------------------------------------------
 void __fastcall TFindTextDlg::FindNextActionUpdate(TObject *Sender)

@@ -238,7 +238,7 @@ void __fastcall TDirHistoryDlg::DirHistListBoxKeyDown(TObject *Sender, WORD &Key
 		int *h_ptr = (IsDirStack || IsAllDirHist || IsFindDirHist)? NULL : get_DirHistPtr(CurTabIndex, CurListTag);
 
 		TListBox *lp = (TListBox*)Sender;
-		UnicodeString cur_dnam = (lp->ItemIndex!=-1)? get_csv_item(lp->Items->Strings[lp->ItemIndex], 0) : EmptyStr;
+		UnicodeString cur_dnam = get_csv_item(ListBoxGetStr(lp), 0);
 
 		//Šm’è
 		if ((!IsFindDirHist && is_Num0to9(KeyStr)) || equal_ENTER(KeyStr)) {
@@ -301,7 +301,7 @@ void __fastcall TDirHistoryDlg::DirHistListBoxKeyDown(TObject *Sender, WORD &Key
 			}
 			else if (IdRecentDir) {
 				if (lp->ItemIndex==-1) SkipAbort();
-				UnicodeString fnam = get_csv_item(lp->Items->Strings[lp->ItemIndex], 1);
+				UnicodeString fnam = get_csv_item(ListBoxGetStr(lp), 1);
 				if (!file_exists(fnam) || !delete_File(fnam)) Abort();
 			}
 			else {
@@ -508,8 +508,9 @@ void __fastcall TDirHistoryDlg::ClearFltActionUpdate(TObject *Sender)
 void __fastcall TDirHistoryDlg::CopyAllActionExecute(TObject *Sender)
 {
 	std::unique_ptr<TStringList> lst(new TStringList());
-	for (int i=0; i<ListBuff->Count; i++)
+	for (int i=0; i<ListBuff->Count; i++) {
 		lst->Add(get_csv_item(ListBuff->Strings[i], 0));
+	}
 
 	copy_to_Clipboard(lst->Text);
 }
@@ -527,8 +528,7 @@ void __fastcall TDirHistoryDlg::PropertyActionExecute(TObject *Sender)
 	TListBox *lp = DirHistListBox;
 	if (lp->ItemIndex!=-1) {
 		pos_ListBoxItem(lp);
-		UnicodeString dnam = get_csv_item(lp->Items->Strings[lp->ItemIndex], 0);
-		ShowPropertyDialog(dnam);
+		ShowPropertyDialog(get_csv_item(ListBoxGetStr(lp), 0));
 	}
 }
 //---------------------------------------------------------------------------
@@ -537,4 +537,3 @@ void __fastcall TDirHistoryDlg::PropertyActionUpdate(TObject *Sender)
 	((TAction*)Sender)->Enabled = DirHistListBox->ItemIndex!=-1;
 }
 //---------------------------------------------------------------------------
-

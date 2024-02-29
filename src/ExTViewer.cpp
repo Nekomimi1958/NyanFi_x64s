@@ -650,10 +650,13 @@ bool __fastcall TExTxtViewer::ExeCommandV(UnicodeString cmd, UnicodeString prm)
 		}
 		//ソース／ヘッダの切り換え
 		else if (SameText(cmd, "SwitchSrcHdr")) {
+			UnicodeString kwd  = ExViewer->get_SelText();
 			UnicodeString fnam = get_SrcHdrName(ExViewer->FileName);
 			if (fnam.IsEmpty()) SysErrAbort(ERROR_FILE_NOT_FOUND);
 			ExViewer->add_ViewHistory();
-			if (!OpenViewer(fnam)) GlobalAbort();
+			if (!OpenViewer(fnam, false, 0, kwd.IsEmpty()? 0 : 1)) GlobalAbort();
+			SearchOption opt; opt << soCaseSens << soFromPos;
+			if (!kwd.IsEmpty()) ExViewer->SearchDown(kwd, opt);
 		}
 		//文字列検索
 		else if (SameText(cmd, "FindText")) {

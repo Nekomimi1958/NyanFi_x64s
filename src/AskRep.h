@@ -1,7 +1,8 @@
-//----------------------------------------------------------------------//
-// NyanFi																//
-//  置換確認ダイアログ													//
-//----------------------------------------------------------------------//
+/**
+ * @file AskRep.h
+ * @brief 置換確認ダイアログ
+ */
+//----------------------------------------------------------------------------
 #ifndef AskRepH
 #define AskRepH
 
@@ -18,6 +19,9 @@
 #include "usr_scrpanel.h"
 
 //----------------------------------------------------------------------------
+/**
+ * @brief 置換確認ダイアログ
+ */
 class TAskRepDlg : public TForm
 {
 __published:
@@ -41,10 +45,9 @@ __published:
 	void __fastcall RepListBoxEnter(TObject *Sender);
 
 private:
-
-public:
 	UsrScrollPanel *ListScrPanel;	//シンプルスクロールバー
 
+public:
 	UnicodeString FileName;
 	UnicodeString KeyWord;
 
