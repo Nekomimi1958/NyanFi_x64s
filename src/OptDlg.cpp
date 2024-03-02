@@ -3210,9 +3210,10 @@ void __fastcall TOptionDlg::CmdComboBoxChange(TObject *Sender)
 	UnicodeString tmp;
 	if (contained_wd_i("ChangeRegDir|ChangeOppRegDir", cmd)) {
 		for (int i=0; i<RegDirList->Count; i++) {
-			TStringDynArray itm_buf = get_csv_array(RegDirList->Strings[i], 3);
-			if (itm_buf.Length!=3 || itm_buf[0].IsEmpty()) continue;
-			p_list->Add(tmp.sprintf(_T("%s : %s"), itm_buf[0].UpperCase().c_str(), itm_buf[1].c_str()));
+			TStringDynArray itm_buf = get_csv_array(RegDirList->Strings[i], REGDIR_CSVITMCNT, true);
+			if (!itm_buf[0].IsEmpty()) {
+				p_list->Add(tmp.sprintf(_T("%s : %s"), itm_buf[0].UpperCase().c_str(), itm_buf[1].c_str()));
+			}
 		}
 	}
 	else if (SameText(cmd, "Eject")) {

@@ -1361,8 +1361,9 @@ UnicodeString make_csv_rec_str(std::initializer_list<UnicodeString> lst)
 int indexof_csv_list(TStringList *lst, UnicodeString s, int p)
 {
 	int idx = -1;
-	for (int i=0; i<lst->Count && idx==-1; i++)
+	for (int i=0; i<lst->Count && idx==-1; i++) {
 		if (SameText(s, get_csv_item(lst->Strings[i], p))) idx = i;
+	}
 	return idx;
 }
 //---------------------------------------------------------------------------

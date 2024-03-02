@@ -8404,7 +8404,7 @@ UnicodeString get_RegDirName(UnicodeString pnam)
 	int dlen = 0;
 	UnicodeString rnam;
 	for (int i=0; i<RegDirList->Count; i++) {
-		TStringDynArray itm_buf = get_csv_array(RegDirList->Strings[i], 3, true);
+		TStringDynArray itm_buf = get_csv_array(RegDirList->Strings[i], REGDIR_CSVITMCNT, true);
 		if (is_separator(itm_buf[1])) continue;
 		UnicodeString dnam = get_actual_path(itm_buf[2]);
 		if (StartsText(dnam, pnam) && dnam.Length()>dlen) {
