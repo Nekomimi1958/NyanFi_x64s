@@ -118,8 +118,8 @@ void __fastcall TInputExDlg::FormShow(TObject *Sender)
 	}
 
 	TRect main_rc = Application->MainForm->BoundsRect;
-	if (p.x<main_rc.Left)			 p.x = main_rc.Left + 8;
-	if ((p.x + Width)>main_rc.Right) p.x = main_rc.Right - Width - 8;
+	if (p.x<main_rc.Left)			 p.x = main_rc.Left + SCALED_THIS(8);
+	if ((p.x + Width)>main_rc.Right) p.x = main_rc.Right - Width - SCALED_THIS(8);
 	Left = p.x;
 	Top  = p.y;
 

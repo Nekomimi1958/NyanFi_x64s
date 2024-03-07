@@ -210,7 +210,7 @@ object JsonViewer: TJsonViewer
     object OpenUrlItem: TMenuItem
       Action = OpenUrlAction
     end
-    object E1: TMenuItem
+    object EditErrItem: TMenuItem
       Action = EditErrAction
     end
     object Sep_3: TMenuItem

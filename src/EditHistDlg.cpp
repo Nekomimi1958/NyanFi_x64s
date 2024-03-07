@@ -336,7 +336,7 @@ void __fastcall TEditHistoryDlg::StatusBar1DrawPanel(TStatusBar *StatusBar, TSta
 
 	UnicodeString lbuf = Panel->Text;
 	cv->Font->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnText);
-	cv->TextOut(rc.Left + 2, rc.Top, split_pre_tab(lbuf));
+	cv->TextOut(rc.Left + SCALED_THIS(2), rc.Top, split_pre_tab(lbuf));
 	if (!lbuf.IsEmpty()) cv->TextOut(rc.Right - cv->TextWidth(lbuf) - SCALED_THIS(20), rc.Top, lbuf);
 }
 //---------------------------------------------------------------------------

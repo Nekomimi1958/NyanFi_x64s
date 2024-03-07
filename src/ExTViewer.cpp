@@ -103,7 +103,7 @@ void __fastcall TExTxtViewer::WmFormShowed(TMessage &msg)
 			ExViewer->SttHdrInf = tmp.sprintf(_T("タスクログ  行数:%s"), get_size_str_B(ExViewer->MaxLine, 0).c_str());
 		}
 
-		AdjustHdrWidth();
+		ExViewer->AdjustSttHdr();
 		ExViewer->SetSttInf();
 		TxtViewPanel->Caption	= EmptyStr;
 		TxtScrollPanel->Visible = true;
@@ -163,36 +163,12 @@ void __fastcall TExTxtViewer::WmExitSizeMove(TMessage &msg)
 		LastWidth = Width;
 	}
 }
-
-//---------------------------------------------------------------------------
-//情報ヘッダのパネル幅調整
-//---------------------------------------------------------------------------
-void __fastcall TExTxtViewer::AdjustHdrWidth()
-{
-	TCanvas *cv = TxtSttHeader->Canvas;
-	cv->Font->Assign(TxtSttHeader->Font);
-	int s_12 = SCALED_THIS(12);
-	TxtSttHeader->Panels->Items[1]->Width = cv->TextWidth(TxtSttHeader->Panels->Items[1]->Text) + s_12;
-	TxtSttHeader->Panels->Items[2]->Width = cv->TextWidth(TxtSttHeader->Panels->Items[2]->Text) + s_12;
-	TxtSttHeader->Panels->Items[3]->Width = cv->TextWidth(TxtSttHeader->Panels->Items[3]->Text) + s_12;
-	UnicodeString tmp = "00000行 000桁 0000字選択 ";
-	if (ExViewer->CsvCol>=0) tmp += " 00列";
-	TxtSttHeader->Panels->Items[4]->Width = cv->TextWidth(tmp);
-
-	TxtSttHeader->Panels->Items[0]->Width = ClientWidth
-		- TxtSttHeader->Panels->Items[1]->Width
-		- TxtSttHeader->Panels->Items[2]->Width
-		- TxtSttHeader->Panels->Items[3]->Width
-		- TxtSttHeader->Panels->Items[4]->Width;
-}
-
 //---------------------------------------------------------------------------
 void __fastcall TExTxtViewer::FormResize(TObject *Sender)
 {
 	if (!DlgInitialized) return;
 
-	AdjustHdrWidth();
-
+	ExViewer->AdjustSttHdr();
 	ExViewer->SetMetric(true);
 	ExViewer->Repaint(true);
 }
@@ -386,8 +362,7 @@ bool __fastcall TExTxtViewer::OpenViewer(
 			if (ExViewer->isLimited) inf_str += "    (部分)";
 		}
 
-		AdjustHdrWidth();
-
+		ExViewer->AdjustSttHdr();
 		ExViewer->SttHdrInf 	= inf_str;
 		ExViewer->SetSttInf();
 		TxtSttHeader->Hint		= ExViewer->FileName;

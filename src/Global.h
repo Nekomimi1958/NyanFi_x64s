@@ -304,7 +304,7 @@ extern bool gTaskPause[MAX_TASK_THREAD];
 extern int  MaxTasks;						//!< 最大タスク数
 extern bool RsvSuspended;					//!< 予約の保留
 extern TaskConfigList *TaskReserveList;		//!< タスク予約リスト
-extern int  LastOpCount;					//!< 最後に操作した時のカウント値
+extern int  LastOpCount;					//!< 最後に操作したときのカウント値
 
 extern TImgViewThread   *ImgViewThread;		//!< 画像ビュー処理スレッド
 extern TThumbnailThread *ThumbnailThread;	//!< サムネイル取得スレッド
@@ -547,12 +547,12 @@ extern UnicodeString WheelCmdF[4];		//!< ホイールコマンド
 extern UnicodeString WheelCmdV[4];
 extern UnicodeString WheelCmdI[4];
 
-extern UnicodeString WheelBtnCmdF[4];	//!< ホイールボタンを押した時のコマンド
+extern UnicodeString WheelBtnCmdF[4];	//!< ホイールボタンを押したときのコマンド
 extern UnicodeString WheelBtnCmdV;
 extern UnicodeString WheelBtnCmdI;
 
-extern UnicodeString X1BtnCmdF;			//!< X1ボタンを押した時のコマンド
-extern UnicodeString X2BtnCmdF;			//!< X2ボタンを押した時のコマンド
+extern UnicodeString X1BtnCmdF;			//!< X1ボタンを押したときのコマンド
+extern UnicodeString X2BtnCmdF;			//!< X2ボタンを押したときのコマンド
 extern UnicodeString X1BtnCmdV;
 extern UnicodeString X2BtnCmdV;
 extern UnicodeString X1BtnCmdI;
@@ -1157,7 +1157,7 @@ extern TColor col_fgEmpBin2;	//!< バイナリ強調文字色2
 extern TColor col_fgEmpBin3;	//!< バイナリ強調文字色3
 extern TColor col_Headline;		//!< 見出しの文字色
 extern TColor col_URL;			//!< URLの文字色
-extern TColor col_LocalLink;	//!< ローカファイルへのリンク
+extern TColor col_LocalLink;	//!< ローカルファイルへのリンク
 extern TColor col_bgImage;		//!< 画像の背景色
 extern TColor col_bgDblPg;		//!< 見開き表示の余白色
 extern TColor col_bgWMF;		//!< メタファイルの背景色
@@ -1417,7 +1417,7 @@ struct flist_stt {
 	int sel_d_cnt;				//!< 選択ディレクトリ数
 	__int64 sel_size;			//!< 選択サイズ
 
-	int last_fl_idx;			//!< ファイルリストに復帰した時のカーソル位置
+	int last_fl_idx;			//!< ファイルリストに復帰したときのカーソル位置
 
 	bool show_f_d_cnt;			//!< ファイル、ディレクトリ数を表示
 	bool dir_graph;				//!< ディレクトリ容量をグラフ表示(対カレント)
@@ -1963,7 +1963,7 @@ int GetSelCount(TStringList *lst);
  * @brief 選択中項目名リストを取得
  * @param lst 対象リスト
  * @param[out] sel_lst 選択項目リスト
- * @param with_path パス付で取得
+ * @param with_path パス付きで取得
  * @param with_obj Objects も取得
  */
 void GetSelList(TStringList *lst, TStringList *sel_lst, bool with_path = true, bool with_obj = false);

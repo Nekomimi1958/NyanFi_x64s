@@ -303,7 +303,7 @@ void __fastcall TPrintImgDlg::DrawImage(TCanvas *cv)
 		FormatStr = EmptyStr;
 	}
 
-	UnicodeString tmp = minimize_str(FormatStr, Canvas, SizeLabel->Width - 4);
+	UnicodeString tmp = minimize_str(FormatStr, Canvas, SizeLabel->Width - SCALED_THIS(4));
 	SizeLabel->Hint = FormatStr;
 	SizeLabel->Caption = tmp.cat_sprintf(_T("\r\nˆóü—Ìˆæ: %u ~ %umm (%u ~ %upx)"),
 		::GetDeviceCaps(Printer()->Handle, HORZSIZE), ::GetDeviceCaps(Printer()->Handle, VERTSIZE),

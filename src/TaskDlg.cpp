@@ -132,7 +132,7 @@ void __fastcall TTaskManDlg::Timer1Timer(TObject *Sender)
 				UnicodeString pnam = ExtractFilePath(finf);
 				if (!pnam.IsEmpty()) {
 					finf   = get_tkn_r(finf, pnam);
-					int wd = std::max(gp->ColWidths[2] - cv->TextWidth(finf) - 4, 8);
+					int wd = std::max(gp->ColWidths[2] - cv->TextWidth(finf) - SCALED_THIS(4), SCALED_THIS(8));
 					finf   = get_MiniPathName(pnam, wd, cv->Font) + finf;
 				}
 				UnicodeString cell_str;
@@ -253,10 +253,10 @@ void __fastcall TTaskManDlg::TaskGridDrawCell(TObject *Sender, System::LongInt A
 			int prg = get_tkn(l_lst[i], '%').ToIntDef(-1);
 			if (prg>=0) {
 				TRect rc_f	 = Rect;
-				rc_f.Left	+= 4;
-				rc_f.Right	-= 4;
-				rc_f.Bottom -= 2;
-				rc_f.Top	 = rc_f.Bottom - 4;
+				rc_f.Left	+= SCALED_THIS(4);
+				rc_f.Right	-= SCALED_THIS(4);
+				rc_f.Bottom -= SCALED_THIS(2);
+				rc_f.Top	 = rc_f.Bottom - SCALED_THIS(4);
 				draw_ProgressBar(cv, rc_f, prg/100.0);
 			}
 		}

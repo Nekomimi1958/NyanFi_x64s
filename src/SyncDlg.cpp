@@ -44,18 +44,19 @@ void __fastcall TRegSyncDlg::RegListBoxDrawItem(TWinControl *Control, int Index,
 	int xp = Rect.Left + SCALED_THIS(2);
 	int yp = Rect.Top  + get_TopMargin(cv);
 
-	int w_x = 50;
+	int w_x = SCALED_THIS(50);
 	for (int i=0; i<lp->Count; i++) w_x = std::max(cv->TextWidth(get_csv_item(lp->Items->Strings[i], 0)), w_x);
 	TStringDynArray syn_lst = get_csv_array(lp->Items->Strings[Index], 50, true);
 
 	SetHighlight(cv, State.Contains(odSelected));
 	cv->FillRect(Rect);
-	cv->TextOut(xp, yp, syn_lst[0]);	xp += w_x + 16;
+	cv->TextOut(xp, yp, syn_lst[0]);
+	xp += w_x + SCALED_THIS(16);
 
 	if (ContainsText(syn_lst[2], "O")) out_Text(cv, xp, yp, _T("O"));
-	xp += 18;
+	xp += SCALED_THIS(18);
 	if (ContainsText(syn_lst[2], "D")) out_Text(cv, xp, yp, _T("D"));
-	xp += 24;
+	xp += SCALED_THIS(24);
 
 	UnicodeString lbuf;
 	for (int i=3; i<syn_lst.Length && !syn_lst[i].IsEmpty(); i++) ins_sep_cat(lbuf, ", ", syn_lst[i]);

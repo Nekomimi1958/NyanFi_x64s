@@ -192,7 +192,7 @@ TColor HighlightFile::ReadColorRGB6H(const _TCHAR *key,
 //---------------------------------------------------------------------------
 bool HighlightFile::GetCommentList(
 	UnicodeString fnam,		//ファイル名
-	TStringList *ln_lst,	//１行コメント
+	TStringList *ln_lst,	//1行コメント
 	TStringList *bgn_lst,	//ブロック開始
 	TStringList *end_lst,	//ブロック終了
 	bool is_h2t,			//HTML→TEXT変換モード	(default = false)
@@ -329,7 +329,7 @@ int HighlightFile::GetCommentPos(
 {
 	int p = 0;
 
-	std::unique_ptr<TStringList> ln_lst(new TStringList());		//１行コメント
+	std::unique_ptr<TStringList> ln_lst(new TStringList());		//1行コメント
 	std::unique_ptr<TStringList> bg_lst(new TStringList());		//ブロック開始
 	std::unique_ptr<TStringList> ed_lst(new TStringList());		//ブロック終了
 
@@ -384,7 +384,7 @@ int HighlightFile::GetCommentPos(
 			p = 1;
 		}
 		else {
-			//１行に収まるブロックコメント
+			//1行に収まるブロックコメント
 			int p_mlt = 0;
 			for (int i=0; i<bg_lst->Count && p_mlt==0; i++) {
 				int p_end = EndsStr(ed_lst->Strings[i], s)? (s.Length() - ed_lst->Strings[i].Length() + 1) : 0;
@@ -990,7 +990,7 @@ bool GetDefaultHighlight(
 	lst->Add(lbuf.sprintf(_T("[%s]"), fext.c_str()));
 
 	//コメント
-	std::unique_ptr<TStringList> ln_lst(new TStringList());		//１行コメント
+	std::unique_ptr<TStringList> ln_lst(new TStringList());		//1行コメント
 	std::unique_ptr<TStringList> bgn_lst(new TStringList());	//ブロック開始
 	std::unique_ptr<TStringList> end_lst(new TStringList());	//ブロック終了
 	if (UserHighlight->GetCommentList("*" + fext, ln_lst.get(), bgn_lst.get(), end_lst.get(), false, true)) {

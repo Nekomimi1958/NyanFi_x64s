@@ -33,6 +33,23 @@ void __fastcall TGitGrepForm::FormCreate(TObject *Sender)
 	ResultBuff = new TStringList();
 
 	KeyHandled = false;
+
+	//スティッキー
+	StickyPanel = new TPanel(this);
+	StickyPanel->Parent     = ResultListBox->Parent;
+	StickyPanel->Visible    = false;
+	StickyPanel->Caption    = EmptyStr;
+	StickyPanel->BevelOuter = bvNone;
+	StickyPanel->ParentBackground = false;
+
+	StickyBox = new TPaintBox(this);
+	StickyBox->Parent  = StickyPanel;
+	StickyBox->Align   = alClient;
+	StickyBox->Cursor  = crHandPoint;
+	StickyBox->OnPaint = onStickyPaint;
+	StickyBox->OnClick = onStickyClick;
+
+	LastTopIndex = -1;
 }
 //---------------------------------------------------------------------------
 void __fastcall TGitGrepForm::FormShow(TObject *Sender)
@@ -153,16 +170,23 @@ void __fastcall TGitGrepForm::GrepStartActionExecute(TObject *Sender)
 			IniFile->SaveComboBoxItems(FindComboBox, RegExCheckBox->Checked? _T("GitGrepPtnHistory") : _T("GitGrepFindHistory"));
 			add_ComboBox_history(PathComboBox);
 
-			//ファイル数をカウント
-			UnicodeString fnam;
+			//ファイル数をカウント/最大表示幅を取得
+			TCanvas *cv = ResultListBox->Canvas;
+			MaxFileWd = cv->TextWidth(StringOfChar(_T('W'), 16));
 			int f_cnt = 0;
+			UnicodeString fnam;
 			TRegExOptions opt; opt << roIgnoreCase;
 			for (int i=0; i<ResultBuff->Count; i++) {
-				TMatch mt = TRegEx::Match(ResultBuff->Strings[i], "^(?:[0-9a-f]{7,}:)?(?:.+/)?(?:[^:]+):", opt);
-				if (!mt.Success) continue;
-				if (!SameText(fnam, mt.Value)) {
-					fnam = mt.Value;
-					f_cnt++;
+				TMatch mt = TRegEx::Match(ResultBuff->Strings[i], RESLINE_MATCH_PTN, opt);
+				if (mt.Success) {
+					UnicodeString hash = mt.Groups.Item[1].Value;
+					UnicodeString pnam = mt.Groups.Item[2].Value + mt.Groups.Item[3].Value;;
+					if (!SameText(fnam, hash + pnam)) {
+						fnam = hash + pnam;
+						if (!hash.IsEmpty()) hash = hash.SubString(1, 7) + ":";
+						MaxFileWd = std::max(cv->TextWidth(hash + pnam), MaxFileWd);
+						f_cnt++;
+					}
 				}
 			}
 
@@ -205,6 +229,12 @@ void __fastcall TGitGrepForm::ResultListBoxDrawItem(TWinControl *Control, int In
 	TRect &Rect, TOwnerDrawState State)
 {
 	TListBox *lp = (TListBox*)Control;
+
+	if (lp->TopIndex!=LastTopIndex) {
+		LastTopIndex = Index;
+		UpdateSticky();
+	}
+
 	TCanvas  *cv = lp->Canvas;
 	cv->Brush->Color = lp->Color;
 	cv->FillRect(Rect);
@@ -214,49 +244,37 @@ void __fastcall TGitGrepForm::ResultListBoxDrawItem(TWinControl *Control, int In
 	TRect rc = Rect;
 
 	UnicodeString pnam_prv, pnam_nxt;
+	TRegExOptions opt; opt << roIgnoreCase;
 	if (Index>0) {
-		TMatch mt = TRegEx::Match(lp->Items->Strings[Index - 1], RESLINE_MATCH_PTN);
-		if (mt.Success && mt.Groups.Count==6) {
+		TMatch mt = TRegEx::Match(lp->Items->Strings[Index - 1], RESLINE_MATCH_PTN, opt);
+		if (mt.Success && mt.Groups.Count>=4) {
 			pnam_prv = mt.Groups.Item[1].Value + mt.Groups.Item[2].Value + mt.Groups.Item[3].Value;
 		}
 	}
 	if (Index<lp->Count-1) {
-		TMatch mt = TRegEx::Match(lp->Items->Strings[Index + 1], RESLINE_MATCH_PTN);
-		if (mt.Success && mt.Groups.Count==6) {
+		TMatch mt = TRegEx::Match(lp->Items->Strings[Index + 1], RESLINE_MATCH_PTN, opt);
+		if (mt.Success && mt.Groups.Count>=4) {
 			pnam_nxt = mt.Groups.Item[1].Value + mt.Groups.Item[2].Value + mt.Groups.Item[3].Value;
 		}
 	}
 
-	TMatch mt = TRegEx::Match(lp->Items->Strings[Index], RESLINE_MATCH_PTN);
+	TMatch mt = TRegEx::Match(lp->Items->Strings[Index], RESLINE_MATCH_PTN, opt);
 	if (mt.Success && mt.Groups.Count==6) {
 		UnicodeString hash = mt.Groups.Item[1].Value;
 		UnicodeString pnam = hash + mt.Groups.Item[2].Value + mt.Groups.Item[3].Value;
 		if (!hash.IsEmpty()) hash = hash.SubString(1, 7) + ":";
-
 		if (!SameText(pnam, pnam_prv)) {
 			if (!hash.IsEmpty()) out_TextEx(cv, xp, yp, hash, col_GitHash);
 			out_TextEx(cv, xp, yp, mt.Groups.Item[2].Value, col_Folder);
 			out_TextEx(cv, xp, yp, mt.Groups.Item[3].Value, get_ListFgCol());
 		}
-		else {
-			xp += cv->TextWidth(hash + mt.Groups.Item[2].Value + mt.Groups.Item[3].Value);
-		}
-		xp += SCALED_THIS(8);
+		xp = MaxFileWd + SCALED_THIS(16);
 
 		//行番号
-		int ln_wd = cv->TextWidth("000000 ");
-		xp += ln_wd;
-		int cwd = abs(cv->Font->Height);
-		int wdn = 16;
-		for (;;) {
-			if (xp<cwd*wdn) { xp = cwd*wdn;  break; }
-			wdn += 4;
-			if (cwd*wdn > ClientWidth/2) break;
-		}
-		rc.Left = xp - ln_wd;
+		rc.Left = xp;
 		LineNoOut(cv, rc, mt.Groups.Item[4].Value);
 		cv->Brush->Color = get_ListBgCol();
-		xp += SCALED_THIS(4);
+		xp += cv->TextWidth("000000 ") + SCALED_THIS(4);
 
 		//ファイル境界
 		if (!SameText(pnam, pnam_nxt)) {
@@ -314,6 +332,87 @@ void __fastcall TGitGrepForm::ResultListBoxKeyPress(TObject *Sender, System::Wid
 	Key = 0;
 }
 
+//---------------------------------------------------------------------------
+//スティッキーを更新
+//---------------------------------------------------------------------------
+void __fastcall TGitGrepForm::UpdateSticky()
+{
+	TListBox *lp = ResultListBox;
+	StickyPanel->Top    = lp->Top;
+	StickyPanel->Left   = lp->Left;
+	StickyPanel->Height = lp->ItemHeight - CursorWidth;
+
+	int idx = lp->TopIndex;
+	int wd = 0;
+	if (idx>0) {
+		TRegExOptions opt; opt << roIgnoreCase;
+		TMatch mt1 = TRegEx::Match(lp->Items->Strings[idx], RESLINE_MATCH_PTN, opt);
+		TMatch mt2 = TRegEx::Match(lp->Items->Strings[idx - 1], RESLINE_MATCH_PTN, opt);
+		if (mt1.Success && mt1.Groups.Count>=4 && mt2.Success && mt2.Groups.Count>=4
+			&& SameStr(mt1.Groups.Item[1].Value, mt2.Groups.Item[1].Value)
+			&& SameStr(mt1.Groups.Item[2].Value, mt2.Groups.Item[2].Value)
+			&& SameStr(mt1.Groups.Item[3].Value, mt2.Groups.Item[3].Value))
+		{
+			wd = MaxFileWd + SCALED_THIS(16);
+		}
+	}
+
+	if (wd>0) {
+		StickyPanel->Width   = wd;
+		StickyPanel->Visible = true;
+		StickyBox->Repaint();
+	}
+	else {
+		StickyPanel->Visible = false;
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TGitGrepForm::onStickyPaint(TObject *Sender)
+{
+	TCanvas *cv = StickyBox->Canvas;
+	TRect rc = StickyBox->ClientRect;
+
+	TListBox *lp = ResultListBox;
+	TColor bg_col = AdjustColor(get_ListBgCol(), ADJCOL_BGLTL);
+	cv->Brush->Color = bg_col;
+	cv->FillRect(rc);
+
+	cv->Font->Assign(lp->Font);
+	int idx = lp->TopIndex;
+	TRegExOptions opt; opt << roIgnoreCase;
+	TMatch mt = TRegEx::Match(lp->Items->Strings[idx], RESLINE_MATCH_PTN, opt);
+	if (mt.Success && mt.Groups.Count>=4) {
+		int xp = rc.Left + SCALED_THIS(4);
+		int yp = rc.Top  + SCALED_THIS(2);
+		UnicodeString hash = mt.Groups.Item[1].Value;
+		if (!hash.IsEmpty()) out_TextEx(cv, xp, yp, hash.SubString(1, 7) + ":", col_GitHash);
+		out_TextEx(cv, xp, yp, mt.Groups.Item[2].Value, col_Folder);
+		out_TextEx(cv, xp, yp, mt.Groups.Item[3].Value, get_ListFgCol());
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TGitGrepForm::onStickyClick(TObject *Sender)
+{
+	auto get_pnam = [](TListBox *lp, int idx) {
+		if (idx<0) return EmptyStr;
+		TRegExOptions opt; opt << roIgnoreCase;
+		TMatch mt = TRegEx::Match(lp->Items->Strings[idx], RESLINE_MATCH_PTN, opt);
+		return (mt.Success && mt.Groups.Count>=4)?
+				mt.Groups.Item[1].Value + mt.Groups.Item[2].Value + mt.Groups.Item[3].Value : EmptyStr;
+	};
+
+	TListBox *lp = ResultListBox;
+	int top_idx = lp->TopIndex;
+	UnicodeString pnam0 = get_pnam(lp, top_idx);
+	for (int i=top_idx; i>=0; i--) {
+		if (!SameText(get_pnam(lp, i - 1), pnam0)) {
+			lp->TopIndex  = i;
+			lp->ItemIndex = i;
+			UpdateSticky();
+			break;
+		}
+	}
+}
 //---------------------------------------------------------------------------
 //検索結果をクリップボードにコピー
 //---------------------------------------------------------------------------

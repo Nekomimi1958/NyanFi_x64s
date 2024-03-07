@@ -1518,7 +1518,7 @@ void __fastcall TOptionDlg::EtcEditorListBoxDrawItem(TWinControl *Control, int I
 	SetHighlight(cv, State.Contains(odSelected));
 	cv->FillRect(Rect);
 	cv->TextOut(xp, yp, etc_fext);
-	xp += (w_x + 20);
+	xp += w_x + SCALED_THIS(20);
 	if (!starts_Dollar(etc_edtr) || contains_PathDlmtr(etc_edtr)) {
 		UnicodeString etc_fnam = get_actual_name(etc_edtr, true);
 		if (file_exists(etc_fnam))
@@ -1861,7 +1861,6 @@ void __fastcall TOptionDlg::ExtColListBoxDrawItem(TWinControl *Control, int Inde
 	TListBox *lp = (TListBox*)Control;
 	TCanvas  *cv = lp->Canvas;
 	cv->Font->Assign(lp->Font);
-	int xp = Rect.Left + SCALED_THIS(4);
 	int yp = Rect.Top  + get_TopMargin(cv);
 
 	UnicodeString lbuf = lp->Items->Strings[Index];
@@ -1875,13 +1874,12 @@ void __fastcall TOptionDlg::ExtColListBoxDrawItem(TWinControl *Control, int Inde
 	int smpl_wd = cv->TextWidth(_T("\u2588.xxx")) + SCALED_THIS(10);
 	TRect rc = Rect;  rc.Right = rc.Left + smpl_wd;
 	cv->FillRect(rc);
-	cv->TextOut(xp, yp, smpl_str);
+	cv->TextOut(rc.Left + SCALED_THIS(4), yp, smpl_str);
 
 	SetHighlight(cv, State.Contains(odSelected));
 	rc = Rect;  rc.Left += smpl_wd;
 	cv->FillRect(rc);
-	xp = rc.Left + 4;
-	cv->TextOut(xp, yp, ext);
+	cv->TextOut(rc.Left + SCALED_THIS(4), yp, ext);
 }
 //---------------------------------------------------------------------------
 void __fastcall TOptionDlg::RefExtColBtnClick(TObject *Sender)
@@ -2022,7 +2020,7 @@ void __fastcall TOptionDlg::TagColListBoxDrawItem(TWinControl *Control, int Inde
 	cv->Brush->Color = get_ListBgCol();
 	cv->FillRect(rc);
 
-	int xp = rc.Left + 4;
+	int xp = rc.Left + SCALED_THIS(4);
 	int yp = Rect.Top + get_TopMargin(cv);
 	cv->Font->Color = col;
 	cv->TextOut(xp, yp, blk);
@@ -2041,7 +2039,7 @@ void __fastcall TOptionDlg::TagColListBoxDrawItem(TWinControl *Control, int Inde
 	rc = Rect;
 	rc.Left += (blk_wd + MaxWd_Tag);
 	cv->FillRect(rc);
-	cv->TextOut(rc.Left + 8, yp, stt);
+	cv->TextOut(rc.Left + SCALED_THIS(8), yp, stt);
 }
 //---------------------------------------------------------------------------
 void __fastcall TOptionDlg::RefTagColBtnClick(TObject *Sender)
@@ -2438,7 +2436,7 @@ void __fastcall TOptionDlg::RefExeBtnClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TOptionDlg::RefToolFmtBtnClick(TObject *Sender)
 {
-	TPoint p = ExtToolPanel->ClientToScreen(Point(RefToolFmtBtn->Left + 8, RefToolFmtBtn->Top + 8));
+	TPoint p = ExtToolPanel->ClientToScreen(Point(RefToolFmtBtn->Left + SCALED_THIS(8), RefToolFmtBtn->Top + SCALED_THIS(8)));
 	ToolPopupMenu->Popup(p.x, p.y);
 }
 //---------------------------------------------------------------------------
@@ -3597,7 +3595,7 @@ void __fastcall TOptionDlg::KeyListBoxDrawItem(TWinControl *Control, int Index, 
 							ExtMenuListBox->Items, ExtToolListBox->Items, SameText(GetCmdModeStr(), "V:"));
 
 	int w_cmd = get_CharWidth(cv, 40);
-	cmd = minimize_str(del_CmdDesc(cmd), cv, w_cmd - 8, true);
+	cmd = minimize_str(del_CmdDesc(cmd), cv, w_cmd - SCALED_THIS(8), true);
 	cv->TextOut(xp, yp, cmd);
 	xp += w_cmd;
 	cv->TextOut(xp, yp, dsc);
@@ -4150,7 +4148,7 @@ void __fastcall TOptionDlg::StdCmdListBoxDrawItem(TWinControl *Control, int Inde
 	int w_x = 0;
 	for (int i=0; i<lp->Count; i++) w_x = std::max(w_x, cv->TextWidth(lp->Items->Names[i]));
 	cv->TextOut(xp, yp, lp->Items->Names[Index]);
-	cv->TextOut(xp + w_x + 20, yp, lp->Items->ValueFromIndex[Index]);
+	cv->TextOut(xp + w_x + SCALED_THIS(20), yp, lp->Items->ValueFromIndex[Index]);
 }
 
 //---------------------------------------------------------------------------

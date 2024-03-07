@@ -405,13 +405,13 @@ void __fastcall TRenameDlg::FormResize(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TRenameDlg::Opt2MainPanelResize(TObject *Sender)
 {
-	int wd = CnvCharGroupBox->ClientWidth - 20;
+	int wd = CnvCharGroupBox->ClientWidth - SCALED_THIS(20);
 	CnvCharPanelL->Width = wd/2;
 
-	CnvChSEdit->Width = (CnvCharPanelR->Width - 16 - (CnvChLabel->Width + 12)) / 2;
+	CnvChSEdit->Width = (CnvCharPanelR->Width - SCALED_THIS(16) - (CnvChLabel->Width + SCALED_THIS(12))) / 2;
 	CnvChREdit->Width = CnvChSEdit->Width;
-	CnvChLabel->Left  = CnvChSEdit->Left + CnvChSEdit->Width + 6;
-	CnvChREdit->Left  = CnvChLabel->Left + CnvChLabel->Width + 6;
+	CnvChLabel->Left  = CnvChSEdit->Left + CnvChSEdit->Width + SCALED_THIS(6);
+	CnvChREdit->Left  = CnvChLabel->Left + CnvChLabel->Width + SCALED_THIS(6);
 }
 
 //---------------------------------------------------------------------------
@@ -1619,14 +1619,16 @@ void __fastcall TRenameDlg::AssRenListBoxDrawItem(TWinControl *Control, int Inde
 	int xp = Rect.Left + SCALED_THIS(2);
 	int yp = Rect.Top  + get_TopMargin(cv);
 
-	int w_x = 50;
-	for (int i=0; i<lp->Count; i++)
+	int w_x = SCALED_THIS(50);
+	for (int i=0; i<lp->Count; i++) {
 		w_x = std::max(cv->TextWidth(get_csv_item(lp->Items->Strings[i], 0)), w_x);
+	}
 
 	TStringDynArray itm_lst = get_csv_array(lp->Items->Strings[Index], 3, true);
 	SetHighlight(cv, State.Contains(odSelected));
 	cv->FillRect(Rect);
-	cv->TextOut(xp, yp, itm_lst[0]);	xp += (w_x + 16);
+	cv->TextOut(xp, yp, itm_lst[0]);	
+	xp += w_x + SCALED_THIS(16);
 	if (ContainsStr(itm_lst[2], "P")) out_Text(cv, xp, yp, _T("•”•ªˆê’v"));
 }
 //---------------------------------------------------------------------------

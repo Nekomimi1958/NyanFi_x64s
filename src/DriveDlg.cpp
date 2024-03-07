@@ -227,7 +227,7 @@ void __fastcall TSelDriveDlg::DriveGridDrawCell(TObject *Sender, System::LongInt
 		else
 			yp += get_TopMargin2(cv);
 
-		int c_wd = rc.Right - xp - 4;
+		int c_wd = rc.Right - xp - SCALED_THIS(4);
 
 		//カーソル位置のドライブ情報を取得
 		drive_info *dp = NULL;
@@ -251,10 +251,11 @@ void __fastcall TSelDriveDlg::DriveGridDrawCell(TObject *Sender, System::LongInt
 					int icon_sz = SCALED_THIS(ShowIconCheckBox->Checked? (LargeIconCheckBox->Checked? 32 : 16) : 0);
 					TIcon *ip = LargeIconCheckBox->Checked? dp->large_ico : dp->small_ico;
 					if (ip && ip->Handle) {
-						::DrawIconEx(cv->Handle, rc.Left + 2, rc.Top + 2, ip->Handle, icon_sz, icon_sz, 0, NULL, DI_NORMAL);
-						xp += icon_sz + 4;
+						::DrawIconEx(cv->Handle, rc.Left + SCALED_THIS(2), rc.Top + SCALED_THIS(2), 
+										ip->Handle, icon_sz, icon_sz, 0, NULL, DI_NORMAL);
+						xp += icon_sz + SCALED_THIS(4);
 						rc.Left = xp;
-						c_wd = rc.Width() - 4;
+						c_wd = rc.Width() - SCALED_THIS(4);
 					}
 				}
 
@@ -341,9 +342,9 @@ void __fastcall TSelDriveDlg::DriveGridDrawCell(TObject *Sender, System::LongInt
 				if (!s.IsEmpty()) {
 					try {
 						float r = 1.0 - StrToFloat(s)/100.0;
-						InflateRect(rc, -4, 0);
+						InflateRect(rc, SCALED_THIS(-4), 0);
 						rc.Top	  = yp + cv->TextHeight("Q");
-						rc.Bottom = rc.Top + 4;
+						rc.Bottom = rc.Top + SCALED_THIS(4);
 						draw_BarGraph(cv, rc, r);
 					}
 					catch (...) {

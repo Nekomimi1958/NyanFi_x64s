@@ -171,13 +171,13 @@ __published:	// IDE で管理されるコンポーネント
 
 private:	// ユーザー宣言
 	bool DlgInitialized;
-	int  BasicHeight;
 
 	void __fastcall WmMenuChar(TMessage &msg)
 	{
 		if (msg.WParamHi==MF_POPUP) TForm::Dispatch(&msg); else msg.Result = MAKELONG(0, MNC_CLOSE);
 	}
 
+	void __fastcall SetDlgHeight();
 	void __fastcall ClearExtraCond();
 
 public:		// ユーザー宣言

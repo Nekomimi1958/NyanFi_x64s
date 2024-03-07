@@ -4724,7 +4724,7 @@ int GetSelCount(TStringList *lst)
 void GetSelList(
 	TStringList *lst,
 	TStringList *sel_lst,
-	bool with_path,		//パス付で取得		(default = true)
+	bool with_path,		//パス付きで取得	(default = true)
 	bool with_obj)		//Objects も取得	(default = false)
 {
 	if (lst && sel_lst) {
@@ -6571,7 +6571,7 @@ void set_UsrScrPanel(UsrScrollPanel *sp)
 			//幅
 			int wd = sp->ParentPanel->ClientWidth;
 			if (is_simple) wd += (std_wd + 2);
-			sp->AssoChkListBox->Width  = wd;
+			sp->AssoChkListBox->Width = wd;
 		}
 		//グリッドのサイズ調整
 		else if (sp->AssoStrGrid) {
@@ -9892,7 +9892,7 @@ int CountListLines(
 {
 	*blk_cnt = 0;
 
-	std::unique_ptr<TStringList> ln_lst(new TStringList());	//１行コメント
+	std::unique_ptr<TStringList> ln_lst(new TStringList());	//1行コメント
 	std::unique_ptr<TStringList> bg_lst(new TStringList());	//ブロック開始
 	std::unique_ptr<TStringList> ed_lst(new TStringList());	//ブロック終了
 	//コメントあり
@@ -12526,8 +12526,8 @@ void draw_SortHeader(
 {
 	TCanvas *cv = hp->Canvas;
 	cv->Font->Assign(hp->Font);
-	int xp = rc.Left + 4;
-	int yp = rc.Top + get_TopMargin(cv) + 1;
+	int xp = rc.Left + ScaledInt(4, hp);
+	int yp = rc.Top + get_TopMargin(cv) + ScaledInt(1, hp);
 
 	cv->Brush->Color = use_syscol? TStyleManager::ActiveStyle->GetSystemColor(clBtnFace) : get_ListHdrBgCol();
 	cv->Font->Color  = use_syscol? TStyleManager::ActiveStyle->GetSystemColor(clBtnText) : get_ListHdrFgCol();
@@ -12535,20 +12535,21 @@ void draw_SortHeader(
 	//背景
 	cv->FillRect(rc);
 	//テキスト
-	if (rc.Width()>8) cv->TextOut(xp, yp, sp->Text);	//***
+	if (rc.Width()>ScaledInt(8, hp)) cv->TextOut(xp, yp, sp->Text);	//***
 
 	//区切り線
 	if (sp->Index < hp->Sections->Count-1) {
 		cv->Pen->Style = psSolid;
 		cv->Pen->Width = ScaledInt(1, hp);
 		cv->Pen->Color = SelectWorB(cv->Brush->Color, 0.25);
-		cv->MoveTo(rc.Right - 2, rc.Top);  cv->LineTo(rc.Right - 2, rc.Bottom);
+		cv->MoveTo(rc.Right - ScaledInt(2, hp), rc.Top);
+		cv->LineTo(rc.Right - ScaledInt(2, hp), rc.Bottom);
 	}
 
 	//マーク
 	if (mk_mode!=0) {
-		xp += cv->TextWidth(sp->Text) + 4;
-		draw_SortMark(cv, xp, yp + 1, (mk_mode==1), cv->Font->Color);
+		xp += cv->TextWidth(sp->Text) + ScaledInt(4, hp);
+		draw_SortMark(cv, xp, yp + ScaledInt(1, hp), (mk_mode==1), cv->Font->Color);
 	}
 }
 

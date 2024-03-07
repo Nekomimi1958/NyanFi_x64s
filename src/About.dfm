@@ -70,10 +70,10 @@ object AboutBox: TAboutBox
       AutoSize = False
       Caption = 'http://'
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clNavy
+      Font.Color = clWindowText
       Font.Height = -12
       Font.Name = 'Segoe UI'
-      Font.Style = []
+      Font.Style = [fsUnderline]
       ParentFont = False
       OnClick = SupportURLClick
       IsControl = True

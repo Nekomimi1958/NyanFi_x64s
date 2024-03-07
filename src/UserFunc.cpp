@@ -748,13 +748,14 @@ void set_GridFromHeader(THeaderControl *hp, TStringGrid *gp)
 	int cnt = std::min(hp->Sections->Count, gp->ColCount);
 	int wd = 0;
 	for (int i=0; i<cnt; i++) {
-		gp->ColWidths[i] = hp->Sections->Items[i]->Width - gp->GridLineWidth;
+		gp->ColWidths[i] = hp->Sections->Items[i]->Width - ScaledInt(gp->GridLineWidth);
 		wd += hp->Sections->Items[i]->Width;
 	}
 
 	//余りのセクションは残り幅に合わせる
-	if (hp->Sections->Count>gp->ColCount)
+	if (hp->Sections->Count>gp->ColCount) {
 		hp->Sections->Items[gp->ColCount]->Width = std::max(hp->Width - wd, 0);
+	}
 }
 //---------------------------------------------------------------------------
 //ヘッダの列幅をグリッドのセル幅に合わせる
@@ -764,13 +765,14 @@ void set_HeaderFromGrid(TStringGrid *gp, THeaderControl *hp)
 	int cnt = std::min(hp->Sections->Count, gp->ColCount);
 	int wd = 0;
 	for (int i=0; i<cnt; i++) {
-		hp->Sections->Items[i]->Width = gp->ColWidths[i] + gp->GridLineWidth + ((i==0)? 1 : 0);
+		hp->Sections->Items[i]->Width = gp->ColWidths[i] + ScaledInt(gp->GridLineWidth + ((i==0)? 1 : 0), gp);
 		wd += hp->Sections->Items[i]->Width;
 	}
 
 	//余りのセクションは残り幅に合わせる
-	if (hp->Sections->Count>gp->ColCount)
+	if (hp->Sections->Count>gp->ColCount) {
 		hp->Sections->Items[gp->ColCount]->Width = std::max(hp->Width - wd, 0);
+	}
 }
 
 //---------------------------------------------------------------------------

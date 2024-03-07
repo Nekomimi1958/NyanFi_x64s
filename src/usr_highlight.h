@@ -50,7 +50,7 @@ public:
 	/**
 	 * @brief コメント識別文字列を取得
 	 * @param fnam ファイル名
-	 * @param ln_lst １行コメント
+	 * @param ln_lst 1行コメント
 	 * @param bgn_lst ブロック開始
 	 * @param end_lst ブロック終了
 	 * @param is_h2t HTML→TEXT変換モード

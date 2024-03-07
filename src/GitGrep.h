@@ -95,6 +95,16 @@ private:	// ユーザー宣言
 	UnicodeString Keyword;
 	TStringList *ResultBuff;
 
+	int MaxFileWd;				//マッチファイル名の最大幅
+
+	TPanel *StickyPanel;			//GREPスティッキー
+	TPaintBox *StickyBox;
+	int LastTopIndex;
+
+	void __fastcall UpdateSticky();
+	void __fastcall onStickyPaint(TObject *Sender);
+	void __fastcall onStickyClick(TObject *Sender);
+
 	void __fastcall WmMenuChar(TMessage &msg)
 	{
 		if (msg.WParamHi==MF_POPUP) TForm::Dispatch(&msg); else msg.Result = MAKELONG(0, MNC_CLOSE);

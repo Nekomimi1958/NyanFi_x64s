@@ -140,8 +140,6 @@ private:	// ÉÜÅ[ÉUÅ[êÈåæ
 	void __fastcall WmExitSizeMove(TMessage &msg);
 	void __fastcall WmDropped(TMessage &msg);
 
-	void __fastcall AdjustHdrWidth();
-
 	void __fastcall GlobalAbort();
 	UnicodeString __fastcall TwoStrokeSeq(WORD &Key, TShiftState Shift);
 

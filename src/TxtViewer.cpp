@@ -579,7 +579,7 @@ void __fastcall TTxtViewer::FormatFixed(TStringList *txt_lst)
 {
 	if (txt_lst->Count==0) return;
 
-	//１行目
+	//1行目
 	bool is_tsv = ContainsStr(txt_lst->Strings[0], "\t");
 	TStringDynArray hdr_buf = is_tsv? split_strings_tab(txt_lst->Strings[0]) :
 									  get_csv_array(txt_lst->Strings[0], MAX_CSV_ITEM);
@@ -594,7 +594,7 @@ void __fastcall TTxtViewer::FormatFixed(TStringList *txt_lst)
 	}
 	if (!is_tsv) txt_lst->Strings[0] = ArrayToTsv(hdr_buf);
 
-	//２行目以降
+	//2行目以降
 	for (int i=1; i<txt_lst->Count; i++) {
 		UnicodeString lbuf = txt_lst->Strings[i];
 		if (i==txt_lst->Count-1 && SameStr(lbuf, TXLIMIT_MARK)) break;
@@ -1176,7 +1176,7 @@ void __fastcall TTxtViewer::UpdateScr(
 			for (int i=0; i<txt_buf->Count; i++) {
 				UnicodeString lbuf = txt_buf->Strings[i];
 				if (StartsStr("［＃", lbuf)) {
-					//１行字下げ
+					//1行字下げ
 					if (TRegEx::IsMatch(lbuf, "［＃[１-９]+字下げ］")) {
 						lbuf  = TRegEx::Replace(lbuf, "［＃([１-９]+)字下げ］", "\\1\t");
 						ind_n = to_HalfWidth(get_pre_tab(lbuf)).ToIntDef(0);
@@ -1298,7 +1298,7 @@ void __fastcall TTxtViewer::UpdateScr(
 						WideChar qch = qch_ln[j];
 						//文字列内ではない
 						if (qch=='\0') {
-							//１行コメント
+							//1行コメント
 							if (isNrm) {
 								for (int i_r=0; i_r<RemLnList->Count; i_r++) {
 									int rn = RemLnList->Strings[i_r].Length();
@@ -2837,6 +2837,18 @@ void __fastcall TTxtViewer::UpdateVisible()
 }
 
 //---------------------------------------------------------------------------
+//情報ヘッダのパネル幅を調整
+//---------------------------------------------------------------------------
+void __fastcall TTxtViewer::AdjustSttHdr()
+{
+	SttHeader->Panels->Items[0]->Width = SttHeader->ClientWidth
+		- set_SttBarPanelWidth(SttHeader, 1, "UTF-16(BE) BOM付")
+		- set_SttBarPanelWidth(SttHeader, 2, "CR/LF")
+		- set_SttBarPanelWidth(SttHeader, 3, ".TXT:CLIPBOARD")
+		- set_SttBarPanelWidth(SttHeader, 4, "00000行 0000桁 00列 0000字選択");
+}
+
+//---------------------------------------------------------------------------
 //状態表示を設定
 //---------------------------------------------------------------------------
 void __fastcall TTxtViewer::SetSttInf(UnicodeString msg)
@@ -2844,7 +2856,7 @@ void __fastcall TTxtViewer::SetSttInf(UnicodeString msg)
 	if (!isReady) return;
 
 	//ルーラ
-	if (RulerBox && RulerBox->Visible)	RulerBox->Repaint();
+	if (RulerBox && RulerBox->Visible) RulerBox->Repaint();
 
 	//ステータス
 	if (SttHeader) {
@@ -3213,6 +3225,7 @@ void __fastcall TTxtViewer::onDblClick()
 		if (!url.IsEmpty()) Execute_ex(url); else SelCurWord();
 	}
 
+	SetSttInf();
 	SelSkip = true;	//DblClick後の選択を回避
 }
 //---------------------------------------------------------------------------
@@ -3705,7 +3718,7 @@ UnicodeString __fastcall TTxtViewer::get_SelText(
 	if (SelStart==SelEnd) return EmptyStr;
 
 	UnicodeString sel_str;
-	//１行
+	//1行
 	if (SelStart.y==SelEnd.y) {
 		TPoint sp0 = SelStart;
 		TPoint sp1 = SelEnd;

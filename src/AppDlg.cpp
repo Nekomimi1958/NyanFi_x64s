@@ -959,8 +959,8 @@ void __fastcall TAppListDlg::UpdateAppSttBar(
 			//“™”{
 			if (actual && dst_r>0 && dst_r<1.0) {
 				TPoint p = ViewPanel->ScreenToClient(Mouse->CursorPos);
-				p.x -= 16;
-				p.y -= 8;
+				p.x -= SCALED_THIS(16);
+				p.y -= SCALED_THIS(8);
 				p.x /= dst_r;
 				p.y /= dst_r;
 
@@ -1035,7 +1035,7 @@ void __fastcall TAppListDlg::AppListBoxDrawItem(TWinControl *Control, int Index,
 		TRect rc = Rect;
 		rc.Left	 = xp + SCALED_THIS(36);
 		rc.Right = xp + SCALED_THIS(44) + MaxWd_f + get_CharWidth(cv, 2 + (show_mon_no? 3 : 0));
-		InflateRect(rc, 0, -2);
+		InflateRect(rc, 0, SCALED_THIS(-2));
 		TColor br_col	 = cv->Brush->Color;
 		cv->Brush->Color = col_Error;
 		cv->FrameRect(rc);
@@ -1046,12 +1046,13 @@ void __fastcall TAppListDlg::AppListBoxDrawItem(TWinControl *Control, int Index,
 	int s_32 = SCALED_THIS(32);
 	if (!ap->PngImg->Empty) {
 		TRect rc = Rect;
-		rc.Left = xp; rc.Top += 2;
+		rc.Left = xp;
+		rc.Top += SCALED_THIS(2);
 		rc.SetWidth(s_32); rc.SetHeight(s_32);
 		ap->PngImg->Draw(cv, rc);
 	}
 	else if (ap->Icon->Handle) {
-		::DrawIconEx(cv->Handle, xp, Rect.Top + 2, ap->Icon->Handle, s_32, s_32, 0, NULL, DI_NORMAL);
+		::DrawIconEx(cv->Handle, xp, Rect.Top + SCALED_THIS(2), ap->Icon->Handle, s_32, s_32, 0, NULL, DI_NORMAL);
 	}
 
 	//Å¬‰»ƒ}[ƒN
@@ -1060,7 +1061,9 @@ void __fastcall TAppListDlg::AppListBoxDrawItem(TWinControl *Control, int Index,
 				 xp + SCALED_THIS(34), Rect.Top + SCALED_THIS(36));
 		cv->Brush->Color = TStyleManager::ActiveStyle->GetSystemColor(clBtnFace);
 		cv->FillRect(rc);
-		draw_Line(cv, rc.Left + 2, rc.Bottom - 3, rc.Right -2, rc.Bottom - 3, 2, TStyleManager::ActiveStyle->GetSystemColor(clBtnText));
+		draw_Line(cv, rc.Left + SCALED_THIS(2), rc.Bottom - SCALED_THIS(3), 
+					rc.Right - SCALED_THIS(2), rc.Bottom - SCALED_THIS(3),
+					SCALED_THIS(2), TStyleManager::ActiveStyle->GetSystemColor(clBtnText));
 		::DrawEdge(cv->Handle, &rc, BDR_RAISEDOUTER, BF_RECT);
 	}
 	xp += SCALED_THIS(40);

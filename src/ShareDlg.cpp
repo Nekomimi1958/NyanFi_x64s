@@ -294,7 +294,7 @@ void __fastcall TNetShareDlg::UpdateBreadcrumb(UnicodeString pnam)
 {
 	OutDebugStr(pnam);
 	PathTabControl->Visible = false;
-	PathTabControl->Height = get_FontHeightMgnS(PathTabControl->Font, 8, 8) + 2;
+	PathTabControl->Height = get_FontHeightMgnS(PathTabControl->Font, 6, 6) + SCALED_THIS(2);
 	PathTabControl->Tabs->Clear();
 	isUNC = false;
 	if (!isOnlySub && !isFindSet && !isLibrary) {

@@ -128,7 +128,7 @@ void __fastcall TFileExtensionDlg::FormShow(TObject *Sender)
 	FCntSctWd = get_CharWidth(cv, 10);	//" 9,999,999"
 	SizeSctWd = get_CharWidth(cv, 13);	//" 1999.999 MB "
 	PercSctWd = get_CharWidth(cv,  8);	//" 100.0% "
-	set_HeaderSecWidth(FextInfHeader, 4, FExtSctWd, FCntSctWd, SizeSctWd + PercSctWd + 110, SizeSctWd + 8);
+	set_HeaderSecWidth(FextInfHeader, 4, FExtSctWd, FCntSctWd, SizeSctWd + PercSctWd + SCALED_THIS(110), SizeSctWd + SCALED_THIS(8));
 	THeaderSections *sp = FextInfHeader->Sections;
 	for (int i=0; i<sp->Count; i++) FextInfBar->Panels->Items[i]->Width = sp->Items[i]->Width;
 
@@ -250,7 +250,7 @@ void __fastcall TFileExtensionDlg::FormDestroy(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TFileExtensionDlg::FormResize(TObject *Sender)
 {
-	set_HeaderSecWidth(FextInfHeader, 4, FExtSctWd, FCntSctWd, SizeSctWd + PercSctWd + 110, SizeSctWd + 8);
+	set_HeaderSecWidth(FextInfHeader, 4, FExtSctWd, FCntSctWd, SizeSctWd + PercSctWd + SCALED_THIS(110), SizeSctWd + SCALED_THIS(8));
 	FileListHeader->Sections->Items[1]->Width = ClientWidth - FileListHeader->Sections->Items[0]->Width;
 	FileListBox->Repaint();
 }
@@ -560,7 +560,7 @@ void __fastcall TFileExtensionDlg::InfoListBoxDrawItem(TWinControl *Control, int
 	cv->Font->Color = get_ExtColor(fext);
 	int i_w = SCALED_THIS(IconMode==1? 20 : 0);
 	cv->TextOut(xp + i_w, yp, minimize_str(fext, cv, FExtSctWd - i_w, true));
-	xp += FExtSctWd - 8;
+	xp += FExtSctWd - SCALED_THIS(8);
 
 	//ファイル数
 	UnicodeString lbuf = get_size_str_B(ip->f_count, 7);
@@ -577,14 +577,14 @@ void __fastcall TFileExtensionDlg::InfoListBoxDrawItem(TWinControl *Control, int
 	cv->Font->Color = get_ListFgCol();
 	lbuf.sprintf(_T(" %4.1f%%"), r * 100.0);
 	cv->TextOut(xp + SizeSctWd + PercSctWd - cv->TextWidth(lbuf), yp, lbuf);
-	xp += SizeSctWd + PercSctWd + 8;
+	xp += SizeSctWd + PercSctWd + SCALED_THIS(8);
 
 	//グラフ
 	TRect rc = Rect;
-	rc.Left = xp; rc.Right = xp + 100;
-	rc.Top += 6; rc.Bottom -= 6;
+	rc.Left = xp; rc.Right = xp + SCALED_THIS(100);
+	rc.Top += SCALED_THIS(6); rc.Bottom -= SCALED_THIS(6);
 	draw_BarGraph(cv, rc, r);
-	xp += 108;
+	xp += SCALED_THIS(108);
 
 	//平均サイズ
 	lbuf = get_size_str_G(ip->av_size, 10, SizeDecDigits);
@@ -686,7 +686,7 @@ void __fastcall TFileExtensionDlg::FileListBoxDrawItem(TWinControl *Control, int
 			cv->Brush->Color = col_bgMark;
 			TRect mrc  = Rect;
 			mrc.Left   = xp;
-			mrc.Right  = xp + w_fn + 4;
+			mrc.Right  = xp + w_fn + SCALED_THIS(4);
 			mrc.Bottom = yp + cv->TextHeight("Q");
 			cv->FillRect(mrc);
 		}

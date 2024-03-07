@@ -1322,13 +1322,8 @@ void __fastcall TNyanFiForm::FormResize(TObject *Sender)
 			- set_SttBarPanelWidth(StatusBar1, 1, str_len_half(GetClockStr())) - SCALED_THIS(20);
 
 		//テキストビューアヘッダ
-		TxtSttHeader->Panels->Items[0]->Width = ClientWidth
-			- set_SttBarPanelWidth(TxtSttHeader, 1, "UTF-16(BE) BOM付")
-			- set_SttBarPanelWidth(TxtSttHeader, 2, "CR/LF")
-			- set_SttBarPanelWidth(TxtSttHeader, 3, ".TXT:CLIPBOARD")
-			- set_SttBarPanelWidth(TxtSttHeader, 4, "00000行 0000桁 00列 0000字選択");
-
 		if (ScrMode==SCMD_TVIEW) {
+			TxtViewer->AdjustSttHdr();
 			TxtViewer->SetMetric(true);
 			TxtViewer->Repaint(true);
 		}
@@ -2206,7 +2201,7 @@ void __fastcall TNyanFiForm::WmDropped(TMessage &msg)
 
 		//右ドラッグの場合、一旦メニューを出す
 		if (DroppedMode==(DROPEFFECT_COPY|DROPEFFECT_MOVE|DROPEFFECT_LINK)) {
-			DropPopupMenu->Popup(Mouse->CursorPos.x + 2, Mouse->CursorPos.y);
+			DropPopupMenu->Popup(Mouse->CursorPos.x + SCALED_THIS(2), Mouse->CursorPos.y);
 			return;
 			//メニュー選択後、再度 WmDropped が呼ばれる
 		}
@@ -4465,7 +4460,7 @@ void __fastcall TNyanFiForm::MsgHintTimerTimer(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-//２ストロークキーのヒント表示
+//2ストロークキーのヒント表示
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::KeyHintTimerTimer(TObject *Sender)
 {
@@ -4704,8 +4699,8 @@ void __fastcall TNyanFiForm::SetupThumbnail(
 
 	int s_16 = SCALED_THIS(16);
 	gp->Color			 = col_bgImage;
-	gp->DefaultColWidth  = ThumbnailSize + 4;
-	gp->DefaultRowHeight = ThumbnailSize + (ShowThumbName? SCALED_THIS(20) : 4) + (ShowThumbExif? s_16 : 0) + (ShowThumbTags? s_16 : 0);
+	gp->DefaultColWidth  = ThumbnailSize + SCALED_THIS(4);
+	gp->DefaultRowHeight = ThumbnailSize + SCALED_THIS(ShowThumbName? 20 : 4) + (ShowThumbExif? s_16 : 0) + (ShowThumbTags? s_16 : 0);
 	gp->GridLineWidth	 = ThumbBdrWidth;
 	pp->BorderWidth		 = ThumbBdrWidth;
 
@@ -4720,13 +4715,13 @@ void __fastcall TNyanFiForm::SetupThumbnail(
 	else if (ThumbnailPos<2) {
 		gp->RowCount = 1;
 		gp->ColCount = ViewFileList->Count;
-		gp->Height	 = gp->DefaultRowHeight + (ShowThumbScroll? get_SysMetricsForPPI(SM_CXHSCROLL, CurrentPPI) : 0) + 2;
+		gp->Height	 = gp->DefaultRowHeight + (ShowThumbScroll? get_SysMetricsForPPI(SM_CXHSCROLL, CurrentPPI) : 0) + SCALED_THIS(2);
 	}
 	//通常表示(縦)
 	else {
 		gp->ColCount = 1;
 		gp->RowCount = ViewFileList->Count;
-		gp->Width	 = gp->DefaultColWidth + (ShowThumbScroll? get_SysMetricsForPPI(SM_CXVSCROLL, CurrentPPI) : 0) + 2;
+		gp->Width	 = gp->DefaultColWidth + (ShowThumbScroll? get_SysMetricsForPPI(SM_CXVSCROLL, CurrentPPI) : 0) + SCALED_THIS(2);
 	}
 
 	gp->UnlockDrawing();
@@ -4907,7 +4902,7 @@ void __fastcall TNyanFiForm::SetupDesign(
 	L_HdrPanel->Color = get_DirInfBgCol();
 	R_HdrPanel->Color = get_DirInfBgCol();
 
-	RelPanel->ClientWidth  = HdrPanel->ClientHeight * 2 + 8;
+	RelPanel->ClientWidth  = HdrPanel->ClientHeight * 2 + SCALED_THIS(8);
 	RelPanel2->ClientWidth = RelPanel->ClientWidth;
 	RelPanel->Color 	   = get_DirRelBgCol();
 	RelPanel2->Color 	   = get_DirRelBgCol();
@@ -6935,15 +6930,15 @@ void __fastcall TNyanFiForm::PopSelectItemDrawItem(TObject *Sender, TCanvas *ACa
 			//囲み
 			if (mp->Checked) {
 				TRect rc = ARect;
-				rc.Left  = xp - 2;
-				rc.Right = xp + ACanvas->TextWidth(kstr) + 4;
-				InflateRect(rc, 0, -2);
+				rc.Left  = xp - SCALED_THIS(2);
+				rc.Right = xp + ACanvas->TextWidth(kstr) + SCALED_THIS(4);
+				InflateRect(rc, 0, SCALED_THIS(-2));
 				TColor col = ACanvas->Brush->Color;
 				ACanvas->Brush->Color = TStyleManager::ActiveStyle->GetSystemColor(clMenuHighlight);
 				ACanvas->FrameRect(rc);
 				ACanvas->Brush->Color = col;
 			}
-			xp += ACanvas->TextWidth("W") + 6;
+			xp += ACanvas->TextWidth("W") + SCALED_THIS(6);
 		}
 
 		//ボリューム名/ 登録名
@@ -6951,7 +6946,7 @@ void __fastcall TNyanFiForm::PopSelectItemDrawItem(TObject *Sender, TCanvas *ACa
 		ACanvas->TextOut(xp, yp, Trim(sbuf));
 		//空き容量
 		if (!lbuf.IsEmpty() && mp->Tag<DriveInfoList->Count) {
-			xp = ARect.Right - ACanvas->TextWidth(lbuf) - 4;
+			xp = ARect.Right - ACanvas->TextWidth(lbuf) - SCALED_THIS(4);
 			ACanvas->TextOut(xp, yp, lbuf);
 		}
 	}
@@ -7901,9 +7896,9 @@ void __fastcall TNyanFiForm::SetListHeader(int tag)
 		}
 
 		flist_stt *lst_stt = &ListStt[tag];
-		int mgn = hp->Width - lst_stt->lxp_right + 8;
+		int mgn = hp->Width - lst_stt->lxp_right + SCALED_THIS(8);
 		int hwd = hp->ClientWidth;
-		sp->Items[1]->Width = lst_stt->lwd_fext + (HideSizeTime? mgn : 8);
+		sp->Items[1]->Width = lst_stt->lwd_fext + (HideSizeTime? mgn : SCALED_THIS(8));
 		sp->Items[4]->Width = HideSizeTime? 0 :
 								(lst_stt->is_Find && FindPathColumn)? std::max(hwd - ListStt[tag].lxp_path, 0) : 0;
 		sp->Items[3]->Width = HideSizeTime? 0 :
@@ -10194,7 +10189,7 @@ void __fastcall TNyanFiForm::ViewFileInf(file_rec *fp,
 					TLabel *lp = PreviewSttLabel;
 					lp->Caption 	= "読込中...";
 					lp->Font->Color = col_Teal;
-					lp->Top 		= PreviewPanel->ClientHeight - lp->Height - 4;
+					lp->Top 		= PreviewPanel->ClientHeight - lp->Height - SCALED_THIS(4);
 					lp->Left		= 8;
 					lp->Visible 	= true;
 
@@ -10648,7 +10643,10 @@ void __fastcall TNyanFiForm::FileListDrawItem(TWinControl *Control, int Index, T
 		int xp_r = HideScrBar? ((tag==1)? R_Panel->ClientWidth : L_Panel->ClientWidth) : tmp_rc.Right;
 		int p_wd = (csr_style==psSolid)? CursorWidth : 1;
 		if (p_wd==0 && CursorAlpha==0) p_wd = 1;
-		if (p_wd>0) draw_Line(tmp_cv, 0, tmp_rc.Bottom - 2, xp_r, tmp_rc.Bottom - 2, p_wd, lst_stt->color_Cursor, csr_style);
+		if (p_wd>0) {
+			int y = tmp_rc.Bottom - SCALED_THIS(2);
+			draw_Line(tmp_cv, 0, y, xp_r, y, p_wd, lst_stt->color_Cursor, csr_style);
+		}
 	}
 
 	//描画
@@ -11469,18 +11467,20 @@ void __fastcall TNyanFiForm::RelPaintBoxPaint(TObject *Sender)
 		&& SameText(ExtractFileDrive(CurPath[0]), ExtractFileDrive(CurPath[1])))
 	{
 		int mgn = pp->Width/4;
-		int yp = rc.Top + 3;
+		int yp = rc.Top + SCALED_THIS(3);
 		cv->MoveTo(rc.Left + mgn, yp);	cv->LineTo(rc.Right - mgn, yp);
-		yp = rc.Bottom - 4;
+		yp = rc.Bottom - SCALED_THIS(4);
 		cv->MoveTo(rc.Left + mgn, yp);	cv->LineTo(rc.Right - mgn, yp);
 	}
 
 	//左右同期
 	if (SyncLR) {
-		int yp = rc.Top + 1;
-		cv->MoveTo(rc.Left + 4, yp);	cv->LineTo(rc.Right - 4, yp);
-		yp = rc.Bottom - 2;
-		cv->MoveTo(rc.Left + 4, yp);	cv->LineTo(rc.Right - 4, yp);
+		int yp = rc.Top + SCALED_THIS(1);
+		cv->MoveTo(rc.Left + SCALED_THIS(4), yp);
+		cv->LineTo(rc.Right - SCALED_THIS(4), yp);
+		yp = rc.Bottom - SCALED_THIS(2);
+		cv->MoveTo(rc.Left + SCALED_THIS(4), yp);
+		cv->LineTo(rc.Right - SCALED_THIS(4), yp);
 	}
 }
 //---------------------------------------------------------------------------
@@ -11537,7 +11537,7 @@ void __fastcall TNyanFiForm::TaskPaintBoxPaint(TObject *Sender)
 			//進捗表示
 			if (tp->CurProgress>=0) {
 				int x0 = xp + get_CharWidth(cv, 2);
-				int x1 = pp->Width - 4;
+				int x1 = pp->Width - SCALED_THIS(4);
 				TRect rc_f = (tmp.IsEmpty())? Rect(x0, yp + SCALED_THIS(2), x1, yp + SCALED_THIS(4)) :
 											  Rect(x0, yp + h - SCALED_THIS(4), x1, yp + h - SCALED_THIS(2));
 				draw_ProgressBar(cv, rc_f, tp->CurProgress);
@@ -11742,6 +11742,7 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 	int s_16 = SCALED_THIS(16);
 	int s_14 = SCALED_THIS(14);
 	int s_8  = SCALED_THIS(8);
+	int s_4  = SCALED_THIS(4);
 	int s_2  = SCALED_THIS(2);
 
 	if (VListMaking) {	//ViewFileList 作成中...
@@ -11794,7 +11795,7 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 		TColor col_ext = get_ExtColor(fext);
 		//ファイル名表示
 		if (ShowThumbName) {
-			UnicodeString tnam = minimize_str(ExtractFileName(vfnam), cv, ThumbnailSize - 4, true);
+			UnicodeString tnam = minimize_str(ExtractFileName(vfnam), cv, ThumbnailSize - s_4, true);
 			int yp = Rect.Bottom - s_14;
 			if (ShowThumbExif) yp -= s_14;
 			if (ShowThumbTags) yp -= s_14;
@@ -11807,7 +11808,7 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 			UnicodeString inf_str;
 			TStringDynArray i_lst = SplitString(exif_inf, " ");
 			for (int i=0; i<i_lst.Length; i++) {
-				if (cv->TextWidth(inf_str + i_lst[i]) > (ThumbnailSize - 4)) break;
+				if (cv->TextWidth(inf_str + i_lst[i]) > (ThumbnailSize - s_4)) break;
 				inf_str.cat_sprintf(_T("%s "), i_lst[i].c_str());
 			}
 			inf_str = Trim(inf_str);
@@ -11822,7 +11823,7 @@ void __fastcall TNyanFiForm::ThumbnailGridDrawCell(TObject *Sender, System::Long
 		if (ShowThumbTags) {
 			if (vfp->tags.IsEmpty()) vfp->tags = usr_TAG->GetTags(vfnam);
 			if (!vfp->tags.IsEmpty())
-				usr_TAG->DrawTags(vfp->tags, cv, Rect.Left + 4, Rect.Bottom - s_14,
+				usr_TAG->DrawTags(vfp->tags, cv, Rect.Left + s_4, Rect.Bottom - s_14,
 					RevTagColor? cv->Brush->Color : col_None);
 		}
 
@@ -30299,11 +30300,11 @@ void __fastcall TNyanFiForm::UpdateGrepSticky()
 			if (GrepShowItemNo) wd += get_CharWidth(cv, 6, ScaledInt(4));
 			if (GrepShowSubDir) wd += (cv->TextWidth(get_MiniPathName(d_nam, lp->ClientWidth/4, cv->Font)) + x_mg);
 			wd += (std::min(GrepMaxFileWd, lp->ClientWidth/(GrepShowSubDir? 4 : 2)) + x_mg);
-			GrepStickyPanel->Width = wd;
 		}
 	}
 
 	if (wd>0) {
+		GrepStickyPanel->Width   = wd;
 		GrepStickyPanel->Visible = true;
 		GrepStickyBox->Repaint();
 	}
@@ -30383,6 +30384,12 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 	TRect &Rect, TOwnerDrawState State)
 {
 	TListBox *lp = (TListBox*)Control;
+
+	if (lp->TopIndex!=LastTopIndex) {
+		LastTopIndex = Index;
+		UpdateGrepSticky();
+	}
+
 	UnicodeString itmstr = lp->Items->Strings[Index];
 	UnicodeString p_nam  = split_pre_tab(itmstr);
 	UnicodeString d_nam  = ExtractFilePath(p_nam);
@@ -30398,11 +30405,6 @@ void __fastcall TNyanFiForm::ResultListBoxDrawItem(TWinControl *Control, int Ind
 
 	bool same_prv = SameText(p_nam, (Index>0)? get_pre_tab(lp->Items->Strings[Index - 1]) : EmptyStr);
 	bool same_nxt = SameText(p_nam, (Index<lp->Count-1)? get_pre_tab(lp->Items->Strings[Index + 1]) : EmptyStr);
-
-	if (lp->TopIndex!=LastTopIndex) {
-		LastTopIndex = Index;
-		UpdateGrepSticky();
-	}
 
 	UnicodeString ln_str = itmstr;
 	if (GrepPageControl->ActivePage==FindSheet && !NextLineCheckBox->Checked) ln_str = get_tkn(ln_str, '\n');
@@ -32449,6 +32451,7 @@ bool __fastcall TNyanFiForm::OpenTxtViewer(
 		cursor_HourGlass();
 		SetScrMode(SCMD_TVIEW);
 
+		TxtViewer->AdjustSttHdr();
 		TxtViewer->OrgName	  = cfp->f_name;
 		TxtViewer->isSelected = cfp->selected;
 		TxtViewer->FileRec	  = cre_new_file_rec(cfp);	//TxtViewer->Clear で破棄されるのでコピーを作成
@@ -34436,12 +34439,14 @@ bool __fastcall TNyanFiForm::OpenImgViewer(file_rec *fp, bool fitted, int zoom)
 
 		//必要サイズを概算
 		int fh	 = get_FontHeightMgnS(cv->Font, 4);
+		int si_sz = 32;
+		int s_8  = SCALED_THIS(8);
 		int v_wd = std::max(600, ImgScrollPanel->ClientWidth - get_SysMetricsForPPI(SM_CXVSCROLL, CurrentPPI));
-		int v_hi = 8 + 256 + fh + 20;
+		int v_hi = s_8 + 256 + fh + SCALED_THIS(20);
 		int ixn  = (int)::ExtractIcon(HInstance, ViewFileName.c_str(), -1);
 		if (ixn>1) {
 			int n = std::max((v_wd - 48)/40, 1);
-			v_hi += ceil(1.0 * ixn/n) * (38 + fh);
+			v_hi += ceil(1.0 * ixn/n) * (si_sz + SCALED_THIS(6) + fh);
 		}
 		bg_bmp->SetSize(v_wd, v_hi);	//仮サイズを設定
 
@@ -34450,7 +34455,8 @@ bool __fastcall TNyanFiForm::OpenImgViewer(file_rec *fp, bool fitted, int zoom)
 		cv->FillRect(Rect(0, 0, v_wd, v_hi));
 
 		//アイコン
-		int x = 8, y = 8;
+		int x = s_8;
+		int y = s_8;
 		int x_max = 0;
 		if (to_draw) {
 			int size_lst[6] = {256, 128, 64, 48, 32, 16};
@@ -34459,14 +34465,14 @@ bool __fastcall TNyanFiForm::OpenImgViewer(file_rec *fp, bool fitted, int zoom)
 				int size = size_lst[i];
 				HICON hIcon = usr_SH->get_Icon(ViewFileName, size);
 				if (hIcon && size==size_lst[i]) {
-					cv->TextOut(x + 2, y, size);
+					cv->TextOut(x + SCALED_THIS(2), y, size);
 					::DrawIconEx(cv->Handle, x, y + fh, hIcon, size, size, 0, NULL, DI_NORMAL);
 					::DestroyIcon(hIcon);
 					if (size+fh > h) h = size + fh;
-					x += size + 8;
+					x += size + s_8;
 				}
 			}
-			y += h + 20;
+			y += h + SCALED_THIS(20);
 			x_max = x;
 		}
 
@@ -34474,25 +34480,26 @@ bool __fastcall TNyanFiForm::OpenImgViewer(file_rec *fp, bool fitted, int zoom)
 		if (ixn>1) {
 			sz_str.sprintf(_T(" %u Icons"), ixn);
 			if (to_draw) {
-				x = 8;
+				x = s_8;
 				bool nx_flag = false;
 				for (int i=0; i<ixn; i++) {
 					HICON hIcon = ::ExtractIcon(HInstance, ViewFileName.c_str(), i);	if (!hIcon) break;
-					::DrawIconEx(cv->Handle, x, y, hIcon, 32, 32, 0, NULL, DI_NORMAL);
+					::DrawIconEx(cv->Handle, x, y, hIcon, si_sz, si_sz, 0, NULL, DI_NORMAL);
 					::DestroyIcon(hIcon);
 					UnicodeString nstr = i;
-					cv->TextOut(x + (32 - cv->TextWidth(nstr))/2, y + 34, nstr);
-					if ((x + 40)>v_wd) {
-						x = 8; y += (38 + fh);
+					cv->TextOut(x + (si_sz - cv->TextWidth(nstr))/2, y + si_sz + SCALED_THIS(2), nstr);
+					if ((x + si_sz + s_8)>v_wd) {
+						x = s_8;
+						y += (si_sz + SCALED_THIS(6) + fh);
 						nx_flag = true;
 					}
 					else {
-						x += 40;
+						x += si_sz + s_8;
 						nx_flag = false;
 					}
 					x_max = std::max(x_max, x);
 				}
-				if (!nx_flag) y += (38 + fh);
+				if (!nx_flag) y += (si_sz + SCALED_THIS(6) + fh);
 			}
 		}
 
@@ -35742,7 +35749,7 @@ void __fastcall TNyanFiForm::SetFullScreen(
 		else
 			SetupThumbnail(idx);
 
-		//イベント: イメージビューアで全画面表示にした時
+		//イベント: イメージビューアで全画面表示にしたとき
 		ExeEventCommand(OnFullScr);
 	}
 	//通常表示へ

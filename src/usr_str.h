@@ -93,7 +93,7 @@ UnicodeString get_tkn_r(UnicodeString s, UnicodeString sp);
 
 /**
  * @brief 指定セパレータ間の文字列を取得
- * @details 指定した二つのセパレータ文字列の間にある文字列を取得します。@n
+ * @details 指定した2つのセパレータ文字列の間にある文字列を取得します。@n
  * セパレータ2が見つからない場合は、セパレータ1以降の文字列を返します。
  * @param s 対象文字列
  * @param sp1 セパレータ文字列1

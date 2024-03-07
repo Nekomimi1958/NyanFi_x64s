@@ -416,8 +416,8 @@ void __fastcall TDistributionDlg::RegListBoxDrawItem(TWinControl *Control, int I
 	TCanvas  *cv = lp->Canvas;
 	cv->Font->Assign(lp->Font);
 
-	int w_tit = 50;
-	int w_msk = 100;
+	int w_tit = SCALED_THIS(50);
+	int w_msk = SCALED_THIS(100);
 	for (int i=0; i<lp->Count; i++) {
 		TStringDynArray itm_buf = get_csv_array(lp->Items->Strings[i], DISTRLS_CSVITMCNT, true);
 		w_tit = std::max(cv->TextWidth(itm_buf[0]), w_tit);
@@ -432,10 +432,10 @@ void __fastcall TDistributionDlg::RegListBoxDrawItem(TWinControl *Control, int I
 	int xp = Rect.Left + SCALED_THIS(4);
 	int yp = Rect.Top  + get_TopMargin(cv);
 	cv->Font->Color = get_TextColor(State.Contains(odSelected));
-	cv->TextOut(xp, yp, cur_buf[0]);	xp += w_tit + 8;
-	cv->TextOut(xp, yp, cur_buf[2]);	xp += w_msk + 4;
+	cv->TextOut(xp, yp, cur_buf[0]);	xp += w_tit + SCALED_THIS(8);
+	cv->TextOut(xp, yp, cur_buf[2]);	xp += w_msk + SCALED_THIS(4);
 	if (!starts_AT(cur_buf[2])) {
-		out_Text(cv, xp, yp, _T("¨"));	xp += cv->TextWidth("¨") + 4;
+		out_Text(cv, xp, yp, _T("¨"));	xp += cv->TextWidth("¨") + SCALED_THIS(4);
 		cv->TextOut(xp, yp, cur_buf[3]);
 	}
 }
@@ -595,8 +595,10 @@ void __fastcall TDistributionDlg::PrvListBoxDrawItem(TWinControl *Control, int I
 
 	THeaderSections *sp = PrvListHeader->Sections;
 	int wd = sp->Items[0]->Width;
-	cv->TextOut(xp, yp, minimize_str(fnam, cv, wd, OmitEndOfName));	xp += wd + 4;
-	out_Text(cv, xp, yp, _T("¨"));	xp += cv->TextWidth("¨") + 4;
+	cv->TextOut(xp, yp, minimize_str(fnam, cv, wd, OmitEndOfName));
+	xp += wd + SCALED_THIS(4);
+	out_Text(cv, xp, yp, _T("¨"));
+	xp += cv->TextWidth("¨") + SCALED_THIS(4);
 
 	cv->Font->Color = (SameText(pnam, anam) || (!CreDistrDirCheckBox->Checked && !dir_exists(anam)))? col_Error : get_TextColor();
 	cv->TextOut(xp, yp, yen_to_delimiter(dnam));

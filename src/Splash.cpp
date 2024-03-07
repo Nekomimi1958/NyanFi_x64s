@@ -69,4 +69,3 @@ void __fastcall TSplashForm::SetMsgLabel(const _TCHAR *msg)
 	Repaint();
 }
 //---------------------------------------------------------------------------
-

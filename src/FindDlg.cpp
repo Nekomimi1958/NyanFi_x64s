@@ -70,7 +70,7 @@ void __fastcall TFindFileDlg::FormShow(TObject *Sender)
 			   FindBoth? _T("ファイル/ディレクトリ名検索") : _T("ファイル名検索")) + SubTitle;
 	HelpContext = FindDir? 53 : 52;
 
-	ClientHeight = BasicHeight = 500;	//*** 高さ未定で Top 位置が変わってしまうのを防ぐ
+	ClientHeight = 500;	//*** 高さ未定で Top 位置が変わってしまうのを防ぐ
 	IniFile->LoadPosInfo(this, DialogCenter);
 
 	IniFile->LoadComboBoxItems(MaskComboBox, FindDir? _T("FindDirHistory") : _T("FindHistory"));
@@ -197,12 +197,7 @@ void __fastcall TFindFileDlg::FormShow(TObject *Sender)
 	}
 
 	OkPanel->Visible = true;
-
-	//高さ設定
-	int hi = 0;
-	for (int i=0; i<BasicPanel->ControlCount; i++)
-		if (BasicPanel->Controls[i]->Visible) hi += BasicPanel->Controls[i]->Height;
-	ClientHeight = BasicHeight = hi;
+	SetDlgHeight();
 
 	AttrRadioGroup->ItemIndex = IniFile->ReadIntGen( FindDir? _T("FindDirAttrMode") : _T("FindAttrMode"));
 	AttrRCheckBox->Checked	  = IniFile->ReadBoolGen(FindDir? _T("FindDirAttrR") : _T("FindAttrR"));
@@ -363,6 +358,24 @@ void __fastcall TFindFileDlg::FormClose(TObject *Sender, TCloseAction &Action)
 }
 
 //---------------------------------------------------------------------------
+//ダイアログの高さを設定
+//---------------------------------------------------------------------------
+void __fastcall TFindFileDlg::SetDlgHeight()
+{	
+	int h1 = 0;
+	for (int i=0; i<BasicPanel->ControlCount; i++) {
+		if (BasicPanel->Controls[i]->Visible) h1 += BasicPanel->Controls[i]->Height;
+	}
+	int h2 = 0;
+	if (ExtPanel->Visible) {
+		for (int i=0; i<ExtPanel->ControlCount; i++) {
+			if (ExtPanel->Controls[i]->Visible) h2 += ExtPanel->Controls[i]->Height;
+		}
+	}
+	ClientHeight = std::max(h1, h2);
+}
+
+//---------------------------------------------------------------------------
 void __fastcall TFindFileDlg::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	SpecialKeyProc(this, Key, Shift);
@@ -396,13 +409,13 @@ void __fastcall TFindFileDlg::ExtraCheckBoxClick(TObject *Sender)
 {
 	if (ExtraCheckBox->Visible && ExtraCheckBox->Checked) {
 		ExtPanel->Visible = true;
-		ClientWidth = BasicPanel->Width + ExtPanel->Width + 8;
+		ClientWidth = BasicPanel->Width + ExtPanel->Width + SCALED_THIS(8);
 		MaskComboBoxChange(NULL);
 	}
 	else {
 		ExtPanel->Visible = false;
-		ClientWidth  = BasicPanel->Width;
-		ClientHeight = BasicHeight;
+		ClientWidth = BasicPanel->Width;
+		SetDlgHeight();
 		ClearExtraCond();
 	}
 }
@@ -487,14 +500,10 @@ void __fastcall TFindFileDlg::MaskComboBoxChange(TObject *Sender)
 			}
 		}
 
-		TagsPanel->Visible	 = hasTags;		TagsPanel->Align  = alTop;
-		LCntPanel->Visible	 = hasLCnt;		LCntPanel->Align  = alTop;
-		OtherPanel->Visible	 = hasOther;	OtherPanel->Align = alTop;
-
-		int hi = 0;
-		for (int i=0; i<ExtPanel->ControlCount; i++)
-			if (ExtPanel->Controls[i]->Visible) hi += ExtPanel->Controls[i]->Height;
-		ClientHeight = std::max(BasicHeight, hi);
+		TagsPanel->Visible  = hasTags;		TagsPanel->Align  = alTop;
+		LCntPanel->Visible  = hasLCnt;		LCntPanel->Align  = alTop;
+		OtherPanel->Visible = hasOther;		OtherPanel->Align = alTop;
+		SetDlgHeight();
 
 		CodePageComboBox->ItemIndex = -1;
 		LineBrkComboBox->ItemIndex	= -1;

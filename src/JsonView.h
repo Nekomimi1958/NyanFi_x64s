@@ -56,7 +56,7 @@ __published:	// IDE で管理されるコンポーネント
 	TMenuItem *CopyItem;
 	TMenuItem *CopyJsonItem;
 	TMenuItem *CopyPathItem;
-	TMenuItem *E1;
+	TMenuItem *EditErrItem;
 	TMenuItem *ExpandItem;
 	TMenuItem *FitSizePosItem;
 	TMenuItem *OpenUrlItem;

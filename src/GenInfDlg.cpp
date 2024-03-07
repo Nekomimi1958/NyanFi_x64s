@@ -680,7 +680,7 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 	cv->Font->Assign(lp->Font);
 
 	TRect rc = Rect;
-	int yp = rc.Top + 1;
+	int yp = rc.Top + SCALED_THIS(1);
 	int tw = FileName.IsEmpty()? 4 : lp->TabWidth;
 	int lw = 0;
 	UnicodeString lbuf = lp->Items->Strings[Index];
@@ -726,7 +726,7 @@ void __fastcall TGeneralInfoDlg::GenListBoxDrawItem(TWinControl *Control, int In
 
 	cv->FillRect(rc);
 
-	rc.Left += 4;
+	rc.Left += SCALED_THIS(4);
 	int xp = rc.Left;
 	int w0 = rc.Left;
 

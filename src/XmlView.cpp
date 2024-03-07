@@ -235,8 +235,7 @@ UnicodeString __fastcall TXmlViewer::GetXmlStr()
 			ret_str = XMLNode->XML;
 			//不要な xmlns を削除
 			if (XmlnsList->Count>0 && p_buf.Length>1) {
-				for (int i=0; i<XmlnsList->Count; i++)
-					ret_str = ReplaceStr(ret_str, XmlnsList->Strings[i], EmptyStr);
+				for (int i=0; i<XmlnsList->Count; i++) ret_str = ReplaceStr(ret_str, XmlnsList->Strings[i], EmptyStr);
 			}
 		}
 	}
@@ -286,11 +285,13 @@ void __fastcall TXmlViewer::XmlTreeViewCustomDrawItem(TCustomTreeView *Sender, T
 	if (ViewBusy) return;
 
 	TRect rc_t = Node->DisplayRect(true);
-	if (rc_t.Left==0) return;
+	if (rc_t.Left==0 || rc_t.Width()<=0 || rc_t.Height()<=0) return;
+	TRect rc_s = Node->DisplayRect(false);
+	if (rc_s.Width()<=0 || rc_s.Height()<=0) return;
+	//※スケーリングの異なるモニタ間での移動時に、異常値になる場合があることへの対策
 
 	TTreeView *vp = XmlTreeView;
 	TCanvas *cv   = vp->Canvas;
-	TRect rc_s = Node->DisplayRect(false);
 	cv->Brush->Color = Node->Selected? col_selItem : get_ListBgCol();
 	cv->FillRect(rc_s);
 
@@ -299,7 +300,7 @@ void __fastcall TXmlViewer::XmlTreeViewCustomDrawItem(TCustomTreeView *Sender, T
 
 	//※Sender->Canvas だとフォント色を途中で変更しても効かないようなので一旦バッファに描画
 	std::unique_ptr<Graphics::TBitmap> tmp_bmp(new Graphics::TBitmap());
-	tmp_bmp->SetSize(cv->TextWidth(lbuf) + 4, rc_t.Height());
+	tmp_bmp->SetSize(cv->TextWidth(lbuf) + SCALED_THIS(4), rc_t.Height());
 
 	TCanvas *tmp_cv = tmp_bmp->Canvas;
 	TRect    tmp_rc	= Rect(0, 0, tmp_bmp->Width, tmp_bmp->Height);
@@ -411,7 +412,7 @@ void __fastcall TXmlViewer::XmlTreeViewCustomDrawItem(TCustomTreeView *Sender, T
 
 	//親ライン
 	cv->Pen->Style = psSolid;
-	cv->Pen->Width = 1;
+	cv->Pen->Width = SCALED_THIS(1);
 	cv->Pen->Color = col_HR;
 	rc_s.Right = rc_t.Left;
 	int l_ofs  = rc_s.Left + SCALED_THIS(11);
@@ -433,18 +434,20 @@ void __fastcall TXmlViewer::XmlTreeViewCustomDrawItem(TCustomTreeView *Sender, T
 		cv->Pen->Color	 = col_HR;
 		cv->Brush->Color = col_HR;
 		int w_btn = SCALED_THIS(11);	//ボタンサイズ
-		int xp = rc_s.Right - SCALED_THIS(w_btn + 5);
+		int xp = rc_s.Right - SCALED_THIS(16);
 		int yp = rc_s.Top + (rc_s.Height() - w_btn)/2;
 		if ((xp + w_btn)>=0) {
+			int s_2 = SCALED_THIS(2);
+			int s_4 = SCALED_THIS(4);
 			//枠
 			cv->FrameRect(Rect (xp, yp, xp + w_btn, yp + w_btn));
 			//横棒
-			cv->MoveTo(xp + 2, yp + w_btn/2);
-			cv->LineTo(xp + w_btn - 2, yp + w_btn/2);
+			cv->MoveTo(xp + s_2, yp + w_btn/2);
+			cv->LineTo(xp + w_btn - s_4, yp + w_btn/2);
 			//縦棒
 			if (!Node->Expanded) {
-				cv->MoveTo(xp + w_btn/2, yp + 2);
-				cv->LineTo(xp + w_btn/2, yp + w_btn -2);
+				cv->MoveTo(xp + w_btn/2, yp + s_2);
+				cv->LineTo(xp + w_btn/2, yp + w_btn - s_4);
 			}
 		}
 	}

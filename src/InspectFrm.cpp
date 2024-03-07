@@ -297,11 +297,11 @@ void __fastcall TInspectForm::InspectGridDrawCell(TObject *Sender, System::LongI
 		//COLORREF
 		if (ACol==1 && ARow==7 && !cellstr.IsEmpty()) {
 			TRect rc = Rect;
-			rc.Right = rc.Left + 40;  InflateRect(rc, -2, -4);
+			rc.Right = rc.Left + SCALED_THIS(40);  InflateRect(rc, SCALED_THIS(-2), SCALED_THIS(-4));
 			cv->Brush->Color = ColorRef;	cv->FillRect(rc);
 			cv->Brush->Color = clLtGray;	cv->FrameRect(rc);
 			cv->Brush->Color = get_ListBgCol();
-			cv->TextOut(xp + 40, yp, cellstr);
+			cv->TextOut(xp + SCALED_THIS(40), yp, cellstr);
 		}
 		else {
 			cv->TextRect(Rect, xp, yp, split_pre_tab(cellstr));

@@ -95,7 +95,7 @@ private:
 	DynamicArray<int>  FixWdList;	//固定長幅リスト
 	DynamicArray<bool> IsNumList;	//項目が数値か
 
-	TStringList *RemLnList;			//１行コメント識別文字列
+	TStringList *RemLnList;			//1行コメント識別文字列
 	TStringList *RemBgnList;		//ブロックコメント開始文字列
 	TStringList *RemEndList;		//ブロックコメント終了文字列
 
@@ -291,7 +291,7 @@ public:
 	TColor color_fgEmpBin3;			//!< バイナリ強調文字色3
 	TColor color_Headline;			//!< 見出しの文字色
 	TColor color_URL;				//!< URLの文字色
-	TColor color_LocalLink;			//!< ローカファイルへのリンク
+	TColor color_LocalLink;			//!< ローカルファイルへのリンク
 	TColor color_fgEmp;				//!< 強調文字色
 	TColor color_bgEmp;				//!< 強調背景色
 	TColor color_Ruby;				//!< ルビ
@@ -365,6 +365,9 @@ public:
 
 	/** @brief 再描画要求 */
 	void __fastcall Repaint(bool force = false);
+
+	/** @brief 情報ヘッダのパネル幅を調整 */
+	void __fastcall AdjustSttHdr();
 
 	/**
 	 * @brief 状態表示を設定

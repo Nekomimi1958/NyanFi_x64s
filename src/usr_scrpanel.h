@@ -19,7 +19,7 @@
 #define USCRPNL_FLAG_P_WP	0x0020	//!< 親パネルの WindowProc 入れ替え
 #define USCRPNL_FLAG_L_WP	0x0040	//!< リストボックスの WindowProc 入れ替え
 #define USCRPNL_FLAG_G_WP	0x0080	//!< グリッドの WindowProc 入れ替え
-#define USCRPNL_FLAG_HS		0x0100	//!< 水平スクロールバー付(ListBox or Grid)
+#define USCRPNL_FLAG_HS		0x0100	//!< 水平スクロールバー付き(ListBox or Grid)
 
 //---------------------------------------------------------------------------
 /** @name Tag 値 */

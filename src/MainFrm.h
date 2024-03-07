@@ -1175,7 +1175,7 @@ __published:	// IDE で管理されるコンポーネント
 	void __fastcall WatchDirTimerTimer(TObject *Sender);		//!< ディレクトリ監視
 	void __fastcall WatchTailTimerTimer(TObject *Sender);		//!< ファイル追加更新の監視
 	void __fastcall MsgHintTimerTimer(TObject *Sender);			//!< メッセージヒント表示
-	void __fastcall KeyHintTimerTimer(TObject *Sender);			//!< ２ストロークキーのヒント表示
+	void __fastcall KeyHintTimerTimer(TObject *Sender);			//!< 2ストロークキーのヒント表示
 	void __fastcall BlinkTimerTimer(TObject *Sender);			//!< 白飛び警告
 	void __fastcall ToolBtnClick(TObject *Sender);
 	void __fastcall FKeyBtnClick(TObject *Sender);

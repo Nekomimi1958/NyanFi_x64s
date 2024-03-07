@@ -354,8 +354,8 @@ void __fastcall TImgViewThread::DrawMessage()
 			TLabel *lp = NyanFiForm->PreviewSttLabel;
 			lp->Caption 	= MsgStr;
 			lp->Font->Color = MsgIsErr? col_Error : col_Teal;
-			lp->Top 		= NyanFiForm->PreviewPanel->ClientHeight - lp->Height - 4;
-			lp->Left		= 8;
+			lp->Top 		= NyanFiForm->PreviewPanel->ClientHeight - lp->Height - ScaledInt(4, lp);
+			lp->Left		= ScaledInt(8, lp);
 			lp->Visible 	= true;
 		}
 	}
@@ -444,7 +444,9 @@ void __fastcall TImgViewThread::Execute()
 					cv->Lock();
 					try {
 						AssignScaledFont(cv->Font, FileInfFont, Application->MainForm, 9, SelectWorB(col_bgImage));
-						int fh = cv->TextHeight("Q") + SCALED_MAIN(2);
+						int s_2 = SCALED_MAIN(2);
+						int s_8 = SCALED_MAIN(8);
+						int fh = cv->TextHeight("Q") + s_2;
 
 						//背景
 						cv->Brush->Color = col_bgImage;
@@ -462,7 +464,7 @@ void __fastcall TImgViewThread::Execute()
 								if (FontSampleFgCol!=col_None) cv->Font->Color = FontSampleFgCol;
 
 								//フォント名
-								cv->TextOut(SCALED_MAIN(2), SCALED_MAIN(2), fnt_name);
+								cv->TextOut(s_2, s_2, fnt_name);
 
 								bool tmp_flag = (Screen->Fonts->IndexOf(fnt_name)==-1)?
 												(::AddFontResourceEx(fnam.c_str(), FR_PRIVATE, NULL)>0) : false;
@@ -476,7 +478,7 @@ void __fastcall TImgViewThread::Execute()
 								TEXTMETRIC tm;
 								if (::GetTextMetrics(cv->Handle, &tm)) {
 									TRect rc = Rect(0, 0, bg_bmp->Width, bg_bmp->Height);
-									rc.Left = SCALED_MAIN(2);
+									rc.Left = s_2;
 									rc.Top  = SCALED_MAIN(4) + fh;
 									//文字/シンボル
 									UnicodeString lbuf = (tm.tmCharSet==SYMBOL_CHARSET)? FontSampleSym : FontSampleTxt;
@@ -506,15 +508,15 @@ void __fastcall TImgViewThread::Execute()
 						//色見本
 						else if (IsSwatchbook(fnam)) {
 							if (LoadSwatchbook(fnam, true)>0) {
-								TRect rc = Rect(0,0, std::min(bg_bmp->Width - 8, 280), std::min(bg_bmp->Height - 8, 144));
-								rc.Location = Point(4, 8);
+								TRect rc = Rect(0,0, std::min(bg_bmp->Width - s_8, 280), std::min(bg_bmp->Height - s_8, 144));
+								rc.Location = Point(SCALED_MAIN(4), s_8);
 								DrawSwatchbook(cv, rc, true);
 							}
 						}
 						//アイコン
 						else {
-							int x = SCALED_MAIN(2);
-							int y = SCALED_MAIN(2);
+							int x = s_2;
+							int y = s_2;
 							int h = 0;
 
 							if (!test_FontExt(fext)) {
@@ -524,11 +526,14 @@ void __fastcall TImgViewThread::Execute()
 									int size = size_lst[i];
 									HICON hIcon = usr_SH->get_Icon(Img_f_name, size);
 									if (hIcon && size==size_lst[i]) {
-										cv->TextOut(x + SCALED_MAIN(2), y, size);
+										cv->TextOut(x + s_2, y, size);
 										::DrawIconEx(cv->Handle, x, y + fh, hIcon, size, size, 0, NULL, DI_NORMAL);
 										::DestroyIcon(hIcon);
 										if (size+fh > h) h = size + fh;
-										if (size==64 && x>128) y += (68 + fh); else x += size + 8;
+										if (size==64 && x>128)
+											y += (64 + SCALED_MAIN(4) + fh);
+										else
+											x += size + s_8;
 									}
 								}
 							}
@@ -537,18 +542,20 @@ void __fastcall TImgViewThread::Execute()
 							if (test_FileExt(fext, FEXT_ICONVIEW)) {
 								int ixn = (int)::ExtractIcon(HInstance, Img_f_name.c_str(), -1);
 								if (ixn>1) {
-									x = SCALED_MAIN(2);
+									x = s_2;
+									int i_size = 32;
 									if (h>0) y = h + SCALED_MAIN(12);
 									for (int i=0; i<ixn; i++) {
 										HICON hIcon = ::ExtractIcon(HInstance, fnam.c_str(), i);
 										if (!hIcon) continue;
-										::DrawIconEx(cv->Handle, x, y, hIcon, 32, 32, 0, NULL, DI_NORMAL);
+										::DrawIconEx(cv->Handle, x, y, hIcon, i_size, i_size, 0, NULL, DI_NORMAL);
 										::DestroyIcon(hIcon);
-										if ((x + 2*32) > bg_bmp->Width) {
-											x = SCALED_MAIN(2);  y += 34;
+										if ((x + 2*i_size) > bg_bmp->Width) {
+											x = s_2;
+											y += i_size + s_2;
 										}
 										else {
-											x += 34;
+											x += i_size + s_2;
 										}
 									}
 								}

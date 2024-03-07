@@ -13,7 +13,7 @@
 /**
  * @brief アイコン取得スレッド
  * 
- * CachedIcoList にファイル名が追加されると、そのアンコンを取得してキャッシュします(Objects に設定)。
+ * CachedIcoList にファイル名が追加されると、そのアイコンを取得してキャッシュします(Objects に設定)。
  * @attention CachedIcoList を操作する際は IconRWLock でロックしてください。
  */
 class TGetIconThread : public TThread
