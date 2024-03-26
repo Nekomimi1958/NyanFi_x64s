@@ -110,7 +110,7 @@ bool gCopyAll;
 bool gCopyCancel;
 
 int  gCopyMode	= CPYMD_OW;
-int  gCopyMode2 = CPYMD_OW;	
+int  gCopyMode2 = CPYMD_OW;
 int  xCopyMode	= -1;
 
 UnicodeString gCopyFmt = "\\N_\\SN(1)";
@@ -568,7 +568,7 @@ UsrIniFile  *FolderIconFile;
 TStringList *FolderIconList;
 TMultiReadExclusiveWriteSynchronizer *FldIcoRWLock;
 UnicodeString DefFldIcoName;
-HICON hLinkIcon = NULL;	
+HICON hLinkIcon = NULL;
 
 TStringList *GeneralIconList;
 TStringList *MenuBtnIcoList;
@@ -581,7 +581,7 @@ TStringList *AssRenList;
 TStringList *DistrDefList;
 
 TStringList *GrepPathList;
-TStringList *GrepFileList;	
+TStringList *GrepFileList;
 TStringList *GrepResultBuff;
 TStringList *GrepResultList;
 TStringList *GrepStashBuff;
@@ -631,7 +631,7 @@ TStringList *ToolBtnListV;
 TStringList *ToolBtnListI;
 
 //---------------------------------------------------------------------------
-int  IniPathMode[MAX_FILELIST];	
+int  IniPathMode[MAX_FILELIST];
 UnicodeString InitialPath[MAX_FILELIST];
 UnicodeString InitialMask[MAX_FILELIST];
 int  IniSortMode[MAX_FILELIST];
@@ -1297,7 +1297,7 @@ void InitializeGlobal()
 		sp->is_ADS		  = false;
 
 		sp->find_SubList  = CreStringList();
-	
+
 		sp->find_UseSet   = false;
 		sp->find_ResLink  = false;
 		sp->find_DirLink  = false;
@@ -5586,7 +5586,7 @@ void get_FindSetInf(
 		if (tmp_stt.find_Arc)	 ins_sep_cat(s, "/", "アーカイブ内も検索");
 		if (tmp_stt.find_TM_mode>0 || tmp_stt.find_RT_mode>0 ||
 			tmp_stt.find_codepage!=-1 || !tmp_stt.find_LineBrk.IsEmpty() || tmp_stt.find_BOM_mode!=0 ||
-			tmp_stt.find_FS_mode>0 || tmp_stt.find_FW_mode>0 || tmp_stt.find_FH_mode>0 || 
+			tmp_stt.find_FS_mode>0 || tmp_stt.find_FW_mode>0 || tmp_stt.find_FH_mode>0 ||
 			tmp_stt.find_IW_mode>0 || tmp_stt.find_IH_mode>0 ||
 			!tmp_stt.find_ExifKwd.IsEmpty() || !tmp_stt.find_LatLng.IsEmpty() ||
 			tmp_stt.find_SR_mode>0 || tmp_stt.find_BT_mode>0 || tmp_stt.find_CH_mode>0 ||
@@ -13443,6 +13443,7 @@ bool Execute_ex(
 
 	try {
 		cmd = exclude_quot(cmd);
+
 		if (!wdir.IsEmpty() && is_root_dir(wdir)) wdir = IncludeTrailingPathDelimiter(wdir);
 		UnicodeString wdir_str = "作業ディレクトリ: " + wdir;
 
@@ -13639,6 +13640,25 @@ bool Execute_cmdln(
 	catch (EAbort &e) {
 		GlobalErrMsg = e.Message;
 		return false;
+	}
+}
+
+//---------------------------------------------------------------------------
+//ネットワーク先の実行ファイルがゾーン識別子を持つ場合
+// shexe.exe を介し別プロセスとして実行
+//---------------------------------------------------------------------------
+bool Execute_shexe(UnicodeString fnam, UnicodeString wdir)
+{
+	UnicodeString shexe = ExePath + "shexe.exe";
+	//別プロセスとして実行
+	if (use_VclStyle && file_exists(shexe)
+		&& get_drive_type(fnam)==DRIVE_REMOTE && file_exists(fnam + ":Zone.Identifier"))
+	{
+		return Execute_ex(shexe, fnam, wdir);
+	}
+	//子プロセスとして実行
+	else {
+		return Execute_ex(fnam, EmptyStr, wdir);
 	}
 }
 

@@ -335,16 +335,15 @@ void __fastcall TJsonViewer::JsonTreeViewCustomDrawItem(TCustomTreeView *Sender,
 		int yp = rc_s.Top + (rc_s.Height() - w_btn)/2;
 		if ((xp + w_btn)>=0) {
 			int s_2 = SCALED_THIS(2);
-			int s_4 = SCALED_THIS(4);
 			//˜g
 			cv->FrameRect(Rect (xp, yp, xp + w_btn, yp + w_btn));
 			//‰¡–_
 			cv->MoveTo(xp + s_2, yp + w_btn/2);
-			cv->LineTo(xp + w_btn - s_4, yp + w_btn/2);
+			cv->LineTo(xp + w_btn - s_2, yp + w_btn/2);
 			//c–_
 			if (!Node->Expanded) {
 				cv->MoveTo(xp + w_btn/2, yp + s_2);
-				cv->LineTo(xp + w_btn/2, yp + w_btn - s_4);
+				cv->LineTo(xp + w_btn/2, yp + w_btn - s_2);
 			}
 		}
 	}

@@ -2435,9 +2435,9 @@ UnicodeString get_LRUD_str(int tag = CurListTag, bool both = false);
 
 /**
  * @brief 削除制限されたディレクトリか？
- * @param dnam 
- * @return true 
- * @return false 
+ * @param dnam
+ * @return true
+ * @return false
  */
 bool is_ProtectDir(UnicodeString dnam);
 
@@ -2453,7 +2453,7 @@ void GetFileInfList(file_rec *fp, bool force = false);
  * @param fp 取得対象
  * @param tit タイトル
  * @param dlmt 値の区切り文字
- * @return UnicodeString 
+ * @return UnicodeString
  */
 UnicodeString get_FileInfValue(file_rec *fp, UnicodeString tit, UnicodeString dlmt = EmptyStr);
 
@@ -2465,8 +2465,8 @@ void draw_InputPaintBox(TPaintBox *pp, UnicodeString s);
 
 /**
  * @brief タイムスタンプの表示文字列を取得
- * @param dt 
- * @return UnicodeString 
+ * @param dt
+ * @return UnicodeString
  */
 UnicodeString get_TimeStampStr(TDateTime dt);
 
@@ -2644,7 +2644,7 @@ void EndGlobal();
 
 /**
  * @brief OSバージョン情報を取得
- * @return UnicodeString 
+ * @return UnicodeString
  */
 UnicodeString get_OsVerInfStr();
 
@@ -2686,7 +2686,7 @@ void change_ComboBoxHistory(TComboBox *cp, const _TCHAR *nrm_sct, const _TCHAR *
 /**
  * @brief リストの絞り込み
  * @param i_lst 対象リスト
- * @param[out] o_lst 結果リスト 
+ * @param[out] o_lst 結果リスト
  * @param kwd 検索語
  * @param opt 検索オプション
  */
@@ -2708,7 +2708,7 @@ bool is_ToRightOpe(UnicodeString keystr, UnicodeString cmdstr);
  * @param menu_list 追加メニュー
  * @param tool_list 外部ツール
  * @param is_TV テキストビューア・コマンド
- * @return UnicodeString 
+ * @return UnicodeString
  */
 UnicodeString get_CmdDesc(UnicodeString cmd, bool only_inf = false,
 	TStrings *menu_list = NULL, TStrings *tool_list = NULL, bool is_TV = false);
@@ -2754,7 +2754,7 @@ void set_CloseButton(bool enabled);
  * @param s 対象文字列
  * @param cv キャンバス
  * @param tab_wd タブストップ幅
- * @return int 
+ * @return int
  */
 int  get_TabTextWidth(UnicodeString s, TCanvas *cv, int tab_wd);
 
@@ -2769,7 +2769,7 @@ void out_TextRect(TCanvas *cv, TRect &rc, UnicodeString s, TColor fg = col_None,
  * @param kwd 検索語
  * @param opt オプション
  * @param[out] lst マッチ語リスト
- * @return int マッチ数 
+ * @return int マッチ数
  */
 int get_MatchWordList(UnicodeString lbuf, UnicodeString kwd, SearchOption opt, TStringList *lst);
 
@@ -2873,8 +2873,8 @@ void ini_HtmConv_def(HtmConv *htmcnv, UnicodeString fnam = EmptyStr, UnicodeStri
  * @param opt オプション
  * @param[out] exit_code 終了コード
  * @param[out] o_lst 出力リスト
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  */
 bool Execute_ex(UnicodeString cmd, UnicodeString prm = EmptyStr, UnicodeString wdir = EmptyStr,
 		UnicodeString opt = EmptyStr, DWORD *exit_code = NULL, TStringList *o_lst = NULL);
@@ -2886,10 +2886,10 @@ bool Execute_ex(UnicodeString cmd, UnicodeString prm = EmptyStr, UnicodeString w
  * @param opt オプション
  * @param[out] exit_code 終了コード
  * @param[out] o_lst 出力リスト
- * @param[out] o_ms 出力イメージ 
+ * @param[out] o_ms 出力イメージ
  * @param rq_abort 中断要求
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  */
 bool Execute_cmdln(UnicodeString cmdln, UnicodeString wdir = EmptyStr,
 		UnicodeString opt = EmptyStr, DWORD *exit_code = NULL, TStringList *o_lst = NULL, TMemoryStream *o_ms = NULL,
@@ -2900,10 +2900,21 @@ bool Execute_cmdln(UnicodeString cmdln, UnicodeString wdir = EmptyStr,
  * @param cmd コマンド
  * @param prm パラメータ
  * @param wdir 作業ディレクトリ
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  */
 bool Execute_demote(UnicodeString cmd, UnicodeString prm = EmptyStr, UnicodeString wdir = EmptyStr);
+
+/**
+ * @brief shexe.exe を介し別プロセスとして実行
+ * @details ネットワーク先の実行ファイルがゾーン識別子を持つ場合、shexe.exe を介し別プロセスとして実行します。@n
+ * そうでない場合は、Execute_ex で子プロセスとして実行します。
+ * @param fnam 実行ファイル名
+ * @param wdir 作業ディレクトリ
+ * @return true
+ * @return false
+ */
+bool Execute_shexe(UnicodeString fnam, UnicodeString wdir = EmptyStr);
 
 /**
  * @brief git.exe を実行
@@ -2911,10 +2922,10 @@ bool Execute_demote(UnicodeString cmd, UnicodeString prm = EmptyStr, UnicodeStri
  * @param wdir 作業ディレクトリ
  * @param[out] o_lst 出力リスト
  * @param[out] exit_cd 終了コード
- * @param[out] w_lst 警告リスト(出力から分離して取得) 
+ * @param[out] w_lst 警告リスト(出力から分離して取得)
  * @param rq_abort 中断要求
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  */
 bool GitShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst, DWORD *exit_cd = NULL,
 		TStringList *w_lst = NULL, bool *rq_abort = NULL);
@@ -2932,8 +2943,8 @@ UnicodeString save_GitRevAsTemp(UnicodeString id, UnicodeString fnam, UnicodeStr
  * @param[out] o_lst 出力リスト
  * @param[out] exit_cd 終了コード
  * @param[out] rq_abort 中断要求
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  */
 bool GrepShellExe(UnicodeString prm, UnicodeString wdir, TStringList *o_lst, DWORD *exit_cd = NULL, bool *rq_abort = NULL);
 
@@ -2946,8 +2957,8 @@ int  get_MaxTaskCount();
 /**
  * @brief 空きタスクがあるか？
  * @param ex_sw 最大タスク数を超えて取得
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  */
 bool has_EmptyTask(bool ex_sw = false);
 
@@ -2957,7 +2968,7 @@ bool has_EmptyTask(bool ex_sw = false);
  * @param reserve 予約する
  * @param force 保留中でも強制取得
  * @param ext_sw 最大タスク数を超えて取得
- * @return TTaskThread* 
+ * @return TTaskThread*
  */
 TTaskThread * CreTaskThread(TaskConfig **cp, bool reserve = true, bool force = false, bool ext_sw = false);
 
@@ -3067,27 +3078,27 @@ void close_all_ExViewer(TForm *frm = NULL);
 
 /**
  * @brief 最初に起動された NyanFi のハンドルを取得
- * @return HWND 
+ * @return HWND
  */
 HWND get_PrimNyanWnd();
 
 /**
  * @brief NyanFi のメイン画面か？
- * @param hWnd 
+ * @param hWnd
  */
 bool IsNyanfiWnd(HWND hWnd);
 
 /**
  * @brief 二重起動された NyanFi のメイン画面か？
- * @param hWnd 
+ * @param hWnd
  */
 bool IsNyanfi2Wnd(HWND hWnd);
 
 /**
  * @brief 最初に起動された NyanFi に文字列を送出
- * @param msg 
- * @return true 
- * @return false 
+ * @param msg
+ * @return true
+ * @return false
  */
 bool NotifyPrimNyan(UnicodeString msg);
 
@@ -3108,8 +3119,8 @@ int get_ViewTabWidth(UnicodeString fext);
 
 /**
  * @brief ツリーリストを(再)作成
- * @param lst 
- * @param pnam 
+ * @param lst
+ * @param pnam
  * @param chk_sw 抜けをチェック
  */
 void MakeTreeList(TStringList *lst, UnicodeString pnam, bool chk_sw = false);

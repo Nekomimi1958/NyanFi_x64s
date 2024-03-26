@@ -115,7 +115,7 @@ LRESULT CALLBACK DlgHookProc(int code, WPARAM wParam, LPARAM lParam)
 	if (code==HC_ACTION) {
 		PCWPSTRUCT sp = (PCWPSTRUCT)lParam;
 		if (sp->message==WM_SHOWWINDOW && sp->wParam==1) {
-			HWND  hWnd = sp->hwnd;
+			HWND hWnd = sp->hwnd;
 
 			//角丸フォームの抑止
 			if (IsWin11) {
@@ -1265,7 +1265,6 @@ void __fastcall TNyanFiForm::FormDestroy(TObject *Sender)
 	delete LogRWLock;
 	delete IconRWLock;
 	delete FldIcoRWLock;
-	OutDebugStr("  < delete RWLocks");
 
 	delete SttPrgBar;
 	delete MsgHint;
@@ -1656,11 +1655,13 @@ void __fastcall TNyanFiForm::WmActivate(TMessage &msg)
 		}
 
 		KeepCurCsr = 1;
-		InhModalScr   = false;
+		InhModalScr = false;
 	}
 	else {
 		HWND hWnd = get_ModalWnd();
-		if (!KeepModalScr && !hWnd) ModalScrForm->Visible = false;
+		if (!KeepModalScr && !hWnd) {
+			ModalScrForm->Visible = false;
+		}
 		if (hWnd) ::SetFocus(hWnd);
 		KeepCurCsr = 0;
 	}
@@ -21207,10 +21208,12 @@ void __fastcall TNyanFiForm::ListTextCore(bool is_tail)
 			} while (!is_TextFile(fnam, &code_page, &line_brk, &has_bom) && cnt<lst->Count);
 			SetFileInf();
 		}
-		KeepModalScr = false;	ModalScrForm->Visible = false;
+		KeepModalScr = false;
+		ModalScrForm->Visible = false;
 	}
 	catch (EAbort &e) {
-		KeepModalScr = false;	ModalScrForm->Visible = false;
+		KeepModalScr = false;
+		ModalScrForm->Visible = false;
 		SetActionAbort(e.Message);
 	}
 }
@@ -23106,7 +23109,8 @@ void __fastcall TNyanFiForm::OpenStandardActionExecute(TObject *Sender)
 				//実行
 				else if (test_FileExt(cfp->f_ext, FEXT_EXECUTE)) {
 					if (msgbox_Sure(msg.sprintf(_T("[%s]を実行しますか?"), cfp->n_name.c_str()), SureExec)) {
-						if (!Execute_ex(cfp->f_name, EmptyStr, cfp->p_name)) {
+						//ゾーン識別子を持つネットワーク先の実行ファイルは別プロセスとして実行
+						if (!Execute_shexe(cfp->f_name, cfp->p_name)) {
 							ExeErrLog(cfp->f_name, LoadUsrMsg(USTR_FaildExec));
 							UserAbort(USTR_FaildExec);
 						}
@@ -25934,7 +25938,8 @@ void __fastcall TNyanFiForm::ShowFileInfoActionExecute(TObject *Sender)
 				if (is_prv) CursorUpAction->Execute(); else CursorDownAction->Execute();
 			}
 		}
-		KeepModalScr = false;	ModalScrForm->Visible = false;
+		KeepModalScr = false;
+		ModalScrForm->Visible = false;
 
 		if (ScrMode==SCMD_FLIST && !FileInfoDlg->JumpFileName.IsEmpty()) {
 			if (!JumpToList(CurListTag, FileInfoDlg->JumpFileName)) SetActionAbort(GlobalErrMsg);
@@ -30052,6 +30057,7 @@ bool __fastcall TNyanFiForm::UpdateFromArc(
 		zp->Close();
 		if (!move_File(TempPathA + "NyanFi.exe", ExePath + "new_NyanFi.exe")) UserAbort(USTR_FaildProc);
 		if (!move_File(TempPathA + "NyanFi.chm", ExePath + "new_NyanFi.chm")) UserAbort(USTR_FaildProc);
+		if (file_exists(TempPathA + "shexe.exe")) move_File(TempPathA + "shexe.exe", ExePath + "shexe.exe");
 		MsgHint->ReleaseHandle();
 
 		//更新用バッチファイルを作成
