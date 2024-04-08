@@ -13651,7 +13651,7 @@ bool Execute_shexe(UnicodeString fnam, UnicodeString wdir)
 {
 	UnicodeString shexe = ExePath + "shexe.exe";
 	//別プロセスとして実行
-	if (use_VclStyle && file_exists(shexe)
+	if (use_VclStyle() && file_exists(shexe)
 		&& get_drive_type(fnam)==DRIVE_REMOTE && file_exists(fnam + ":Zone.Identifier"))
 	{
 		return Execute_ex(shexe, fnam, wdir);

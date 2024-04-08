@@ -1960,17 +1960,33 @@ void __fastcall TNyanFiForm::WmGetMinMaxInfo(TWMGetMinMaxInfo &msg)
 {
 	TForm::Dispatch(&msg);
 
-	if (HideTitleMenu && !IS_FullScr()) {
+	if (IS_FullScr()) return;
+
+	if (HideTitleMenu) {
 		RECT rc;
 		::GetWindowRect(::GetDesktopWindow(), &rc);
 		::AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, TRUE);
 		rc.bottom -= 2;
 		rc.top	  += 2;
-		if (!ShowMainMenu) rc.top += get_SysMetricsForPPI(SM_CYMENU, CurrentPPI);
+		if (use_VclStyle()) rc.top -= SCALED_THIS(8);
+		if (!ShowMainMenu)  rc.top += get_SysMetricsForPPI(SM_CYMENU, CurrentPPI);
 		msg.MinMaxInfo->ptMaxSize.y		 = rc.bottom - rc.top;
 		msg.MinMaxInfo->ptMaxTrackSize.y = rc.bottom - rc.top;
 		msg.MinMaxInfo->ptMaxPosition.y	 = rc.top;
 	}
+/*
+	else if (use_VclStyle()) {
+		RECT rc;
+		::GetWindowRect(::GetDesktopWindow(), &rc);
+		::AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, TRUE);
+		rc.top -= SCALED_THIS(8);
+		rc.top += get_SysMetricsForPPI(SM_CYSIZE, CurrentPPI);
+		rc.top += get_SysMetricsForPPI(SM_CYMENU, CurrentPPI);
+		msg.MinMaxInfo->ptMaxSize.y		 = rc.bottom - rc.top;
+		msg.MinMaxInfo->ptMaxTrackSize.y = rc.bottom - rc.top;
+		msg.MinMaxInfo->ptMaxPosition.y	 = rc.top;
+	}
+*/
 }
 //---------------------------------------------------------------------------
 //コンテキストメニュー
@@ -27656,7 +27672,12 @@ void __fastcall TNyanFiForm::WidenCurListActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TNyanFiForm::WinMaximizeActionExecute(TObject *Sender)
 {
-	WindowState = wsMaximized;
+	if (TestActionParam("TN")) {
+		WindowState = (WindowState==wsMaximized)? wsNormal : wsMaximized;
+	}
+	else {
+		WindowState = wsMaximized;
+	}
 }
 //---------------------------------------------------------------------------
 //ウィンドウの最小化

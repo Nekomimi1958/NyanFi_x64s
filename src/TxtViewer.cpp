@@ -2242,7 +2242,7 @@ void __fastcall TTxtViewer::PaintText()
 							mt_Len[i_p] = mts.Item[i_m].Length;
 							mt_Idx[i_p] = mts.Item[i_m].Index;
 
-							if (mt_Word[i_p] && !is_word(lbuf2, mt_Idx[i_p], mt_Len[i_p])) { 
+							if (mt_Word[i_p] && !is_word(lbuf2, mt_Idx[i_p], mt_Len[i_p])) {
 								mt_Len[i_p] = 0;
 								continue;
 							}

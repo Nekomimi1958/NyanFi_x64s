@@ -34,6 +34,13 @@
   </div>
 
   <dl>
+    <dt>V16.27 <span class="ver_date">(2024-04-08)</span></dt>
+    <dd>
+      ・開発環境を C++Builder 12.1 にアップデート。<br>
+      ・VCLスタイルの Windows10 Charcoal は 現在入手できなくなっているようなので削除しました。代わりに、Windows11 Impressive Dark、Windows11 Impressive Dark SE、Windows11 Impressive Light、Windows11 Impressive Light SE を追加(SE は非角丸)。なお、Windows10 Charcoal を選択していた場合、起動時に警告メッセージが出て、デフォルトに戻ります。<br>
+      ・WinMaximize コマンドのパラメータに TN を追加。すでに最大化されていた場合は元のサイズに戻します(最大化/元に戻すのトグル切り替え)。<br>
+    </dd>
+
     <dt>V16.26 <span class="ver_date">(2024-03-26)</span></dt>
     <dd>
       ・「Windows」以外のVCLスタイルを適用している場合、ゾーン識別子を持つネットワーク先の実行ファイルを OpenStandard コマンドで開く際にセキュリティの警告ダイアログの「実行」ボタンが機能しない現象に対処。現状では NyanFi 側での対策が難しそうなので、このような実行ファイルについては、子プロセスではなく、同梱の shexe.exe を介し別プロセスとして起動するようにしました。これにより、警告ダイアログはVCLスタイルの影響を受けなくなります。shexe.exe は、指定した実行ファイルを起動するだけのプログラムです。NyanFi.exe と同じディレクトリに置いてください。「更新の確認」や「アーカイブから更新」で更新した場合は自動的にインストールされます。<br>

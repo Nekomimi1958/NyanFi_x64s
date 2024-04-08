@@ -1149,6 +1149,9 @@ void get_PrmList(
 		params = "\nCB : クリップボードの内容を検索\n";
 		if (id_idx==0) params += "FN : カーソル位置のファイル名を検索\n";
 	}
+	else if (SameText(cmd, "WinMaximize")) {
+		params = "\nTN : 最大化/元に戻すのトグル切り替え\n";
+	}
 	else if (SameText(cmd, "WinPos")) {
 		params = "\nL : 左位置\nT : 上位置\nR : 右位置\nB : 下位置\n";
 	}
